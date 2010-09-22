@@ -2,8 +2,8 @@ var path = require('path');
 var fs = require('fs');
 var Step = require('step');
 
-module.exports = function Browserify (name, nodeSource) {
-    if (!(this instanceof Browserify)) return new Browserify(name, nodeSource);
+module.exports = function Browserify (nodeSource) {
+    if (!(this instanceof Browserify)) return new Browserify(nodeSource);
     
     if (nodeSource === undefined) nodeSource = process.env.NODE_SOURCE;
     
@@ -12,12 +12,12 @@ module.exports = function Browserify (name, nodeSource) {
         : require.paths
     ;
     
-    this.path = function (cb) {
-        Step();
-    };
+    var sources = [];
     
-    this.pathSync = function () {
-        return firstMap(requirePaths, function (dir) {
+    this.pathSync = function (name, searchDirs) {
+        if (arguments.length == 1) searchDirs = requirePaths;
+        
+        return firstMap(searchDirs, function (dir) {
             if (!path.existsSync(dir)) return undefined;
             return firstMap(
                 [ '.js', '.node', '/index.js', '/index.node' ]
@@ -25,6 +25,18 @@ module.exports = function Browserify (name, nodeSource) {
                 function (file) { if (path.existsSync(file)) return file }
             );
         });
+    };
+    
+    this.require = function (name) {
+        var p = name.match(/^[\/.]/)
+            ? this.pathSync(name, [ name.charAt(0) ])
+            : this.pathSync(name);
+        sources.push(fs.readFileSync(p));
+        return this;
+    };
+    
+    this.bundle = function () {
+        return sources.join('\m');
     };
 };
 
