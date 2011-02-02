@@ -1,7 +1,7 @@
 {
     "name" : "browserify",
     "version" : "0.0.1",
-    "description" : "Middleware for browser-side require() from a local directory or npm",
+    "description" : "Middleware for browser-side require()",
     "main" : "./index.js",
     "repository" : {
         "type" : "git",
@@ -13,9 +13,10 @@
         "middleware",
         "npm"
     ],
-    "dependencies" : [
+    "dependencies" : {
+        "findit" : ">=0.0.1",
         "npm" : ">=0.2.16"
-    ],
+    },
     "author" : {
         "name" : "James Halliday",
         "email" : "mail@substack.net",

@@ -1,6 +1,9 @@
 var fs = require('fs');
-var npm = require('npm');
 var path = require('path');
+var find = require('findit');
+
+var npm = require('npm');
+var finder = require('finder');
 
 exports = module.exports = function (opts) {
     if (typeof opts === 'string') {
@@ -16,7 +19,10 @@ exports = module.exports = function (opts) {
     if (!opts.mount) opts.mount = '/browserify.js';
     
     var src = wrappers.prelude
-        + (opts.base ? getScriptsSync(opts.base) : [])
+        + (opts.base ? find.sync(opts.base) : [])
+            .filter(function (file) {
+                return file.match(/\.js$/)
+            })
             .map(wrapScript.bind({}, opts.base))
             .join('\n')
     ;
@@ -60,25 +66,6 @@ var wrappers = {
     body : fs.readFileSync(__dirname + '/wrappers/body.js', 'utf8'),
 };
 
-exports.getScriptsSync = getScriptsSync;
-function getScriptsSync (dir) {
-    return fs.readdirSync(dir)
-        .reduce(function (files, file) {
-            var p = dir + '/' + file;
-            var stat = fs.statSync(p);
-            
-            if (stat.isDirectory()) {
-                files.push.apply(files, getScriptsSync(p));
-            }
-            else if (file.match(/\.js/)) {
-                files.push(p);
-            }
-            
-            return files;
-        }, [])
-    ;
-}
-
 exports.wrapScript = wrapScript;
 function wrapScript (base, filename) {
     var src = fs.readFileSync(filename, 'utf8');
@@ -96,5 +83,34 @@ function wrapScript (base, filename) {
 
 exports.wrapPackage = wrapPackage;
 function wrapPackage (dir, cb) {
-    console.log('TODO: wrap ' + dir);
+    fs.readFile(dir + '/package.json', 'utf8', function (err, body) {
+        if (err) { cb(err); return }
+        
+        function resolve (p) {
+            return require.resolve(dir + '/' + p);
+        }
+        
+        var pkg = JSON.parse(body);
+        if (pkg.main) {
+            cb(null, wrapScript(dir, resolve(pkg.main)));
+        }
+        
+        if (pkg.modules) {
+            Object.keys(pkg.modules).forEach(function (name) {
+                cb(null, wrapScript(dir, resolve(pkg.modules[name])));
+            });
+        }
+        
+        if (pkg.directory && pkg.directory.lib) {
+            fs.readdir(pkg.directory.lib, function (err, files) {
+                if (err) cb(err)
+                else files.forEach(function (file) {
+                    cb(null, wrapScript(
+                        dir + '/' + pkg.directory.lib,
+                        resolve(file)
+                    ));
+                })
+            })
+        }
+    });
 }
