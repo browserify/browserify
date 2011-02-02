@@ -5,13 +5,18 @@ var path = require('path');
 exports = module.exports = function (opts) {
     if (typeof opts === 'string') {
         opts = { base : opts };
+        var opts_ = arguments[1];
+        if (typeof opts_ === 'object') {
+            Object.keys(opts_).forEach(function (key) {
+                opts[key] = opts_[key];
+            });
+        }
     }
     
     if (!opts.mount) opts.mount = '/browserify.js';
-    if (!opts.base) throw new Error('"base" option not specified');
     
     var src = wrappers.prelude
-        + getScriptsSync(opts.base)
+        + (opts.base ? getScriptsSync(opts.base) : [])
             .map(wrapScript.bind({}, opts.base))
             .join('\n')
     ;
