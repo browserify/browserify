@@ -1,7 +1,5 @@
 function require (path) {
     // not EXACTLY like how node does it but more appropriate for the browser
-    if (!path.match(/^\.\//)) path = './' + path;
-    
     var mod = [
         require.modules[path],
         require.modules[path + '.js'],
