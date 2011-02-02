@@ -8,9 +8,10 @@ exports = module.exports = function (opts) {
     if (!opts.mount) opts.mount = '/browserify.js';
     if (!opts.base) throw new Error('"base" option not specified');
     
-    var src = getScriptsSync(opts.base)
-        .map(wrapScript)
-        .join('\n')
+    var src = wrappers.prelude
+        + getScriptsSync(opts.base)
+            .map(wrapScript.bind({}, opts.base))
+            .join('\n')
     ;
     
     return function (req, res, next) {
@@ -28,11 +29,17 @@ var wrappers = {
 };
 
 exports.wrapScript = wrapScript;
-function wrapScript (filename) {
+function wrapScript (base, filename) {
     var src = fs.readFileSync(filename, 'utf8');
+    
+    var bs = base.split('/');
+    var rs = filename.split('/');
+    for (var i = 0; i < bs.length && i < rs.length && bs[i] === rs[i]; i++);
+    var rel = './' + rs.slice(i).join('/').replace(/^\.(?:\/|$)/,'');
+    
     return wrappers.body
         .replace('$body', src)
-        .replace('$filename', filename)
+        .replace(/\$filename/g, JSON.stringify(rel))
     ;
 }
 

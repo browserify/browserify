@@ -1,9 +1,8 @@
 (function () {
-    var module = require.modules[$filename] = { exports : {} };
+    var module = _browserifyRequire.modules[$filename] = { exports : {} };
     var exports = module.exports;
-    var _browserifyRequire = require;
     var require = function (path) {
-        return _browserifyRequire.fromFile(filename, path);
+        return _browserifyRequire.fromFile($filename, path);
     };
     
     (function () {
