@@ -23,7 +23,12 @@ exports = module.exports = function (opts) {
             .filter(function (file) {
                 return file.match(/\.js$/)
             })
-            .map(wrapScript.bind({}, opts.base))
+            .map(function (file) {
+                return wrapScript(
+                    opts.base, file,
+                    fs.readFileSync(file, 'utf8')
+                )
+            })
             .join('\n')
     ;
     
@@ -41,7 +46,7 @@ exports = module.exports = function (opts) {
                         + name + ' is installed.'
                     );
                 }
-                else wrapPackage(dir, function (err, wrapped) {
+                else wrapPackage(name, dir, function (err, wrapped) {
                     if (err) console.error(
                         'Error wrapping package ' + name + ': '
                         + (err.stack ? err.stack : err)
@@ -67,13 +72,14 @@ var wrappers = {
 };
 
 exports.wrapScript = wrapScript;
-function wrapScript (base, filename) {
-    var src = fs.readFileSync(filename, 'utf8');
-    
-    var bs = base.split('/');
-    var rs = filename.split('/');
-    for (var i = 0; i < bs.length && i < rs.length && bs[i] === rs[i]; i++);
-    var rel = './' + rs.slice(i).join('/').replace(/^\.(?:\/|$)/,'');
+function wrapScript (base, filename, src) {
+    var rel = filename;
+    if (base) {
+        var bs = base.split('/');
+        var rs = filename.split('/');
+        for (var i = 0; i < bs.length && i < rs.length && bs[i] === rs[i]; i++);
+        rel = './' + rs.slice(i).join('/').replace(/^\.(?:\/|$)/,'');
+    }
     
     return wrappers.body
         .replace('$body', src)
@@ -82,33 +88,32 @@ function wrapScript (base, filename) {
 }
 
 exports.wrapPackage = wrapPackage;
-function wrapPackage (dir, cb) {
+function wrapPackage (name, dir, cb) {
     fs.readFile(dir + '/package.json', 'utf8', function (err, body) {
         if (err) { cb(err); return }
         
-        function resolve (p) {
-            return require.resolve(dir + '/' + p);
+        function wrap (p, n) {
+            var file = require.resolve(dir + '/' + p);
+            cb(null, wrapScript(null, n, fs.readFileSync(file, 'utf8')));
         }
         
         var pkg = JSON.parse(body);
-        if (pkg.main) {
-            cb(null, wrapScript(dir, resolve(pkg.main)));
-        }
+        if (pkg.main) wrap(pkg.main, name)
         
         if (pkg.modules) {
-            Object.keys(pkg.modules).forEach(function (name) {
-                cb(null, wrapScript(dir, resolve(pkg.modules[name])));
-            });
+            Object.keys(pkg.modules).forEach(function (n) {
+                wrap(
+                    pkg.modules[n],
+                    n === 'index' ? name : name + '/' + n
+                )
+            })
         }
         
         if (pkg.directory && pkg.directory.lib) {
             fs.readdir(pkg.directory.lib, function (err, files) {
                 if (err) cb(err)
                 else files.forEach(function (file) {
-                    cb(null, wrapScript(
-                        dir + '/' + pkg.directory.lib,
-                        resolve(file)
-                    ));
+                    wrap(file, name + '/' + file)
                 })
             })
         }
