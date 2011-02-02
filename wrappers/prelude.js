@@ -1,7 +1,15 @@
 function require (path) {
-    if (!require.modules[path]) {
-        throw new Error("Cannot find module '" + path + "'");
-    }
+    // not EXACTLY like how node does it but more appropriate for the browser
+    if (!path.match(/^\.\//)) path = './' + path;
+    
+    var mod = [
+        require.modules[path],
+        require.modules[path + '.js'],
+        require.modules[path + '/index.js'],
+    ].filter(Boolean)[0];
+    
+    if (!mod) throw new Error("Cannot find module '" + path + "'");
+    return mod._cached ? mod._cached : mod();
 }
 
 var _browserifyRequire = require; // scoping >_<
