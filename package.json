@@ -13,6 +13,9 @@
         "middleware",
         "npm"
     ],
+    "dependencies" : [
+        "npm" : ">=0.2.16"
+    ],
     "author" : {
         "name" : "James Halliday",
         "email" : "mail@substack.net",
