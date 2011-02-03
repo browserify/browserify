@@ -1,7 +1,7 @@
 {
     "name" : "browserify",
     "version" : "0.0.1",
-    "description" : "Middleware for browser-side require()",
+    "description" : "Browser-side require() for js directories and npm modules",
     "main" : "./index.js",
     "repository" : {
         "type" : "git",
