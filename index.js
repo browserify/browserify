@@ -34,7 +34,12 @@ exports = module.exports = function (opts) {
     
     npm.load(function () {
         // async middleware is hard >_<
-        (opts.npm || []).forEach(function (name) {
+        (opts.require || []).forEach(function (name) {
+            if (builtins[name]) {
+                src += builtins[name];
+                return;
+            }
+            
             // this part mostly lifted from npm/lib/explore.js
             var nv = name.split('@');
             var n = nv[0], v = nv[1] || 'active';
@@ -71,6 +76,16 @@ var wrappers = {
     body : fs.readFileSync(__dirname + '/wrappers/body.js', 'utf8'),
 };
 
+var builtins = fs.readdirSync(__dirname + '/builtins/')
+    .reduce(function (acc, file) {
+        if (file.match(/\.js/)) {
+            acc[file.replace(/\.js$/,'')] =
+                fs.readFileSync(__dirname + '/builtins/' + file, 'utf8');
+        }
+        return acc;
+    }, {})
+;
+
 exports.wrapScript = wrapScript;
 function wrapScript (base, filename, src) {
     var rel = filename;
@@ -79,6 +94,9 @@ function wrapScript (base, filename, src) {
         var rs = filename.split('/');
         for (var i = 0; i < bs.length && i < rs.length && bs[i] === rs[i]; i++);
         rel = './' + rs.slice(i).join('/').replace(/^\.(?:\/|$)/,'');
+    }
+    else if (builtins[filename]) {
+        return builtins[filename];
     }
     
     return wrappers.body
