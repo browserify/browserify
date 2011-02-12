@@ -3,6 +3,9 @@ Browserify
 
 Browser-side require() for your node modules and npm packages
 
+Browserify bundles everything ahead-of-time at the mount point you specify.
+None of this ajaxy module loading business.
+
 examples
 ========
 
