@@ -1,6 +1,6 @@
 {
     "name" : "browserify",
-    "version" : "0.0.3",
+    "version" : "0.0.4",
     "description" : "Browser-side require() for js directories and npm modules",
     "main" : "./index.js",
     "repository" : {
@@ -15,7 +15,8 @@
     ],
     "dependencies" : {
         "findit" : ">=0.0.1",
-        "npm" : ">=0.2.16"
+        "npm" : ">=0.2.16",
+        "es5-shim" : ">=1.0.0"
     },
     "author" : {
         "name" : "James Halliday",

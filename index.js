@@ -18,10 +18,8 @@ exports = module.exports = function (opts) {
     
     if (!opts.mount) opts.mount = '/browserify.js';
     
-    var src = wrappers.prelude
-        + wrappers.browser_compat
-        + wrappers.node_compat
-        + Object.keys(builtins).map(function (key) {
+    var src
+        = Object.keys(builtins).map(function (key) {
             return wrapScript(null, key, builtins[key])
         }).join('\n')
         + (opts.base ? find.sync(opts.base) : [])
@@ -35,6 +33,7 @@ exports = module.exports = function (opts) {
             })
             .join('\n')
     ;
+    
     if (opts.filter) {
         src = opts.filter(src);
     }
@@ -44,7 +43,8 @@ exports = module.exports = function (opts) {
         
         var included = {};
         
-        (opts.require || []).forEach(function npmWrap (name) {
+        (opts.require || []).concat('es5-shim')
+        .forEach(function npmWrap (name) {
             included[name] = true;
             
             // this part mostly lifted from npm/lib/explore.js
@@ -71,8 +71,13 @@ exports = module.exports = function (opts) {
                     });
                     
                     pkg.on('module', function (modSrc) {
-                        src += modSrc;
-                        if (opts.filter) src = opts.filter(src);
+                        var minSrc = opts.filter ? opts.filter(modSrc) : modSrc;
+                        if (name === 'es5-shim') {
+                            preSrc += minSrc + '\nrequire("es5-shim");\n';
+                        }
+                        else {
+                            src += minSrc;
+                        }
                     });
                 }
             });
@@ -80,19 +85,23 @@ exports = module.exports = function (opts) {
     });
     
     var modified = new Date();
+    var preSrc = (opts.filter || String)(
+        wrappers.prelude + wrappers.node_compat
+    );
     return function (req, res, next) {
         if (req.url.split('?')[0] === opts.mount) {
             res.writeHead(200, {
                 'Last-Modified' : modified.toString(),
                 'Content-Type' : 'text/javascript',
             });
+            res.write(preSrc);
             res.end(src);
         }
         else next();
     };
 }
 
-var wrappers = [ 'prelude', 'body', 'browser_compat', 'node_compat' ]
+var wrappers = [ 'prelude', 'body', 'node_compat' ]
     .reduce(function (acc, name) {
         acc[name] = fs.readFileSync(
             __dirname + '/wrappers/' + name + '.js', 'utf8'
