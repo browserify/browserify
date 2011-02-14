@@ -1,9 +1,9 @@
 var fs = require('fs');
 var path = require('path');
 var find = require('findit');
+var EventEmitter = require('events').EventEmitter;
 
 var npm = require('npm');
-var finder = require('finder');
 
 exports = module.exports = function (opts) {
     if (typeof opts === 'string') {
@@ -34,7 +34,12 @@ exports = module.exports = function (opts) {
     
     npm.load(function () {
         // async middleware is hard >_<
-        (opts.require || []).forEach(function (name) {
+        
+        var included = {};
+        
+        (opts.require || []).forEach(function npmWrap (name) {
+            included[name] = true;
+            
             if (builtins[name]) {
                 src += builtins[name];
                 return;
@@ -51,13 +56,22 @@ exports = module.exports = function (opts) {
                         + name + ' is installed.'
                     );
                 }
-                else wrapPackage(name, dir, function (err, wrapped) {
-                    if (err) console.error(
-                        'Error wrapping package ' + name + ': '
-                        + (err.stack ? err.stack : err)
-                    )
-                    else src += wrapped
-                });
+                else {
+                    var pkg = wrapPackage(name, dir);
+                    pkg.on('package.json', function (json) {
+                        if (typeof json.dependencies === 'object') {
+                            Object.keys(json.dependencies)
+                                .forEach(function (n) {
+                                    if (!included[n]) npmWrap(n);
+                                })
+                            ;
+                        }
+                    });
+                    
+                    pkg.on('module', function (modSrc) {
+                        src += modSrc;
+                    });
+                }
             });
         });
     });
@@ -106,16 +120,33 @@ function wrapScript (base, filename, src) {
 }
 
 exports.wrapPackage = wrapPackage;
-function wrapPackage (name, dir, cb) {
+function wrapPackage (name, dir) {
+    var em = new EventEmitter;
+    
     fs.readFile(dir + '/package.json', 'utf8', function (err, body) {
-        if (err) { cb(err); return }
+        if (err) { em.emit('error', err); return }
         
         function wrap (p, n) {
             var file = require.resolve(dir + '/' + p);
-            cb(null, wrapScript(null, n, fs.readFileSync(file, 'utf8')));
+            em.emit('module', wrapScript(
+                null, n, fs.readFileSync(file, 'utf8'))
+            );
         }
         
-        var pkg = JSON.parse(body);
+        try {
+            var pkg = JSON.parse(body);
+        }
+        catch (err) {
+            if (err instanceof SyntaxError) {
+                console.error(
+                    'Syntax error in the package.json for '
+                    + JSON.stringify(name)
+                );
+            }
+            throw err;
+        }
+        
+        em.emit('package.json', pkg);
         if (pkg.main) wrap(pkg.main, name)
         
         if (pkg.modules) {
@@ -129,11 +160,13 @@ function wrapPackage (name, dir, cb) {
         
         if (pkg.directory && pkg.directory.lib) {
             fs.readdir(pkg.directory.lib, function (err, files) {
-                if (err) cb(err)
+                if (err) em.emit('error', err)
                 else files.forEach(function (file) {
                     wrap(file, name + '/' + file)
                 })
             })
         }
     });
+    
+    return em;
 }
