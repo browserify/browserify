@@ -6,6 +6,11 @@ Browser-side require() for your node modules and npm packages
 Browserify bundles everything ahead-of-time at the mount point you specify.
 None of this ajaxy module loading business.
 
+More features:
+* recursively bundle dependencies of npm modules
+* compatability implementations of es5 goodies
+* filters for {min,ugl}ification
+
 examples
 ========
 
@@ -21,6 +26,7 @@ server.js
     server.use(require('browserify')({
         base : __dirname + '/js',
         mount : '/browserify.js',
+        filter : require('jsmin').jsmin,
     }));
     
     server.listen(9797);

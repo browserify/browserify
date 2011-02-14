@@ -1,0 +1,16 @@
+<html>
+<head>
+    <script type="text/javascript" src="/browserify.js?simple"></script>
+    <script type="text/javascript">
+        var foo = require('./foo');
+        
+        window.onload = function () {
+            document.getElementById('result').innerHTML = foo(100);
+        };
+    </script>
+</head>
+<body>
+    foo =
+    <span style='font-family: monospace' id="result"></span>
+</body>
+</html>

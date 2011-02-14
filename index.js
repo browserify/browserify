@@ -35,6 +35,10 @@ exports = module.exports = function (opts) {
             })
             .join('\n')
     ;
+    if (opts.filter) {
+        src = opts.filter(src);
+    }
+    
     npm.load(function () {
         // async middleware is hard >_<
         
@@ -68,16 +72,18 @@ exports = module.exports = function (opts) {
                     
                     pkg.on('module', function (modSrc) {
                         src += modSrc;
+                        if (opts.filter) src = opts.filter(src);
                     });
                 }
             });
         });
     });
     
+    var modified = new Date();
     return function (req, res, next) {
         if (req.url.split('?')[0] === opts.mount) {
             res.writeHead(200, {
-                'Last-Modified' : startDate.toString(),
+                'Last-Modified' : modified.toString(),
                 'Content-Type' : 'text/javascript',
             });
             res.end(src);
