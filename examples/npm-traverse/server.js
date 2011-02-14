@@ -7,5 +7,5 @@ server.use(require('browserify')({
     require : [ 'traverse' ],
 }));
 
-server.listen(9898);
-console.log('Listening on 9898...');
+server.listen(9393);
+console.log('Listening on 9393...');

@@ -74,13 +74,11 @@ exports = module.exports = function (opts) {
         });
     });
     
-    var startDate = Date.now();
     return function (req, res, next) {
-        if (req.url === opts.mount) {
+        if (req.url.split('?')[0] === opts.mount) {
             res.writeHead(200, {
                 'Last-Modified' : startDate.toString(),
                 'Content-Type' : 'text/javascript',
-                'Cache-Control' : 'public, must-revalidate'
             });
             res.end(src);
         }
