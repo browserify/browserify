@@ -19,13 +19,17 @@ exports = module.exports = function (opts) {
     if (!opts.mount) opts.mount = '/browserify.js';
     
     var src = wrappers.prelude
+        + wrappers.browser_compat
+        + wrappers.node_compat
+        + Object.keys(builtins).map(function (key) {
+            return wrapScript(null, key, builtins[key])
+        }).join('\n')
         + (opts.base ? find.sync(opts.base) : [])
             .filter(function (file) {
                 return file.match(/\.js$/)
             })
             .map(function (file) {
-                return wrapScript(
-                    opts.base, file,
+                return wrapScript(opts.base, file,
                     fs.readFileSync(file, 'utf8')
                 )
             })
@@ -39,11 +43,6 @@ exports = module.exports = function (opts) {
         
         (opts.require || []).forEach(function npmWrap (name) {
             included[name] = true;
-            
-            if (builtins[name]) {
-                src += builtins[name];
-                return;
-            }
             
             // this part mostly lifted from npm/lib/explore.js
             var nv = name.split('@');
@@ -85,10 +84,14 @@ exports = module.exports = function (opts) {
     };
 }
 
-var wrappers = {
-    prelude : fs.readFileSync(__dirname + '/wrappers/prelude.js', 'utf8'),
-    body : fs.readFileSync(__dirname + '/wrappers/body.js', 'utf8'),
-};
+var wrappers = [ 'prelude', 'body', 'browser_compat', 'node_compat' ]
+    .reduce(function (acc, name) {
+        acc[name] = fs.readFileSync(
+            __dirname + '/wrappers/' + name + '.js', 'utf8'
+        );
+        return acc;
+    }, {})
+;
 
 var builtins = fs.readdirSync(__dirname + '/builtins/')
     .reduce(function (acc, file) {
@@ -108,9 +111,6 @@ function wrapScript (base, filename, src) {
         var rs = filename.split('/');
         for (var i = 0; i < bs.length && i < rs.length && bs[i] === rs[i]; i++);
         rel = './' + rs.slice(i).join('/').replace(/^\.(?:\/|$)/,'');
-    }
-    else if (builtins[filename]) {
-        return builtins[filename];
     }
     
     return wrappers.body
