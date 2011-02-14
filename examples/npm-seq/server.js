@@ -7,5 +7,5 @@ server.use(require('browserify')({
     require : [ 'seq' ], // which itself has dependencies
 }));
 
-server.listen(9797);
-console.log('Listening on 9797...');
+server.listen(9898);
+console.log('Listening on 9898...');

@@ -1,8 +1,8 @@
 var fs = require('fs');
 var path = require('path');
-var find = require('findit');
 var EventEmitter = require('events').EventEmitter;
 
+var find = require('findit');
 var npm = require('npm');
 
 exports = module.exports = function (opts) {
@@ -35,7 +35,6 @@ exports = module.exports = function (opts) {
             })
             .join('\n')
     ;
-    
     npm.load(function () {
         // async middleware is hard >_<
         
@@ -75,9 +74,14 @@ exports = module.exports = function (opts) {
         });
     });
     
+    var startDate = Date.now();
     return function (req, res, next) {
         if (req.url === opts.mount) {
-            res.writeHead(200, { 'Content-Type' : 'text/javascript' });
+            res.writeHead(200, {
+                'Last-Modified' : startDate.toString(),
+                'Content-Type' : 'text/javascript',
+                'Cache-Control' : 'public, must-revalidate'
+            });
             res.end(src);
         }
         else next();
