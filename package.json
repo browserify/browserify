@@ -16,7 +16,8 @@
     "dependencies" : {
         "findit" : ">=0.0.1",
         "npm" : ">=0.2.16",
-        "es5-shim" : ">=1.0.0"
+        "es5-shim" : ">=1.0.0",
+        "coffee-script" : ">=1.0.1"
     },
     "author" : {
         "name" : "James Halliday",
