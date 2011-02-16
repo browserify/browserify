@@ -4,7 +4,7 @@
     <script type="text/javascript">
         window.onload = function () {
             var Seq = require('seq');
-            Seq('abcdefghijklmnop'.split(''))
+            Seq.ap('abcdefghijklmnop'.split(''))
                 .parMap(3, function (x) {
                     var cb = this;
                     setTimeout(function () {

@@ -3,7 +3,7 @@ var path = require('path');
 var EventEmitter = require('events').EventEmitter;
 var find = require('findit');
 var npm = require('npm');
-var coffeescript = require('coffee-script');
+var coffee = require('coffee-script');
 
 exports = module.exports = function (opts) {
     if (typeof opts === 'string') {
@@ -27,13 +27,16 @@ exports = module.exports = function (opts) {
                 return file.match(/\.js$/) || file.match(/\.coffee$/)
             })
             .map(function (file) {
-                var f = file
-                var c = fs.readFileSync(f, 'utf8')
-                if ( f.match(/\.coffee$/) ){
-                  c = coffeescript.compile( c )
-                  f = f.substr(0, f.length-7)
+                var body = fs.readFileSync(file, 'utf8');
+                if (file.match(/\.coffee$/)) {
+                    return wrapScript(
+                        opts.base, file.replace(/\.coffee$/,''),
+                        coffee.compile(body)
+                    );
                 }
-                return wrapScript(opts.base, f, c)
+                else {
+                    return wrapScript(opts.base, file, body);
+                }
             })
             .join('\n')
     ;
