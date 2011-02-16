@@ -10,9 +10,11 @@ More features:
 
 * recursively bundle dependencies of npm modules
 
-* compatability implementations of es5 goodies
+* uses es5-shim for browsers that suck
 
 * filters for {min,ugl}ification
+
+* coffee script works too!
 
 examples
 ========
@@ -38,9 +40,10 @@ server.js
 js/foo.js
 
     var bar = require('./bar');
-    
+    var baz = require('./baz');
+
     module.exports = function (x) {
-        return x * bar.coeff(x)
+        return x * bar.coeff(x) + baz.wowsy(x);
     };
 
 js/bar.js
@@ -48,6 +51,11 @@ js/bar.js
     exports.coeff = function (x) {
         return Math.log(x) / Math.log(2) + 1;
     };
+
+js/baz.coffee
+
+    exports.wowsy = (beans) ->
+        beans * 3 - 2
 
 index.html
 
