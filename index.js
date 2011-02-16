@@ -1,9 +1,9 @@
 var fs = require('fs');
 var path = require('path');
 var EventEmitter = require('events').EventEmitter;
-
 var find = require('findit');
 var npm = require('npm');
+var coffeescript = require('coffee-script');
 
 exports = module.exports = function (opts) {
     if (typeof opts === 'string') {
@@ -24,12 +24,16 @@ exports = module.exports = function (opts) {
         }).join('\n')
         + (opts.base ? find.sync(opts.base) : [])
             .filter(function (file) {
-                return file.match(/\.js$/)
+                return file.match(/\.js$/) || file.match(/\.coffee$/)
             })
             .map(function (file) {
-                return wrapScript(opts.base, file,
-                    fs.readFileSync(file, 'utf8')
-                )
+                var f = file
+                var c = fs.readFileSync(f, 'utf8')
+                if ( f.match(/\.coffee$/) ){
+                  c = coffeescript.compile( c )
+                  f = f.substr(0, f.length-7)
+                }
+                return wrapScript(opts.base, f, c)
             })
             .join('\n')
     ;
