@@ -98,20 +98,17 @@ index.html
 
     <html>
     <head>
-        <script type="text/javascript" src="/browserify.js"></script>
+        <script type="text/javascript" src="/browserify.js?traverse"></script>
         <script type="text/javascript">
             var Traverse = require('traverse');
             var obj = [ 5, 6, -3, [ 7, 8, -2, 1 ], { f : 10, g : -13 } ];
-            var fixed = Traverse(obj)
-                .modify(function (x) {
-                    if (x < 0) this.update(x + 128);
-                })
-                .get()
-            ;
+            Traverse(obj).forEach(function (x) {
+                if (x < 0) this.update(x + 128);
+            });
             
             window.onload = function () {
                 document.getElementById('result').innerHTML
-                    = JSON.stringify(fixed);
+                    = JSON.stringify(obj);
             };
         </script>
     </head>
