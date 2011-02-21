@@ -49,14 +49,13 @@ exports = module.exports = function (opts) {
     var included = {};
     
     Seq.ap((opts.require || []).concat('es5-shim'))
-        .parEach(5, function npmWrap (name) {
+        .seqEach(function npmWrap (name) {
             if (included[name]) { this(); return }
             var next = this;
             
             included[name] = true;
             
             npmPackage(name, function (err, psrc, deps) {
-console.log(name);
                 if (name === 'es5-shim') {
                     preSrc += psrc;
                 }
@@ -64,14 +63,11 @@ console.log(name);
                     src += psrc;
                 }
                 
-console.dir(deps);
                 Seq.ap(Object.keys(deps))
                     .seqEach(function (dep) {
-console.log(name + '.' + dep);
                         npmWrap.call(this, dep);
                     })
                     .seq(function () { next() })
-                    .catch(next)
                 ;
             });
         })
@@ -187,12 +183,20 @@ function wrapPackage (name, dir) {
 
 var npmLoaded = false;
 exports.npmPackage = npmPackage;
+var npmLoadQueue = [];
+
 function npmPackage (name, cb) {
     if (!npmLoaded) {
-        npm.load(function () {
-            npmLoaded = true;
-            npmPackage(name, cb);
-        });
+        npmLoadQueue.push({ name : name, cb : cb });
+        
+        if (npmLoadQueue.length === 1) {
+            npm.load(function () {
+                npmLoaded = true;
+                npmLoadQueue.forEach(function (q) {
+                    npmPackage(q.name, q.cb);
+                });
+            });
+        }
         return;
     }
     
