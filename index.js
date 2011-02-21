@@ -47,15 +47,16 @@ exports = module.exports = function (opts) {
     }
     
     var included = {};
-    var pending = 0;
     
-    (opts.require || []).concat('es5-shim').forEach(function npmWrap (name) {
-        if (!included[name]) {
-            pending ++;
+    Seq.ap((opts.require || []).concat('es5-shim'))
+        .parEach(5, function npmWrap (name) {
+            if (included[name]) { this(); return }
+            var next = this;
+            
             included[name] = true;
+            
             npmPackage(name, function (err, psrc, deps) {
-                pending --;
-                Object.keys(deps).forEach(npmWrap);
+console.log(name);
                 if (name === 'es5-shim') {
                     preSrc += psrc;
                 }
@@ -63,12 +64,21 @@ exports = module.exports = function (opts) {
                     src += psrc;
                 }
                 
-                if (pending === 0 && opts.ready) {
-                    opts.ready();
-                }
+console.dir(deps);
+                Seq.ap(Object.keys(deps))
+                    .seqEach(function (dep) {
+console.log(name + '.' + dep);
+                        npmWrap.call(this, dep);
+                    })
+                    .seq(function () { next() })
+                    .catch(next)
+                ;
             });
-        }
-    });
+        })
+        .seq(function () {
+            if (opts.ready) opts.ready()
+        })
+    ;
     
     var modified = new Date();
     var preSrc = (opts.filter || String)(
