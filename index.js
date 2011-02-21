@@ -194,3 +194,18 @@ function wrapPackage (name, dir) {
     
     return em;
 }
+
+var loaded = false;
+exports.bundle = function (libname, cb) {
+    if (libname.match(/^[.\/]/)) {
+        
+    }
+    else if (!loaded) {
+        npm.load(function () {
+            loaded = true;
+            exports.bundle(libname, cb);
+        });
+    }
+    else {
+    }
+};
