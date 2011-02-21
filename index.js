@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var EventEmitter = require('events').EventEmitter;
 var find = require('findit');
+var Seq = require('seq');
 var npm = require('npm');
 var coffee = require('coffee-script');
 
@@ -45,56 +46,35 @@ exports = module.exports = function (opts) {
         src = opts.filter(src);
     }
     
-    npm.load(function () {
-        // async middleware is hard >_<
-        
-        var included = {};
-        
-        (opts.require || []).concat('es5-shim')
-        .forEach(function npmWrap (name) {
+    var included = {};
+    var pending = 0;
+    
+    (opts.require || []).concat('es5-shim').forEach(function npmWrap (name) {
+        if (!included[name]) {
+            pending ++;
             included[name] = true;
-            
-            // this part mostly lifted from npm/lib/explore.js
-            var nv = name.split('@');
-            var n = nv[0], v = nv[1] || 'active';
-            var dir = path.join(npm.dir, n, v, 'package')
-            
-            fs.stat(dir, function (err, stat) {
-                if (err || !stat.isDirectory()) {
-                    console.error("It doesn't look like "
-                        + name + ' is installed.'
-                    );
+            npmPackage(name, function (err, psrc, deps) {
+                pending --;
+                Object.keys(deps).forEach(npmWrap);
+                if (name === 'es5-shim') {
+                    preSrc += psrc;
                 }
                 else {
-                    var pkg = wrapPackage(name, dir);
-                    pkg.on('package.json', function (json) {
-                        if (typeof json.dependencies === 'object') {
-                            Object.keys(json.dependencies)
-                                .forEach(function (n) {
-                                    if (!included[n]) npmWrap(n);
-                                })
-                            ;
-                        }
-                    });
-                    
-                    pkg.on('module', function (modSrc) {
-                        var minSrc = opts.filter ? opts.filter(modSrc) : modSrc;
-                        if (name === 'es5-shim') {
-                            preSrc += minSrc + '\nrequire("es5-shim");\n';
-                        }
-                        else {
-                            src += minSrc;
-                        }
-                    });
+                    src += psrc;
+                }
+                
+                if (pending === 0 && opts.ready) {
+                    opts.ready();
                 }
             });
-        });
+        }
     });
     
     var modified = new Date();
     var preSrc = (opts.filter || String)(
         wrappers.prelude + wrappers.node_compat
     );
+    
     return function (req, res, next) {
         if (req.url.split('?')[0] === opts.mount) {
             res.writeHead(200, {
@@ -195,16 +175,52 @@ function wrapPackage (name, dir) {
     return em;
 }
 
-var loaded = false;
+var npmLoaded = false;
+exports.npmPackage = npmPackage;
+function npmPackage (name, cb) {
+    if (!npmLoaded) {
+        npm.load(function () {
+            npmLoaded = true;
+            npmPackage(name, cb);
+        });
+        return;
+    }
+    
+    // this part mostly lifted from npm/lib/explore.js
+    var nv = name.split('@');
+    var n = nv[0], v = nv[1] || 'active';
+    var dir = path.join(npm.dir, n, v, 'package')
+    
+    fs.stat(dir, function (err, stat) {
+        if (err || !stat.isDirectory()) {
+            console.error("It doesn't look like "
+                + name + ' is installed.'
+            );
+        }
+        else {
+            var pkg = wrapPackage(name, dir);
+            Seq()
+                .par(function () {
+                    pkg.on('package.json', (function (json) {
+                        var deps = json.dependencies;
+                        this(null, typeof deps === 'object' ? deps : {});
+                    }).bind(this));
+                })
+                .par(function () {
+                    pkg.on('module', this.bind({}, null));
+                })
+                .seq(function (deps, src) {
+                    cb(null, src, deps);
+                })
+                .catch(cb)
+            ;
+        }
+    });
+}
+
 exports.bundle = function (libname, cb) {
     if (libname.match(/^[.\/]/)) {
         
-    }
-    else if (!loaded) {
-        npm.load(function () {
-            loaded = true;
-            exports.bundle(libname, cb);
-        });
     }
     else {
     }
