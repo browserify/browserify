@@ -117,3 +117,28 @@ index.html
         <span style='font-family: monospace' id="result"></span>
     </body>
     </html>
+
+methods
+=======
+
+var browserify = require('browserify');
+
+browserify(opts)
+----------------
+
+Return a middleware that will host up a browserified script at `opts.mount` or
+`"/browserify.js"` if unspecified. All other options are passed to
+`browserify.bundle(opts)` to generate the source.
+
+browserify.bundle(opts)
+-----------------------
+
+Return a string with the bundled source code given the options in `opts`:
+
+* base : recursively bundle all `.js` and `.coffee` files in this directory or
+    Array of directories
+
+* shim : whether to include [es5-shim](https://github.com/kriskowal/es5-shim)
+    for legacy javascript engines; true if unspecified
+
+* require : bundle all of these module names and their dependencies
