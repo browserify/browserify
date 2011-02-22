@@ -2,25 +2,17 @@ var assert = require('assert');
 var connect = require('connect');
 var http = require('http');
 var Script = process.binding('evals').Script;
-var Seq = require('seq');
 
-exports.seq = function () {
+exports.browserSeq = function () {
     var port = 10000 + Math.floor(Math.random() * (Math.pow(2,16) - 10000));
     var server = connect.createServer();
     
-    Seq()
-        .par(function () {
-            server.use(require('browserify')({
-                mount : '/bundle.js',
-                require : [ 'seq' ],
-                ready : this,
-            }));
-        })
-        .par(function () {
-            server.listen(port, this)
-        })
-        .seq(makeRequest)
-    ;
+    server.use(require('browserify')({
+        mount : '/bundle.js',
+        require : [ 'seq' ],
+    }));
+    
+    server.listen(port, makeRequest);
     
     var to = setTimeout(function () {
         assert.fail('server never started');

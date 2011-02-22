@@ -1,8 +1,11 @@
 {
     "name" : "browserify",
-    "version" : "0.0.5",
+    "version" : "0.1.0",
     "description" : "Browser-side require() for js directories and npm modules",
     "main" : "./index.js",
+    "directories: {
+        "example" : "./examples"
+    },
     "repository" : {
         "type" : "git",
         "url" : "http://github.com/substack/node-browserify.git"
@@ -19,10 +22,17 @@
         "es5-shim" : ">=1.0.0",
         "coffee-script" : ">=1.0.0"
     },
+    "devDependencies" : {
+        "expresso" : ">=0.6.0",
+        "seq" : ">=0.1.8"
+    },
     "author" : {
         "name" : "James Halliday",
         "email" : "mail@substack.net",
         "url" : "http://substack.net"
+    },
+    "scripts" : {
+        "test" : "expresso"
     },
     "license" : "MIT/X11",
     "engine" : ["node >=0.4.0"]

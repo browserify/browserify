@@ -2,7 +2,6 @@ var assert = require('assert');
 var connect = require('connect');
 var http = require('http');
 var Script = process.binding('evals').Script;
-var Seq = require('seq');
 
 var foo = require('./simple/foo');
 

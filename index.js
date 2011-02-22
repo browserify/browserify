@@ -60,31 +60,22 @@ exports.wrap = function (libname, opts) {
     if (!opts) opts = {};
     
     if (Array.isArray(libname)) {
-        var reqs = (opts.required || []).concat(libname);
+        var reqs = opts.required || [];
         
         var src = libname.map(function (name) {
-            var lib = exports.wrap(name);
+            var lib = exports.wrap(name, { required : reqs });
+            reqs.push(name);
+            
             var pkg = lib['package.json'];
-            
-            var s = Object.keys(pkg.dependencies || {})
-                .map(function (n) {
-                    var dep = exports.wrap(n, { required : reqs });
-                    reqs.push(n);
-                    
-                    var dpkg = dep['package.json'];
-                    if (dpkg) {
-                        reqs.push.apply(reqs,
-                            Object.keys(dpkg.dependencies || {})
-                        );
-                    }
-                    
-                    return dep.source;
-                })
-                .join('\n')
-            ;
-            
-            return lib.source + '\n' + s;
-            
+            if (pkg && pkg.dependencies) {
+                var deps = Object.keys(pkg.dependencies);
+                var s = exports.wrap(deps, { required : reqs }).source;
+                reqs.push.apply(reqs, deps);
+                return lib.source + '\n' + s;
+            }
+            else {
+                return lib.source;
+            }
         }).join('\n');
         
         return { source : src };
@@ -116,7 +107,10 @@ exports.wrap = function (libname, opts) {
                     return !name.match(/\/package\.json$/)
                 })
                 .map(function (name) {
-                    return exports.wrap(name);
+                    return wrapperBody
+                        .replace('$body', mods[name])
+                        .replace(/\$filename/g, JSON.stringify(name))
+                    ;
                 })
                 .join('\n')
             ,
