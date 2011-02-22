@@ -6,33 +6,10 @@ var coffee = require('coffee-script');
 var source = require('source');
 
 exports = module.exports = function (opts) {
-    if (typeof opts === 'string') {
-        opts = { base : opts };
-        var opts_ = arguments[1];
-        if (typeof opts_ === 'object') {
-            Object.keys(opts_).forEach(function (key) {
-                opts[key] = opts_[key];
-            });
-        }
-    }
-    
-    opts.shim = 'shim' in opts ? opts.shim : true;
+    var modified = new Date();
+    var src = exports.bundle(opts);
     if (!opts.mount) opts.mount = '/browserify.js';
     
-    var src
-        = fs.readFileSync(__dirname + '/wrappers/prelude.js', 'utf8')
-        + fs.readFileSync(__dirname + '/wrappers/node_compat.js', 'utf8')
-        + (opts.shim ? source.modules('es5-shim')['es5-shim'] : '')
-        + wrapperBody
-            .replace('$body',
-                fs.readFileSync(__dirname + '/builtins/events.js', 'utf8')
-            )
-            .replace(/\$filename/g, '"events"')
-        + (opts.require ? exports.wrap(opts.require).source : '')
-        + (opts.base ? exports.wrapDir(opts.base) : '')
-    ;
-    
-    var modified = new Date();
     return function (req, res, next) {
         if (req.url.split('?')[0] === opts.mount) {
             res.writeHead(200, {
@@ -43,16 +20,35 @@ exports = module.exports = function (opts) {
         }
         else next();
     };
-}
+};
 
-var wrappers = [ 'prelude', 'body', 'node_compat' ]
-    .reduce(function (acc, name) {
-        acc[name] = fs.readFileSync(
-            __dirname + '/wrappers/' + name + '.js', 'utf8'
-        );
-        return acc;
-    }, {})
-;
+exports.bundle = function (opts) {
+    if (typeof opts === 'string') {
+        opts = { base : opts };
+        var opts_ = arguments[1];
+        if (typeof opts_ === 'object') {
+            Object.keys(opts_).forEach(function (key) {
+                opts[key] = opts_[key];
+            });
+        }
+    }
+    
+    var shim = 'shim' in opts ? opts.shim : true;
+    var req = opts.require || [];
+    if (!Array.isArray(req)) req = [req];
+    
+    return fs.readFileSync(__dirname + '/wrappers/prelude.js', 'utf8')
+        + fs.readFileSync(__dirname + '/wrappers/node_compat.js', 'utf8')
+        + (shim ? source.modules('es5-shim')['es5-shim'] : '')
+        + wrapperBody
+            .replace('$body',
+                fs.readFileSync(__dirname + '/builtins/events.js', 'utf8')
+            )
+            .replace(/\$filename/g, '"events"')
+        + (req.length ? exports.wrap(req).source : '')
+        + (opts.base ? exports.wrapDir(opts.base) : '')
+    ;
+};
 
 var wrapperBody = fs.readFileSync(__dirname + '/wrappers/body.js', 'utf8');
 
