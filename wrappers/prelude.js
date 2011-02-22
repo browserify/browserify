@@ -1,10 +1,10 @@
 function require (path) {
     // not EXACTLY like how node does it but more appropriate for the browser
-    var mod = [
-        require.modules[path],
-        require.modules[path + '.js'],
-        require.modules[path + '/index.js'],
-    ].filter(Boolean)[0];
+    var mod
+        = require.modules[path]
+        || require.modules[path + '.js']
+        || require.modules[path + '/index.js']
+    ;
     
     if (!mod) throw new Error("Cannot find module '" + path + "'");
     return mod._cached ? mod._cached : mod();

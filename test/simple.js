@@ -10,19 +10,11 @@ exports.simple = function () {
     var port = 10000 + Math.floor(Math.random() * (Math.pow(2,16) - 10000));
     var server = connect.createServer();
     
-    Seq()
-        .par(function () {
-            server.use(require('browserify')({
-                base : __dirname + '/simple',
-                mount : '/bundle.js',
-                ready : this,
-            }));
-        })
-        .par(function () {
-            server.listen(port, this);
-        })
-        .seq(makeRequest)
-    ;
+    server.use(require('browserify')({
+        base : __dirname + '/simple',
+        mount : '/bundle.js',
+    }));
+    server.listen(port, makeRequest);
     
     var to = setTimeout(function () {
         assert.fail('server never started');
