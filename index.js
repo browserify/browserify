@@ -53,6 +53,7 @@ exports.bundle = function (opts) {
 var wrapperBody = fs.readFileSync(__dirname + '/wrappers/body.js', 'utf8');
 
 exports.wrap = function (libname, opts) {
+console.dir([ libname, opts ]);
     if (!opts) opts = {};
     
     if (Array.isArray(libname)) {
