@@ -142,3 +142,11 @@ Return a string with the bundled source code given the options in `opts`:
     for legacy javascript engines; true if unspecified
 
 * require : bundle all of these module names and their dependencies
+
+compatability
+=============
+
+Browserify exports a faux `process` object with these attributes:
+
+* nextTick(fn) - does setTimeout(fn, 0)
+* version - set to 'browser' for browser code

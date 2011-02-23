@@ -1,5 +1,6 @@
-if (typeof process === 'undefined') process = {};
-
-if (!process.nextTick) process.nextTick = function (fn) {
-    setTimeout(fn, 0);
+if (typeof process === 'undefined') process = {
+    nextTick : function (fn) {
+        setTimeout(fn, 0);
+    },
+    version : 'browser'
 };
