@@ -10,7 +10,7 @@ exports.jade = function () {
     assert.ok(typeof src === 'string');
     assert.ok(src.length > 0);
     
-    var c = {};
+    var c = { console : console };
     Script.runInNewContext(src, c);
     var j = Script.runInNewContext('require("jade")', c);
     assert.eql(
