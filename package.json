@@ -24,7 +24,8 @@
     },
     "devDependencies" : {
         "expresso" : ">=0.6.0",
-        "seq" : ">=0.1.8"
+        "seq" : ">=0.1.8",
+        "backbone" : ">=0.3.3"
     },
     "author" : {
         "name" : "James Halliday",

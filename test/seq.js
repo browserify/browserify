@@ -3,7 +3,7 @@ var connect = require('connect');
 var http = require('http');
 var Script = process.binding('evals').Script;
 
-exports.browserSeq = function () {
+exports.seq = function () {
     var port = 10000 + Math.floor(Math.random() * (Math.pow(2,16) - 10000));
     var server = connect.createServer();
     

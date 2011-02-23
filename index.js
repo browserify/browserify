@@ -104,7 +104,7 @@ exports.wrap = function (libname, opts) {
                 })
                 .map(function (name) {
                     return wrapperBody
-                        .replace('$body', mods[name])
+                        .replace('$body', mods[name].toString())
                         .replace(/\$filename/g, JSON.stringify(name))
                     ;
                 })
