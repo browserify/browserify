@@ -3,6 +3,7 @@ function require (path) {
     var mod
         = require.modules[path]
         || require.modules[path + '.js']
+        || require.modules[path + '/index']
         || require.modules[path + '/index.js']
     ;
     

@@ -16,5 +16,5 @@ exports.dollar = function () {
         + '$(100)'
         , c
     );
-    console.log(res);
+    assert.eql(res, 10000);
 };
