@@ -9,17 +9,12 @@ exports.backbone = function () {
     });
     assert.ok(typeof src === 'string');
     assert.ok(src.length > 0);
-console.log(src);
     
     var c = {};
     Script.runInNewContext(src, c);
-    console.dir(c);
-    /*
-    var res = Script.runInNewContext(
-        'var $ = require("./dollar");'
-        + '$(100)'
-        , c
+    var b = Script.runInNewContext('require("backbone")', c);
+    assert.eql(
+        Object.keys(backbone),
+        Object.keys(b)
     );
-    assert.eql(res, 10000);
-    */
 };

@@ -41,9 +41,11 @@ exports.bundle = function (opts) {
         + fs.readFileSync(__dirname + '/wrappers/node_compat.js', 'utf8')
         + (shim ? source.modules('es5-shim')['es5-shim'] : '')
         + wrapperBody
-            .replace('$body',
-                fs.readFileSync(__dirname + '/builtins/events.js', 'utf8')
-            )
+            .replace('$body', function () {
+                return fs.readFileSync(
+                    __dirname + '/builtins/events.js', 'utf8'
+                )
+            })
             .replace(/\$filename/g, '"events"')
         + (req.length ? exports.wrap(req).source : '')
         + (opts.base ? exports.wrapDir(opts.base) : '')
@@ -87,8 +89,10 @@ exports.wrap = function (libname, opts) {
         
         return {
             source : wrapperBody
-                .replace('$body', body)
-                .replace(/\$filename/g, JSON.stringify(libname))
+                .replace('$body', function () { return body })
+                .replace(/\$filename/g, function () {
+                    return JSON.stringify(libname)
+                })
             ,
         };
     }
@@ -104,8 +108,12 @@ exports.wrap = function (libname, opts) {
                 })
                 .map(function (name) {
                     return wrapperBody
-                        .replace('$body', mods[name].toString())
-                        .replace(/\$filename/g, JSON.stringify(name))
+                        .replace('$body', function () {
+                            return mods[name].toString()
+                        })
+                        .replace(/\$filename/g, function () {
+                            return JSON.stringify(name)
+                        })
                     ;
                 })
                 .join('\n')
