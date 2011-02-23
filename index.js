@@ -131,6 +131,7 @@ exports.wrapDir = function (base) {
         return find.sync(base)
             .filter(function (file) {
                 return file.match(/\.(?:js|coffee)$/)
+                    && !path.basename(file).match(/^\./)
             })
             .map(function (file) {
                 return exports.wrap(

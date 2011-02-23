@@ -19,7 +19,7 @@
     ],
     "dependencies" : {
         "findit" : ">=0.0.1",
-        "source" : ">=0.0.1",
+        "source" : ">=0.0.3",
         "es5-shim" : ">=1.0.0",
         "coffee-script" : ">=1.0.0"
     },
