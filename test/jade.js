@@ -10,11 +10,20 @@ exports.jade = function () {
     assert.ok(typeof src === 'string');
     assert.ok(src.length > 0);
     
-    var c = { console : console };
+    var c = {};
     Script.runInNewContext(src, c);
-    var j = Script.runInNewContext('require("jade")', c);
+    var j = Script.runInNewContext('var jade = require("jade"); jade', c);
     assert.eql(
         Object.keys(jade),
         Object.keys(j)
+    );
+    
+    var r = jade.render('div #{x}\n  span moo', { locals : { x : 42 } });
+    assert.eql(r, '<div>42<span>moo</span></div>');
+    assert.eql(
+        Script.runInNewContext(
+            'jade.render(\'div #{x}\\n  span moo\', { locals : { x : 42 } })',
+            c
+        ), r
     );
 };
