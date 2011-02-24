@@ -40,19 +40,32 @@ exports.bundle = function (opts) {
     return fs.readFileSync(__dirname + '/wrappers/prelude.js', 'utf8')
         + fs.readFileSync(__dirname + '/wrappers/node_compat.js', 'utf8')
         + (shim ? source.modules('es5-shim')['es5-shim'] : '')
-        + wrapperBody
-            .replace('$body', function () {
-                return fs.readFileSync(
-                    __dirname + '/builtins/events.js', 'utf8'
-                )
-            })
-            .replace(/\$filename/g, '"events"')
+        + builtins
         + (req.length ? exports.wrap(req).source : '')
         + (opts.base ? exports.wrapDir(opts.base) : '')
     ;
 };
 
 var wrapperBody = fs.readFileSync(__dirname + '/wrappers/body.js', 'utf8');
+
+var builtins = fs.readdirSync(__dirname + '/builtins')
+    .filter(function (file) {
+        return file.match(/\.js$/)
+            && !path.basename(file).match(/^\./)
+    })
+    .map(function (file) {
+        var f = __dirname + '/builtins/' + file;
+        return wrapperBody
+            .replace('$body', function () {
+                return fs.readFileSync(f, 'utf8');
+            })
+            .replace(/\$filename/g, function () {
+                return JSON.stringify(file.replace(/\.js$/,''));
+            })
+        ;
+    })
+    .join('\n')
+;
 
 exports.wrap = function (libname, opts) {
     if (!opts) opts = {};
