@@ -109,6 +109,18 @@ exports.wrap = function (libname, opts) {
             ,
         };
     }
+    else if (libname.match(/\//)) {
+        var body = fs.readFileSync(require.resolve(libname), 'utf8');
+        var src = wrapperBody
+            .replace('$body', function () {
+                return body
+            })
+            .replace(/\$filename/g, function () {
+                return JSON.stringify(libname)
+            })
+        ;
+        return { source : src };
+    }
     else {
         var mods = source.modules(libname);
         var pkg = mods[libname + '/package.json'];
