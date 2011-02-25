@@ -149,4 +149,4 @@ compatability
 Browserify exports a faux `process` object with these attributes:
 
 * nextTick(fn) - does setTimeout(fn, 0)
-* version - set to 'browser' for browser code
+* title - set to 'browser' for browser code, 'node' in regular node code
