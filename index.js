@@ -167,8 +167,25 @@ exports.wrapDir = function (base, opts) {
         }).join('\n');
     }
     else {
-        var files = find.sync(base);
-        var pkg = files[base + '/package.json'];
+        var pkg = path.existsSync(base + '/package.json')
+            ? JSON.parse(fs.readFileSync(base + '/package.json', 'utf8'))
+            : {}
+        ;
+        function params (key) {
+            return opts[key]
+                || (pkg.browserify && pkg.browserify[key])
+                || pkg[key]
+        }
+        
+        var main = params('main');
+        
+        if (main && typeof pkg.browserify === 'object'
+        && !pkg.browserify.base) {
+            var files = [ base + '/' + main ];
+        }
+        else {
+            var files = find.sync(base);
+        }
         
         return files
             .filter(function (file) {
@@ -176,16 +193,16 @@ exports.wrapDir = function (base, opts) {
                     && !path.basename(file).match(/^\./)
             })
             .map(function (file) {
-                var libname = '.' + unext(file.slice(base.length));
-                var pkgname = opts.main
-                    && (unext(opts.main) === file
-                        || unext(opts.main) === libname)
-                    ? '.' : libname
-                ;
+                var libname = unext(file.slice(base.length + 1));
+                if (!libname.match(/^\.\//)) libname = './' + libname;
+                
+                var pkgname = main && (
+                    unext(main) === file || unext(main) === libname
+                ) ? '.' : libname;
                 
                 return exports.wrap(pkgname, {
                     filename : file,
-                    name : opts.name,
+                    name : params('name'),
                 }).source;
             })
             .join('\n')

@@ -1,0 +1,1 @@
+exports.doom = 555;
