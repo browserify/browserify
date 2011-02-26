@@ -99,8 +99,10 @@ exports.wrap = function (libname, opts) {
             ? coffee.compile(src) : src;
         
         var pkgname = ((opts.name ? opts.name + '/' : '') + libname)
-            .replace(/\/\.\//g, '/');
-
+            .replace(/\/\.\//g, '/')
+            .replace(/\/\.$/, '')
+        ;
+        
         return {
             source : wrapperBody
                 .replace('$body', function () { return body })
@@ -114,7 +116,10 @@ exports.wrap = function (libname, opts) {
     else if (libname.match(/\//)) {
         var body = fs.readFileSync(require.resolve(libname), 'utf8');
         var pkgname = ((opts.name ? opts.name + '/' : '') + libname)
-            .replace(/\/\.\//g, '/');
+            .replace(/\/\.\//g, '/')
+            .replace(/\/\.$/, '')
+        ;
+        
         var src = wrapperBody
             .replace('$body', function () {
                 return body
@@ -171,9 +176,14 @@ exports.wrapDir = function (base, opts) {
                     && !path.basename(file).match(/^\./)
             })
             .map(function (file) {
-                var libname = file.slice(base.length)
-                    .replace(/\.(?:js|coffee)$/,'');
-                return exports.wrap('.' + libname, {
+                var libname = '.' + unext(file.slice(base.length));
+                var pkgname = opts.main
+                    && (unext(opts.main) === file
+                        || unext(opts.main) === libname)
+                    ? '.' : libname
+                ;
+                
+                return exports.wrap(pkgname, {
                     filename : file,
                     name : opts.name,
                 }).source;
@@ -182,3 +192,7 @@ exports.wrapDir = function (base, opts) {
         ;
     }
 };
+
+function unext (s) {
+    return s.replace(/\.(?:js|coffee)$/,'');
+}

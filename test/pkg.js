@@ -28,3 +28,19 @@ exports.namedA = function () {
         333
     );
 };
+
+exports.namedMainA = function () {
+    var src = browserify.bundle({
+        name : 'wowsy',
+        main : './moo.js',
+        base : __dirname + '/pkg/a',
+    });
+    
+    var c = {};
+    Script.runInNewContext(src, c);
+    
+    assert.eql(
+        Script.runInNewContext('require("wowsy").zzz(3)', c),
+        333
+    );
+};
