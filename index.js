@@ -103,6 +103,8 @@ exports.wrap = function (libname, opts) {
             .replace(/\/\.$/, '')
         ;
         
+        if (opts.pkgname) pkgname = opts.pkgname;
+        
         return {
             source : wrapperBody
                 .replace('$body', function () { return body })
@@ -120,6 +122,8 @@ exports.wrap = function (libname, opts) {
             .replace(/\/\.$/, '')
         ;
         
+        if (opts.pkgname) pkgname = opts.pkgname;
+        
         var src = wrapperBody
             .replace('$body', function () {
                 return body
@@ -134,9 +138,29 @@ exports.wrap = function (libname, opts) {
         var mods = source.modules(libname);
         var pkg = mods[libname + '/package.json'];
         
+        if (pkg.browserify && pkg.browserify.main) {
+            var main = (libname + '/' + pkg.browserify.main)
+                .replace(/\/\.\//g, '/');
+            var p = pkg.browserify;
+            p.filename = require.resolve(main);
+            p.name = libname;
+            p.pkgname = libname;
+            
+            return {
+                'package.json' : pkg,
+                dependencies : pkg.browserify.require || [],
+                source : exports.wrap(main, p).source,
+            };
+        }
+        
         return {
             'package.json' : pkg,
-            dependencies : Object.keys(pkg.dependencies || {}),
+            dependencies :
+                typeof pkg.browserify === 'object'
+                && (pkg.browserify.main || pkg.browserify.require)
+                    ? pkg.browserify.require || []
+                    : Object.keys(pkg.dependencies || {})
+            ,
             source : Object.keys(mods)
                 .filter(function (name) {
                     return !name.match(/\/package\.json$/)
