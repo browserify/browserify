@@ -41,8 +41,8 @@ exports.bundle = function (opts) {
         + fs.readFileSync(__dirname + '/wrappers/node_compat.js', 'utf8')
         + (shim ? source.modules('es5-shim')['es5-shim'] : '')
         + builtins
-        + (req.length ? exports.wrap(req).source : '')
-        + (opts.base ? exports.wrapDir(opts.base) : '')
+        + (req.length ? exports.wrap(req, { name : opts.name }).source : '')
+        + (opts.base ? exports.wrapDir(opts.base, opts.name) : '')
     ;
 };
 
@@ -69,6 +69,7 @@ var builtins = fs.readdirSync(__dirname + '/builtins')
 
 exports.wrap = function (libname, opts) {
     if (!opts) opts = {};
+    if (!opts.filename) opts.filename = libname;
     
     if (Array.isArray(libname)) {
         var reqs = opts.required || [];
@@ -77,49 +78,52 @@ exports.wrap = function (libname, opts) {
             var lib = exports.wrap(name, { required : reqs });
             reqs.push(name);
             
-            var pkg = lib['package.json'];
-            if (pkg && pkg.dependencies) {
-                var deps = Object.keys(pkg.dependencies);
-                var s = exports.wrap(deps, { required : reqs }).source;
-                reqs.push.apply(reqs, deps);
-                return lib.source + '\n' + s;
+            if (lib.dependencies.length) {
+                var deps = exports.wrap(lib.dependencies, { required : reqs });
+                reqs.push.apply(reqs, lib.dependencies);
+                return lib.source + '\n' + deps.source;
             }
             else {
                 return lib.source;
             }
         }).join('\n');
         
-        return { source : src };
+        return { source : src, dependencies : [] };
     }
     else if (opts.required && opts.required.indexOf(libname) >= 0) {
-        return { source : '' };
+        return { source : '', dependencies : [] };
     }
     else if (libname.match(/^[.\/]/)) {
-        var src = fs.readFileSync(opts.filename || libname, 'utf8');
-        var body = (opts.filename || libname).match(/\.coffee$/)
-            ? coffee.compile(src) : src
-        ;
+        var src = fs.readFileSync(opts.filename, 'utf8');
+        var body = opts.filename.match(/\.coffee$/)
+            ? coffee.compile(src) : src;
         
+        var pkgname = ((opts.name ? opts.name + '/' : '') + libname)
+            .replace(/\/\.\//g, '/');
+
         return {
             source : wrapperBody
                 .replace('$body', function () { return body })
                 .replace(/\$filename/g, function () {
-                    return JSON.stringify(libname)
+                    return JSON.stringify(pkgname);
                 })
             ,
+            dependencies : [],
         };
     }
     else if (libname.match(/\//)) {
         var body = fs.readFileSync(require.resolve(libname), 'utf8');
+        var pkgname = ((opts.name ? opts.name + '/' : '') + libname)
+            .replace(/\/\.\//g, '/');
         var src = wrapperBody
             .replace('$body', function () {
                 return body
             })
             .replace(/\$filename/g, function () {
-                return JSON.stringify(libname)
+                return JSON.stringify(pkgname)
             })
         ;
-        return { source : src };
+        return { source : src, dependencies : [] };
     }
     else {
         var mods = source.modules(libname);
@@ -127,6 +131,7 @@ exports.wrap = function (libname, opts) {
         
         return {
             'package.json' : pkg,
+            dependencies : Object.keys(pkg.dependencies || {}),
             source : Object.keys(mods)
                 .filter(function (name) {
                     return !name.match(/\/package\.json$/)
@@ -148,22 +153,28 @@ exports.wrap = function (libname, opts) {
 };
 
 var find = require('findit');
-exports.wrapDir = function (base) {
+exports.wrapDir = function (base, name) {
     if (Array.isArray(base)) {
-        return base.map(exports.wrapDir).join('\n');
+        return base.map(function (file) {
+            exports.wrapDir(file, name)
+        }).join('\n');
     }
     else {
-        return find.sync(base)
+        var files = find.sync(base);
+        var pkg = files[base + '/package.json'];
+        
+        return files
             .filter(function (file) {
                 return file.match(/\.(?:js|coffee)$/)
                     && !path.basename(file).match(/^\./)
             })
             .map(function (file) {
-                return exports.wrap(
-                    '.' + file.slice(base.length)
-                        .replace(/\.(?:js|coffee)$/,'')
-                    , { filename : file }
-                ).source;
+                var libname = file.slice(base.length)
+                    .replace(/\.(?:js|coffee)$/,'');
+                return exports.wrap('.' + libname, {
+                    filename : file,
+                    name : name,
+                }).source;
             })
             .join('\n')
         ;
