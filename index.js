@@ -187,7 +187,10 @@ exports.wrapDir = function (base, opts) {
             var files = find.sync(base);
         }
         
-        return files
+        var depSrc = pkg.browserify && pkg.browserify.require
+            ? exports.wrap(pkg.browserify.require).source : '';
+        
+        return depSrc + files
             .filter(function (file) {
                 return file.match(/\.(?:js|coffee)$/)
                     && !path.basename(file).match(/^\./)

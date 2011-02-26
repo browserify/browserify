@@ -110,4 +110,6 @@ exports.bundleC = function () {
             .filter(function (name) { return name.match(/doom/) })
         , [ 'doom' ]
     );
+    
+    assert.ok(!c.require.modules['seq']);
 };

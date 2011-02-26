@@ -6,9 +6,6 @@ Browser-side require() for your node modules and npm packages
 Browserify bundles all of your javascript when your server fires up at the mount
 point you specify.
 
-Browserify does not use xhr, ajax loading, script tag injection, or any of that
-noise.
-
 More features:
 
 * recursively bundle dependencies of npm modules

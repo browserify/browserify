@@ -7,9 +7,6 @@
         "seq" : ">=0.1.7"
     },
     "browserify" : {
-        "main" : "./doom-browser.js",
-        "dependencies" : {
-            "seq" : "*"
-        }
+        "main" : "./doom-browser.js"
     }
 }
