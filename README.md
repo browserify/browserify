@@ -3,8 +3,11 @@ Browserify
 
 Browser-side require() for your node modules and npm packages
 
-Browserify bundles everything ahead-of-time at the mount point you specify.
-None of this ajaxy module loading business.
+Browserify bundles all of your javascript when your server fires up at the mount
+point you specify.
+
+Browserify does not use xhr, ajax loading, script tag injection, or any of that
+noise.
 
 More features:
 
@@ -15,6 +18,9 @@ More features:
 * filters for {min,ugl}ification
 
 * coffee script works too!
+
+* bundle browser source components of modules specially with the "browserify"
+    package.json field
 
 examples
 ========
@@ -130,18 +136,41 @@ Return a middleware that will host up a browserified script at `opts.mount` or
 `"/browserify.js"` if unspecified. All other options are passed to
 `browserify.bundle(opts)` to generate the source.
 
+browserify.bundle(base)
+-----------------------
 browserify.bundle(opts)
 -----------------------
 
 Return a string with the bundled source code given the options in `opts`:
 
 * base : recursively bundle all `.js` and `.coffee` files in this directory or
-    Array of directories
+    Array of directories. If there is a package.json at `base`, it will be read
+    according to the procedure below.
+
+* name : preface the files in `base` with this name
+
+* main : map `require(name)` for the `name` field to this file
 
 * shim : whether to include [es5-shim](https://github.com/kriskowal/es5-shim)
     for legacy javascript engines; true if unspecified
 
-* require : bundle all of these module names and their dependencies
+* require : bundle all of these module names and their dependencies.
+    If the name has a slash in it, only that file will be included, otherwise
+    all .js and .coffee files which are not in the test directory and are not
+    binaries will be bundled into the final output.
+
+package.json
+============
+
+During bundling the package.json of a module or base directory will be read for
+its `name` and `main` fields, which will be used unless those fields are defined
+in `opts`.
+
+If the package.json has a "browserify" field, its contents will take precedence
+over the standard package.json contents. This special field is meant for
+packages that have a special browser-side component like dnode and socket.io.
+If a main is specified in a "browserify" hash and no "base" is given, only that
+"main" file will be bundled.
 
 compatability
 =============
