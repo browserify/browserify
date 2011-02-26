@@ -41,8 +41,8 @@ exports.bundle = function (opts) {
         + fs.readFileSync(__dirname + '/wrappers/node_compat.js', 'utf8')
         + (shim ? source.modules('es5-shim')['es5-shim'] : '')
         + builtins
-        + (req.length ? exports.wrap(req, { name : opts.name }).source : '')
-        + (opts.base ? exports.wrapDir(opts.base, opts.name) : '')
+        + (req.length ? exports.wrap(req, opts).source : '')
+        + (opts.base ? exports.wrapDir(opts.base, opts) : '')
     ;
 };
 
@@ -153,10 +153,12 @@ exports.wrap = function (libname, opts) {
 };
 
 var find = require('findit');
-exports.wrapDir = function (base, name) {
+exports.wrapDir = function (base, opts) {
+    if (!opts) opts = {};
+    
     if (Array.isArray(base)) {
         return base.map(function (file) {
-            exports.wrapDir(file, name)
+            exports.wrapDir(file, opts)
         }).join('\n');
     }
     else {
@@ -173,7 +175,7 @@ exports.wrapDir = function (base, name) {
                     .replace(/\.(?:js|coffee)$/,'');
                 return exports.wrap('.' + libname, {
                     filename : file,
-                    name : name,
+                    name : opts.name,
                 }).source;
             })
             .join('\n')
