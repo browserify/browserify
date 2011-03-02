@@ -37,13 +37,14 @@ exports.bundle = function (opts) {
     var req = opts.require || [];
     if (!Array.isArray(req)) req = [req];
     
-    return fs.readFileSync(__dirname + '/wrappers/prelude.js', 'utf8')
+    var src = fs.readFileSync(__dirname + '/wrappers/prelude.js', 'utf8')
         + fs.readFileSync(__dirname + '/wrappers/node_compat.js', 'utf8')
         + (shim ? source.modules('es5-shim')['es5-shim'] : '')
         + builtins
         + (req.length ? exports.wrap(req, opts).source : '')
         + (opts.base ? exports.wrapDir(opts.base, opts) : '')
     ;
+    return opts.filter ? opts.filter(src) : src;
 };
 
 var wrapperBody = fs.readFileSync(__dirname + '/wrappers/body.js', 'utf8');
