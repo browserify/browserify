@@ -56,9 +56,11 @@ var builtins = fs.readdirSync(__dirname + '/builtins')
     })
     .map(function (file) {
         var f = __dirname + '/builtins/' + file;
+        var src = fs.readFileSync(f, 'utf8').replace(/^#![^\n]*\n/, '');
+        
         return wrapperBody
             .replace('$body', function () {
-                return fs.readFileSync(f, 'utf8');
+                return src;
             })
             .replace(/\$filename/g, function () {
                 return JSON.stringify(file.replace(/\.js$/,''));
@@ -108,7 +110,9 @@ exports.wrap = function (libname, opts) {
         
         return {
             source : wrapperBody
-                .replace('$body', function () { return body })
+                .replace('$body', function () {
+                    return body.replace(/^#![^\n]*\n/, '');
+                })
                 .replace(/\$filename/g, function () {
                     return JSON.stringify(pkgname);
                 })
@@ -118,6 +122,7 @@ exports.wrap = function (libname, opts) {
     }
     else if (libname.match(/\//)) {
         var body = fs.readFileSync(require.resolve(libname), 'utf8');
+        
         var pkgname = ((opts.name ? opts.name + '/' : '') + libname)
             .replace(/\/\.\//g, '/')
             .replace(/\/\.$/, '')
@@ -127,7 +132,7 @@ exports.wrap = function (libname, opts) {
         
         var src = wrapperBody
             .replace('$body', function () {
-                return body
+                return body.replace(/^#![^\n]*\n/, '');
             })
             .replace(/\$filename/g, function () {
                 return JSON.stringify(pkgname)
@@ -167,9 +172,10 @@ exports.wrap = function (libname, opts) {
                     return !name.match(/\/package\.json$/)
                 })
                 .map(function (name) {
+                    var src = mods[name].toString().replace(/^#![^\n]*\n/, '');
                     return wrapperBody
                         .replace('$body', function () {
-                            return mods[name].toString()
+                            return src;
                         })
                         .replace(/\$filename/g, function () {
                             return JSON.stringify(name)
