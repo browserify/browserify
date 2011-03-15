@@ -1,6 +1,6 @@
 {
     "name" : "browserify",
-    "version" : "0.2.3",
+    "version" : "0.2.4",
     "description" : "Browser-side require() for js directories and npm modules",
     "main" : "./index.js",
     "directories" : {
@@ -24,8 +24,9 @@
         "coffee-script" : ">=1.0.0"
     },
     "devDependencies" : {
-        "expresso" : ">=0.6.0",
+        "connect" : ">=1.0.0",
         "seq" : ">=0.1.8",
+        "traverse" : ">=0.3.1",
         "backbone" : ">=0.3.3"
     },
     "author" : {
