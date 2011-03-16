@@ -32,10 +32,15 @@ require.resolve = function (basefile, file) {
         basedir = '.';
     }
     
-    var norm = file.replace(/[^\/]+\/\.\./g).replace(/\/+/g,'/');
+    /**
+     * Normalize file path.
+     */
+    var norm, r1 = /[^\/.]+\/\.\./g, r2 = /\/{2,}/g;
+    for(norm = file; norm.match(r1) != null || norm.match(r2) != null; norm = norm.replace(r1,'').replace(r2,'/'));
+    
     while (norm.match(/^\.\.\//)) {
         norm = norm.replace(/^\.\.\//, '');
-        basedir = basedir.replace(/^[^\/]+$/, '');
+        basedir = basedir.replace(/[^\/]+\/$/, '');
         if (basedir === '') throw new Error("Couldn't resolve path"
             + "'" + file + "' with respect to filename '" + basefile + "': "
             + "file can't resolve past base"
