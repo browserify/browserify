@@ -16,8 +16,23 @@ exports.resolve = function () {
         resolve('/foo/bar/baz/quux.js', '../../here'),
         '/foo/here'
     );
+    
     assert.eql(
         resolve('/foo/bar/baz/quux.js', './a/b/../../here'),
         '/foo/bar/baz/here'
+    );
+    
+    assert.throws(function () {
+        console.log(resolve('/foo/bar/baz/quux.js', '../../../../moo'));
+    });
+    
+    assert.eql(
+        resolve('/foo/bar/baz/quux.js', '../../../moo'),
+        '/moo'
+    );
+    
+    assert.eql(
+        resolve('/foo/bar/baz/quux.js', '/moo'),
+        '/moo'
     );
 };

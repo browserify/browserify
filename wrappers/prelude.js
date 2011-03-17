@@ -23,6 +23,7 @@ require.fromFile = function (filename, path) {
 
 require.resolve = function (basefile, file) {
     if (!file.match(/^[\.\/]/)) return file;
+    if (file.match(/^\//)) return file;
     
     var basedir = basefile.match(/^[\.\/]/)
         ? basefile.replace(/[^\/]+$/, '')
@@ -42,12 +43,14 @@ require.resolve = function (basefile, file) {
     );
     
     while (norm.match(/^\.\.\//)) {
+        if (basedir === '/' || basedir === '') {
+            throw new Error("Couldn't resolve path"
+                + "'" + file + "' with respect to filename '" + basefile + "': "
+                + "file can't resolve past base"
+            );
+        }
         norm = norm.replace(/^\.\.\//, '');
         basedir = basedir.replace(/[^\/]+\/$/, '');
-        if (basedir === '') throw new Error("Couldn't resolve path"
-            + "'" + file + "' with respect to filename '" + basefile + "': "
-            + "file can't resolve past base"
-        );
     }
     
     var n = basedir.match(/\//)
