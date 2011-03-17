@@ -13,11 +13,11 @@ var resolve = context.require.resolve;
 
 exports.resolve = function () {
     assert.eql(
-        resolve('/foo/bar/baz', '../../here'),
+        resolve('/foo/bar/baz/quux.js', '../../here'),
         '/foo/here'
     );
     assert.eql(
-        resolve('/foo/bar/baz', './a/b/../../here'),
+        resolve('/foo/bar/baz/quux.js', './a/b/../../here'),
         '/foo/bar/baz/here'
     );
 };

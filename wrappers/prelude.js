@@ -32,11 +32,14 @@ require.resolve = function (basefile, file) {
         basedir = '.';
     }
     
-    /**
-     * Normalize file path.
-     */
-    var norm, r1 = /[^\/.]+\/\.\./g, r2 = /\/{2,}/g;
-    for(norm = file; norm.match(r1) != null || norm.match(r2) != null; norm = norm.replace(r1,'').replace(r2,'/'));
+    // normalize file path.
+    var r1 = /[^\/.]+\/\.\./g;
+    var r2 = /\/{2,}/g;
+    for(
+        var norm = file;
+        norm.match(r1) != null || norm.match(r2) != null;
+        norm = norm.replace(r1, '').replace(r2, '/')
+    );
     
     while (norm.match(/^\.\.\//)) {
         norm = norm.replace(/^\.\.\//, '');
