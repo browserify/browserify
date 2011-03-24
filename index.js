@@ -33,6 +33,21 @@ exports.bundle = function (opts) {
         }
     }
     
+    if (opts.base && !opts.base.match(/^\//)) {
+        // relative path
+        if (opts.name) {
+            opts.base = path.dirname(require.resolve(opts.name))
+                + '/' + opts.base;
+        }
+        else {
+            opts.base = __dirname + '/' + opts.base;
+        }
+    }
+    
+    if (opts.main && !opts.main.match(/^\//)) {
+        opts.main = opts.base + '/' + opts.main;
+    }
+    
     var shim = 'shim' in opts ? opts.shim : true;
     var req = opts.require || [];
     if (!Array.isArray(req)) req = [req];
@@ -144,47 +159,40 @@ exports.wrap = function (libname, opts) {
         var mods = source.modules(libname);
         var pkg = mods[libname + '/package.json'];
         
-        if (pkg.browserify && pkg.browserify.main) {
-            var main = (libname + '/' + pkg.browserify.main)
-                .replace(/\/\.\//g, '/');
-            var p = pkg.browserify;
-            p.filename = require.resolve(main);
-            p.name = libname;
-            p.pkgname = libname;
-            
-            return {
+        return pkg.browserify
+            ? {
                 'package.json' : pkg,
                 dependencies : pkg.browserify.require || [],
-                source : exports.wrap(main, p).source,
-            };
-        }
-        
-        return {
-            'package.json' : pkg,
-            dependencies :
-                typeof pkg.browserify === 'object'
-                && (pkg.browserify.main || pkg.browserify.require)
-                    ? pkg.browserify.require || []
-                    : Object.keys(pkg.dependencies || {})
-            ,
-            source : Object.keys(mods)
-                .filter(function (name) {
-                    return !name.match(/\/package\.json$/)
-                })
-                .map(function (name) {
-                    var src = mods[name].toString().replace(/^#![^\n]*\n/, '');
-                    return wrapperBody
-                        .replace('$body', function () {
-                            return src;
-                        })
-                        .replace(/\$filename/g, function () {
-                            return JSON.stringify(name)
-                        })
-                    ;
-                })
-                .join('\n')
-            ,
-        };
+                source : exports.bundle(pkg.browserify),
+            }
+            : {
+                'package.json' : pkg,
+                dependencies :
+                    typeof pkg.browserify === 'object'
+                    && (pkg.browserify.main || pkg.browserify.require)
+                        ? pkg.browserify.require || []
+                        : Object.keys(pkg.dependencies || {})
+                ,
+                source : Object.keys(mods)
+                    .filter(function (name) {
+                        return !name.match(/\/package\.json$/)
+                    })
+                    .map(function (name) {
+                        var src = mods[name].toString()
+                            .replace(/^#![^\n]*\n/, '');
+                        return wrapperBody
+                            .replace('$body', function () {
+                                return src;
+                            })
+                            .replace(/\$filename/g, function () {
+                                return JSON.stringify(name)
+                            })
+                        ;
+                    })
+                    .join('\n')
+                ,
+            }
+        ;
     }
 };
 
