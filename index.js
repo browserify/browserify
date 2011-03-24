@@ -74,6 +74,21 @@ exports.wrap = function (libname, opts) {
     if (!opts) opts = {};
     if (!opts.filename) opts.filename = libname;
     
+    if (opts.base && !opts.base.match(/^\//)) {
+        // relative path
+        if (opts.name) {
+            opts.base = path.dirname(require.resolve(opts.name))
+                + '/' + opts.base;
+        }
+        else {
+            opts.base = __dirname + '/' + opts.base;
+        }
+    }
+    
+    if (opts.main && !opts.main.match(/^\//)) {
+        opts.main = opts.base + '/' + opts.main;
+    }
+    
     if (Array.isArray(libname)) {
         var reqs = opts.required || [];
         
@@ -149,13 +164,23 @@ exports.wrap = function (libname, opts) {
                 .replace(/\/\.\//g, '/');
             var p = pkg.browserify;
             p.filename = require.resolve(main);
-            p.name = libname;
-            p.pkgname = libname;
+            p.name = p.name || libname;
+            p.pkgname = p.pkgname || libname;
+            
+            if (p.base && !p.base.match(/^\//)) {
+                p.base = (
+                    path.dirname(require.resolve(libname + '/package.json'))
+                    + '/' + p.base
+                ).replace(/\/\.\//g, '/');
+            }
             
             return {
                 'package.json' : pkg,
                 dependencies : pkg.browserify.require || [],
-                source : exports.wrap(main, p).source,
+                source : p.base
+                    ? exports.wrapDir(p.base, p)
+                    : exports.wrap(main, p).source
+                ,
             };
         }
         
