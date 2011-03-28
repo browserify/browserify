@@ -207,3 +207,9 @@ path
 
 The posix functions from the `path` module have been included except for
 `exists()` and `existsSync()`. Just `require('path')`!
+
+protips
+=======
+
+* `npm install jquery-browserify` to have npm and browserify handle your jquery
+deployment!
