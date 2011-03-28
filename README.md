@@ -201,3 +201,9 @@ events
 ------
 
 You can `require('events').EventEmitters` just like in node.js code.
+
+path
+----
+
+The posix functions from the `path` module have been included except for
+`exists()` and `existsSync()`. Just `require('path')`!
