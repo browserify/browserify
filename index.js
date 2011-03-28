@@ -9,10 +9,9 @@ var source = require('source');
 exports = module.exports = function (opts) {
     var modified = new Date();
     var src = exports.bundle(opts);
-    if (!opts.mount) opts.mount = '/browserify.js';
     
     return function (req, res, next) {
-        if (req.url.split('?')[0] === opts.mount) {
+        if (req.url.split('?')[0] === opts.mount || '/browserify.js') {
             res.writeHead(200, {
                 'Last-Modified' : modified.toString(),
                 'Content-Type' : 'text/javascript',
