@@ -51,7 +51,7 @@ exports.bundle = function (opts) {
         });
     }
     else if (typeof opts.base === 'object') {
-        Object.keys(opts.base).forEach(function (name) {
+        Hash(opts.base).forEach(function (base, name) {
             src += exports.wrapDir(base, Hash.merge(opts, {
                 base : base,
                 name : name,
