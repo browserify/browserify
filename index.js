@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var EventEmitter = require('events').EventEmitter;
+var Hash = require('hashish');
 
 var coffee = require('coffee-script');
 var source = require('source');
@@ -41,9 +42,26 @@ exports.bundle = function (opts) {
         + fs.readFileSync(__dirname + '/wrappers/node_compat.js', 'utf8')
         + (shim ? source.modules('es5-shim')['es5-shim'] : '')
         + builtins
-        + (req.length ? exports.wrap(req, opts).source : '')
-        + (opts.base ? exports.wrapDir(opts.base, opts) : '')
+        + (req.length ? exports.wrap(req, opts_).source : '')
     ;
+    
+    if (Array.isArray(opts.base)) {
+        opts.base.forEach(function (base) {
+            src += exports.wrapDir(base, Hash.merge(opts, { base : base }));
+        });
+    }
+    else if (typeof opts.base === 'object') {
+        Object.keys(opts.base).forEach(function (name) {
+            src += exports.wrapDir(base, Hash.merge(opts, {
+                base : base,
+                name : name,
+            }));
+        });
+    }
+    else if (typeof opts.base === 'string') {
+        src += exports.wrapDir(opts.base, opts);
+    }
+    
     return opts.filter ? opts.filter(src) : src;
 };
 
@@ -81,7 +99,7 @@ exports.wrap = function (libname, opts) {
                 + '/' + opts.base;
         }
         else {
-            opts.base = __dirname + '/' + opts.base;
+            opts.base = process.cwd() + '/' + opts.base;
         }
     }
     
@@ -217,56 +235,49 @@ var find = require('findit');
 exports.wrapDir = function (base, opts) {
     if (!opts) opts = {};
     
-    if (Array.isArray(base)) {
-        return base.map(function (file) {
-            exports.wrapDir(file, opts)
-        }).join('\n');
+    var pkg = path.existsSync(base + '/package.json')
+        ? JSON.parse(fs.readFileSync(base + '/package.json', 'utf8'))
+        : {}
+    ;
+    function params (key) {
+        return opts[key]
+            || (pkg.browserify && pkg.browserify[key])
+            || pkg[key]
+    }
+    
+    var main = params('main');
+    
+    if (main && typeof pkg.browserify === 'object'
+    && !pkg.browserify.base) {
+        var files = [ base + '/' + main ];
     }
     else {
-        var pkg = path.existsSync(base + '/package.json')
-            ? JSON.parse(fs.readFileSync(base + '/package.json', 'utf8'))
-            : {}
-        ;
-        function params (key) {
-            return opts[key]
-                || (pkg.browserify && pkg.browserify[key])
-                || pkg[key]
-        }
-        
-        var main = params('main');
-        
-        if (main && typeof pkg.browserify === 'object'
-        && !pkg.browserify.base) {
-            var files = [ base + '/' + main ];
-        }
-        else {
-            var files = find.sync(base);
-        }
-        
-        var depSrc = pkg.browserify && pkg.browserify.require
-            ? exports.wrap(pkg.browserify.require).source : '';
-        
-        return depSrc + files
-            .filter(function (file) {
-                return file.match(/\.(?:js|coffee)$/)
-                    && !path.basename(file).match(/^\./)
-            })
-            .map(function (file) {
-                var libname = unext(file.slice(base.length + 1));
-                if (!libname.match(/^\.\//)) libname = './' + libname;
-                
-                var pkgname = main && (
-                    unext(main) === file || unext(main) === libname
-                ) ? '.' : libname;
-                
-                return exports.wrap(pkgname, {
-                    filename : file,
-                    name : params('name'),
-                }).source;
-            })
-            .join('\n')
-        ;
+        var files = find.sync(base);
     }
+    
+    var depSrc = pkg.browserify && pkg.browserify.require
+        ? exports.wrap(pkg.browserify.require).source : '';
+    
+    return depSrc + files
+        .filter(function (file) {
+            return file.match(/\.(?:js|coffee)$/)
+                && !path.basename(file).match(/^\./)
+        })
+        .map(function (file) {
+            var libname = unext(file.slice(base.length + 1));
+            if (!libname.match(/^\.\//)) libname = './' + libname;
+            
+            var pkgname = main && (
+                unext(main) === file || unext(main) === libname
+            ) ? '.' : libname;
+            
+            return exports.wrap(pkgname, {
+                filename : file,
+                name : params('name'),
+            }).source;
+        })
+        .join('\n')
+    ;
 };
 
 function unext (s) {
