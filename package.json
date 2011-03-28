@@ -15,7 +15,9 @@
         "require",
         "middleware",
         "bundle",
-        "npm"
+        "npm",
+        "coffee",
+        "javascript"
     ],
     "dependencies" : {
         "findit" : ">=0.0.3",
