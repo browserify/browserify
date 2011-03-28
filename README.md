@@ -140,21 +140,38 @@ browserify.bundle(opts)
 
 Return a string with the bundled source code given the options in `opts`:
 
-* base : recursively bundle all `.js` and `.coffee` files in this directory or
-    Array of directories. If there is a package.json at `base`, it will be read
-    according to the procedure below.
+### base
 
-* name : preface the files in `base` with this name
+Recursively bundle all `.js` and `.coffee` files.
 
-* main : map `require(name)` for the `name` field to this file
+Base can be a directory, an Array of directories, or an object that
+maps names to directories such that `require('name/submodule')` works.
 
-* shim : whether to include [es5-shim](https://github.com/kriskowal/es5-shim)
-    for legacy javascript engines; true if unspecified
+If there is a package.json at the `base` directory it will be read
+according to the `package.json` procedure below.
 
-* require : bundle all of these module names and their dependencies.
-    If the name has a slash in it, only that file will be included, otherwise
-    all .js and .coffee files which are not in the test directory and are not
-    binaries will be bundled into the final output.
+### name
+
+Preface the files in `base` with this name.
+
+### main
+
+Map `require(name)` for the `name` field to this file.
+
+### shim
+
+Whether to include [es5-shim](https://github.com/kriskowal/es5-shim) for legacy
+javascript engines.
+
+True if unspecified.
+
+### require
+
+Bundle all of these module names and their dependencies.
+
+If the name has a slash in it, only that file will be included, otherwise all
+.js and .coffee files which are not in the test directory and are not binaries
+will be bundled into the final output.
 
 package.json
 ============
@@ -172,7 +189,15 @@ If a main is specified in a "browserify" hash and no "base" is given, only that
 compatability
 =============
 
+process
+-------
+
 Browserify exports a faux `process` object with these attributes:
 
 * nextTick(fn) - does setTimeout(fn, 0)
 * title - set to 'browser' for browser code, 'node' in regular node code
+
+events
+------
+
+You can `require('events').EventEmitters` just like in node.js code.
