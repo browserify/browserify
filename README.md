@@ -30,7 +30,7 @@ server.js
     var connect = require('connect');
     var server = connect.createServer();
     
-    server.use(connect.staticProvider(__dirname));
+    server.use(connect.static(__dirname));
     server.use(require('browserify')({
         base : __dirname + '/js',
         mount : '/browserify.js',
@@ -87,7 +87,7 @@ server.js
     var connect = require('connect');
     var server = connect.createServer();
     
-    server.use(connect.staticProvider(__dirname));
+    server.use(connect.static(__dirname));
     server.use(require('browserify')({
         mount : '/browserify.js',
         require : [ 'traverse' ],
