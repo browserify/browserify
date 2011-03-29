@@ -6,6 +6,8 @@ Browser-side require() for your node modules and npm packages
 Browserify bundles all of your javascript when your server fires up at the mount
 point you specify.
 
+![browserify!](http://substack.net/images/browserify/browserify.png)
+
 More features:
 
 * recursively bundle dependencies of npm modules
@@ -213,3 +215,8 @@ protips
 
 * `npm install jquery-browserify` to have npm and browserify handle your jquery
 deployment!
+
+read more
+=========
+
+[browserify: browser-side require() for your node.js](http://substack.net/posts/24ab8c)
