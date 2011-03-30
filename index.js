@@ -11,7 +11,7 @@ exports = module.exports = function (opts) {
     var src = exports.bundle(opts);
     
     return function (req, res, next) {
-        if (req.url.split('?')[0] === opts.mount || '/browserify.js') {
+        if (req.url.split('?')[0] === (opts.mount || '/browserify.js')) {
             res.writeHead(200, {
                 'Last-Modified' : modified.toString(),
                 'Content-Type' : 'text/javascript',
