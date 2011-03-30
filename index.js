@@ -42,6 +42,19 @@ exports.bundle = function (opts) {
         + (shim ? source.modules('es5-shim')['es5-shim'] : '')
         + builtins
         + (req.length ? exports.wrap(req, opts_).source : '')
+        + (opts.entry
+            ? fs.readFileSync(__dirname + '/wrappers/entry.js', 'utf8')
+                .replace(/\$__filename/, function () {
+                    return JSON.stringify('./' + path.basename(opts.entry))
+                })
+                .replace(/\$__dirname/, function () {
+                    return JSON.stringify('.')
+                })
+                .replace('$body', function () {
+                    return fs.readFileSync(opts.entry, 'utf8')
+                })
+            : ''
+        )
     ;
     
     if (Array.isArray(opts.base)) {
