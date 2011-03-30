@@ -2,6 +2,7 @@ var assert = require('assert');
 var connect = require('connect');
 var http = require('http');
 var Script = process.binding('evals').Script;
+var fs = require('fs');
 
 var foo = require('./simple/foo');
 
@@ -21,15 +22,44 @@ exports.simple = function () {
             return src + ';\n filterHook();\n'
         },
     }));
-    server.listen(port, makeRequest);
+    server.use(connect.static(__dirname + '/simple'));
+    server.listen(port, function () {
+        checkStatic(makeRequest);
+    });
     
     var to = setTimeout(function () {
-        assert.fail('server never started');
+        assert.fail('request test never started');
     }, 5000);
     
     var th = setTimeout(function () {
         assert.fail('effects of filter not used');
     }, 5000);
+    
+    var ts = setTimeout(function () {
+        assert.fail('static test never started');
+    }, 5000);
+    
+    function checkStatic (cb) {
+        clearTimeout(ts);
+        
+        var req = { host : 'localhost', port : port, path : '/' };
+        http.get(req, function (res) {
+            assert.eql(res.statusCode, 200);
+            
+            var src = '';
+            res.on('data', function (buf) {
+                src += buf.toString();
+            });
+            
+            res.on('end', function () {
+                assert.eql(
+                    src,
+                    fs.readFileSync(__dirname + '/simple/index.html', 'utf8')
+                );
+                cb();
+            });
+        });
+    }
     
     function makeRequest () {
         clearTimeout(to);
