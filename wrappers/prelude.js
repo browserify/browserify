@@ -13,6 +13,7 @@ function require (path) {
 
 var _browserifyRequire = require; // scoping >_<
 
+require.paths = [];
 require.modules = {};
 
 require.fromFile = function (filename, path) {
