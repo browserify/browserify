@@ -175,6 +175,17 @@ If the name has a slash in it, only that file will be included, otherwise all
 .js and .coffee files which are not in the test directory and are not binaries
 will be bundled into the final output.
 
+### entry
+
+Append this file to the end of the bundle in order to execute code without
+having to `require()` it.
+
+Specifying an entry point will let you `require()` other modules without having
+to load the entry point in a `<script>` tag yourself.
+
+If entry is an Array, concatenate these files together and append to the end of
+the bundle.
+
 package.json
 ============
 
