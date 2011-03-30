@@ -210,6 +210,18 @@ path
 The posix functions from the `path` module have been included except for
 `exists()` and `existsSync()`. Just `require('path')`!
 
+__dirname
+---------
+
+The faux directory name, scrubbed of true directory information so as not to
+expose your filesystem organization.
+
+__filename
+----------
+
+The faux file path, scrubbed of true path information so as not to expose your
+filesystem organization.
+
 protips
 =======
 

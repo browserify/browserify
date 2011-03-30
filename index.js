@@ -145,16 +145,16 @@ exports.wrap = function (libname, opts) {
         ;
         
         if (opts.pkgname) pkgname = opts.pkgname;
+        var dirname = opts.name || '.';
+        var filename = dirname + '/' + path.basename(opts.filename);
         
         return {
             source : wrapperBody
                 .replace(/\$__dirname/g, function () {
-                    return JSON.stringify(opts.name);
+                    return JSON.stringify(dirname);
                 })
                 .replace(/\$__filename/g, function () {
-                    return JSON.stringify(
-                        opts.name + '/' + path.basename(opts.filename)
-                    );
+                    return JSON.stringify(filename);
                 })
                 .replace(/\$filename/g, function () {
                     return JSON.stringify(pkgname);
