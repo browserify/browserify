@@ -76,11 +76,17 @@ var builtins = fs.readdirSync(__dirname + '/builtins')
         var src = fs.readFileSync(f, 'utf8').replace(/^#![^\n]*\n/, '');
         
         return wrapperBody
-            .replace('$body', function () {
-                return src;
-            })
             .replace(/\$filename/g, function () {
                 return JSON.stringify(file.replace(/\.js$/,''));
+            })
+            .replace(/\$__dirname/g, function () {
+                return JSON.stringify(path.dirname(file));
+            })
+            .replace(/\$__filename/g, function () {
+                return JSON.stringify(file);
+            })
+            .replace('$body', function () {
+                return src;
             })
         ;
     })
@@ -142,18 +148,27 @@ exports.wrap = function (libname, opts) {
         
         return {
             source : wrapperBody
-                .replace('$body', function () {
-                    return body.replace(/^#![^\n]*\n/, '');
+                .replace(/\$__dirname/g, function () {
+                    return JSON.stringify(opts.name);
+                })
+                .replace(/\$__filename/g, function () {
+                    return JSON.stringify(
+                        opts.name + '/' + path.basename(opts.filename)
+                    );
                 })
                 .replace(/\$filename/g, function () {
                     return JSON.stringify(pkgname);
+                })
+                .replace('$body', function () {
+                    return body.replace(/^#![^\n]*\n/, '');
                 })
             ,
             dependencies : [],
         };
     }
     else if (libname.match(/\//)) {
-        var body = fs.readFileSync(require.resolve(libname), 'utf8');
+        var resolved = require.resolve(libname);
+        var body = fs.readFileSync(resolved, 'utf8');
         
         var pkgname = ((opts.name ? opts.name + '/' : '') + libname)
             .replace(/\/\.\//g, '/')
@@ -163,11 +178,19 @@ exports.wrap = function (libname, opts) {
         if (opts.pkgname) pkgname = opts.pkgname;
         
         var src = wrapperBody
-            .replace('$body', function () {
-                return body.replace(/^#![^\n]*\n/, '');
+            .replace(/\$__dirname/g, function () {
+                return JSON.stringify(pkgname);
+            })
+            .replace(/\$__filename/g, function () {
+                return JSON.stringify(
+                    pkgname + '/' + path.basename(resolved)
+                );
             })
             .replace(/\$filename/g, function () {
                 return JSON.stringify(pkgname)
+            })
+            .replace('$body', function () {
+                return body.replace(/^#![^\n]*\n/, '');
             })
         ;
         return { source : src, dependencies : [] };
@@ -216,11 +239,17 @@ exports.wrap = function (libname, opts) {
                 .map(function (name) {
                     var src = mods[name].toString().replace(/^#![^\n]*\n/, '');
                     return wrapperBody
-                        .replace('$body', function () {
-                            return src;
-                        })
                         .replace(/\$filename/g, function () {
                             return JSON.stringify(name)
+                        })
+                        .replace(/\$__filename/g, function () {
+                            return JSON.stringify(libname + '/' + name)
+                        })
+                        .replace(/\$__dirname/g, function () {
+                            return JSON.stringify(libname)
+                        })
+                        .replace('$body', function () {
+                            return src;
                         })
                     ;
                 })
