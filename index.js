@@ -42,19 +42,6 @@ exports.bundle = function (opts) {
         + (shim ? source.modules('es5-shim')['es5-shim'] : '')
         + builtins
         + (req.length ? exports.wrap(req, opts_).source : '')
-        + (opts.entry
-            ? fs.readFileSync(__dirname + '/wrappers/entry.js', 'utf8')
-                .replace(/\$__filename/, function () {
-                    return JSON.stringify('./' + path.basename(opts.entry))
-                })
-                .replace(/\$__dirname/, function () {
-                    return JSON.stringify('.')
-                })
-                .replace('$body', function () {
-                    return fs.readFileSync(opts.entry, 'utf8')
-                })
-            : ''
-        )
     ;
     
     if (Array.isArray(opts.base)) {
@@ -72,6 +59,29 @@ exports.bundle = function (opts) {
     }
     else if (typeof opts.base === 'string') {
         src += exports.wrapDir(opts.base, opts);
+    }
+    
+    if (opts.entry) {
+        if (!Array.isArray(opts.entry)) {
+            opts.entry = [ opts.entry ];
+        }
+        var entryBody = fs.readFileSync(
+            __dirname + '/wrappers/entry.js', 'utf8'
+        );
+        
+        opts.entry.forEach(function (entry) {
+            src += entryBody
+                .replace(/\$__filename/g, function () {
+                    return JSON.stringify('./' + path.basename(entry))
+                })
+                .replace(/\$__dirname/g, function () {
+                    return JSON.stringify('.')
+                })
+                .replace('$body', function () {
+                    return fs.readFileSync(entry, 'utf8')
+                })
+            ;
+        });
     }
     
     return opts.filter ? opts.filter(src) : src;
