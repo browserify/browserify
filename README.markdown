@@ -12,7 +12,7 @@ More features:
 
 * recursively bundle dependencies of npm modules
 
-* uses es5-shim for browsers that suck
+* uses es5-shim and crockford's json2.js for browsers that suck
 
 * filters for {min,ugl}ification
 
