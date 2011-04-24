@@ -1,6 +1,6 @@
 var assert = require('assert');
 var browserify = require('browserify');
-var Script = process.binding('evals').Script;
+var vm = require('vm');
 var Lexer = require('jade/lib/lexer');
 
 exports.single_file = function () {
@@ -11,8 +11,8 @@ exports.single_file = function () {
     assert.ok(src.length > 0);
     
     var c = {};
-    Script.runInNewContext(src, c);
-    var lex = Script.runInNewContext(
+    vm.runInNewContext(src, c);
+    var lex = vm.runInNewContext(
         'var Lexer = require("jade/lib/lexer"); Lexer', c
     );
     assert.eql(

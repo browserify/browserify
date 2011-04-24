@@ -1,6 +1,6 @@
 var assert = require('assert');
 var browserify = require('browserify');
-var Script = process.binding('evals').Script;
+var vm = require('vm');
 var backbone = require('backbone');
 
 exports.backbone = function () {
@@ -11,8 +11,8 @@ exports.backbone = function () {
     assert.ok(src.length > 0);
     
     var c = {};
-    Script.runInNewContext(src, c);
-    var b = Script.runInNewContext('require("backbone")', c);
+    vm.runInNewContext(src, c);
+    var b = vm.runInNewContext('require("backbone")', c);
     assert.eql(
         Object.keys(backbone),
         Object.keys(b)

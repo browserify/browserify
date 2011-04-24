@@ -1,7 +1,7 @@
 var assert = require('assert');
 var connect = require('connect');
 var http = require('http');
-var Script = process.binding('evals').Script;
+var vm = require('vm');
 var fs = require('fs');
 
 var foo = require('./simple/foo');
@@ -80,11 +80,11 @@ exports.simple = function () {
             });
             
             res.on('end', function () {
-                Script.runInNewContext(src, context);
-                Script.runInNewContext('var foo = require("./foo")', context);
+                vm.runInNewContext(src, context);
+                vm.runInNewContext('var foo = require("./foo")', context);
                 
                 for (var i = -10; i <= 100; i++) {
-                    var foos = Script.runInNewContext(
+                    var foos = vm.runInNewContext(
                         'foo(' + i + ')', context
                     ).toString();
                     assert.eql(foo(i).toString(), foos);

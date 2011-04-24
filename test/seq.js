@@ -1,7 +1,7 @@
 var assert = require('assert');
 var connect = require('connect');
 var http = require('http');
-var Script = process.binding('evals').Script;
+var vm = require('vm');
 
 exports.seq = function () {
     var port = 10000 + Math.floor(Math.random() * (Math.pow(2,16) - 10000));
@@ -45,9 +45,9 @@ exports.seq = function () {
             });
             
             res.on('end', function () {
-                Script.runInNewContext(src, context);
+                vm.runInNewContext(src, context);
                 
-                Script.runInNewContext(
+                vm.runInNewContext(
                     'var Seq = require("seq");'
                     + 'Seq(1,2,3)'
                     + '.parMap(function (x) {'

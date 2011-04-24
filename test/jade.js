@@ -1,6 +1,6 @@
 var assert = require('assert');
 var browserify = require('browserify');
-var Script = process.binding('evals').Script;
+var vm = require('vm');
 var jade = require('jade');
 
 exports.jade = function () {
@@ -11,8 +11,8 @@ exports.jade = function () {
     assert.ok(src.length > 0);
     
     var c = {};
-    Script.runInNewContext(src, c);
-    var j = Script.runInNewContext('var jade = require("jade"); jade', c);
+    vm.runInNewContext(src, c);
+    var j = vm.runInNewContext('var jade = require("jade"); jade', c);
     assert.eql(
         Object.keys(jade),
         Object.keys(j)
@@ -21,7 +21,7 @@ exports.jade = function () {
     var r = jade.render('div #{x}\n  span moo', { locals : { x : 42 } });
     assert.eql(r, '<div>42<span>moo</span></div>');
     assert.eql(
-        Script.runInNewContext(
+        vm.runInNewContext(
             'jade.render(\'div #{x}\\n  span moo\', { locals : { x : 42 } })',
             c
         ), r

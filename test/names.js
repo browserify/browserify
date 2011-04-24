@@ -1,6 +1,6 @@
 var assert = require('assert');
 var browserify = require('browserify');
-var Script = process.binding('evals').Script;
+var vm = require('vm');
 
 exports.named = function () {
     var src = browserify.bundle({
@@ -8,9 +8,9 @@ exports.named = function () {
     });
     
     var c = {};
-    Script.runInNewContext(src, c);
+    vm.runInNewContext(src, c);
     
-    var names = Script.runInNewContext('require("names")', c).names;
+    var names = vm.runInNewContext('require("names")', c).names;
     assert.eql(names, {
         __dirname : 'names',
         __filename : 'names/index.js',
@@ -21,9 +21,9 @@ exports.names = function () {
     var src = browserify.bundle(__dirname + '/names');
     
     var c = {};
-    Script.runInNewContext(src, c);
+    vm.runInNewContext(src, c);
     
-    var names = Script.runInNewContext('require("./index")', c).names;
+    var names = vm.runInNewContext('require("./index")', c).names;
     assert.eql(names, {
         __dirname : '.',
         __filename : './index.js',

@@ -1,6 +1,6 @@
 var assert = require('assert');
 var browserify = require('browserify');
-var Script = process.binding('evals').Script;
+var vm = require('vm');
 
 exports.bundle = function () {
     var src = browserify.bundle({
@@ -21,8 +21,8 @@ exports.bundle = function () {
         setTimeout : setTimeout,
         console : console,
     };
-    Script.runInNewContext(src, c);
-    Script.runInNewContext(
+    vm.runInNewContext(src, c);
+    vm.runInNewContext(
         'var Seq = require("seq");'
         + 'Seq(1,2,3)'
         + '.parMap(function (x) {'

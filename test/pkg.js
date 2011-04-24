@@ -1,15 +1,15 @@
 var assert = require('assert');
 var browserify = require('browserify');
-var Script = process.binding('evals').Script;
+var vm = require('vm');
 
 exports.bundleA = function () {
     var src = browserify.bundle(__dirname + '/pkg/a');
     
     var c = {};
-    Script.runInNewContext(src, c);
+    vm.runInNewContext(src, c);
     
     assert.eql(
-        Script.runInNewContext('require("./moo").zzz(3)', c),
+        vm.runInNewContext('require("./moo").zzz(3)', c),
         333
     );
 };
@@ -21,10 +21,10 @@ exports.namedA = function () {
     });
     
     var c = {};
-    Script.runInNewContext(src, c);
+    vm.runInNewContext(src, c);
     
     assert.eql(
-        Script.runInNewContext('require("wowsy/moo").zzz(3)', c),
+        vm.runInNewContext('require("wowsy/moo").zzz(3)', c),
         333
     );
 };
@@ -37,10 +37,10 @@ exports.namedMainA = function () {
     });
     
     var c = {};
-    Script.runInNewContext(src, c);
+    vm.runInNewContext(src, c);
     
     assert.eql(
-        Script.runInNewContext('require("wowsy").zzz(3)', c),
+        vm.runInNewContext('require("wowsy").zzz(3)', c),
         333
     );
     
@@ -51,10 +51,10 @@ exports.bundleB = function () {
     var src = browserify.bundle(__dirname + '/pkg/b');
     
     var c = {};
-    Script.runInNewContext(src, c);
+    vm.runInNewContext(src, c);
     
     assert.eql(
-        Script.runInNewContext('require("$$$").zzz(3)', c),
+        vm.runInNewContext('require("$$$").zzz(3)', c),
         333
     );
 };
@@ -66,10 +66,10 @@ exports.namedB = function () {
     });
     
     var c = {};
-    Script.runInNewContext(src, c);
+    vm.runInNewContext(src, c);
     
     assert.eql(
-        Script.runInNewContext('require("wowsy").zzz(3)', c),
+        vm.runInNewContext('require("wowsy").zzz(3)', c),
         333
     );
     
@@ -84,10 +84,10 @@ exports.namedMainB = function () {
     });
     
     var c = {};
-    Script.runInNewContext(src, c);
+    vm.runInNewContext(src, c);
     
     assert.eql(
-        Script.runInNewContext('require("wowsy").zzz(3)', c),
+        vm.runInNewContext('require("wowsy").zzz(3)', c),
         333
     );
     
@@ -98,10 +98,10 @@ exports.bundleC = function () {
     var src = browserify.bundle(__dirname + '/pkg/c');
     
     var c = {};
-    Script.runInNewContext(src, c);
+    vm.runInNewContext(src, c);
     
     assert.eql(
-        Script.runInNewContext('require("doom").fn(3)', c),
+        vm.runInNewContext('require("doom").fn(3)', c),
         300
     );
     

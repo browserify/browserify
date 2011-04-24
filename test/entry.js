@@ -1,6 +1,6 @@
 var assert = require('assert');
 var browserify = require('browserify');
-var Script = process.binding('evals').Script;
+var vm = require('vm');
 
 exports.entry = function () {
     var src = browserify.bundle({
@@ -9,7 +9,7 @@ exports.entry = function () {
     });
     
     var c = {};
-    Script.runInNewContext(src, c);
+    vm.runInNewContext(src, c);
     
     assert.eql(c.entryResult, 333);
 };
@@ -24,7 +24,7 @@ exports.entries = function () {
     });
     
     var c = {};
-    Script.runInNewContext(src, c);
+    vm.runInNewContext(src, c);
     
     assert.eql(c.one, 'one');
     assert.eql(c.two, 'two');

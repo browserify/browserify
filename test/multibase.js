@@ -1,6 +1,6 @@
 var assert = require('assert');
 var browserify = require('browserify');
-var Script = process.binding('evals').Script;
+var vm = require('vm');
 
 exports.multibaseObject = function () {
     var src = browserify.bundle({
@@ -11,15 +11,15 @@ exports.multibaseObject = function () {
     });
     
     var c = {};
-    Script.runInNewContext(src, c);
+    vm.runInNewContext(src, c);
     
     assert.eql(
-        Script.runInNewContext('require("foo/moo").zzz(3)', c),
+        vm.runInNewContext('require("foo/moo").zzz(3)', c),
         333
     );
     
     assert.eql(
-        Script.runInNewContext('require("bar").zzz(3)', c),
+        vm.runInNewContext('require("bar").zzz(3)', c),
         333
     );
 };
@@ -33,15 +33,15 @@ exports.multibaseArray = function () {
     });
     
     var c = {};
-    Script.runInNewContext(src, c);
+    vm.runInNewContext(src, c);
     
     assert.eql(
-        Script.runInNewContext('require("./moo").zzz(3)', c),
+        vm.runInNewContext('require("./moo").zzz(3)', c),
         333
     );
     
     assert.eql(
-        Script.runInNewContext('require("doom").fn(3)', c),
+        vm.runInNewContext('require("doom").fn(3)', c),
         300
     );
 

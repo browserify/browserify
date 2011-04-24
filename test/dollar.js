@@ -1,6 +1,6 @@
 var assert = require('assert');
 var browserify = require('browserify');
-var Script = process.binding('evals').Script;
+var vm = require('vm');
 
 exports.dollar = function () {
     var src = browserify.bundle({
@@ -10,8 +10,8 @@ exports.dollar = function () {
     assert.ok(src.length > 0);
     
     var c = {};
-    Script.runInNewContext(src, c);
-    var res = Script.runInNewContext(
+    vm.runInNewContext(src, c);
+    var res = vm.runInNewContext(
         'var $ = require("./dollar");'
         + '$(100)'
         , c
