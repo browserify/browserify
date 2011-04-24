@@ -89,6 +89,12 @@ exports.simple = function () {
                     ).toString();
                     assert.eql(foo(i).toString(), foos);
                 }
+                
+                // extensions are ok too
+                assert.equal(
+                    context.foo,
+                    vm.runInNewContext('require("./foo.js")', context)
+                );
             });
         });
     }
