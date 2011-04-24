@@ -2,9 +2,8 @@ function require (path) {
     // not EXACTLY like how node does it but more appropriate for the browser
     var mod
         = require.modules[path]
-        || require.modules[path + '.js']
+        || require.modules[path.replace(/\.(js|coffee)$/, '')]
         || require.modules[path + '/index']
-        || require.modules[path + '/index.js']
     ;
     
     if (!mod) throw new Error("Cannot find module '" + path + "'");
