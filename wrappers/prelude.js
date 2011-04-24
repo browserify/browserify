@@ -56,6 +56,9 @@ require.resolve = function (basefile, file) {
     
     var n = basedir.match(/\//)
         ? basedir.replace(/[^\/]+$/,'') + norm
-        : norm.replace(/^\.\//, basedir + '/');
+        : norm.replace(/^\.\//, basedir + '/lib/');
+        
+   	n = n.substr(0, n.lastIndexOf('.'));
+        
     return n.replace(/\/.\//, '/');
 };
