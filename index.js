@@ -6,7 +6,7 @@ var Hash = require('hashish');
 var coffee = require('coffee-script');
 var source = require('source');
 
-exports = module.exports = function (opts) {
+var exports = module.exports = function (opts) {
     var modified = new Date();
     
     if (!opts.hasOwnProperty('watch')) opts.watch = true;
@@ -18,6 +18,9 @@ exports = module.exports = function (opts) {
     return function (req, res, next) {
         if (!listening) {
             req.connection.server.on('close', ee.emit.bind(ee, 'close'));
+            ee.on('change', function (file) {
+                srcCache = exports.bundle(opts);
+            });
             listening = true;
         }
         
@@ -370,7 +373,11 @@ function fileWatch (file, opts) {
             fs.unwatchFile(file);
             delete watchedFiles[i];
         });
-        console.log('File change detected: Regenerating bundle');
-        exports(opts);
+        
+        if (opts.verbose) {
+            console.log('File change detected, regenerating bundle');
+        }
+        
+        if (opts.listen) opts.listen.emit('change', file);
     });
 }
