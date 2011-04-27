@@ -8,8 +8,11 @@ var source = require('source');
 
 exports = module.exports = function (opts) {
     var modified = new Date();
-    var ee = opts.listen = new EventEmitter;
+    
+    if (!opts.hasOwnProperty('watch')) opts.watch = true;
+    var ee = opts.listen = opts.listen || new EventEmitter;
     var listening = false;
+    
     var srcCache = exports.bundle(opts);
     
     return function (req, res, next) {
@@ -346,7 +349,7 @@ function unext (s) {
 
 var watchedFiles = [];
 function fileWatch (file, opts) {
-    if (opts.hasOwnProperty('watch') && !opts.watch) return;
+    if (!opts.watch) return;
     
     if (opts.listen) opts.listen.on('close', function () {
         fs.unwatchFile(file);
@@ -354,11 +357,11 @@ function fileWatch (file, opts) {
     
     watchedFiles.push(file);
     var wopts = {
-        persistent : opts.watch && opts.watch.hasOwnProperty('persistent')
+        persistent : opts.watch.hasOwnProperty('persistent')
             ? opts.watch.persistent
             : true
         ,
-        interval : opts.watch && opts.watch.interval || 500,
+        interval : opts.watch.interval || 500,
     };
     
     fs.watchFile(file, wopts, function (curr, prev) {
