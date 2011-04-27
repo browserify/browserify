@@ -21,6 +21,8 @@ More features:
 * bundle browser source components of modules specially with the "browserify"
     package.json field
 
+* watch files for changes and automatically re-bundle in middleware mode
+
 examples
 ========
 
@@ -185,6 +187,17 @@ to load the entry point in a `<script>` tag yourself.
 
 If entry is an Array, concatenate these files together and append to the end of
 the bundle.
+
+### watch
+
+Set watches on files and propagates "change" events to `opts.listen`.
+
+Defaults to true and sets up listeners in middleware mode, otherwise false.
+
+You can also pass in an object that is passed along to `fs.watchFile` with these
+default parameters:
+
+    { persistent : true, interval : 500 }
 
 package.json
 ============
