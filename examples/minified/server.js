@@ -5,7 +5,7 @@ server.use(connect.static(__dirname));
 server.use(require('browserify')({
     base : __dirname + '/js',
     mount : '/browserify.js',
-    filter : require('jsmin').jsmin,
+    filter : require('uglify-js'),
 }));
 
 server.listen(9393);

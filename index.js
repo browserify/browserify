@@ -5,13 +5,19 @@ var Hash = require('hashish');
 
 var coffee = require('coffee-script');
 var source = require('source');
-var srcCache = '', modified, watchedFiles = [];
 
 exports = module.exports = function (opts) {
     var modified = new Date();
+    var ee = opts.listen = new EventEmitter;
+    var listening = false;
     var srcCache = exports.bundle(opts);
     
     return function (req, res, next) {
+        if (!listening) {
+            req.connection.server.on('close', ee.emit.bind(ee, 'close'));
+            listening = true;
+        }
+        
         if (req.url.split('?')[0] === (opts.mount || '/browserify.js')) {
             res.writeHead(200, {
                 'Last-Modified' : modified.toString(),
@@ -338,9 +344,24 @@ function unext (s) {
     return s.replace(/\.(?:js|coffee)$/,'');
 }
 
+var watchedFiles = [];
 function fileWatch (file, opts) {
+    if (opts.hasOwnProperty('watch') && !opts.watch) return;
+    
+    if (opts.listen) opts.listen.on('close', function () {
+        fs.unwatchFile(file);
+    });
+    
     watchedFiles.push(file);
-    fs.watchFile(file, {persistent: true, interval: 75}, function(curr, prev) {
+    var wopts = {
+        persistent : opts.watch && opts.watch.hasOwnProperty('persistent')
+            ? opts.watch.persistent
+            : true
+        ,
+        interval : opts.watch && opts.watch.interval || 500,
+    };
+    
+    fs.watchFile(file, wopts, function (curr, prev) {
         if (curr.mtime - prev.mtime == 0) return;
         watchedFiles.forEach(function(file, i) {
             fs.unwatchFile(file);
