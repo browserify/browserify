@@ -5,10 +5,11 @@ var Hash = require('hashish');
 
 var coffee = require('coffee-script');
 var source = require('source');
+var srcCache = '', modified, watchedFiles = [];
 
 exports = module.exports = function (opts) {
     var modified = new Date();
-    var src = exports.bundle(opts);
+    var srcCache = exports.bundle(opts);
     
     return function (req, res, next) {
         if (req.url.split('?')[0] === (opts.mount || '/browserify.js')) {
@@ -16,7 +17,7 @@ exports = module.exports = function (opts) {
                 'Last-Modified' : modified.toString(),
                 'Content-Type' : 'text/javascript',
             });
-            res.end(src);
+            res.end(srcCache);
         }
         else next();
     };
@@ -70,6 +71,7 @@ exports.bundle = function (opts) {
         );
         
         opts.entry.forEach(function (entry) {
+            fileWatch(entry, opts);
             src += entryBody
                 .replace(/\$__filename/g, function () {
                     return JSON.stringify('./' + path.basename(entry))
@@ -311,6 +313,7 @@ exports.wrapDir = function (base, opts) {
     
     return depSrc + files
         .filter(function (file) {
+            fileWatch(file, opts);
             return file.match(/\.(?:js|coffee)$/)
                 && !path.basename(file).match(/^\./)
         })
@@ -333,4 +336,17 @@ exports.wrapDir = function (base, opts) {
 
 function unext (s) {
     return s.replace(/\.(?:js|coffee)$/,'');
+}
+
+function fileWatch (file, opts) {
+    watchedFiles.push(file);
+    fs.watchFile(file, {persistent: true, interval: 75}, function(curr, prev) {
+        if (curr.mtime - prev.mtime == 0) return;
+        watchedFiles.forEach(function(file, i) {
+            fs.unwatchFile(file);
+            delete watchedFiles[i];
+        });
+        console.log('File change detected: Regenerating bundle');
+        exports(opts);
+    });
 }
