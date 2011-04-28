@@ -11,6 +11,7 @@ var exports = module.exports = function (opts) {
     
     if (!opts.hasOwnProperty('watch')) opts.watch = true;
     var ee = opts.listen = opts.listen || new EventEmitter;
+    ee.setMaxListeners(opts.maxListeners || 50);
     var listening = false;
     
     var srcCache = exports.bundle(opts);
@@ -354,9 +355,9 @@ var watchedFiles = [];
 function fileWatch (file, opts) {
     if (!opts.watch) return;
     
-    if (opts.listen) opts.listen.on('close', function () {
-        fs.unwatchFile(file);
-    });
+    var unwatch = function () { fs.unwatchFile(file) };
+    
+    if (opts.listen) opts.listen.on('close', unwatch);
     
     watchedFiles.push(file);
     var wopts = {
@@ -378,6 +379,9 @@ function fileWatch (file, opts) {
             console.log('File change detected, regenerating bundle');
         }
         
-        if (opts.listen) opts.listen.emit('change', file);
+        if (opts.listen) {
+            opts.listen.removeListener('close', unwatch);
+            opts.listen.emit('change', file);
+        }
     });
 }
