@@ -326,11 +326,11 @@ exports.wrapDir = function (base, opts) {
     
     return depSrc + files
         .filter(function (file) {
-            fileWatch(file, opts);
             return file.match(/\.(?:js|coffee)$/)
                 && !path.basename(file).match(/^\./)
         })
         .map(function (file) {
+            fileWatch(file, opts);
             var libname = unext(file.slice(base.length + 1));
             if (!libname.match(/^\.\//)) libname = './' + libname;
             
