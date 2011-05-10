@@ -1,0 +1,8 @@
+{
+    "name" : "foomoduletest",
+    "version" : "0.0.1",
+    "main" : "./index.js",
+    "dependencies" : {
+        "barmoduletest" : "=0.0.x"
+    }
+}
