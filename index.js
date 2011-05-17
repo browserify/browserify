@@ -166,12 +166,15 @@ exports.wrap = function (libname, opts) {
     
     var aliases = [];
     if (opts.name && (
-        opts.main === opts.filename || libname === opts.name || libname === '.'
+        opts.main === opts.filename
+        || libname === opts.name
+        || libname === '.'
     )) {
         aliases = opts.base
             ? [
                 (opts.name + unext(opts.filename.slice(opts.base.length)))
-                    .replace(/\/\.\//g, '/')
+                    .replace(/\/\.\//g, '/'),
+                opts.name,
             ]
             : [ opts.name ]
         ;
@@ -378,7 +381,18 @@ exports.wrapDir = function (base, opts) {
             parts.shift();
             
             if (packages[ps]) {
-                return packages[ps].browserify || packages[ps] || {};
+                var p = packages[ps].browserify || packages[ps] || {};
+                if (!p.base) {
+                    p.base = ps;
+                }
+                else if (p.base.match(/^\./)) {
+                    p.base = (ps + p.base.slice(1)).replace(/\/\.\//g, '/');
+                }
+                
+                if (p.main && p.main.match(/^\./)) {
+                    p.main = (ps + p.main.slice(1)).replace(/\/\.\//g, '/');
+                }
+                return p;
             }
         }
         return pkg.browserify || pkg || {};
@@ -405,12 +419,12 @@ exports.wrapDir = function (base, opts) {
                 unext(main) === unext(file) || unext(main) === libname
             ) ? '.' : libname;
             
-            return exports.wrap(pkgname, {
+            return exports.wrap(pkgname, Hash.merge({
                 filename : file,
                 main : paramFor(file, 'main') || main,
                 base : paramFor(file, 'base') || base,
                 name : paramFor(file, 'name'),
-            }).source;
+            }, packageFor(file))).source;
         })
         .join('\n')
     ;
