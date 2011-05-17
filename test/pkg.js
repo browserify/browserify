@@ -65,6 +65,23 @@ exports.namedMainAbsA = function () {
     assert.ok(!c.require.modules['wowsy/moo']);
 };
 
+exports.namedMainNonBaseA = function () {
+    var src = browserify.bundle({
+        name : 'wowsy',
+        main : __dirname + '/pkg/a/moo.js',
+    });
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    
+    assert.eql(
+        vm.runInNewContext('require("wowsy").zzz(3)', c),
+        333
+    );
+    
+    assert.ok(!c.require.modules['wowsy/moo']);
+};
+
 exports.bundleB = function () {
     var src = browserify.bundle(__dirname + '/pkg/b');
     

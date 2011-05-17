@@ -46,6 +46,9 @@ exports.bundle = function (opts) {
             });
         }
     }
+    if (opts.main && opts.main.match(/^\//) && !opts.filename) {
+        opts.filename = opts.main;
+    }
     
     var shim = 'shim' in opts ? opts.shim : true;
     var req = opts.require || [];
@@ -55,7 +58,7 @@ exports.bundle = function (opts) {
         + fs.readFileSync(__dirname + '/wrappers/node_compat.js', 'utf8')
         + (shim ? source.modules('es5-shim')['es5-shim'] : '')
         + builtins
-        + (req.length ? exports.wrap(req, opts_).source : '')
+        + (req.length ? exports.wrap(req, opts).source : '')
     ;
     
     if (Array.isArray(opts.base)) {
@@ -74,6 +77,11 @@ exports.bundle = function (opts) {
     else if (typeof opts.base === 'string') {
         src += exports.wrapDir(opts.base, opts);
     }
+    else if (!opts.base && opts.main) {
+        var opts_ = Hash.copy(opts);
+        opts_.base = path.dirname(opts.main);
+        src += exports.wrap('./' + path.basename(opts.main), opts).source;
+    }
     
     if (opts.entry) {
         if (!Array.isArray(opts.entry)) {
@@ -86,6 +94,9 @@ exports.bundle = function (opts) {
         opts.entry.forEach(function (entry) {
             fileWatch(entry, opts);
             src += entryBody
+                .replace(/\$aliases/g, function () {
+                    return JSON.stringify([]);
+                })
                 .replace(/\$__filename/g, function () {
                     return JSON.stringify('./' + path.basename(entry))
                 })
@@ -114,6 +125,9 @@ var builtins = fs.readdirSync(__dirname + '/builtins')
         var src = fs.readFileSync(f, 'utf8').replace(/^#![^\n]*\n/, '');
         
         return wrapperBody
+            .replace(/\$aliases/g, function () {
+                return JSON.stringify([]);
+            })
             .replace(/\$filename/g, function () {
                 return JSON.stringify(file.replace(/\.js$/,''));
             })
@@ -149,6 +163,9 @@ exports.wrap = function (libname, opts) {
     if (opts.main && !opts.main.match(/^\//)) {
         opts.main = opts.base + '/' + opts.main;
     }
+    
+    var aliases = opts.name && opts.main === opts.filename
+        ? [ opts.name ] : [];
     
     if (Array.isArray(libname)) {
         var reqs = opts.required || [];
@@ -188,6 +205,9 @@ exports.wrap = function (libname, opts) {
         
         return {
             source : wrapperBody
+                .replace(/\$aliases/g, function () {
+                    return JSON.stringify(aliases);
+                })
                 .replace(/\$__dirname/g, function () {
                     return JSON.stringify(dirname);
                 })
@@ -216,6 +236,9 @@ exports.wrap = function (libname, opts) {
         if (opts.pkgname) pkgname = opts.pkgname;
         
         var src = wrapperBody
+            .replace(/\$aliases/g, function () {
+                return JSON.stringify(aliases);
+            })
             .replace(/\$__dirname/g, function () {
                 return JSON.stringify(pkgname);
             })
@@ -277,6 +300,9 @@ exports.wrap = function (libname, opts) {
                 .map(function (name) {
                     var src = mods[name].toString().replace(/^#![^\n]*\n/, '');
                     return wrapperBody
+                        .replace(/\$aliases/g, function () {
+                            return JSON.stringify(aliases);
+                        })
                         .replace(/\$filename/g, function () {
                             return JSON.stringify(name)
                         })
