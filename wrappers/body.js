@@ -15,3 +15,7 @@ _browserifyRequire.modules[$filename] = function () {
     _browserifyRequire.modules[$filename]._cached = module.exports;
     return module.exports;
 };
+
+$aliases.forEach(function (a) {
+    _browserifyRequire.modules[a] = _browserifyRequire.modules[$filename];
+});

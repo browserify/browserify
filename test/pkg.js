@@ -44,7 +44,45 @@ exports.namedMainA = function () {
         333
     );
     
-    assert.ok(!c.require.modules['wowsy/moo']);
+    assert.ok(c.require.modules['wowsy/moo']);
+};
+
+exports.namedMainAbsA = function () {
+    var src = browserify.bundle({
+        name : 'wowsy',
+        main : __dirname + '/pkg/a/moo.js',
+        base : __dirname + '/pkg/a',
+    });
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    
+    assert.eql(
+        vm.runInNewContext('require("wowsy").zzz(3)', c),
+        333
+    );
+    
+    assert.ok(c.require.modules['wowsy/moo']);
+};
+
+exports.namedMainNonBaseA = function () {
+    var src = browserify.bundle({
+        name : 'wowsy',
+        main : __dirname + '/pkg/a/moo.js',
+    });
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    
+    assert.eql(
+        vm.runInNewContext('require("wowsy").zzz(3)', c),
+        333
+    );
+    
+    assert.ok(
+        c.require.modules['wowsy/moo']
+        || c.require.modules['wowsy/moo.js']
+    );
 };
 
 exports.bundleB = function () {
@@ -91,7 +129,7 @@ exports.namedMainB = function () {
         333
     );
     
-    assert.ok(!c.require.modules['wowsy/moo']);
+    assert.ok(c.require.modules['wowsy/moo']);
 };
 
 exports.bundleC = function () {
@@ -108,8 +146,34 @@ exports.bundleC = function () {
     assert.eql(
         Object.keys(c.require.modules)
             .filter(function (name) { return name.match(/doom/) })
-        , [ 'doom' ]
+        , [ 'doom', 'doom/doom-browser' ]
     );
     
     assert.ok(!c.require.modules['seq']);
+};
+
+exports.namedMainRelativeD = function () {
+    var src = browserify.bundle({
+        name : 'wowsy',
+        main : __dirname + '/pkg/d/foo.js',
+        base : __dirname + '/pkg/d',
+    });
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    
+    assert.eql(
+        vm.runInNewContext('require("wowsy/bar")()', c),
+        333
+    );
+    
+    assert.eql(
+        vm.runInNewContext('require("wowsy")()', c),
+        444
+    );
+    
+    assert.eql(
+        vm.runInNewContext('require("wowsy/foo")()', c),
+        444
+    );
 };
