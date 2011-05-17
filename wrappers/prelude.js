@@ -22,6 +22,9 @@ require.fromFile = function (filename, path) {
 };
 
 require.resolve = function (basefile, file) {
+    if (_browserifyRequire.modules[basefile + '/node_modules/' + file]) {
+        return basefile + '/node_modules/' + file;
+    }
     if (!file.match(/^[\.\/]/)) return file;
     if (file.match(/^\//)) return file;
     

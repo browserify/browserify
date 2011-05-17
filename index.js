@@ -349,13 +349,8 @@ exports.wrapDir = function (base, opts) {
         ? JSON.parse(fs.readFileSync(base + '/package.json', 'utf8'))
         : {}
     ;
-    function params (key) {
-        return opts[key]
-            || (pkg.browserify && pkg.browserify[key])
-            || pkg[key]
-    }
     
-    var main = params('main');
+    var main = opts.main || (pkg.browserify && pkg.browserify.main) || pkg.main;
     
     if (main && typeof pkg.browserify === 'object'
     && !pkg.browserify.base) {
@@ -363,6 +358,34 @@ exports.wrapDir = function (base, opts) {
     }
     else {
         var files = find.sync(base);
+    }
+    
+    var packages = files
+        .filter(function (f) {
+            return path.basename(f) === 'package.json'
+        })
+        .reduce(function (acc, f) {
+            acc[path.dirname(f)] = JSON.parse(fs.readFileSync(f, 'utf8'));
+            return acc;
+        }, {})
+    ;
+    
+    function packageFor (file) {
+        var parts = path.dirname(file).split('/');
+        
+        while (parts.length) {
+            var ps = parts.join('/');
+            parts.shift();
+            
+            if (packages[ps]) {
+                return packages[ps].browserify || packages[ps] || {};
+            }
+        }
+        return pkg.browserify || pkg || {};
+    }
+    
+    function paramFor (file, name) {
+        return opts[name] || packageFor(file)[name] || pkg[name];
     }
     
     var depSrc = pkg.browserify && pkg.browserify.require
@@ -384,9 +407,9 @@ exports.wrapDir = function (base, opts) {
             
             return exports.wrap(pkgname, {
                 filename : file,
-                main : main,
-                base : base,
-                name : params('name'),
+                main : paramFor(file, 'main') || main,
+                base : paramFor(file, 'base') || base,
+                name : paramFor(file, 'name'),
             }).source;
         })
         .join('\n')
