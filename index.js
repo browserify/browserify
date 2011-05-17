@@ -335,7 +335,7 @@ exports.wrapDir = function (base, opts) {
             if (!libname.match(/^\.\//)) libname = './' + libname;
             
             var pkgname = main && (
-                unext(main) === file || unext(main) === libname
+                unext(main) === unext(file) || unext(main) === libname
             ) ? '.' : libname;
             
             return exports.wrap(pkgname, {
