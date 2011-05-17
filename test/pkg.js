@@ -44,7 +44,7 @@ exports.namedMainA = function () {
         333
     );
     
-    assert.ok(!c.require.modules['wowsy/moo']);
+    assert.ok(c.require.modules['wowsy/moo']);
 };
 
 exports.namedMainAbsA = function () {
@@ -62,7 +62,7 @@ exports.namedMainAbsA = function () {
         333
     );
     
-    assert.ok(!c.require.modules['wowsy/moo']);
+    assert.ok(c.require.modules['wowsy/moo']);
 };
 
 exports.namedMainNonBaseA = function () {
@@ -79,7 +79,7 @@ exports.namedMainNonBaseA = function () {
         333
     );
     
-    assert.ok(!c.require.modules['wowsy/moo']);
+    assert.ok(c.require.modules['wowsy/moo']);
 };
 
 exports.bundleB = function () {
@@ -126,7 +126,7 @@ exports.namedMainB = function () {
         333
     );
     
-    assert.ok(!c.require.modules['wowsy/moo']);
+    assert.ok(c.require.modules['wowsy/moo']);
 };
 
 exports.bundleC = function () {
@@ -147,4 +147,30 @@ exports.bundleC = function () {
     );
     
     assert.ok(!c.require.modules['seq']);
+};
+
+exports.namedMainRelativeD = function () {
+    var src = browserify.bundle({
+        name : 'wowsy',
+        main : __dirname + '/pkg/d/foo.js',
+        base : __dirname + '/pkg/d',
+    });
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    
+    assert.eql(
+        vm.runInNewContext('require("wowsy/bar")()', c),
+        333
+    );
+    
+    assert.eql(
+        vm.runInNewContext('require("wowsy")()', c),
+        444
+    );
+    
+    assert.eql(
+        vm.runInNewContext('require("wowsy/foo")()', c),
+        444
+    );
 };
