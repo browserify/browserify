@@ -79,7 +79,10 @@ exports.namedMainNonBaseA = function () {
         333
     );
     
-    assert.ok(c.require.modules['wowsy/moo']);
+    assert.ok(
+        c.require.modules['wowsy/moo']
+        || c.require.modules['wowsy/moo.js']
+    );
 };
 
 exports.bundleB = function () {
@@ -143,7 +146,7 @@ exports.bundleC = function () {
     assert.eql(
         Object.keys(c.require.modules)
             .filter(function (name) { return name.match(/doom/) })
-        , [ 'doom' ]
+        , [ 'doom', 'doom/doom-browser' ]
     );
     
     assert.ok(!c.require.modules['seq']);

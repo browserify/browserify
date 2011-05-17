@@ -164,9 +164,18 @@ exports.wrap = function (libname, opts) {
         opts.main = opts.base + '/' + opts.main;
     }
     
-    var aliases = opts.name
-    && (opts.main === opts.filename || libname === opts.name || libname === '.')
-        ? [ opts.name + unext(opts.filename.slice(opts.base.length)) ] : [];
+    var aliases = [];
+    if (opts.name && (
+        opts.main === opts.filename || libname === opts.name || libname === '.'
+    )) {
+        aliases = opts.base
+            ? [
+                (opts.name + unext(opts.filename.slice(opts.base.length)))
+                    .replace(/\/\.\//g, '/')
+            ]
+            : [ opts.name ]
+        ;
+    }
     
     if (Array.isArray(libname)) {
         var reqs = opts.required || [];
