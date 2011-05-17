@@ -419,12 +419,14 @@ exports.wrapDir = function (base, opts) {
                 unext(main) === unext(file) || unext(main) === libname
             ) ? '.' : libname;
             
-            return exports.wrap(pkgname, Hash.merge({
+            var p = Hash.merge({
                 filename : file,
                 main : paramFor(file, 'main') || main,
                 base : paramFor(file, 'base') || base,
-                name : paramFor(file, 'name'),
-            }, packageFor(file))).source;
+                name : opts.name || paramFor(file, 'name'),
+            }, packageFor(file));
+            if (opts.name) p.name = opts.name;
+            return exports.wrap(pkgname, p).source;
         })
         .join('\n')
     ;
