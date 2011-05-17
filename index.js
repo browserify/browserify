@@ -164,8 +164,9 @@ exports.wrap = function (libname, opts) {
         opts.main = opts.base + '/' + opts.main;
     }
     
-    var aliases = opts.name && opts.main === opts.filename
-        ? [ opts.name ] : [];
+    var aliases = opts.name
+    && (opts.main === opts.filename || libname === opts.name || libname === '.')
+        ? [ opts.name + unext(opts.filename.slice(opts.base.length)) ] : [];
     
     if (Array.isArray(libname)) {
         var reqs = opts.required || [];
@@ -366,6 +367,8 @@ exports.wrapDir = function (base, opts) {
             
             return exports.wrap(pkgname, {
                 filename : file,
+                main : main,
+                base : base,
                 name : params('name'),
             }).source;
         })
