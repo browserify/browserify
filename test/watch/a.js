@@ -1,1 +1,1 @@
-module.exports = 8064
+module.exports = 3880
