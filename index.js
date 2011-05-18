@@ -58,7 +58,12 @@ exports.bundle = function (opts) {
         + fs.readFileSync(__dirname + '/wrappers/node_compat.js', 'utf8')
         + (shim ? source.modules('es5-shim')['es5-shim'] : '')
         + builtins
-        + (req.length ? exports.wrap(req, opts).source : '')
+        + (req.length
+            ? exports.wrap(
+                req, Hash.merge(opts, { base : undefined })
+            ).source
+            : ''
+        )
     ;
     
     if (Array.isArray(opts.base)) {
