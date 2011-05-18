@@ -31,104 +31,119 @@ simple example
 
 server.js
 
-    var connect = require('connect');
-    var server = connect.createServer();
-    
-    server.use(connect.static(__dirname));
-    server.use(require('browserify')({
-        base : __dirname + '/js',
-        mount : '/browserify.js',
-        filter : require('jsmin').jsmin,
-    }));
-    
-    server.listen(9797);
-    console.log('Listening on 9797...');
+````javascript
+var connect = require('connect');
+var server = connect.createServer();
+
+server.use(connect.static(__dirname));
+server.use(require('browserify')({
+    base : __dirname + '/js',
+    mount : '/browserify.js',
+    filter : require('jsmin').jsmin,
+}));
+
+server.listen(9797);
+console.log('Listening on 9797...');
+````
 
 js/foo.js
 
-    var bar = require('./bar');
-    var baz = require('./baz');
+````javascript
+var bar = require('./bar');
+var baz = require('./baz');
 
-    module.exports = function (x) {
-        return x * bar.coeff(x) + baz.wowsy(x);
-    };
+module.exports = function (x) {
+    return x * bar.coeff(x) + baz.wowsy(x);
+};
+````
 
 js/bar.js
 
-    exports.coeff = function (x) {
-        return Math.log(x) / Math.log(2) + 1;
-    };
+````javascript
+exports.coeff = function (x) {
+    return Math.log(x) / Math.log(2) + 1;
+};
+````
 
 js/baz.coffee
 
-    exports.wowsy = (beans) ->
-        beans * 3 - 2
+````coffeescript
+exports.wowsy = (beans) ->
+    beans * 3 - 2
+````
 
 index.html
 
-    <html>
-    <head>
-        <script type="text/javascript" src="/browserify.js"></script>
-        <script type="text/javascript">
-            var foo = require('./foo');
-            
-            window.onload = function () {
-                document.getElementById('result').innerHTML = foo(100);
-            };
-        </script>
-    </head>
-    <body>
-        foo =
-        <span style='font-family: monospace' id="result"></span>
-    </body>
-    </html>
+````html
+<html>
+<head>
+    <script type="text/javascript" src="/browserify.js"></script>
+    <script type="text/javascript">
+        var foo = require('./foo');
+        
+        window.onload = function () {
+            document.getElementById('result').innerHTML = foo(100);
+        };
+    </script>
+</head>
+<body>
+    foo =
+    <span style='font-family: monospace' id="result"></span>
+</body>
+</html>
+````
 
 npm example
 -----------
 
 server.js
 
-    var connect = require('connect');
-    var server = connect.createServer();
-    
-    server.use(connect.static(__dirname));
-    server.use(require('browserify')({
-        mount : '/browserify.js',
-        require : [ 'traverse' ],
-    }));
-    
-    server.listen(4040);
-    console.log('Listening on 4040...');
+````javascript
+var connect = require('connect');
+var server = connect.createServer();
+
+server.use(connect.static(__dirname));
+server.use(require('browserify')({
+    mount : '/browserify.js',
+    require : [ 'traverse' ],
+}));
+
+server.listen(4040);
+console.log('Listening on 4040...');
+````
 
 index.html
-----------
 
-    <html>
-    <head>
-        <script type="text/javascript" src="/browserify.js?traverse"></script>
-        <script type="text/javascript">
-            var Traverse = require('traverse');
-            var obj = [ 5, 6, -3, [ 7, 8, -2, 1 ], { f : 10, g : -13 } ];
-            Traverse(obj).forEach(function (x) {
-                if (x < 0) this.update(x + 128);
-            });
-            
-            window.onload = function () {
-                document.getElementById('result').innerHTML
-                    = JSON.stringify(obj);
-            };
-        </script>
-    </head>
-    <body>
-        foo =
-        <span style='font-family: monospace' id="result"></span>
-    </body>
-    </html>
+````html
+<html>
+<head>
+    <script type="text/javascript" src="/browserify.js?traverse"></script>
+    <script type="text/javascript">
+        var Traverse = require('traverse');
+        var obj = [ 5, 6, -3, [ 7, 8, -2, 1 ], { f : 10, g : -13 } ];
+        Traverse(obj).forEach(function (x) {
+            if (x < 0) this.update(x + 128);
+        });
+        
+        window.onload = function () {
+            document.getElementById('result').innerHTML
+                = JSON.stringify(obj);
+        };
+    </script>
+</head>
+<body>
+    foo =
+    <span style='font-family: monospace' id="result"></span>
+</body>
+</html>
+````
 
 methods
 =======
 
+````javascript
 var browserify = require('browserify');
+````
 
 browserify(opts)
 ----------------
@@ -197,7 +212,9 @@ Defaults to true and sets up listeners in middleware mode, otherwise false.
 You can also pass in an object that is passed along to `fs.watchFile` with these
 default parameters:
 
-    { persistent : true, interval : 500 }
+````javascript
+{ persistent : true, interval : 500 }
+````
 
 package.json
 ============
