@@ -31,7 +31,9 @@
         "seq" : ">=0.2.5 <0.3",
         "traverse" : ">=0.3.1 <0.4",
         "backbone" : ">=0.3.3",
-        "dnode" : ">=0.6.2"
+        "dnode" : ">=0.6.2",
+        "jade": "=0.10.4",
+        "expresso" : "=0.7.x"
     },
     "author" : {
         "name" : "James Halliday",
