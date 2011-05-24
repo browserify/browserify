@@ -14,6 +14,18 @@ exports.entry = function () {
     assert.eql(c.entryResult, 333);
 };
 
+exports.entryCoffee = function () {
+    var src = browserify.bundle({
+        base : __dirname + '/pkg/a',
+        entry : __dirname + '/entry/main.coffee',
+    });
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    
+    assert.eql(c.entryResult, 333);
+};
+
 exports.entries = function () {
     var src = browserify.bundle({
         base : __dirname + '/pkg/a',
