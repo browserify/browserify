@@ -28,10 +28,17 @@ require.resolve = function (basefile, file) {
     if (!file.match(/^[\.\/]/)) return file;
     if (file.match(/^\//)) return file;
     
-    var basedir = basefile.match(/^[\.\/]/)
+    /*
+    if (!basedir) basedir = basefile.match(/^[\.\/]/)
         ? basefile.replace(/[^\/]+$/, '')
         : basefile
     ;
+    */
+    var basedir = basefile.match(/\//)
+        ? basefile.replace(/[^\/]+$/, '')
+        : basefile
+    ;
+    
     if (basedir === '') {
         basedir = '.';
     }
@@ -59,5 +66,6 @@ require.resolve = function (basefile, file) {
     var n = basedir.match(/\//)
         ? basedir.replace(/[^\/]+$/,'') + norm
         : norm.replace(/^\.\//, basedir + '/');
-    return n.replace(/\/.\//, '/');
+    var res = n.replace(/\/.\//, '/');
+    return res;
 };
