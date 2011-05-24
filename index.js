@@ -408,7 +408,7 @@ exports.wrapDir = function (base, opts) {
             }
         }
         
-        var res = pkg.browserify || pkg || {};
+        var res = Hash.merge(pkg || {}, pkg.browserify || {});
         if (Array.isArray(res.base)) {
             var subBase = res.base.filter(function (b) {
                 var r = path.resolve(base, b)
@@ -416,6 +416,18 @@ exports.wrapDir = function (base, opts) {
             })[0] || base;
             res = Hash.merge(res, { base : subBase });
         }
+        else if (typeof res.base === 'object') {
+            var subBase = Hash.filter(res.base, function (b) {
+                var r = path.resolve(base, b)
+                return file.slice(0, r.length) === r;
+            });
+            if (subBase) {
+                var sb = Object.keys(subBase)[0];
+                res = Hash.merge(res, { base : subBase[sb] });
+                res.name = (res.name ? res.name + '/' : '') + sb;
+            }
+        }
+        
         return res;
     }
     

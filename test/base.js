@@ -7,11 +7,7 @@ exports.stringBase = function () {
     
     var c = {};
     vm.runInNewContext(src, c);
-    
-    assert.eql(
-        vm.runInNewContext('require("quux")(3)', c),
-        13000
-    );
+    assert.equal(c.require('quux')(3), 13000);
 };
 
 exports.arrayBase = function () {
@@ -20,8 +16,14 @@ exports.arrayBase = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    assert.eql(
-        vm.runInNewContext('require("quux")(3)', c),
-        13000
-    );
+    assert.equal(c.require('quux')(3), 13000);
+};
+
+exports.objectBase = function () {
+    var src = browserify.bundle(__dirname + '/base/object');
+    
+    var c = { assert : assert, console : console };
+    vm.runInNewContext(src, c);
+    
+    assert.equal(c.require('quux/aa/a')(3), 13000);
 };
