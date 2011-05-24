@@ -427,21 +427,30 @@ exports.wrapDir = function (base, opts) {
             var libname = unext(file.slice(base.length + 1));
             if (!libname.match(/^\.\//)) libname = './' + libname;
             
-            var pkgname = main && (
-                unext(main) === unext(file) || unext(main) === libname
-            ) ? '.' : libname;
-            
             var p4 = packageFor(file);
             var p = Hash.merge({
                 filename : file,
                 main : paramFor(file, 'main') || main,
-                base : paramFor(file, 'base') || base,
+                base : paramFor(file, 'base'),
                 name : opts.name || paramFor(file, 'name'),
             }, p4);
+            
+            if (p.base && !p.base.match(/^\//)) {
+                p.base = path.resolve(base, p.base);
+            }
+            
+            if (p.main && !p.main.match(/^\//)) {
+                p.main = path.resolve(base, p.main);
+            }
             
             if (opts.name && (p4 === pkg || p4 === packages[base])) {
                 p.name = opts.name;
             }
+            
+            var pkgname = main && (
+                unext(main) === unext(file) || unext(main) === libname
+            ) ? '.' : path.resolve(base, libname).replace(p.base, '.');
+            
             return exports.wrap(pkgname, p).source;
         })
         .join('\n')

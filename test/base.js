@@ -7,7 +7,6 @@ exports.stringBase = function () {
     
     var c = {};
     vm.runInNewContext(src, c);
-    console.dir(c.require.modules);
     
     assert.eql(
         vm.runInNewContext('require("quux")(3)', c),
