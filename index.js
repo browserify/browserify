@@ -407,7 +407,16 @@ exports.wrapDir = function (base, opts) {
                 return p;
             }
         }
-        return pkg.browserify || pkg || {};
+        
+        var res = pkg.browserify || pkg || {};
+        if (Array.isArray(res.base)) {
+            var subBase = res.base.filter(function (b) {
+                var r = path.resolve(base, b)
+                return file.slice(0, r.length) === r;
+            })[0] || base;
+            res = Hash.merge(res, { base : subBase });
+        }
+        return res;
     }
     
     function paramFor (file, name) {
