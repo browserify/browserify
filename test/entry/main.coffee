@@ -1,1 +1,1 @@
-entryResult = require('./moo').zzz 3
+@entryResult = require('./moo').zzz 3

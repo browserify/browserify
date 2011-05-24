@@ -109,7 +109,9 @@ exports.bundle = function (opts) {
                     return JSON.stringify('.')
                 })
                 .replace('$body', function () {
-                    return fs.readFileSync(entry, 'utf8')
+                    return (entry.match(/\.coffee$/) ? coffee.compile : String)(
+                        fs.readFileSync(entry, 'utf8')
+                    );
                 })
             ;
         });
