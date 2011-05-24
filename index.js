@@ -196,13 +196,18 @@ exports.wrap = function (libname, opts) {
             
             if (lib.dependencies.length) {
                 var _deps = lib.dependencies.map(function (dep) {
-                  try {
-                    require.resolve(dep);
-                    return dep;
-                  } catch(e) {
-                    return require.resolve(path.dirname(require.resolve(name)) + '/node_modules/' + dep)
-                  }
+                    try {
+                        require.resolve(dep);
+                        return dep;
+                    }
+                    catch (e) {
+                        return require.resolve(
+                            path.dirname(require.resolve(name))
+                            + '/node_modules/' + dep
+                        )
+                    }
                 });
+                
                 var deps = exports.wrap(_deps, { required : reqs });
                 reqs.push.apply(reqs, lib.dependencies);
                 return lib.source + '\n' + deps.source;

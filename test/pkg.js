@@ -177,3 +177,19 @@ exports.namedMainRelativeD = function () {
         444
     );
 };
+
+exports.innerRequireModules = function () {
+    var src = browserify.bundle({
+        base : __dirname + '/pkg/e',
+    });
+    
+    var c = { assert : assert };
+    vm.runInNewContext(src, c);
+    
+    assert.eql(
+        vm.runInNewContext('require("./inner")()', c),
+        333
+    );
+    
+    assert.ok(c.require.modules['wowsy/moo']);
+};
