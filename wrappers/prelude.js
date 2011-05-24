@@ -18,7 +18,7 @@ require.modules = {};
 require.fromFile = function (filename, path) {
     // require a file with respect to a path
     var resolved = _browserifyRequire.resolve(filename, path);
-    return _browserifyRequire(resolved)
+    return _browserifyRequire(resolved);
 };
 
 require.resolve = function (basefile, file) {
