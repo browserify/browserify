@@ -13,3 +13,15 @@ exports.stringBase = function () {
         13000
     );
 };
+
+exports.arrayBase = function () {
+    var src = browserify.bundle(__dirname + '/base/array');
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    
+    assert.eql(
+        vm.runInNewContext('require("quux")(3)', c),
+        13000
+    );
+};
