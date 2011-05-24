@@ -8,6 +8,7 @@ _browserifyRequire.modules[$filename] = function () {
         return _browserifyRequire.fromFile($filename, path);
     };
     require.modules = _browserifyRequire.modules;
+    _browserifyRequire.modules[$filename]._cached = module.exports;
     
     (function () {
         $body;
