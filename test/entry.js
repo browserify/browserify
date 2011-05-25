@@ -8,7 +8,7 @@ exports.entry = function () {
         entry : __dirname + '/entry/main.js',
     });
     
-    var c = {};
+    var c = { assert : assert };
     vm.runInNewContext(src, c);
     
     assert.eql(c.entryResult, 333);
