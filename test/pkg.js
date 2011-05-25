@@ -188,3 +188,14 @@ exports.innerRequireModules = function () {
     
     assert.eql(c.require('./inner')(assert), 555);
 };
+
+exports.invalidJSON = function () {
+    var src = browserify.bundle({
+        base : { f : __dirname + '/pkg/f' },
+    });
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    
+    assert.eql(c.require('f')(), 555);
+};
