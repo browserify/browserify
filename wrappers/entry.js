@@ -7,6 +7,7 @@
     var require = function (path) {
         return _browserifyRequire.fromFile($__filename, path);
     };
+    require.modules = _browserifyRequire.modules;
     
     $body;
 })();
