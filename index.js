@@ -360,10 +360,22 @@ var find = require('findit');
 exports.wrapDir = function (base, opts) {
     if (!opts) opts = {};
     
-    var pkg = path.existsSync(base + '/package.json')
-        ? JSON.parse(fs.readFileSync(base + '/package.json', 'utf8'))
-        : {}
-    ;
+    var pkg = {};
+    var pkgFile = base + '/package.json';
+    if (path.existsSync(pkgFile)) {
+        try {
+            pkg = JSON.parse(fs.readFileSync(pkgFile, 'utf8'));
+        }
+        catch (e) {
+            if (e instanceof SyntaxError) {
+                // node ignores faulty package.jsons, so shall we
+                if (opts.listen) {
+                    opts.listen.emit('syntaxError', pkgFile);
+                }
+            }
+            else throw e;
+        }
+    }
     
     var main = opts.main || (pkg.browserify && pkg.browserify.main) || pkg.main;
     
@@ -380,7 +392,19 @@ exports.wrapDir = function (base, opts) {
             return path.basename(f) === 'package.json'
         })
         .reduce(function (acc, f) {
-            acc[path.dirname(f)] = JSON.parse(fs.readFileSync(f, 'utf8'));
+            try {
+                var p = JSON.parse(fs.readFileSync(f, 'utf8'));
+                acc[path.dirname(f)] = p;
+            }
+            catch (e) {
+                if (e instanceof SyntaxError) {
+                    // node ignores faulty package.jsons, so shall we
+                    if (opts.listen) {
+                        opts.listen.emit('syntaxError', pkgFile);
+                    }
+                }
+                else throw e;
+            }
             return acc;
         }, {})
     ;

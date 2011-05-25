@@ -1,6 +1,7 @@
 var assert = require('assert');
 var browserify = require('browserify');
 var vm = require('vm');
+var EventEmitter = require('events').EventEmitter;
 
 exports.bundleA = function () {
     var src = browserify.bundle(__dirname + '/pkg/a');
@@ -192,6 +193,27 @@ exports.innerRequireModules = function () {
 exports.invalidJSON = function () {
     var src = browserify.bundle({
         base : { f : __dirname + '/pkg/f' },
+    });
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    
+    assert.eql(c.require('f')(), 555);
+};
+
+exports.trapInvalidJSON = function () {
+    var ee = new EventEmitter;
+    var to = setTimeout(function () {
+        assert.fail('never caught syntax error from faulty json');
+    }, 5000);
+    
+    ee.on('syntaxError', function () {
+        clearTimeout(to);
+    });
+    
+    var src = browserify.bundle({
+        base : { f : __dirname + '/pkg/f' },
+        listen : ee,
     });
     
     var c = {};
