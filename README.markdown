@@ -117,7 +117,7 @@ index.html
 ````html
 <html>
 <head>
-    <script type="text/javascript" src="/browserify.js?traverse"></script>
+    <script type="text/javascript" src="/browserify.js"></script>
     <script type="text/javascript">
         var Traverse = require('traverse');
         var obj = [ 5, 6, -3, [ 7, 8, -2, 1 ], { f : 10, g : -13 } ];
