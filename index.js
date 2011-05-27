@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var EventEmitter = require('events').EventEmitter;
 var Hash = require('hashish');
+var Seq = require('seq');
 
 var coffee = require('coffee-script');
 var source = require('source');
@@ -16,11 +17,22 @@ var exports = module.exports = function (opts) {
     
     var srcCache = exports.bundle(opts);
     
-    return function (req, res, next) {
+    var self = function (req, res, next) {
         if (!listening) {
             req.connection.server.on('close', ee.emit.bind(ee, 'close'));
             ee.on('change', function (file) {
-                srcCache = exports.bundle(opts);
+                var newCache = exports.bundle(opts);
+                Seq.ap(self.middlewares)
+                    .seqEach_(function (next, fn) {
+                        fn(newCache, function (src) {
+                            newCache = src;
+                            next.ok(newCache);
+                        });
+                    })
+                    .seq(function () {
+                        srcCache = newCache;
+                    })
+                ;
             });
             listening = true;
         }
@@ -34,6 +46,41 @@ var exports = module.exports = function (opts) {
         }
         else next();
     };
+    
+    self.middlewares = [];
+    
+    var using = false;
+    self.use = function (fn) {
+        self.middlewares.push(fn);
+        
+        if (!using) {
+            process.nextTick(function () {
+                using = false;
+                
+                var newCache = srcCache;
+                Seq.ap(self.middlewares)
+                    .seqEach_(function (next, fn) {
+                        fn(newCache, function (src) {
+                            newCache = src;
+                            next.ok(newCache);
+                        });
+                    })
+                    .seq(function () {
+                        srcCache = newCache;
+                    })
+                ;
+            });
+        }
+        using = true;
+    };
+    
+    self.on = ee.on.bind(ee);
+    
+    self.source = function () {
+        return srcCache;
+    };
+    
+    return self;
 };
 
 exports.bundle = function (opts) {
