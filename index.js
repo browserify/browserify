@@ -63,7 +63,20 @@ exports.bundle = function (opts) {
         src += exports.wrap([ req ]).source;
     }
     else if (Array.isArray(req)) {
-        if (req.length) src += exports.wrap(req).source;
+        if (req.length) src += exports.wrap(
+            req.reduce(function (acc, r) {
+                if (typeof r === 'object') {
+                    Object.keys(r).forEach(function (key) {
+                        acc.push({ name : key, target : r[key] });
+                    });
+                }
+                else {
+                    acc.push(r);
+                }
+                
+                return acc;
+            }, [])
+        ).source;
     }
     else if (typeof req === 'object') {
         src += '\n' + Object.keys(req).map(function (name) {

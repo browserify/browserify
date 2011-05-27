@@ -53,3 +53,18 @@ exports.jqueryRequire = function () {
     assert.ok(c.require.modules.jquery);
     assert.ok(!c.require.modules['jquery-browserify']);
 };
+
+exports.mixedRequire = function () {
+    var src = browserify.bundle({
+        require : [
+            'hashish',
+            { 'jquery' : 'jquery-browserify' },
+        ]
+    });
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    verifyHashish(c.require('hashish'));
+    assert.ok(c.require.modules.jquery);
+    assert.ok(!c.require.modules['jquery-browserify']);
+};
