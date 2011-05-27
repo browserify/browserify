@@ -52,19 +52,25 @@ exports.bundle = function (opts) {
     
     var shim = 'shim' in opts ? opts.shim : true;
     var req = opts.require || [];
-    if (!Array.isArray(req)) req = [req];
     
     var src = fs.readFileSync(__dirname + '/wrappers/prelude.js', 'utf8')
         + fs.readFileSync(__dirname + '/wrappers/node_compat.js', 'utf8')
         + (shim ? source.modules('es5-shim')['es5-shim'] : '')
         + builtins
-        + (req.length
-            ? exports.wrap(
-                req, Hash.merge(opts, { base : undefined })
-            ).source
-            : ''
-        )
     ;
+    
+    if (typeof req === 'string') {
+        src += exports.wrap([ req ]).source;
+    }
+    else if (Array.isArray(req)) {
+        if (req.length) src += exports.wrap(req).source;
+    }
+    else if (typeof req === 'object') {
+        src += '\n' + Object.keys(req).map(function (name) {
+            return exports.wrap([ { name : name, target : req[name] } ]).source;
+        }).join('\n');
+    }
+    else throw new Error('Unsupported type ' + typeof req);
     
     if (Array.isArray(opts.base)) {
         opts.base.forEach(function (base) {
@@ -191,8 +197,17 @@ exports.wrap = function (libname, opts) {
         var reqs = opts.required || [];
         
         var src = libname.map(function (name) {
-            var lib = exports.wrap(name, { required : reqs });
-            reqs.push(name);
+            if (typeof name === 'object') {
+                var lib = exports.wrap(
+                    name.target,
+                    { name : name.name, required : reqs }
+                );
+                reqs.push(name.target);
+            }
+            else {
+                var lib = exports.wrap(opts.name || name, { required : reqs });
+                reqs.push(name);
+            }
             
             if (lib.dependencies.length) {
                 var _deps = lib.dependencies.map(function (dep) {
@@ -290,15 +305,15 @@ exports.wrap = function (libname, opts) {
         return { source : src, dependencies : [] };
     }
     else {
-        var mods = source.modules(libname);
-        var pkg = mods[libname + '/package.json'];
+        var mods = source.modules(opts.filename || libname);
+        var pkg = mods[(opts.filename || libname) + '/package.json'];
         
         if (pkg.browserify && pkg.browserify.main) {
             var main = (libname + '/' + pkg.browserify.main)
                 .replace(/\/\.\//g, '/');
             var p = pkg.browserify;
             p.filename = require.resolve(main);
-            p.name = p.name || libname;
+            p.name = opts.name || p.name || libname;
             p.pkgname = p.pkgname || libname;
             
             if (p.base && !p.base.match(/^\//)) {
@@ -337,7 +352,7 @@ exports.wrap = function (libname, opts) {
                             return JSON.stringify(aliases);
                         })
                         .replace(/\$filename/g, function () {
-                            return JSON.stringify(name)
+                            return JSON.stringify(opts.name || name)
                         })
                         .replace(/\$__filename/g, function () {
                             return JSON.stringify(libname + '/' + name)
