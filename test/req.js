@@ -33,9 +33,7 @@ exports.arrayRequire = function () {
 
 exports.objectRequire = function () {
     var src = browserify.bundle({
-        require : {
-            'doom' : 'hashish'
-        },
+        require : { 'doom' : 'hashish' },
     });
     
     var c = {};
@@ -43,4 +41,15 @@ exports.objectRequire = function () {
     verifyHashish(c.require('doom'))
     assert.ok(c.require.modules.doom);
     assert.ok(!c.require.modules.hashish);
+};
+
+exports.jqueryRequire = function () {
+    var src = browserify.bundle({
+        require : { 'jquery' : 'jquery-browserify' },
+    });
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    assert.ok(c.require.modules.jquery);
+    assert.ok(!c.require.modules['jquery-browserify']);
 };

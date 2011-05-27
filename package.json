@@ -1,6 +1,6 @@
 {
     "name" : "browserify",
-    "version" : "0.4.5",
+    "version" : "0.4.6",
     "description" : "Browser-side require() for js directories and npm modules",
     "main" : "./index.js",
     "directories" : {
@@ -33,7 +33,8 @@
         "backbone" : ">=0.3.3",
         "dnode" : ">=0.6.2",
         "jade": "=0.10.4",
-        "expresso" : "=0.7.x"
+        "expresso" : "=0.7.x",
+        "jquery-browserify" : "*"
     },
     "author" : {
         "name" : "James Halliday",
