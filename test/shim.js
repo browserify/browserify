@@ -15,6 +15,5 @@ exports.shim = function () {
         + 'delete Array.prototype.filter;\n'
         + src, c
     );
-    var res = vm.runInNewContext('require("./shim")', c);
-    assert.eql(res(), [ 5, 7, 9 ]);
+    assert.eql(c.require('./shim')(), [ 5, 7, 9 ]);
 };

@@ -12,9 +12,8 @@ exports.backbone = function () {
     
     var c = {};
     vm.runInNewContext(src, c);
-    var b = vm.runInNewContext('require("backbone")', c);
     assert.eql(
         Object.keys(backbone),
-        Object.keys(b)
+        Object.keys(c.require('backbone'))
     );
 };

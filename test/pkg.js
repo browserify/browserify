@@ -8,11 +8,7 @@ exports.bundleA = function () {
     
     var c = {};
     vm.runInNewContext(src, c);
-    
-    assert.eql(
-        vm.runInNewContext('require("./moo").zzz(3)', c),
-        333
-    );
+    assert.eql(c.require("./moo").zzz(3), 333);
 };
 
 exports.namedA = function () {
@@ -23,11 +19,7 @@ exports.namedA = function () {
     
     var c = {};
     vm.runInNewContext(src, c);
-    
-    assert.eql(
-        vm.runInNewContext('require("wowsy/moo").zzz(3)', c),
-        333
-    );
+    assert.eql(c.require("wowsy/moo").zzz(3), 333);
 };
 
 exports.namedMainA = function () {
@@ -40,11 +32,7 @@ exports.namedMainA = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    assert.eql(
-        vm.runInNewContext('require("wowsy").zzz(3)', c),
-        333
-    );
-    
+    assert.eql(c.require("wowsy").zzz(3), 333);
     assert.ok(c.require.modules['wowsy/moo']);
 };
 
@@ -58,11 +46,7 @@ exports.namedMainAbsA = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    assert.eql(
-        vm.runInNewContext('require("wowsy").zzz(3)', c),
-        333
-    );
-    
+    assert.eql(c.require("wowsy").zzz(3), 333);
     assert.ok(c.require.modules['wowsy/moo']);
 };
 
@@ -75,11 +59,7 @@ exports.namedMainNonBaseA = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    assert.eql(
-        vm.runInNewContext('require("wowsy").zzz(3)', c),
-        333
-    );
-    
+    assert.eql(c.require("wowsy").zzz(3), 333);
     assert.ok(
         c.require.modules['wowsy/moo']
         || c.require.modules['wowsy/moo.js']
@@ -91,11 +71,7 @@ exports.bundleB = function () {
     
     var c = {};
     vm.runInNewContext(src, c);
-    
-    assert.eql(
-        vm.runInNewContext('require("$$$").zzz(3)', c),
-        333
-    );
+    assert.eql(c.require("$$$").zzz(3), 333);
 };
 
 exports.namedB = function () {
@@ -107,11 +83,7 @@ exports.namedB = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    assert.eql(
-        vm.runInNewContext('require("wowsy").zzz(3)', c),
-        333
-    );
-    
+    assert.eql(c.require("wowsy").zzz(3), 333);
     assert.ok(!c.require.modules["$$$"]);
 };
 
@@ -125,11 +97,7 @@ exports.namedMainB = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    assert.eql(
-        vm.runInNewContext('require("wowsy").zzz(3)', c),
-        333
-    );
-    
+    assert.eql(c.require("wowsy").zzz(3), 333);
     assert.ok(c.require.modules['wowsy/moo']);
 };
 
@@ -139,11 +107,7 @@ exports.bundleC = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    assert.eql(
-        vm.runInNewContext('require("doom").fn(3)', c),
-        300
-    );
-    
+    assert.eql(c.require("doom").fn(3), 300);
     assert.eql(
         Object.keys(c.require.modules)
             .filter(function (name) { return name.match(/doom/) })
@@ -163,20 +127,9 @@ exports.namedMainRelativeD = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    assert.eql(
-        vm.runInNewContext('require("wowsy/bar")()', c),
-        333
-    );
-    
-    assert.eql(
-        vm.runInNewContext('require("wowsy")()', c),
-        444
-    );
-    
-    assert.eql(
-        vm.runInNewContext('require("wowsy/foo")()', c),
-        444
-    );
+    assert.eql(c.require("wowsy/bar")(), 333);
+    assert.eql(c.require("wowsy")(), 444);
+    assert.eql(c.require("wowsy/foo")(), 444);
 };
 
 exports.innerRequireModules = function () {

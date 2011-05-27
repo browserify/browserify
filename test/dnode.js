@@ -15,7 +15,7 @@ exports.dnode = function () {
         document : {},
     };
     vm.runInNewContext(src, c);
-    var dnode = vm.runInNewContext('require("dnode")', c);
+    var dnode = c.require('dnode');
     assert.ok(dnode);
     assert.ok(dnode.connect);
 };

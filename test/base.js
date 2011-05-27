@@ -22,7 +22,7 @@ exports.arrayBase = function () {
 exports.objectBase = function () {
     var src = browserify.bundle(__dirname + '/base/object');
     
-    var c = { assert : assert, console : console };
+    var c = { assert : assert };
     vm.runInNewContext(src, c);
     
     assert.equal(c.require('quux/aa/a')(3), 13000);

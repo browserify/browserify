@@ -13,15 +13,8 @@ exports.multibaseObject = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    assert.eql(
-        vm.runInNewContext('require("foo/moo").zzz(3)', c),
-        333
-    );
-    
-    assert.eql(
-        vm.runInNewContext('require("bar").zzz(3)', c),
-        333
-    );
+    assert.eql(c.require('foo/moo').zzz(3), 333);
+    assert.eql(c.require("bar").zzz(3), 333);
 };
 
 exports.multibaseArray = function () {
@@ -35,14 +28,6 @@ exports.multibaseArray = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    assert.eql(
-        vm.runInNewContext('require("./moo").zzz(3)', c),
-        333
-    );
-    
-    assert.eql(
-        vm.runInNewContext('require("doom").fn(3)', c),
-        300
-    );
-
+    assert.eql(c.require("./moo").zzz(3), 333);
+    assert.eql(c.require("doom").fn(3), 300);
 };

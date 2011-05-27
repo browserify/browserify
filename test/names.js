@@ -10,8 +10,7 @@ exports.named = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    var names = vm.runInNewContext('require("names")', c).names;
-    assert.eql(names, {
+    assert.eql(c.require('names').names, {
         __dirname : 'names',
         __filename : 'names/index.js',
     });
@@ -23,8 +22,7 @@ exports.names = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    var names = vm.runInNewContext('require("./index")', c).names;
-    assert.eql(names, {
+    assert.eql(c.require('./index').names, {
         __dirname : '.',
         __filename : './index.js',
     });

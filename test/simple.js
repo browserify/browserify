@@ -93,7 +93,7 @@ exports.simple = function () {
                 // extensions are ok too
                 assert.equal(
                     context.foo,
-                    vm.runInNewContext('require("./foo.js")', context)
+                    context.require("./foo.js")
                 );
             });
         });
