@@ -30,3 +30,17 @@ exports.arrayRequire = function () {
     verifyHashish(c.require('hashish'))
     assert.ok(c.require.modules.hashish);
 };
+
+exports.objectRequire = function () {
+    var src = browserify.bundle({
+        require : {
+            'doom' : 'hashish'
+        },
+    });
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    verifyHashish(c.require('doom'))
+    assert.ok(c.require.modules.doom);
+    assert.ok(!c.require.modules.hashish);
+};
