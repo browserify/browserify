@@ -314,7 +314,7 @@ exports.wrap = function (libname, opts) {
             var p = pkg.browserify;
             p.filename = require.resolve(main);
             p.name = opts.name || p.name || libname;
-            p.pkgname = p.pkgname || libname;
+            p.pkgname = opts.name || p.pkgname || libname;
             
             if (p.base && !p.base.match(/^\//)) {
                 p.base = (
