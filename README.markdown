@@ -199,6 +199,19 @@ instance to make `require('jquery')` load jquery-browserify browser-side, do:
     require : { jquery : 'jquery-browserify' }
 ````
 
+You can mix and match Array style and Object style too:
+
+````javascript
+    require : [
+        'seq',
+        'traverse',
+        {
+            jquery : 'jquery-browserify',
+            hash : 'hashish',
+        }
+    ]
+````
+
 ### entry :: String or Array
 
 Append this file to the end of the bundle in order to execute code without
