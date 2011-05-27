@@ -63,25 +63,10 @@ exports.bundle = function (opts) {
         src += exports.wrap([ req ]).source;
     }
     else if (Array.isArray(req)) {
-        if (req.length) src += exports.wrap(
-            req.reduce(function (acc, r) {
-                if (typeof r === 'object') {
-                    Object.keys(r).forEach(function (key) {
-                        acc.push({ name : key, target : r[key] });
-                    });
-                }
-                else {
-                    acc.push(r);
-                }
-                
-                return acc;
-            }, [])
-        ).source;
+        src += exports.wrap(req).source;
     }
     else if (typeof req === 'object') {
-        src += '\n' + Object.keys(req).map(function (name) {
-            return exports.wrap([ { name : name, target : req[name] } ]).source;
-        }).join('\n');
+        src += exports.wrap([ req ]).source;
     }
     else throw new Error('Unsupported type ' + typeof req);
     
@@ -211,11 +196,17 @@ exports.wrap = function (libname, opts) {
         
         var src = libname.map(function (name) {
             if (typeof name === 'object') {
-                var lib = exports.wrap(
-                    name.target,
-                    { name : name.name, required : reqs }
-                );
-                reqs.push(name.target);
+                var lib = { source : '', dependencies : [] };
+                Object.keys(name).forEach(function (key) {
+                    var sublib = exports.wrap(
+                        name[key],
+                        { name : key, required : reqs }
+                    );
+                    reqs.push(key);
+                    lib.source += sublib.source;
+                    lib.dependencies = lib.dependencies
+                        .concat(sublib.dependencies);
+                });
             }
             else {
                 var lib = exports.wrap(opts.name || name, { required : reqs });
@@ -248,7 +239,22 @@ exports.wrap = function (libname, opts) {
         return { source : src, dependencies : [] };
     }
     else if (opts.required && opts.required.indexOf(libname) >= 0) {
-        return { source : '', dependencies : [] };
+        if (opts.name && opts.required.indexOf(opts.name) < 0) {
+            opts.required.push(opts.name);
+            return {
+                source :
+                    '_browserifyRequire.modules['
+                    + JSON.stringify(opts.name)
+                    + '] = _browserifyRequire.modules['
+                    + JSON.stringify(libname)
+                    + '];\n'
+                ,
+                dependencies : [],
+            };
+        }
+        else {
+            return { source : '', dependencies : [] };
+        }
     }
     else if (libname.match(/^[.\/]/)) {
         var src = fs.readFileSync(opts.filename, 'utf8');

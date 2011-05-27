@@ -78,13 +78,16 @@ exports.multiMixedRequire = function () {
                 'jquery' : 'jquery-browserify',
                 'h' : 'hashish',
             },
-        ]
+            { par : 'seq' },
+        ],
     });
     
     var c = {};
     vm.runInNewContext(src, c);
     verifyHashish(c.require('h'));
     assert.ok(c.require.modules.seq);
+    assert.ok(c.require.modules.par);
+    assert.equal(c.require('seq'), c.require('par'));
     assert.ok(c.require.modules.traverse);
     assert.ok(c.require.modules.jquery);
     assert.ok(!c.require.modules['jquery-browserify']);
