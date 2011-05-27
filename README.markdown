@@ -159,7 +159,7 @@ browserify.bundle(opts)
 
 Return a string with the bundled source code given the options in `opts`:
 
-### base
+### base :: String, Array, or Object
 
 Recursively bundle all `.js` and `.coffee` files.
 
@@ -169,22 +169,22 @@ maps names to directories such that `require('name/submodule')` works.
 If there is a package.json at the `base` directory it will be read
 according to the `package.json` procedure below.
 
-### name
+### name :: String
 
 Preface the files in `base` with this name.
 
-### main
+### main :: String
 
 Map `require(name)` for the `name` field to this file.
 
-### shim
+### shim :: Boolean
 
 Whether to include [es5-shim](https://github.com/kriskowal/es5-shim) for legacy
 javascript engines.
 
 True if unspecified.
 
-### require
+### require :: String, Array, or Object
 
 Bundle all of these module names and their dependencies.
 
@@ -192,7 +192,14 @@ If the name has a slash in it, only that file will be included, otherwise all
 .js and .coffee files which are not in the test directory and are not binaries
 will be bundled into the final output.
 
-### entry
+If `require` is an object, map a name to use browser-side to a package name. For
+instance to make `require('jquery')` load jquery-browserify browser-side, do:
+
+````javascript
+    require : { jquery : 'jquery-browserify' }
+````
+
+### entry :: String or Array
 
 Append this file to the end of the bundle in order to execute code without
 having to `require()` it.
@@ -203,7 +210,7 @@ to load the entry point in a `<script>` tag yourself.
 If entry is an Array, concatenate these files together and append to the end of
 the bundle.
 
-### watch
+### watch :: Boolean or Object
 
 Set watches on files and propagates "change" events to `opts.listen`.
 
