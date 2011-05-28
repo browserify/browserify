@@ -8,6 +8,7 @@ var coffee = require('coffee-script');
 var source = require('source');
 
 var exports = module.exports = function (opts) {
+    if (!opts) opts = {};
     var modified = new Date();
     
     if (!opts.hasOwnProperty('watch')) opts.watch = true;
@@ -90,6 +91,7 @@ var exports = module.exports = function (opts) {
 };
 
 exports.bundle = function (opts) {
+    if (!opts) opts = {};
     if (typeof opts === 'string') {
         opts = { base : opts };
         var opts_ = arguments[1];
