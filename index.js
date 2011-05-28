@@ -74,9 +74,13 @@ var exports = module.exports = function (opts) {
             });
         }
         using = true;
+        return self;
     };
     
-    self.on = ee.on.bind(ee);
+    self.on = function () {
+        ee.on.apply(ee, arguments);
+        return self;
+    };
     
     self.source = function () {
         return srcCache;

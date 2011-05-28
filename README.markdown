@@ -273,10 +273,14 @@ Use `.use()` when you want to chain together multiple filters or you need a
 filter that works asynchronously. A "ready" event fires with the transformed
 source when your source is done threading through the middlewares.
 
+Returns `this` so you can chain.
+
 .on(name, fn)
 -------------
 
 Emit events from `opts.listen` here too, including "ready" and "change".
+
+Returns `this` so you can chain.
 
 .source()
 ---------
