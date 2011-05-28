@@ -20,8 +20,9 @@ exports.middleware = function () {
     }, 5000);
     
     bundle.on('ready', function (src) {
+        clearTimeout(to);
         var c = { console : console };
         vm.runInNewContext(src, c);
-        assert.equal(c.require('./'), 555);
+        assert.equal(c.require('./')(), 555);
     });
 };
