@@ -1,4 +1,4 @@
-(function () {
+process.nextTick(function () {
     var module = { exports : {} };
     var exports = module.exports;
     var __dirname = $__dirname;
@@ -10,4 +10,4 @@
     require.modules = _browserifyRequire.modules;
     
     $body;
-})();
+});
