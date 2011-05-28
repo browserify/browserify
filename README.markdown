@@ -152,6 +152,9 @@ Return a middleware that will host up a browserified script at `opts.mount` or
 `"/browserify.js"` if unspecified. All other options are passed to
 `browserify.bundle(opts)` to generate the source.
 
+The middleware function also has several functions attached to it, described in
+the middleware section below.
+
 browserify.bundle(base)
 -----------------------
 browserify.bundle(opts)
@@ -248,6 +251,37 @@ over the standard package.json contents. This special field is meant for
 packages that have a special browser-side component like dnode and socket.io.
 If a main is specified in a "browserify" hash and no "base" is given, only that
 "main" file will be bundled.
+
+middleware
+==========
+
+When you call `browserify()` you get back a function that you can throw at
+connect or express-style servers, but you can also call functions directly.
+
+````javascript
+
+````
+
+.use(fn)
+--------
+
+Use an asynchronous middleware `fn(src, next)`, which gets called with src, the
+browserified source and next, a function that expects to be called with the new
+source.
+
+Use `.use()` when you want to chain together multiple filters or you need a
+filter that works asynchronously. A "ready" event fires with the transformed
+source when your source is done threading through the middlewares.
+
+.on(name, fn)
+-------------
+
+Emit events from `opts.listen` here too, including "ready" and "change".
+
+.source()
+---------
+
+Get at the current source.
 
 compatability
 =============
