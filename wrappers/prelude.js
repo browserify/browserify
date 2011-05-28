@@ -24,22 +24,27 @@ require.fromFile = function (filename, path) {
 };
 
 require.resolve = function (basefile, file) {
-    if (_browserifyRequire.modules[basefile + '/node_modules/' + file]) {
-        return basefile + '/node_modules/' + file;
-    }
-    if (!file.match(/^[\.\/]/)) return file;
-    if (file.match(/^\//)) return file;
-    
-    /*
-    if (!basedir) basedir = basefile.match(/^[\.\/]/)
-        ? basefile.replace(/[^\/]+$/, '')
-        : basefile
-    ;
-    */
     var basedir = basefile.match(/\//)
         ? basefile.replace(/[^\/]+$/, '')
         : basefile
     ;
+    var pkg = file.split('/')[0];
+    
+    if (_browserifyRequire.modules[basefile + '/node_modules/' + file]) {
+        return basefile + '/node_modules/' + file;
+    }
+    else if (_browserifyRequire.modules[
+        basedir.replace(/\/$/, '') + '/node_modules/' + pkg
+    ]) {
+        return basedir.replace(/\/$/, '') + '/node_modules/' + pkg
+    }
+    else if (_browserifyRequire.modules[
+        basedir.replace(/\/$/, '') + '/node_modules/' + pkg + '/index'
+    ]) {
+        return basedir.replace(/\/$/, '') + '/node_modules/' + pkg + '/index';
+    }
+    else if (!file.match(/^[\.\/]/)) return file;
+    else if (file.match(/^\//)) return file;
     
     if (basedir === '') {
         basedir = '.';
