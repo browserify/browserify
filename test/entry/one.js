@@ -1,1 +1,1 @@
-one = 'one';
+clearTimeout(t1);

@@ -1,1 +1,2 @@
-@entryResult = require('./moo').zzz 3
+clearTimeout to
+assert.equal(require('./moo').zzz(3), 333)

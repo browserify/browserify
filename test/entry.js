@@ -2,16 +2,30 @@ var assert = require('assert');
 var browserify = require('browserify');
 var vm = require('vm');
 
+var setTimeout_ = function (cb, t) {
+    if (!t) {
+        process.nextTick(cb);
+    }
+    else {
+        setTimeout(cb, t);
+    }
+};
+
 exports.entry = function () {
     var src = browserify.bundle({
         base : __dirname + '/pkg/a',
         entry : __dirname + '/entry/main.js',
     });
     
-    var c = { assert : assert };
+    var c = {
+        assert : assert,
+        setTimeout : setTimeout_,
+        clearTimeout : clearTimeout,
+        to : setTimeout(function () {
+            assert.fail('entry never fired')
+        }, 5000),
+    };
     vm.runInNewContext(src, c);
-    
-    assert.eql(c.entryResult, 333);
 };
 
 exports.entryCoffee = function () {
@@ -20,10 +34,15 @@ exports.entryCoffee = function () {
         entry : __dirname + '/entry/main.coffee',
     });
     
-    var c = {};
+    var c = {
+        assert : assert,
+        setTimeout : setTimeout_,
+        clearTimeout : clearTimeout,
+        to : setTimeout(function () {
+            assert.fail('entry never fired')
+        }, 5000),
+    };
     vm.runInNewContext(src, c);
-    
-    assert.eql(c.entryResult, 333);
 };
 
 exports.entries = function () {
@@ -35,10 +54,15 @@ exports.entries = function () {
         ],
     });
     
-    var c = {};
+    var c = {
+        setTimeout : setTimeout_,
+        clearTimeout : clearTimeout,
+        t1 : setTimeout(function () {
+            assert.fail('first entry never fired')
+        }, 5000),
+        t2 : setTimeout(function () {
+            assert.fail('second entry never fired')
+        }, 5000),
+    };
     vm.runInNewContext(src, c);
-    
-    assert.eql(c.one, 'one');
-    assert.eql(c.two, 'two');
-    assert.eql(c.onetwo, 'onetwo');
 };

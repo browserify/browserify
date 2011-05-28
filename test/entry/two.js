@@ -1,2 +1,1 @@
-two = 'two';
-onetwo = one + two;
+clearTimeout(t2);
