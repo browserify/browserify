@@ -31,6 +31,7 @@ var exports = module.exports = function (opts) {
                     })
                     .seq(function () {
                         srcCache = newCache;
+                        ee.emit('ready', srcCache);
                     })
                 ;
             });
@@ -67,6 +68,7 @@ var exports = module.exports = function (opts) {
                     })
                     .seq(function () {
                         srcCache = newCache;
+                        ee.emit('ready', srcCache);
                     })
                 ;
             });

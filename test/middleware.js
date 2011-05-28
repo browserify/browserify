@@ -20,7 +20,7 @@ exports.middleware = function () {
     }, 5000);
     
     bundle.on('ready', function (src) {
-        var c = {};
+        var c = { console : console };
         vm.runInNewContext(src, c);
         assert.equal(c.require('./'), 555);
     });
