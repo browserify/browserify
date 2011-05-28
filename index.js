@@ -62,7 +62,7 @@ var exports = module.exports = function (opts) {
                 var newCache = srcCache;
                 Seq.ap(self.middlewares)
                     .seqEach_(function (next, fn) {
-                        fn(newCache, function (src) {
+                        fn.call(self, newCache, function (src) {
                             newCache = src;
                             next.ok(newCache);
                         });

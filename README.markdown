@@ -273,7 +273,7 @@ Use `.use()` when you want to chain together multiple filters or you need a
 filter that works asynchronously. A "ready" event fires with the transformed
 source when your source is done threading through the middlewares.
 
-Returns `this` so you can chain.
+Returns `this` so you can chain and inside `fn`, `this` is the bundle object.
 
 .on(name, fn)
 -------------
