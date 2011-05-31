@@ -24,7 +24,7 @@ exports.precedence = function () {
         require : [ 'hashish' ],
     });
     
-    var c = { console : console };
+    var c = {};
     vm.runInNewContext(src, c);
     assert.ok(c.require.modules.hashish);
     assert.deepEqual(

@@ -12,7 +12,7 @@ var exports = module.exports = function (opts) {
     var modified = new Date();
     
     if (!opts.hasOwnProperty('watch')) opts.watch = true;
-    var ee = opts.listen = opts.listen || new EventEmitter;
+    var ee = opts.listen || new EventEmitter;
     ee.setMaxListeners(opts.maxListeners || 50);
     var listening = false;
     
