@@ -4,9 +4,7 @@ var http = require('http');
 var vm = require('vm');
 var fs = require('fs');
 
-var foo = require('./simple/foo');
-
-exports.simple = function () {
+exports.watch = function () {
     var port = 10000 + Math.floor(Math.random() * (Math.pow(2,16) - 10000));
     var server = connect.createServer();
     
@@ -15,7 +13,7 @@ exports.simple = function () {
     }, 5000);
     var filters = 0;
     
-    server.use(require('browserify')({
+    var bundle = require('browserify')({
         base : __dirname + '/watch',
         mount : '/bundle.js',
         filter : function (src) {
@@ -24,11 +22,14 @@ exports.simple = function () {
             return src;
         },
         watch : { interval : 100 },
-    }));
+    });
+    
+    server.use(bundle);
     
     server.use(connect.static(__dirname + '/watch'));
+    
     server.listen(port, function () {
-        setTimeout(compareSources, 1000);
+        setTimeout(compareSources, 100);
     });
     
     function getBundle (cb) {
@@ -54,12 +55,11 @@ exports.simple = function () {
             var a1 = c1.require('./a');
             
             var a2 = Math.floor(Math.random() * 10000);
-            fs.writeFileSync(
-                __dirname + '/watch/a.js',
-                'module.exports = ' + a2
-            );
-            setTimeout(function () {
+            
+            bundle.on('ready', function (s2_) {
                 getBundle(function (s2) {
+                    assert.notEqual(s1, s2, 'sources are equal');
+                    
                     var c2 = {};
                     vm.runInNewContext(s2, c2);
                     var a2_ = c2.require('./a');
@@ -72,7 +72,12 @@ exports.simple = function () {
                     server.close();
                     assert.eql(a2, a2_);
                 });
-            }, 500);
+            });
+            
+            fs.writeFileSync(
+                __dirname + '/watch/a.js',
+                'module.exports = ' + a2
+            );
         });
     }
 };
