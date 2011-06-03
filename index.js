@@ -12,11 +12,17 @@ var exports = module.exports = function (opts) {
     var modified = new Date();
     
     if (!opts.hasOwnProperty('watch')) opts.watch = true;
-    var ee = opts.listen || new EventEmitter;
+    var ee = opts.listen = opts.listen || new EventEmitter;
+    
     ee.setMaxListeners(opts.maxListeners || 50);
     var listening = false;
     
     var srcCache = exports.bundle(opts);
+    process.nextTick(function () {
+        if (self.middlewares.length === 0) {
+            ee.emit('ready', self.source());
+        }
+    });
     
     var self = function (req, res, next) {
         if (!listening) {
@@ -33,6 +39,7 @@ var exports = module.exports = function (opts) {
                     .seq(function () {
                         srcCache = newCache;
                         ee.emit('ready', srcCache);
+                        listening = false;
                     })
                 ;
             });
@@ -623,9 +630,7 @@ function fileWatch (file, opts) {
             console.log('File change detected, regenerating bundle');
         }
         
-        if (opts.listen) {
-            opts.listen.removeListener('close', unwatch);
-            opts.listen.emit('change', file);
-        }
+        opts.listen.removeListener('close', unwatch);
+        opts.listen.emit('change', file);
     });
 }
