@@ -1,7 +1,7 @@
 {
     "name" : "quux",
     "browserify" : {
-        "main" : "./a/indecks.js",
+        "main" : "./indecks.js",
         "base" : [ "./a", "./b" ]
     }
 }
