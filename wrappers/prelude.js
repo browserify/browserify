@@ -1,8 +1,9 @@
-function require (file, relativeTo) {
+var require = function (file, relativeTo) {
     var resolved = require.resolve(file, relativeTo);
     var mod = require.modules[resolved];
     return mod._cached ? mod._cached : mod();
 }
+var __require = require;
 
 require.paths = [];
 require.modules = {};

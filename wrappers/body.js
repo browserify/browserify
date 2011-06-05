@@ -4,8 +4,6 @@ require.modules[$__filename] = function () {
     var __dirname = $__dirname;
     var __filename = $__filename;
     
-    var __require = require;
-    
     var require = function (file) {
         return __require(file, $__filename);
     };
