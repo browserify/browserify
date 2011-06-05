@@ -16,7 +16,7 @@ exports.arrayBase = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    assert.equal(c.require('quux')(3), 13000);
+    assert.equal(c.require('./')(3), 13000);
 };
 
 exports.objectBase = function () {
