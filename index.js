@@ -193,7 +193,7 @@ exports.bundle = function (opts) {
             
             src += pkg.toString();
             
-            pkg.dependencies.needs.forEach(function (dep) {
+            Object.keys(pkg.dependencies.needs).forEach(function (dep) {
                 if (!deps[dep]) newDeps[dep] = true;
             });
         });
