@@ -282,10 +282,11 @@ exports.wrap = function (libname, opts) {
                         return dep;
                     }
                     catch (e) {
-                        return require.resolve(
-                            path.dirname(require.resolve(name))
-                            + '/node_modules/' + dep
-                        )
+                        var dirname = path.dirname(require.resolve(name));
+                        var fullpath = require.resolve(
+                            dirname + '/node_modules/' + dep
+                        );
+                        return fullpath.slice(dirname.length - name.length);
                     }
                 });
                 

@@ -2,12 +2,13 @@ var assert = require('assert');
 var connect = require('connect');
 var http = require('http');
 var vm = require('vm');
+var browserify = require('browserify');
 
 exports.seq = function () {
     var port = 10000 + Math.floor(Math.random() * (Math.pow(2,16) - 10000));
     var server = connect.createServer();
     
-    server.use(require('browserify')({
+    server.use(browserify({
         mount : '/bundle.js',
         require : [ 'seq' ],
     }));
@@ -46,6 +47,7 @@ exports.seq = function () {
             
             res.on('end', function () {
                 vm.runInNewContext(src, context);
+                console.dir(Object.keys(context.require.modules));
                 
                 vm.runInNewContext(
                     'var Seq = require("seq");'
