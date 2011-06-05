@@ -4,15 +4,20 @@ var Script = exports.Script = function NodeScript (code) {
 };
 
 Script.prototype.runInNewContext = function (context, name) {
-    // not strictly isolated but at least you can pass in a context
-    var names = [];
-    var values = [];
-    Object.keys(context).forEach(function (key) {
-        names.push(key);
-        values.push(context[key]);
+    var iframe = document.createElement('iframe');
+    if (!iframe.style) iframe.style = {};
+    iframe.style.display = 'none';
+    
+    document.appendChild(iframe);
+    var win = iframe.contentWindow;
+    
+    var res = win.eval(this.code);
+    
+    Object.keys(win).forEach(function (acc, key) {
+        context[key] = win[key];
     });
-    var fn = Function.apply(null, names.concat('return ' + this.code));
-    return fn.apply(fn, values);
+    
+    return res;
 };
 
 Script.prototype.runInThisContext = function () {
