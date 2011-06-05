@@ -25,5 +25,5 @@ exports.objectBase = function () {
     var c = { assert : assert };
     vm.runInNewContext(src, c);
     
-    assert.equal(c.require('quux/aa/a')(3), 13000);
+    assert.equal(c.require('./aa/a')(3), 13000);
 };
