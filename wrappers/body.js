@@ -1,22 +1,26 @@
-_browserifyRequire.modules[$__filename] = function () {
+require.modules[$__filename] = function () {
     var module = { exports : {} };
     var exports = module.exports;
     var __dirname = $__dirname;
     var __filename = $__filename;
     
-    var require = function (path) {
-        return _browserifyRequire.fromFile($__filename, path);
+    var __require = require;
+    
+    var require = function (file) {
+        return __require(file, $__filename);
     };
-    require.modules = _browserifyRequire.modules;
-    require.resolve = function (name) {
-        return _browserifyRequire.resolve(name, $__dirname);
+    
+    require.resolve = function (file) {
+        return __require.resolve(name, $__dirname);
     };
-    _browserifyRequire.modules[$__filename]._cached = module.exports;
+    
+    require.modules = __require.modules;
+    __require.modules[$__filename]._cached = module.exports;
     
     (function () {
         $body;
     }).call(module.exports);
     
-    _browserifyRequire.modules[$__filename]._cached = module.exports;
+    __require.modules[$__filename]._cached = module.exports;
     return module.exports;
 };

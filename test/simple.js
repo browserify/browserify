@@ -71,6 +71,7 @@ exports.simple = function () {
             server.close();
             
             var context = {
+                console : console,
                 filterHook : function () {
                     clearTimeout(th);
                 }

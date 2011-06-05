@@ -4,10 +4,12 @@ process.nextTick(function () {
     var __dirname = $__dirname;
     var __filename = $__filename;
     
-    var require = function (path) {
-        return _browserifyRequire.fromFile($__filename, path);
+    var __require = require;
+    
+    var require = function (file) {
+        return require(file, $__filename);
     };
-    require.modules = _browserifyRequire.modules;
+    require.modules = __require.modules;
     
     $body;
 });
