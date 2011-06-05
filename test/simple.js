@@ -3,6 +3,7 @@ var connect = require('connect');
 var http = require('http');
 var vm = require('vm');
 var fs = require('fs');
+var browserify = require('browserify');
 
 var foo = require('./simple/foo');
 
@@ -14,7 +15,7 @@ exports.simple = function () {
         assert.fail('never filtered');
     }, 5000);
     
-    server.use(require('browserify')({
+    server.use(browserify({
         base : __dirname + '/simple',
         mount : '/bundle.js',
         filter : function (src) {
