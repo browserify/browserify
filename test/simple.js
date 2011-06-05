@@ -73,7 +73,8 @@ exports.simple = function () {
             var context = {
                 filterHook : function () {
                     clearTimeout(th);
-                }
+                },
+                console : console,
             };
             var src = '';
             res.on('data', function (buf) {

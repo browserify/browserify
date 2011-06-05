@@ -19,7 +19,6 @@ exports.bundle = function () {
             assert.eql([x,y,z], [100,200,300]);
         },
         setTimeout : setTimeout,
-        console : console,
     };
     vm.runInNewContext(src, c);
     vm.runInNewContext(

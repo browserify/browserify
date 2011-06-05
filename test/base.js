@@ -5,9 +5,9 @@ var vm = require('vm');
 exports.stringBase = function () {
     var src = browserify.bundle(__dirname + '/base/string');
     
-    var c = {};
+    var c = { console : console };
     vm.runInNewContext(src, c);
-    assert.equal(c.require('quux')(3), 13000);
+    assert.equal(c.require('./')(3), 13000);
 };
 
 exports.arrayBase = function () {
