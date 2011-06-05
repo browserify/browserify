@@ -43,6 +43,11 @@ require.resolve = function (basefile, file) {
     ]) {
         return basedir.replace(/\/$/, '') + '/node_modules/' + pkg + '/index';
     }
+    else if (_browserifyRequire.modules[
+        basedir.replace(/\/$/, '') + '/node_modules/' + pkg + '/index.js'
+    ]) {
+        return basedir.replace(/\/$/, '') + '/node_modules/' + pkg + '/index.js';
+    }
     else if (!file.match(/^[\.\/]/)) return file;
     else if (file.match(/^\//)) return file;
     

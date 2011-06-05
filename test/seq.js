@@ -47,7 +47,6 @@ exports.seq = function () {
             
             res.on('end', function () {
                 vm.runInNewContext(src, context);
-                console.dir(Object.keys(context.require.modules));
                 
                 vm.runInNewContext(
                     'var Seq = require("seq");'
