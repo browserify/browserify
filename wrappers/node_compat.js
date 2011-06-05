@@ -1,6 +1,12 @@
-if (typeof process === 'undefined') process = {
-    nextTick : function (fn) {
-        setTimeout(fn, 0);
-    },
-    title : 'browser'
+if (typeof process === 'undefined') process = {};
+
+if (!process.nextTick) process.nextTick = function (fn) {
+    setTimeout(fn, 0);
+};
+
+if (!process.title) process.title = 'browser';
+
+if (!process.binding) process.binding = function (name) {
+    if (name === 'evals') return require('vm')
+    else throw new Error('No such module')
 };
