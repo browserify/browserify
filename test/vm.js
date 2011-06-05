@@ -34,6 +34,7 @@ exports.vmRunInNewContext = function () {
         
         assert.ok(c0.require.modules.vm);
         var vm0 = c0.require('vm');
+        assert.equal(c0.process.binding('evals'), vm0);
          
         assert.equal(
             vm0.runInNewContext('a + 5', { a : 100 }),
