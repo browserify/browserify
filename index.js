@@ -237,20 +237,18 @@ exports.wrap = function (libname, opts) {
         opts.main = opts.base + '/' + opts.main;
     }
     
-    var aliases = [];
-    if (opts.name && (
-        opts.main === opts.filename
-        || libname === opts.name
-        || libname === '.'
-    )) {
-        aliases = opts.base
-            ? [
-                (opts.name + unext(opts.filename.slice(opts.base.length)))
-                    .replace(/\/\.\//g, '/'),
-                opts.name,
-            ]
-            : [ opts.name ]
-        ;
+    var aliases = opts.aliases || [];
+    var isMain = opts.name && (
+        opts.main === opts.filename || libname === opts.name || libname === '.'
+    );
+    
+    if (isMain) {
+        aliases.push(opts.name);
+        
+        if (opts.base) {
+            var a = opts.name + unext(opts.filename.slice(opts.base.length));
+            aliases.push(a.replace(/\/\.\//g, '/'));
+        }
     }
     
     if (Array.isArray(libname)) {
