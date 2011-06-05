@@ -9,14 +9,23 @@ Script.prototype.runInNewContext = function (context, name) {
     iframe.style.display = 'none';
     
     document.appendChild(iframe);
-    var win = iframe.contentWindow;
+    
+    var win = iframe.contentWindow
+        || (window.frames && window.frames[window.frames.length - 1])
+        || window[window.length - 1]
+    ;
+    
+    Object.keys(context).forEach(function (key) {
+        win[key] = context[key];
+    });
     
     var res = win.eval(this.code);
     
-    Object.keys(win).forEach(function (acc, key) {
+    Object.keys(win).forEach(function (key) {
         context[key] = win[key];
     });
     
+    document.removeChild(iframe);
     return res;
 };
 

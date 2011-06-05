@@ -36,7 +36,8 @@
         "dnode" : ">=0.6.2",
         "jade": "=0.10.4",
         "expresso" : "=0.7.x",
-        "jquery-browserify" : "*"
+        "jquery-browserify" : "*",
+        "jsdom" : "=0.2.x"
     },
     "author" : {
         "name" : "James Halliday",
