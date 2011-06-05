@@ -5,13 +5,14 @@ var jsdom = require('jsdom');
 
 exports.vmRunInNewContext = function () {
     var src = browserify.bundle();
+    var html = '<html><head></head><body></body></html>';
     
-    jsdom.env('<html></html>', function (err, window) {
+    jsdom.env(html, function (err, window) {
         window.eval = function (code) {
             return vm.runInNewContext(code, window);
         };
         
-        jsdom.env('<html></html>', function (err, iframe) {
+        jsdom.env(html, function (err, iframe) {
             if (err) assert.fail(err);
             
             iframe.eval = function (code) {

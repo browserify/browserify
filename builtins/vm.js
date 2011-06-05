@@ -5,10 +5,11 @@ var Script = exports.Script = function NodeScript (code) {
 
 Script.prototype.runInNewContext = function (context, name) {
     var iframe = document.createElement('iframe');
+    //iframe.setAttribute('src', 'about:blank');
     if (!iframe.style) iframe.style = {};
     iframe.style.display = 'none';
     
-    document.appendChild(iframe);
+    document.body.appendChild(iframe);
     
     var win = iframe.contentWindow
         || (window.frames && window.frames[window.frames.length - 1])
@@ -25,7 +26,7 @@ Script.prototype.runInNewContext = function (context, name) {
         context[key] = win[key];
     });
     
-    document.removeChild(iframe);
+    document.body.removeChild(iframe);
     return res;
 };
 
