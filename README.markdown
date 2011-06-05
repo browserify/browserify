@@ -12,6 +12,8 @@ More features:
 
 * recursively bundle dependencies of npm modules
 
+* node core modules (path, vm, events)
+
 * uses es5-shim and crockford's json2.js for browsers that suck
 
 * filters for {min,ugl}ification
@@ -298,13 +300,19 @@ Browserify exports a faux `process` object with these attributes:
 * nextTick(fn) - does setTimeout(fn, 0)
 * title - set to 'browser' for browser code, 'node' in regular node code
 
-events
-------
+require('events')
+-----------------
 
 You can `require('events').EventEmitters` just like in node.js code.
 
-path
-----
+require('vm')
+-------------
+
+All the goodness of node's `require('vm')` has been emulated with iframe
+trickery and `eval()` hacks.
+
+require('path')
+---------------
 
 The posix functions from the `path` module have been included except for
 `exists()` and `existsSync()`. Just `require('path')`!
