@@ -12,7 +12,6 @@ exports.backbone = function () {
     
     var c = {};
     vm.runInNewContext(src, c);
-console.dir(c.require.modules);
     assert.eql(
         Object.keys(backbone),
         Object.keys(c.require('backbone'))
