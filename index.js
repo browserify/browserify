@@ -124,32 +124,84 @@ exports.bundle = function (opts) {
     ;
     
     var packages = [];
+    
+    var resolve = function (p) {
+        if (p.match(/^[.\/]/)) return p;
+        
+        try {
+            return path.dirname(require.resolve(p + '/package.json'));
+        }
+        catch (err) {
+            return path.dirname(require.resolve(p));
+        }
+    };
+    
+    if (typeof opts.require === 'string') {
+        packages.push(Package(opts.require, resolve(opts.require)));
+    }
+    else if (Array.isArray(opts.require)) {
+        opts.require.forEach(function (ps) {
+            if (typeof ps === 'object') {
+                Hash(ps).forEach(function (p, key) {
+                    packages.push(Package(key, resolve(p)));
+                });
+            }
+            else {
+                packages.push(Package(ps, resolve(ps)));
+            }
+        });
+    }
+    else if (typeof opts.require === 'object') {
+        Hash(opts.require).forEach(function (p, key) {
+            packages.push(Package(key, resolve(p)));
+        });
+    }
+    
     var name = opts.name || '.';
     
-    [ opts.require, opts.base ].forEach(function include (ps) {
-        if (typeof ps === 'string') {
-            packages.push(Package(name, ps));
-        }
-        else if (Array.isArray(ps)) {
-            ps.forEach(function (p) {
-                if (typeof p === 'object') {
-                    include(p);
-                }
-                else {
-                    packages.push(Package(name, p))
-                }
-            });
-        }
-        else if (typeof ps === 'object') {
-            Hash(ps).forEach(function (p, key) {
-                packages.push(Package(key, p));
-            });
-        }
-    });
+    if (typeof opts.base === 'string') {
+        packages.push(Package(name, resolve(opts.base)));
+    }
+    else if (Array.isArray(opts.base)) {
+        opts.base.forEach(function (ps) {
+            if (typeof ps === 'object') {
+                Hash(ps).forEach(function (p, key) {
+                    packages.push(Package(key, resolve(p)));
+                });
+            }
+            else {
+                packages.push(Package(name, resolve(ps)));
+            }
+        });
+    }
+    else if (typeof opts.base === 'object') {
+        Hash(opts.base).forEach(function (p, key) {
+            packages.push(Package(key, resolve(p)));
+        });
+    }
     
-    packages.forEach(function (pkg) {
-        src += pkg.toString();
-    });
+    var deps = {};
+    
+    (function processDeps (pkgs) {
+        if (pkgs.length === 0) return;
+        
+        var newDeps = {};
+        
+        pkgs.forEach(function (pkg) {
+            if (deps[pkg.name]) return;
+            deps[pkg.name] = true;
+            
+            src += pkg.toString();
+            
+            pkg.dependencies.needs.forEach(function (dep) {
+                if (!deps[dep]) newDeps[dep] = true;
+            });
+        });
+        
+        processDeps(Object.keys(newDeps).map(function (dep) {
+            return Package(dep, resolve(dep));
+        }));
+    })(packages);
     
     if (opts.entry) {
         if (!Array.isArray(opts.entry)) {
