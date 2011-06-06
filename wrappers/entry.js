@@ -5,7 +5,7 @@ process.nextTick(function () {
     var __filename = $__filename;
     
     var require = function (file) {
-        return __require(file, $__filename);
+        return __require(file, $__dirname);
     };
     require.modules = __require.modules;
     
