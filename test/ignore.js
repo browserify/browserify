@@ -31,6 +31,6 @@ exports.ignoreDevDeps = function () {
     assert.deepEqual(files.sort(), [
         './node_modules/bar/index.js',
         './package.json',
-        './x/x.js'
+        './x.js'
     ]);
 };
