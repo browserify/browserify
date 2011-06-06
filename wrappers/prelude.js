@@ -10,7 +10,7 @@ require.paths = [];
 require.modules = {};
 
 require.resolve = function (file, cwd) {
-    var path = require.modules['path.js']();
+    var path = require.modules['path']();
     var resolve = function (p) {
         if (p === '.' || p === './') return '.';
         
@@ -21,9 +21,9 @@ require.resolve = function (file, cwd) {
     
     var routes = [];
     
-    if (!file.match(/\//)) {
+    if (!file.match(/\/|\./) && require.modules[file]) {
         // core modules
-        routes.push(file);
+        if (require.modules[file].builtin) routes.push(file);
     }
     
     if (file.match(/^\.\.?\//)) {
@@ -33,11 +33,13 @@ require.resolve = function (file, cwd) {
     else {
         var ps = cwd.split('/');
         for (var i = ps.length; i > 0; i--) {
+//console.dir(ps.slice(0, i).join('/'));
             routes.push(
                 ps.slice(0, i).join('/') + '/node_modules/' + file
             );
         }
         
+        routes.push('./node_modules/' + file);
         routes.push(file);
     }
     

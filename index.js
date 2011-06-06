@@ -246,16 +246,21 @@ var builtins = fs.readdirSync(__dirname + '/builtins')
     .map(function (file) {
         var f = __dirname + '/builtins/' + file;
         var src = fs.readFileSync(f, 'utf8').replace(/^#![^\n]*\n/, '');
+        var name = file.replace(/\.js$/, '');
         
         return wrapperBody
             .replace(/\$__dirname/g, function () {
                 return JSON.stringify(path.dirname(file));
             })
             .replace(/\$__filename/g, function () {
-                return JSON.stringify(file);
+                return JSON.stringify(name);
             })
             .replace('$body', function () {
-                return src;
+                return src
+                    + '\nrequire.modules['
+                    + JSON.stringify(name)
+                    + '].builtin = true;\n'
+                ;
             })
         ;
     })
