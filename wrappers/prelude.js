@@ -15,7 +15,9 @@ require.resolve = function (file, cwd) {
         if (p === '.' || p === './') return '.';
         
         var res = path.resolve(cwd, p);
-        if (p.match(/^\.\.?\//)) res = './' + res;
+        if (p.match(/^\.\.?\//) && (cwd === '' || cwd.match(/^\./))) {
+            res = './' + res;
+        }
         return res;
     };
     
@@ -33,10 +35,8 @@ require.resolve = function (file, cwd) {
     else {
         var ps = cwd.split('/');
         for (var i = ps.length; i > 0; i--) {
-//console.dir(ps.slice(0, i).join('/'));
-            routes.push(
-                ps.slice(0, i).join('/') + '/node_modules/' + file
-            );
+            var p = ps.slice(0, i).join('/');
+            if (p.length) routes.push(p + '/node_modules/' + file);
         }
         
         routes.push('./node_modules/' + file);
