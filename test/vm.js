@@ -32,7 +32,7 @@ exports.vmRunInNewContext = function () {
         };
         vm.runInNewContext(src, c0);
         
-        assert.ok(c0.require.modules.vm);
+        assert.ok(c0.require.modules['vm.js']);
         var vm0 = c0.require('vm');
         assert.equal(c0.process.binding('evals'), vm0);
          
@@ -51,7 +51,7 @@ exports.vmRunInNewContext = function () {
             document : window.document,
         };
         vm0.runInNewContext(src, c1);
-        assert.ok(c1.require.modules.vm);
+        assert.ok(c1.require.modules['vm.js']);
         var vm1 = c1.require('vm');
         assert.equal(vm0.toString(), vm1.toString());
         
@@ -61,7 +61,7 @@ exports.vmRunInNewContext = function () {
             document : window.document,
         };
         vm1.runInNewContext(src, c2);
-        assert.ok(c2.require.modules.vm);
+        assert.ok(c2.require.modules['vm.js']);
         var vm2 = c2.require('vm');
         
         assert.equal(vm1.toString(), vm2.toString());
