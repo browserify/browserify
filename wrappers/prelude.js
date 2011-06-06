@@ -1,5 +1,7 @@
 var require = function (file, relativeTo) {
+//console.log('require(' + JSON.stringify(file) + ', ' + JSON.stringify(relativeTo) + ')');
     var resolved = require.resolve(file, relativeTo);
+//console.log(' -> ' + resolved);
     var mod = require.modules[resolved];
     var res = mod._cached ? mod._cached : mod();
     return res;
@@ -21,10 +23,20 @@ require.resolve = function (file, relativeTo) {
     if (relativeTo) {
         try {
             var res = path.resolve(path.dirname(relativeTo), file);
-            if (file.charAt(0) === '.') res = './' + res;
+            if (file.match(/^\./)) res = './' + res;
             return require.resolve(res);
         }
-        catch (err) {}
+        catch (err) {
+            try {
+                var res = path.resolve(
+                    path.dirname(relativeTo),
+                    'node_modules/' + file
+                );
+                if (file.match(/^\./)) res = './' + res;
+                return require.resolve(res);
+            }
+            catch (err) {}
+        }
     }
     
     var ps = path.dirname(relativeTo || '').split('/');

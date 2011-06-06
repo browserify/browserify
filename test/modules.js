@@ -13,8 +13,9 @@ exports.modules = function () {
     assert.ok(typeof src === 'string');
     assert.ok(src.length > 0);
     
-    var c = {};
+    var c = { console : console };
     vm.runInNewContext(src, c);
+console.dir(Object.keys(c.require.modules));
     assert.eql(c.require('foomoduletest').bar, 55)
 };
 
