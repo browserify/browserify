@@ -12,6 +12,8 @@ require.modules = {};
 require.resolve = function (file, cwd) {
     var path = require.modules['path.js']();
     var resolve = function (p) {
+        if (p === '.' || p === './') return '.';
+        
         var res = path.resolve(cwd, p);
         if (p.match(/^\.\.?\//)) res = './' + res;
         return res;
@@ -43,7 +45,11 @@ require.resolve = function (file, cwd) {
         var paths = [
             [ route + '/package.json', function (p) {
                 var pkg = require.modules[p]();
-                return pkg.main && path.resolve(route, pkg.main);
+                if (pkg.main) {
+                    var res = path.resolve(route, pkg.main);
+                    if (route.match(/^\./)) res = './' + res;
+                    return res;
+                }
             } ],
             route,
             route + '.js',
