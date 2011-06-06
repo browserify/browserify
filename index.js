@@ -180,7 +180,11 @@ exports.bundle = function (opts) {
         });
     }
     
-    var deps = {};
+    src += Package.merge(packages);
+    var deps = packages.reduce(function (acc, p) {
+        if (p.name) acc[p.name] = true;
+        return acc;
+    }, {});
     
     (function processDeps (pkgs) {
         if (pkgs.length === 0) return;
@@ -188,10 +192,10 @@ exports.bundle = function (opts) {
         var newDeps = {};
         
         pkgs.forEach(function (pkg) {
-            if (deps[pkg.name]) return;
-            deps[pkg.name] = true;
-            
-            src += pkg.toString();
+            if (!deps[pkg.name]) {
+                deps[pkg.name] = true;
+                src += pkg.toString();
+            }
             
             Object.keys(pkg.dependencies.needs).forEach(function (dep) {
                 if (!deps[dep]) newDeps[dep] = true;
