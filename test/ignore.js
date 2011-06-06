@@ -3,17 +3,19 @@ var vm = require('vm');
 var fs = require('fs');
 var browserify = require('browserify');
 
-exports.explicitIgnore = function () {
-    var src = browserify.bundle(__dirname + '/ignore/explicit');
-    var c = {};
-    vm.runInNewContext(src, c);
-    
-    var files = Object.keys(c.require.modules)
-        .filter(function (file) { return file.match(/^\./) })
-    ;
-    assert.deepEqual(files.sort(), [
-        './package.json',
-        './x/x.js',
-        './y.js',
-    ]);
+exports.ignore = function () {
+    [ 'explicit', 'implicit', 'implicit_plural' ].forEach(function (dir) {
+        var src = browserify.bundle(__dirname + '/ignore/' + dir);
+        var c = {};
+        vm.runInNewContext(src, c);
+        
+        var files = Object.keys(c.require.modules)
+            .filter(function (file) { return file.match(/^\./) })
+        ;
+        assert.deepEqual(files.sort(), [
+            './package.json',
+            './x/x.js',
+            './y.js',
+        ]);
+    });
 };
