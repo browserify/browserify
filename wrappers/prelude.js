@@ -23,9 +23,18 @@ require.resolve = function (file, cwd) {
         // core modules
         routes.push(file);
     }
+    
     if (file.match(/^\.\.?\//)) {
         // relative paths
         routes.push(resolve(file));
+    }
+    else {
+        var ps = cwd.split('/');
+        for (var i = ps.length; i > 0; i--) {
+            routes.push(
+                ps.slice(0, i).join('/') + '/node_modules/' + file
+            );
+        }
     }
     
     for (var i = 0; i < routes.length; i++) {

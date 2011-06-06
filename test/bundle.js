@@ -22,7 +22,6 @@ exports.bundle = function () {
         console : console,
     };
     vm.runInNewContext(src, c);
-console.dir(Object.keys(c.require.modules));
     vm.runInNewContext(
         'var Seq = require("seq");'
         + 'Seq(1,2,3)'
