@@ -16,5 +16,4 @@ exports.explicitIgnore = function () {
         './x/x.js',
         './y.js',
     ]);
-    console.dir(files);
 };
