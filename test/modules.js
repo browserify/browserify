@@ -13,9 +13,8 @@ exports.modules = function () {
     assert.ok(typeof src === 'string');
     assert.ok(src.length > 0);
     
-    var c = { console : console };
+    var c = {};
     vm.runInNewContext(src, c);
-console.dir(Object.keys(c.require.modules));
     assert.eql(c.require('foomoduletest').bar, 55)
 };
 
@@ -27,14 +26,18 @@ exports.precedence = function () {
     
     var c = {};
     vm.runInNewContext(src, c);
-    assert.ok(c.require.modules.hashish);
+    assert.ok(c.require.modules['hashish/package.json']);
     assert.deepEqual(
-        c.require('hashish').map(
+        c.require.modules['hashish/index.js']().map(
             { a : 1, b :2 }, function (x) { return x * 100 }
         ),
         { a : 100, b : 200 }
     );
-    assert.ok(c.require.modules['./node_modules/hashish/index']);
-    assert.notEqual(c.require('hashish'), c.require('./node_modules/hashish'));
-    assert.equal(c.require('./x'), 'meow');
+    assert.ok(c.require.modules['./node_modules/hashish/index.js']);
+    assert.notEqual(
+        c.require.modules['hashish/index.js'](),
+        c.require('hashish')
+    );
+    assert.equal(c.require('./x'), 'meow!');
+    assert.equal(c.require('hashish'), 'meow');
 };

@@ -1,7 +1,5 @@
 var require = function (file, relativeTo) {
-//console.log('require(' + JSON.stringify(file) + ', ' + JSON.stringify(relativeTo) + ')');
     var resolved = require.resolve(file, relativeTo);
-//console.log(' -> ' + resolved);
     var mod = require.modules[resolved];
     var res = mod._cached ? mod._cached : mod();
     return res;
@@ -14,10 +12,12 @@ require.modules = {};
 require.resolve = function (file, relativeTo) {
     var path = require.modules['path.js']();
     var normalize = function (s) {
-        return s
+        var res = path.normalize(s
             .replace(/\/\.\//g, '/')
             .replace(/\/+/g, '/')
-        ;
+        );
+        if (s.match(/^\./)) res = './' + res;
+        return res;
     };
     
     if (relativeTo) {

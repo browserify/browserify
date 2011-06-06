@@ -1,1 +1,1 @@
-module.exports = require('hashish');
+module.exports = require('hashish') + '!';
