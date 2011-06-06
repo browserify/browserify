@@ -83,20 +83,14 @@ exports.simple = function () {
             
             res.on('end', function () {
                 vm.runInNewContext(src, context);
-                vm.runInNewContext('var foo = require("./foo")', context);
+                var foo_ = context.require('./foo');
                 
                 for (var i = -10; i <= 100; i++) {
-                    var foos = vm.runInNewContext(
-                        'foo(' + i + ')', context
-                    ).toString();
-                    assert.eql(foo(i).toString(), foos);
+                    assert.equal(
+                        foo(i).toString(),
+                        foo_(i).toString()
+                    );
                 }
-                
-                // extensions are ok too
-                assert.equal(
-                    context.foo,
-                    context.require("./foo.js")
-                );
             });
         });
     }

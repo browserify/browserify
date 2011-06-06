@@ -9,62 +9,58 @@ var __require = require;
 require.paths = [];
 require.modules = {};
 
-require.resolve = function (rfile, cwd) {
+require.resolve = function (file, cwd) {
     var path = require.modules['path.js']();
+    var resolve = function (p) {
+        var res = path.resolve(cwd, p);
+        if (p.match(/^\.\.?\//)) res = './' + res;
+        return res;
+    };
     
-    var file = cwd === ''
-        ? rfile
-        : path.resolve(cwd, rfile)
-    ;
-    if (cwd === '.') file = './' + file;
+    var routes = [];
     
-    var mfile = cwd === ''
-        ? rfile
-        : path.resolve(cwd, 'node_modules/' + rfile)
-    ;
-    if (cwd === '.') file = './' + file;
-    
-    var routes = [
-        [ file + '/package.json', function (p) {
-            var pkg = require.modules[p]();
-            var main = path.resolve(file, pkg.main);
-            return main;
-        } ],
-        file,
-        file + '.js',
-        file + '/index.js',
-        [ mfile + '/package.json', function (p) {
-            var pkg = require.modules[p]();
-            var main = path.resolve(mfile, pkg.main);
-            return main;
-        } ],
-        mfile,
-        mfile + '.js',
-        mfile + '/index.js'
-    ];
-    
-    if (!rfile.match(/\//)) {
+    if (!file.match(/\//)) {
         // core modules
-        routes.unshift(rfile + '.js');
+        routes.push(file);
+    }
+    if (file.match(/^\.\.?\//)) {
+        // relative paths
+        routes.push(resolve(file));
     }
     
     for (var i = 0; i < routes.length; i++) {
         var route = routes[i];
-        var fn = String;
         
-        if (Array.isArray(routes[i])) {
-            fn = route[1];
-            route = route[0];
-        }
+        var paths = [
+            [ route + '/package.json', function (p) {
+                var pkg = require.modules[p]();
+                return pkg.main && path.resolve(route, pkg.main);
+            } ],
+            route,
+            route + '.js',
+            route + '/index.js'
+        ];
         
-        var r = path.normalize(route);
-        if (route.match(/^\./)) r = './' + r;
-        
-        if (require.modules[r]) {
-            var res = fn(r);
-            if (res) return res;
+        for (var j = 0; j < paths.length; j++) {
+            var fn = String;
+            var p = paths[j];
+            
+            if (Array.isArray(p)) {
+                fn = p[1];
+                p = p[0];
+            }
+            
+            if (require.modules[p]) {
+                var res = fn(p);
+                if (res) {
+                    var post = [ '', '.js', '/index.js' ].filter(function (x) {
+                        return require.modules[res + x]
+                    })[0];
+                    if (post !== undefined) return res + post;
+                }
+            }
         }
     }
     
-    throw new Error('Cannot find module ' + JSON.stringify(rfile));
+    throw new Error('Cannot find module ' + JSON.stringify(file));
 };

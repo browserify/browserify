@@ -19,8 +19,10 @@ exports.bundle = function () {
             assert.eql([x,y,z], [100,200,300]);
         },
         setTimeout : setTimeout,
+        console : console,
     };
     vm.runInNewContext(src, c);
+console.dir(Object.keys(c.require.modules));
     vm.runInNewContext(
         'var Seq = require("seq");'
         + 'Seq(1,2,3)'
