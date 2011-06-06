@@ -19,3 +19,18 @@ exports.ignore = function () {
         ]);
     });
 };
+
+exports.ignoreDevDeps = function () {
+    var src = browserify.bundle(__dirname + '/ignore/dev');
+    var c = {};
+    vm.runInNewContext(src, c);
+    
+    var files = Object.keys(c.require.modules)
+        .filter(function (file) { return file.match(/^\./) })
+    ;
+    assert.deepEqual(files.sort(), [
+        './node_modules/bar/index.js',
+        './package.json',
+        './x/x.js'
+    ]);
+};
