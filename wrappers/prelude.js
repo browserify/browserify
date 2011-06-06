@@ -37,6 +37,8 @@ require.resolve = function (file, cwd) {
                 ps.slice(0, i).join('/') + '/node_modules/' + file
             );
         }
+        
+        routes.push(file);
     }
     
     for (var i = 0; i < routes.length; i++) {
