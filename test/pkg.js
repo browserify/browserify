@@ -46,7 +46,7 @@ exports.namedMainAbsA = function () {
     vm.runInNewContext(src, c);
     
     assert.eql(c.require("wowsy").zzz(3), 333);
-    assert.ok(c.require.modules['wowsy/moo']);
+    assert.ok(c.require.modules['wowsy/moo.js']);
 };
 
 exports.namedMainNonBaseA = function () {

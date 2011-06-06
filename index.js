@@ -156,9 +156,15 @@ exports.bundle = function (opts) {
     
     var name = opts.name || '.';
     var tPkg = {};
-    if (opts.main) tPkg.main = opts.main;
     
     if (typeof opts.base === 'string') {
+        if (opts.main) {
+            tPkg.main = opts.main.match(/^\//)
+                ? path.relative(opts.base, opts.main)
+                : opts.main
+            ;
+        }
+        
         packages.push(Package(name, resolve(opts.base), null, tPkg));
     }
     else if (Array.isArray(opts.base)) {
