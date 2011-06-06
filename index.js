@@ -129,7 +129,10 @@ exports.bundle = function (opts) {
             return path.dirname(require.resolve(p + '/package.json'));
         }
         catch (err) {
-            return path.dirname(require.resolve(p));
+            return p.match(/\.js$/)
+                ? require.resolve(p)
+                : path.dirname(require.resolve(p))
+            ;
         }
     };
     

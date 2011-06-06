@@ -5,7 +5,7 @@ var Lexer = require('jade/lib/lexer');
 
 exports.single_file = function () {
     var src = browserify.bundle({
-        require : 'jade/lib/lexer'
+        require : 'jade/lib/lexer.js'
     });
     assert.ok(typeof src === 'string');
     assert.ok(src.length > 0);
