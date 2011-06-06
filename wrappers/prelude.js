@@ -18,17 +18,29 @@ require.resolve = function (rfile, cwd) {
     ;
     if (cwd === '.') file = './' + file;
     
+    var mfile = cwd === ''
+        ? rfile
+        : path.resolve(cwd, 'node_modules/' + rfile)
+    ;
+    if (cwd === '.') file = './' + file;
+    
     var routes = [
-        file,
-        file + '.js',
         [ file + '/package.json', function (p) {
             var pkg = require.modules[p]();
             var main = path.resolve(file, pkg.main);
             return main;
         } ],
-        [ file + '/index.js', function (p) {
-            return p;
+        file,
+        file + '.js',
+        file + '/index.js',
+        [ mfile + '/package.json', function (p) {
+            var pkg = require.modules[p]();
+            var main = path.resolve(mfile, pkg.main);
+            return main;
         } ],
+        mfile,
+        mfile + '.js',
+        mfile + '/index.js'
     ];
     
     if (!rfile.match(/\//)) {
@@ -45,8 +57,11 @@ require.resolve = function (rfile, cwd) {
             route = route[0];
         }
         
-        if (require.modules[route]) {
-            var res = fn(route);
+        var r = path.normalize(route);
+        if (route.match(/^\./)) r = './' + r;
+        
+        if (require.modules[r]) {
+            var res = fn(r);
             if (res) return res;
         }
     }

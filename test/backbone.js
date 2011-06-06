@@ -10,10 +10,10 @@ exports.backbone = function () {
     assert.ok(typeof src === 'string');
     assert.ok(src.length > 0);
     
-    var c = {};
+    var c = { console : console };
     vm.runInNewContext(src, c);
     assert.eql(
-        Object.keys(backbone),
-        Object.keys(c.require('backbone'))
+        Object.keys(backbone).sort(),
+        Object.keys(c.require('backbone')).sort()
     );
 };
