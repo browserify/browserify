@@ -110,9 +110,6 @@ exports.bundle = function (opts) {
             });
         }
     }
-    if (opts.main && opts.main.match(/^\//) && !opts.filename) {
-        opts.filename = opts.main;
-    }
     
     var shim = 'shim' in opts ? opts.shim : true;
     var req = opts.require || [];
@@ -158,9 +155,11 @@ exports.bundle = function (opts) {
     }
     
     var name = opts.name || '.';
+    var tPkg = {};
+    if (opts.main) tPkg.main = opts.main;
     
     if (typeof opts.base === 'string') {
-        packages.push(Package(name, resolve(opts.base)));
+        packages.push(Package(name, resolve(opts.base), null, tPkg));
     }
     else if (Array.isArray(opts.base)) {
         opts.base.forEach(function (ps) {
