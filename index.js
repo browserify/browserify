@@ -134,28 +134,28 @@ exports.bundle = function (opts) {
     };
     
     if (typeof opts.require === 'string') {
-        packages.push(Package(opts.require, resolve(opts.require)));
+        packages.push(Package(opts.require, resolve(opts.require), null, tPkg));
     }
     else if (Array.isArray(opts.require)) {
         opts.require.forEach(function (ps) {
             if (typeof ps === 'object') {
                 Hash(ps).forEach(function (p, key) {
-                    packages.push(Package(key, resolve(p)));
+                    packages.push(Package(key, resolve(p), null, tPkg));
                 });
             }
             else {
-                packages.push(Package(ps, resolve(ps)));
+                packages.push(Package(ps, resolve(ps), null, tPkg));
             }
         });
     }
     else if (typeof opts.require === 'object') {
         Hash(opts.require).forEach(function (p, key) {
-            packages.push(Package(key, resolve(p)));
+            packages.push(Package(key, resolve(p), null, tPkg));
         });
     }
     
     var name = opts.name || '.';
-    var tPkg = {};
+    var tPkg = { listen : opts.listen };
     
     if (opts.main && !opts.base) {
         tPkg.main = path.basename(opts.main);
@@ -176,17 +176,17 @@ exports.bundle = function (opts) {
         opts.base.forEach(function (ps) {
             if (typeof ps === 'object') {
                 Hash(ps).forEach(function (p, key) {
-                    packages.push(Package(key, resolve(p)));
+                    packages.push(Package(key, resolve(p), null, tPkg));
                 });
             }
             else {
-                packages.push(Package(name, resolve(ps)));
+                packages.push(Package(name, resolve(ps), null, tPkg));
             }
         });
     }
     else if (typeof opts.base === 'object') {
         Hash(opts.base).forEach(function (p, key) {
-            packages.push(Package(key, resolve(p)));
+            packages.push(Package(key, resolve(p), null, tPkg));
         });
     }
     
@@ -213,7 +213,7 @@ exports.bundle = function (opts) {
         });
         
         processDeps(Object.keys(newDeps).map(function (dep) {
-            return Package(dep, resolve(dep));
+            return Package(dep, resolve(dep), null, tPkg);
         }));
     })(packages);
     
