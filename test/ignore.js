@@ -34,3 +34,18 @@ exports.ignoreDevDeps = function () {
         './x.js'
     ]);
 };
+
+exports.ignoreNonDeps = function () {
+    var src = browserify.bundle(__dirname + '/ignore/nondep');
+    var c = {};
+    vm.runInNewContext(src, c);
+    
+    var files = Object.keys(c.require.modules)
+        .filter(function (file) { return file.match(/^\./) })
+    ;
+    assert.deepEqual(files.sort(), [
+        './node_modules/bar/index.js',
+        './package.json',
+        './x.js'
+    ]);
+};

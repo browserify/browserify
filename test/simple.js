@@ -30,7 +30,7 @@ exports.simple = function () {
     
     var to = setTimeout(function () {
         assert.fail('request test never started');
-    }, 5000);
+    }, 10000);
     
     var th = setTimeout(function () {
         assert.fail('effects of filter not used');
