@@ -45,6 +45,7 @@ exports.ignoreNonDeps = function () {
     ;
     assert.deepEqual(files.sort(), [
         './node_modules/bar/index.js',
+        './node_modules/quux/index.js',
         './package.json',
         './x.js'
     ]);

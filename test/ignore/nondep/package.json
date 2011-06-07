@@ -6,9 +6,11 @@
         "bin" : "b"
     },
     "dependencies" : {
-        "bar" : "*"
+        "bar" : "*",
+        "quux" : "*"
     },
     "devDependencies" : {
-        "foo" : "0.2.x"
+        "foo" : "0.2.x",
+        "quux" : "*"
     }
 }
