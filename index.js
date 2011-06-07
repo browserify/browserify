@@ -211,7 +211,10 @@ exports.bundle = function (opts) {
             }
             
             Object.keys(pkg.dependencies.needs).forEach(function (dep) {
-                if (!deps[dep]) newDeps[dep] = true;
+                var dir = pkg.basedir + '/node_modules/' + dep;
+                if (!deps[dep] && !path.existsSync(dir)) {
+                    newDeps[dep] = true;
+                }
             });
         });
         
