@@ -50,3 +50,19 @@ exports.ignoreNonDeps = function () {
         './x.js'
     ]);
 };
+
+exports.ignoreBrowserifyString = function () {
+    var src = browserify.bundle(__dirname + '/ignore/browserify_string');
+    var c = {};
+    vm.runInNewContext(src, c);
+    assert.equal(
+        c.require('./package.json').main,
+        './browser.js'
+    );
+    assert.deepEqual(
+        Object.keys(c.require.modules).filter(function (x) {
+            return x.match(/^\./)
+        }),
+        './browser.js'
+    );
+};
