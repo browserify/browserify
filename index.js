@@ -31,7 +31,7 @@ var exports = module.exports = function (opts) {
             req.connection.server.on('close', ee.emit.bind(ee, 'close'));
             ee.on('change', function (file) {
                 var newCache = exports.bundle(opts);
-                Seq.ap(self.middlewares)
+                Seq(self.middlewares)
                     .seqEach_(function (next, fn) {
                         fn(newCache, function (src) {
                             newCache = src;
@@ -69,7 +69,7 @@ var exports = module.exports = function (opts) {
                 using = false;
                 
                 var newCache = srcCache;
-                Seq.ap(self.middlewares)
+                Seq(self.middlewares)
                     .seqEach_(function (next, fn) {
                         fn.call(self, newCache, function (src) {
                             newCache = src;
