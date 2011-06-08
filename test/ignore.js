@@ -59,8 +59,8 @@ exports.ignoreBrowserifyString = function () {
     assert.deepEqual(
         Object.keys(c0.require.modules).filter(function (x) {
             return x.match(/^\./)
-        }),
-        [ './browser.js' ]
+        }).sort(),
+        [ './browser.js', './package.json' ]
     );
     
     var c1 = {};
