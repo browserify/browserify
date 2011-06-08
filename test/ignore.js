@@ -76,3 +76,29 @@ exports.ignoreBrowserifyString = function () {
     ;
     
 };
+
+exports.ignoreBrowserifyObject = function () {
+    var src = browserify.bundle(__dirname + '/ignore/browserify_object');
+    var c0 = {};
+    vm.runInNewContext(src, c0);
+//    assert.equal(c0.require('./package.json').main, './browser/foo.js');
+    assert.deepEqual(
+        Object.keys(c0.require.modules).filter(function (x) {
+            return x.match(/^\./)
+        }).sort(),
+        [ './bar.js', './foo.js', './package.json' ].sort()
+    );
+    
+    var c1 = {};
+    vm.runInNewContext(browserify.bundle(), c1);
+    
+    var extras = Object.keys(c0.require.modules)
+        .filter(function (x) {
+            return x.match(/^\./)
+        })
+        .map(function (x) {
+            return c1.require.modules[x]
+        })
+    ;
+    
+};

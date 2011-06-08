@@ -7,5 +7,8 @@
     },
     "devDependencies" : {
         "foo" : "0.2.x"
+    },
+    "browserify" : {
+        "base" : "./browser"
     }
 }
