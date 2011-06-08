@@ -5,6 +5,6 @@
     },
     "devDependencies" : {
         "jade" : "*"
-    }
+    },
     "browserify" : "./browser.js"
 }
