@@ -4,7 +4,8 @@
     "description" : "Browser-side require() for js directories and npm modules",
     "main" : "./index.js",
     "directories" : {
-        "example" : "./examples"
+        "example" : "example",
+        "test" : "test"
     },
     "repository" : {
         "type" : "git",
@@ -21,7 +22,7 @@
     ],
     "dependencies" : {
         "findit" : ">=0.0.3 <0.1",
-        "seq" : ">=0.2.5 <0.3",
+        "seq" : ">=0.3.1 <0.4",
         "source" : ">=0.0.3 <0.1",
         "es5-shim" : "1.0.0",
         "coffee-script" : ">=1.1.1 <1.2",
@@ -29,9 +30,8 @@
     },
     "devDependencies" : {
         "connect" : ">=1.4.1 <1.5",
-        "seq" : ">=0.2.5 <0.3",
         "hashish" : "*",
-        "traverse" : ">=0.3.1 <0.4",
+        "traverse" : ">=0.3.8 <0.4",
         "backbone" : ">=0.3.3",
         "dnode" : ">=0.6.2",
         "jade": "=0.10.4",

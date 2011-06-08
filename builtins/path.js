@@ -96,6 +96,7 @@ exports.join = function() {
 
 exports.dirname = function(path) {
   var dir = splitPathRe.exec(path)[1] || '';
+  var isWindows = false;
   if (!dir) {
     // No dirname
     return '.';

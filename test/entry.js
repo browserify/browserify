@@ -19,6 +19,7 @@ exports.entry = function () {
     
     var c = {
         assert : assert,
+        console : console,
         setTimeout : setTimeout_,
         clearTimeout : clearTimeout,
         to : setTimeout(function () {

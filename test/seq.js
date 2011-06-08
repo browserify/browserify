@@ -32,13 +32,7 @@ exports.seq = function () {
                 assert.fail('seq chain never finished');
             }, 5000);
             
-            var context = {
-                finished : function () {
-                    clearTimeout(tf);
-                    assert.eql([].slice.call(arguments), [100,200,300]);
-                },
-                setTimeout : setTimeout,
-            };
+            var context = { setTimeout : setTimeout };
             
             var src = '';
             res.on('data', function (buf) {
@@ -47,16 +41,15 @@ exports.seq = function () {
             
             res.on('end', function () {
                 vm.runInNewContext(src, context);
-                
-                vm.runInNewContext(
-                    'var Seq = require("seq");'
-                    + 'Seq(1,2,3)'
-                    + '.parMap(function (x) {'
-                        + 'this(null, x * 100)'
-                    + '})'
-                    + '.seq(finished)',
-                    context
-                );
+                context.require('seq')([1,2,3])
+                    .parMap(function (x) {
+                        this(null, x * 100)
+                    })
+                    .seq(function () {
+                        clearTimeout(tf);
+                        assert.eql([].slice.call(arguments), [100,200,300]);
+                    })
+                ;
             });
         });
     }

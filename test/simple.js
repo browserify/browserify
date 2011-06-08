@@ -30,7 +30,7 @@ exports.simple = function () {
     
     var to = setTimeout(function () {
         assert.fail('request test never started');
-    }, 5000);
+    }, 10000);
     
     var th = setTimeout(function () {
         assert.fail('effects of filter not used');
@@ -73,7 +73,8 @@ exports.simple = function () {
             var context = {
                 filterHook : function () {
                     clearTimeout(th);
-                }
+                },
+                console : console,
             };
             var src = '';
             res.on('data', function (buf) {
@@ -82,20 +83,14 @@ exports.simple = function () {
             
             res.on('end', function () {
                 vm.runInNewContext(src, context);
-                vm.runInNewContext('var foo = require("./foo")', context);
+                var foo_ = context.require('./foo');
                 
                 for (var i = -10; i <= 100; i++) {
-                    var foos = vm.runInNewContext(
-                        'foo(' + i + ')', context
-                    ).toString();
-                    assert.eql(foo(i).toString(), foos);
+                    assert.equal(
+                        foo(i).toString(),
+                        foo_(i).toString()
+                    );
                 }
-                
-                // extensions are ok too
-                assert.equal(
-                    context.foo,
-                    context.require("./foo.js")
-                );
             });
         });
     }

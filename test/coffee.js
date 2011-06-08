@@ -1,0 +1,16 @@
+var assert = require('assert');
+var vm = require('vm');
+var fs = require('fs');
+var browserify = require('browserify');
+
+exports.coffee = function () {
+    var src = browserify.bundle(__dirname + '/coffee');
+    var c = {};
+    vm.runInNewContext(src, c);
+    
+    assert.equal(c.require('./foo.coffee')(5), 50);
+    assert.equal(c.require('./foo')(5), 50);
+    
+    assert.equal(c.require('./bar.js'), 500);
+    assert.equal(c.require('./bar'), 500);
+};

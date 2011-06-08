@@ -31,9 +31,8 @@ exports.namedMainA = function () {
     
     var c = {};
     vm.runInNewContext(src, c);
-    
     assert.eql(c.require("wowsy").zzz(3), 333);
-    assert.ok(c.require.modules['wowsy/moo']);
+    assert.ok(c.require.modules['wowsy/moo.js']);
 };
 
 exports.namedMainAbsA = function () {
@@ -47,7 +46,7 @@ exports.namedMainAbsA = function () {
     vm.runInNewContext(src, c);
     
     assert.eql(c.require("wowsy").zzz(3), 333);
-    assert.ok(c.require.modules['wowsy/moo']);
+    assert.ok(c.require.modules['wowsy/moo.js']);
 };
 
 exports.namedMainNonBaseA = function () {
@@ -71,7 +70,7 @@ exports.bundleB = function () {
     
     var c = {};
     vm.runInNewContext(src, c);
-    assert.eql(c.require("$$$").zzz(3), 333);
+    assert.eql(c.require('.').zzz(3), 333);
 };
 
 exports.namedB = function () {
@@ -97,8 +96,8 @@ exports.namedMainB = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    assert.eql(c.require("wowsy").zzz(3), 333);
-    assert.ok(c.require.modules['wowsy/moo']);
+    assert.eql(c.require('wowsy').zzz(3), 333);
+    assert.ok(c.require.modules['wowsy/moo.js']);
 };
 
 exports.bundleC = function () {
@@ -107,11 +106,11 @@ exports.bundleC = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-    assert.eql(c.require("doom").fn(3), 300);
+    assert.eql(c.require('./').fn(3), 300);
     assert.eql(
         Object.keys(c.require.modules)
             .filter(function (name) { return name.match(/doom/) })
-        , [ 'doom', 'doom/doom-browser' ]
+        , [ './doom.js', './doom-browser.js' ]
     );
     
     assert.ok(!c.require.modules['seq']);

@@ -1,83 +1,88 @@
-function require (path) {
-    // not EXACTLY like how node does it but more appropriate for the browser
-    path = path.replace(/\/+/g, '/');
-    
-    var mod
-        = require.modules[path]
-        || require.modules[path.replace(/\.(js|coffee)$/, '')]
-        || require.modules[(path + '/index').replace(/\/+/g, '/')]
-    ;
-    
-    if (!mod) throw new Error("Cannot find module '" + path + "'");
-    return mod._cached ? mod._cached : mod();
+var require = function (file, cwd) {
+    var resolved = require.resolve(file, cwd || '');
+    var mod = require.modules[resolved];
+    var res = mod._cached ? mod._cached : mod();
+    return res;
 }
-
-var _browserifyRequire = require; // scoping >_<
+var __require = require;
 
 require.paths = [];
 require.modules = {};
 
-require.fromFile = function (filename, path) {
-    // require a file with respect to a path
-    var resolved = _browserifyRequire.resolve(filename, path);
-    return _browserifyRequire(resolved);
-};
-
-require.resolve = function (basefile, file) {
-    var basedir = basefile.match(/\//)
-        ? basefile.replace(/[^\/]+$/, '')
-        : basefile
-    ;
-    var pkg = file.split('/')[0];
-    
-    if (_browserifyRequire.modules[basefile + '/node_modules/' + file]) {
-        return basefile + '/node_modules/' + file;
-    }
-    else if (_browserifyRequire.modules[
-        basedir.replace(/\/$/, '') + '/node_modules/' + pkg
-    ]) {
-        return basedir.replace(/\/$/, '') + '/node_modules/' + pkg
-    }
-    else if (_browserifyRequire.modules[
-        basedir.replace(/\/$/, '') + '/node_modules/' + pkg + '/index'
-    ]) {
-        return basedir.replace(/\/$/, '') + '/node_modules/' + pkg + '/index';
-    }
-    else if (_browserifyRequire.modules[
-        basedir.replace(/\/$/, '') + '/node_modules/' + pkg + '/index.js'
-    ]) {
-        return basedir.replace(/\/$/, '') + '/node_modules/' + pkg + '/index.js';
-    }
-    else if (!file.match(/^[\.\/]/)) return file;
-    else if (file.match(/^\//)) return file;
-    
-    if (basedir === '') {
-        basedir = '.';
-    }
-    
-    // normalize file path.
-    var r1 = /[^\/.]+\/\.\./g;
-    var r2 = /\/{2,}/g;
-    for(
-        var norm = file;
-        norm.match(r1) != null || norm.match(r2) != null;
-        norm = norm.replace(r1, '').replace(r2, '/')
-    );
-    
-    while (norm.match(/^\.\.\//)) {
-        if (basedir === '/' || basedir === '') {
-            throw new Error("Couldn't resolve path"
-                + "'" + file + "' with respect to filename '" + basefile + "': "
-                + "file can't resolve past base"
-            );
+require.resolve = function (file, cwd) {
+    var path = require.modules['path']();
+    var resolve = function (p) {
+        if (p === '.' || p === './') return '.';
+        
+        var res = path.resolve(cwd, p);
+        if (p.match(/^\.\.?\//) && (cwd === '' || cwd.match(/^\./))) {
+            res = './' + res;
         }
-        norm = norm.replace(/^\.\.\//, '');
-        basedir = basedir.replace(/[^\/]+\/$/, '');
+        return res;
+    };
+    
+    var routes = [];
+    
+    if (!file.match(/\/|\./) && require.modules[file]) {
+        // core modules
+        if (require.modules[file].builtin) routes.push(file);
     }
     
-    var n = basedir.match(/\//)
-        ? basedir.replace(/[^\/]+$/,'') + norm
-        : norm.replace(/^\.\//, basedir + '/');
-    var res = n.replace(/\/.\//, '/');
-    return res;
+    if (file.match(/^\.\.?\//)) {
+        // relative paths
+        routes.push(resolve(file));
+    }
+    else {
+        var ps = cwd.split('/');
+        for (var i = ps.length; i > 0; i--) {
+            var p = ps.slice(0, i).join('/');
+            if (p.length) routes.push(p + '/node_modules/' + file);
+        }
+        
+        routes.push('./node_modules/' + file);
+        routes.push(file);
+    }
+    
+    for (var i = 0; i < routes.length; i++) {
+        var route = routes[i];
+        
+        var paths = [
+            [ route + '/package.json', function (p) {
+                var pkg = require.modules[p]();
+                if (pkg.main) {
+                    var res = path.resolve(route, pkg.main);
+                    if (route.match(/^\./)) res = './' + res;
+                    return res;
+                }
+            } ],
+            route,
+            route + '.js',
+            route + '.coffee',
+            route + '/index.js'
+        ];
+        
+        for (var j = 0; j < paths.length; j++) {
+            var fn = String;
+            var p = paths[j];
+            
+            if (Array.isArray(p)) {
+                fn = p[1];
+                p = p[0];
+            }
+            
+            if (require.modules[p]) {
+                var res = fn(p);
+                if (res) {
+                    var post = [ '', '.js', '.coffee', '/index.js' ]
+                        .filter(function (x) {
+                            return require.modules[res + x]
+                        })[0]
+                    ;
+                    if (post !== undefined) return res + post;
+                }
+            }
+        }
+    }
+    
+    throw new Error('Cannot find module ' + JSON.stringify(file));
 };

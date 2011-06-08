@@ -10,3 +10,5 @@ if (!process.binding) process.binding = function (name) {
     if (name === 'evals') return require('vm')
     else throw new Error('No such module')
 };
+
+if (!process.cwd) process.cwd = function () { return '.' };

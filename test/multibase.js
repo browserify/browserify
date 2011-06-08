@@ -29,5 +29,5 @@ exports.multibaseArray = function () {
     vm.runInNewContext(src, c);
     
     assert.eql(c.require("./moo").zzz(3), 333);
-    assert.eql(c.require("doom").fn(3), 300);
+    assert.eql(c.require("./").fn(3), 300);
 };

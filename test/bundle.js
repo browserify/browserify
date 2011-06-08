@@ -11,26 +11,19 @@ exports.bundle = function () {
     
     var to = setTimeout(function () {
         assert.fail('never ran');
-    }, 5000);
+    }, 10000);
     
-    var c = {
-        finished : function (x,y,z) {
+    var c = { setTimeout : setTimeout };
+    vm.runInNewContext(src, c);
+    c.require('seq')([1,2,3])
+        .parMap_(function (next, x) {
+            setTimeout(function () {
+                next.ok(x * 100)
+            }, 10)
+        })
+        .seq(function (x,y,z) {
             clearTimeout(to);
             assert.eql([x,y,z], [100,200,300]);
-        },
-        setTimeout : setTimeout,
-        console : console,
-    };
-    vm.runInNewContext(src, c);
-    vm.runInNewContext(
-        'var Seq = require("seq");'
-        + 'Seq(1,2,3)'
-        + '.parMap(function (x) {'
-            //+ 'setTimeout((function () {'
-            + 'this(null, x * 100)'
-            //+ '}).bind(this))'
-        + '})'
-        + '.seq(finished)'
-        , c
-    );
+        })
+    ;
 };

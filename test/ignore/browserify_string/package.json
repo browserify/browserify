@@ -1,0 +1,10 @@
+{
+    "dependencies" : {
+        "seq" : "*",
+        "hashish" : "*"
+    },
+    "devDependencies" : {
+        "jade" : "*"
+    },
+    "browserify" : "./browser.js"
+}
