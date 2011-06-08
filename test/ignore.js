@@ -81,7 +81,6 @@ exports.ignoreBrowserifyObject = function () {
     var src = browserify.bundle(__dirname + '/ignore/browserify_object');
     var c0 = {};
     vm.runInNewContext(src, c0);
-//    assert.equal(c0.require('./package.json').main, './browser/foo.js');
     assert.deepEqual(
         Object.keys(c0.require.modules).filter(function (x) {
             return x.match(/^\./)

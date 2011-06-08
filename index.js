@@ -8,6 +8,7 @@ var coffee = require('coffee-script');
 var source = require('source');
 
 var Package = require('./lib/package');
+var watchFile = require('./lib/watch');
 
 var exports = module.exports = function (opts) {
     if (!opts) opts = {};
@@ -158,7 +159,7 @@ exports.bundle = function (opts) {
     }
     
     var name = opts.name || '.';
-    var tPkg = { listen : opts.listen };
+    var tPkg = { listen : opts.listen, watch : opts.watch };
     
     if (opts.main && !opts.base) {
         tPkg.main = path.basename(opts.main);
@@ -232,7 +233,7 @@ exports.bundle = function (opts) {
         );
         
         opts.entry.forEach(function (entry) {
-            fileWatch(entry, opts);
+            watchFile(entry, opts);
             src += entryBody
                 .replace(/\$__filename/g, function () {
                     return JSON.stringify('./' + path.basename(entry))
@@ -282,36 +283,3 @@ var builtins = fs.readdirSync(__dirname + '/builtins')
     })
     .join('\n')
 ;
-
-var watchedFiles = [];
-function fileWatch (file, opts) {
-    if (!opts.watch) return;
-    
-    var unwatch = function () { fs.unwatchFile(file) };
-    
-    if (opts.listen) opts.listen.on('close', unwatch);
-    
-    watchedFiles.push(file);
-    var wopts = {
-        persistent : opts.watch.hasOwnProperty('persistent')
-            ? opts.watch.persistent
-            : true
-        ,
-        interval : opts.watch.interval || 500,
-    };
-    
-    fs.watchFile(file, wopts, function (curr, prev) {
-        if (curr.mtime - prev.mtime == 0) return;
-        watchedFiles.forEach(function(file, i) {
-            fs.unwatchFile(file);
-            delete watchedFiles[i];
-        });
-        
-        if (opts.verbose) {
-            console.log('File change detected, regenerating bundle');
-        }
-        
-        opts.listen.removeListener('close', unwatch);
-        opts.listen.emit('change', file);
-    });
-}
