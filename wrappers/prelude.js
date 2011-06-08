@@ -57,6 +57,7 @@ require.resolve = function (file, cwd) {
             } ],
             route,
             route + '.js',
+            route + '.coffee',
             route + '/index.js'
         ];
         
@@ -72,9 +73,11 @@ require.resolve = function (file, cwd) {
             if (require.modules[p]) {
                 var res = fn(p);
                 if (res) {
-                    var post = [ '', '.js', '/index.js' ].filter(function (x) {
-                        return require.modules[res + x]
-                    })[0];
+                    var post = [ '', '.js', '.coffee', '/index.js' ]
+                        .filter(function (x) {
+                            return require.modules[res + x]
+                        })[0]
+                    ;
                     if (post !== undefined) return res + post;
                 }
             }
