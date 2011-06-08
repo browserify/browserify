@@ -33,8 +33,8 @@ exports.dnode = function () {
             // move this one later when socket.io supports browserify
             'dnode/socket.io.js',
             'dnode/package.json',
-            'dnode-protocol/index.js',
-            'dnode-protocol/package.json',
+            'dnode/node_modules/dnode-protocol/index.js',
+            'dnode/node_modules/dnode-protocol/package.json',
             'traverse/index.js',
             'traverse/package.json'
         ]).sort(),
