@@ -20,11 +20,24 @@ exports.dnode = function () {
     assert.ok(dnode, 'dnode object exists');
     assert.ok(dnode.connect, 'dnode.connect exists');
     
-    assert.ok(Object.keys(c.require.modules)
-        .reduce(function (acc, x) {
-            
-            return acc;
-        })
+    // ok to have these:
+    var ok = (function () {
+        var context = {};
+        vm.runInNewContext(browserify.bundle(), context)
+        return Object.keys(context.require.modules);
+    })();
+    
+    assert.deepEqual(
+        ok.concat([
+            'dnode/index.js',
+            // move this one later when socket.io supports browserify
+            'dnode/socket.io.js',
+            'dnode/package.json',
+            'dnode-protocol/index.js',
+            'dnode-protocol/package.json',
+            'traverse/index.js',
+            'traverse/package.json'
+        ]).sort(),
+        Object.keys(c.require.modules).sort()
     );
-console.dir(Object.keys(c.require.modules));
 };

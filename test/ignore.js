@@ -53,16 +53,26 @@ exports.ignoreNonDeps = function () {
 
 exports.ignoreBrowserifyString = function () {
     var src = browserify.bundle(__dirname + '/ignore/browserify_string');
-    var c = {};
-    vm.runInNewContext(src, c);
-    assert.equal(
-        c.require('./package.json').main,
-        './browser.js'
-    );
+    var c0 = {};
+    vm.runInNewContext(src, c0);
+    assert.equal(c0.require('./package.json').main, './browser.js');
     assert.deepEqual(
-        Object.keys(c.require.modules).filter(function (x) {
+        Object.keys(c0.require.modules).filter(function (x) {
             return x.match(/^\./)
         }),
-        './browser.js'
+        [ './browser.js' ]
     );
+    
+    var c1 = {};
+    vm.runInNewContext(browserify.bundle(), c1);
+    
+    var extras = Object.keys(c0.require.modules)
+        .filter(function (x) {
+            return x.match(/^\./)
+        })
+        .map(function (x) {
+            return c1.require.modules[x]
+        })
+    ;
+    
 };
