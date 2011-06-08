@@ -1,1 +1,1 @@
-module.exports = x -> x * 10
+module.exports = (x) -> x * 10

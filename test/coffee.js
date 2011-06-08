@@ -8,8 +8,6 @@ exports.coffee = function () {
     var c = {};
     vm.runInNewContext(src, c);
     
-console.dir(Object.keys(c.require.modules));
-    
     assert.equal(c.require('./foo.coffee')(5), 50);
     assert.equal(c.require('./foo')(5), 50);
     
