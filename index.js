@@ -1,5 +1,9 @@
 var fs = require('fs');
 var path = require('path');
+
+// not many node installs have path.relative yet >_<
+var pathDotRelative = require('file').path.relativePath;
+
 var EventEmitter = require('events').EventEmitter;
 var Hash = require('hashish');
 var Seq = require('seq');
@@ -173,7 +177,7 @@ exports.bundle = function (opts) {
     else if (typeof opts.base === 'string') {
         if (opts.main) {
             tPkg.main = opts.main.match(/^\//)
-                ? path.relative(opts.base, opts.main)
+                ? pathDotRelative(opts.base, opts.main)
                 : opts.main
             ;
         }

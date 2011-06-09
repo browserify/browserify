@@ -27,7 +27,8 @@
         "es5-shim" : "1.0.0",
         "coffee-script" : ">=1.1.1 <1.2",
         "hashish" : ">=0.0.2",
-        "semver" : ">=1.0.6 <1.1"
+        "semver" : ">=1.0.6 <1.1",
+        "file" : "0.1.1"
     },
     "devDependencies" : {
         "connect" : ">=1.4.1 <1.5",
