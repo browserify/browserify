@@ -31,7 +31,7 @@
     },
     "devDependencies" : {
         "connect" : ">=1.4.1 <1.5",
-        "hashish" : "*",
+        "hashish" : ">=0.0.2 <0.1",
         "traverse" : ">=0.3.8 <0.4",
         "backbone" : ">=0.3.3",
         "dnode" : ">=0.6.12 <0.7",
