@@ -21,7 +21,7 @@ exports.modules = function () {
 exports.precedence = function () {
     var src = browserify.bundle({
         base : __dirname + '/modules/precedence',
-        require : [ 'hashish' ],
+        require : [ 'hashish', 'traverse' ],
     });
     
     var c = { console : console };
