@@ -1,6 +1,6 @@
 {
     "name" : "browserify",
-    "version" : "1.0.0",
+    "version" : "1.0.1",
     "description" : "Browser-side require() for js directories and npm modules",
     "main" : "./index.js",
     "directories" : {
@@ -35,7 +35,7 @@
         "hashish" : ">=0.0.2 <0.1",
         "traverse" : ">=0.3.8 <0.4",
         "backbone" : ">=0.3.3",
-        "dnode" : "0.7.x",
+        "dnode" : ">=0.7.1 <0.8",
         "jade": "=0.10.4",
         "expresso" : "=0.7.x",
         "jquery-browserify" : "*",
