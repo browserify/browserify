@@ -159,7 +159,11 @@ exports.bundle = function (opts) {
     }
     
     var name = opts.name || '.';
-    var tPkg = { listen : opts.listen, watch : opts.watch };
+    var tPkg = {
+        listen : opts.listen,
+        watch : opts.watch,
+        base : opts.base,
+    };
     
     if (opts.main && !opts.base) {
         tPkg.main = path.basename(opts.main);
