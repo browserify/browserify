@@ -85,7 +85,7 @@ exports.ignoreBrowserifyObject = function () {
         Object.keys(c0.require.modules).filter(function (x) {
             return x.match(/^\./)
         }).sort(),
-        [ './bar.js', './foo.js', './package.json' ].sort()
+        [ './browser/bar.js', './browser/foo.js', './package.json' ].sort()
     );
     
     var c1 = {};

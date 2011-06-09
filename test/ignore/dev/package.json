@@ -5,6 +5,9 @@
         "example" : "e",
         "bin" : "b"
     },
+    "dependencies" : {
+        "bar" : "*"
+    },
     "devDependencies" : {
         "foo" : "0.2.x"
     }
