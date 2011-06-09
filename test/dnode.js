@@ -15,6 +15,7 @@ exports.dnode = function () {
         document : {},
     };
     vm.runInNewContext(src, c);
+console.dir(Object.keys(c.require.modules));
     var dnode = c.require('dnode');
     
     assert.ok(dnode, 'dnode object exists');
@@ -29,9 +30,9 @@ exports.dnode = function () {
     
     assert.deepEqual(
         ok.concat([
-            'dnode/index.js',
+            'dnode/browser/index.js',
             // move this one later when socket.io supports browserify
-            'dnode/socket.io.js',
+            'dnode/browser/socket.io.js',
             'dnode/package.json',
             'dnode/node_modules/dnode-protocol/index.js',
             'dnode/node_modules/dnode-protocol/package.json',

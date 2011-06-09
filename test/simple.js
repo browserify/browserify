@@ -34,7 +34,7 @@ exports.simple = function () {
     
     var th = setTimeout(function () {
         assert.fail('effects of filter not used');
-    }, 5000);
+    }, 10000);
     
     var ts = setTimeout(function () {
         assert.fail('static test never started');
