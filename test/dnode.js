@@ -15,7 +15,6 @@ exports.dnode = function () {
         document : {},
     };
     vm.runInNewContext(src, c);
-console.dir(Object.keys(c.require.modules));
     var dnode = c.require('dnode');
     
     assert.ok(dnode, 'dnode object exists');
@@ -37,7 +36,7 @@ console.dir(Object.keys(c.require.modules));
             'dnode/node_modules/dnode-protocol/index.js',
             'dnode/node_modules/dnode-protocol/package.json',
             'traverse/index.js',
-            'traverse/package.json'
+            'traverse/package.json',
         ]).sort(),
         Object.keys(c.require.modules).sort()
     );
