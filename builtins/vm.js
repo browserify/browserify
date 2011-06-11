@@ -3,7 +3,9 @@ var Script = exports.Script = function NodeScript (code) {
     this.code = code;
 };
 
-Script.prototype.runInNewContext = function (context, name) {
+Script.prototype.runInNewContext = function (context) {
+    if (!context) context = {};
+    
     var iframe = document.createElement('iframe');
     //iframe.setAttribute('src', 'about:blank');
     if (!iframe.style) iframe.style = {};
