@@ -24,7 +24,7 @@
         "findit" : ">=0.0.3 <0.1",
         "seq" : ">=0.3.1 <0.4",
         "source" : ">=0.0.3 <0.1",
-        "es5-shim" : "1.0.0",
+        "es5-shim" : "https://github.com/kriskowal/es5-shim/zipball/v1.2.4",
         "coffee-script" : ">=1.1.1 <1.2",
         "hashish" : ">=0.0.2",
         "semver" : ">=1.0.6 <1.1",
