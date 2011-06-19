@@ -3,7 +3,7 @@ var path = require('path');
 var wrapper = require('../lib/wrap');
 
 exports.wrap = function () {
-    var files = wrapper.walk(__dirname + '/wrap/a.js');
+    var files = wrapper(__dirname + '/wrap/a.js').files;
     
     assert.deepEqual(Object.keys(files).sort(), [
         __dirname + '/wrap/a.js',
@@ -15,10 +15,10 @@ exports.wrap = function () {
 };
 
 exports.wrapArray = function () {
-    var files = wrapper.walk([
+    var files = wrapper([
         __dirname + '/wrap/a.js',
         __dirname + '/wrap/skipme.js',
-    ]);
+    ]).files;
     
     assert.deepEqual(Object.keys(files).sort(), [
         __dirname + '/wrap/a.js',
