@@ -18,6 +18,7 @@ exports.bundle = function () {
     };
     vm.runInNewContext(src, c);
     
+console.dir(c.require.modules);
     c.require('seq')([1,2,3])
         .parMap_(function (next, x) {
             setTimeout(function () {

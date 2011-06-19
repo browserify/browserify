@@ -9,6 +9,7 @@ exports.wrap = function () {
         'path', 'vm',
         __dirname + '/wrap/a.js',
         __dirname + '/wrap/node_modules/b/main.js',
+        __dirname + '/wrap/node_modules/b/package.json',
         __dirname + '/wrap/c.js',
         __dirname + '/wrap/x.js',
     ].sort());
