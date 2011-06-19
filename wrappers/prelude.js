@@ -10,6 +10,7 @@ require.paths = [];
 require.modules = {};
 
 require.resolve = function (file, cwd) {
+console.dir(require.modules);
     var path = require.modules['path']();
     var resolve = function (p) {
         if (p === '.' || p === './') return '.';

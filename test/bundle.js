@@ -1,11 +1,10 @@
 var assert = require('assert');
-var browserify = require('browserify');
+var browserify = require('../lib/wrap');
 var vm = require('vm');
 
 exports.bundle = function () {
-    var src = browserify.bundle({
-        require : 'seq'
-    });
+    var src = browserify(require.resolve('seq')).bundle();
+    
     assert.ok(typeof src === 'string');
     assert.ok(src.length > 0);
     
@@ -13,8 +12,12 @@ exports.bundle = function () {
         assert.fail('never ran');
     }, 10000);
     
-    var c = { setTimeout : setTimeout };
+    var c = {
+        setTimeout : setTimeout,
+        console : console
+    };
     vm.runInNewContext(src, c);
+    
     c.require('seq')([1,2,3])
         .parMap_(function (next, x) {
             setTimeout(function () {
