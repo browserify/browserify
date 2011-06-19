@@ -3,7 +3,7 @@ var browserify = require('../lib/wrap');
 var vm = require('vm');
 
 exports.bundle = function () {
-    var src = browserify(require.resolve('seq')).bundle();
+    var src = browserify('seq').bundle();
     
     assert.ok(typeof src === 'string');
     assert.ok(src.length > 0);
@@ -18,7 +18,6 @@ exports.bundle = function () {
     };
     vm.runInNewContext(src, c);
     
-console.dir(c.require.modules);
     c.require('seq')([1,2,3])
         .parMap_(function (next, x) {
             setTimeout(function () {
