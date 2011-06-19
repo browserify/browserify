@@ -1,9 +1,6 @@
 var fs = require('fs');
 var path = require('path');
 
-// not many node installs have path.relative yet >_<
-var pathDotRelative = require('file').path.relativePath;
-
 var EventEmitter = require('events').EventEmitter;
 var Hash = require('hashish');
 var Seq = require('seq');
@@ -12,13 +9,11 @@ var coffee = require('coffee-script');
 var source = require('source');
 
 var Package = require('./lib/package');
+var wrapper = require('./lib/wrap');
 var watchFile = require('./lib/watch');
 
 var exports = module.exports = function (opts) {
     if (!opts) opts = {};
-    var modified = new Date();
-    
-    if (!opts.hasOwnProperty('watch')) opts.watch = true;
     var ee = opts.listen = opts.listen || new EventEmitter;
     
     ee.setMaxListeners(opts.maxListeners || 50);
@@ -31,6 +26,7 @@ var exports = module.exports = function (opts) {
         }
     });
     
+    var modified = new Date();
     var self = function (req, res, next) {
         if (!listening) {
             req.connection.server.on('close', ee.emit.bind(ee, 'close'));
@@ -119,8 +115,8 @@ exports.bundle = function (opts) {
     var shim = 'shim' in opts ? opts.shim : true;
     var req = opts.require || [];
     
-    var src = fs.readFileSync(__dirname + '/wrappers/prelude.js', 'utf8')
-        + fs.readFileSync(__dirname + '/wrappers/node_compat.js', 'utf8')
+    var src = wrappers.prelude
+        + wrappers.node_compat
         + (shim ? source.modules('es5-shim')['es5-shim'] : '')
         + builtins
     ;
@@ -177,7 +173,7 @@ exports.bundle = function (opts) {
     else if (typeof opts.base === 'string') {
         if (opts.main) {
             tPkg.main = opts.main.match(/^\//)
-                ? pathDotRelative(opts.base, opts.main)
+                ? path.relative(opts.base, opts.main)
                 : opts.main
             ;
         }
@@ -236,13 +232,10 @@ exports.bundle = function (opts) {
         if (!Array.isArray(opts.entry)) {
             opts.entry = [ opts.entry ];
         }
-        var entryBody = fs.readFileSync(
-            __dirname + '/wrappers/entry.js', 'utf8'
-        );
         
         opts.entry.forEach(function (entry) {
             watchFile(entry, opts);
-            src += entryBody
+            src += wrappers.entry
                 .replace(/\$__filename/g, function () {
                     return JSON.stringify('./' + path.basename(entry))
                 })
@@ -261,7 +254,14 @@ exports.bundle = function (opts) {
     return opts.filter ? opts.filter(src) : src;
 };
 
-var wrapperBody = fs.readFileSync(__dirname + '/wrappers/body.js', 'utf8');
+var wrappers = fs.readdirSync(__dirname + '/wrappers', 'utf8')
+    .filter(function (file) { return file.match(/\.js$/) })
+    .reduce(function (acc, file) {
+        var name = file.replace(/\.js$/, '');
+        acc[name] = fs.readFileSync(__dirname + '/wrappers/' + file, 'utf8');
+        return acc;
+    }, {})
+;
 
 var builtins = fs.readdirSync(__dirname + '/builtins')
     .filter(function (file) {
@@ -273,7 +273,7 @@ var builtins = fs.readdirSync(__dirname + '/builtins')
         var src = fs.readFileSync(f, 'utf8').replace(/^#![^\n]*\n/, '');
         var name = file.replace(/\.js$/, '');
         
-        return wrapperBody
+        return wrappers.body
             .replace(/\$__dirname/g, function () {
                 return JSON.stringify(path.dirname(file));
             })
