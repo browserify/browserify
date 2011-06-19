@@ -97,6 +97,8 @@ var exports = module.exports = function (opts) {
         return srcCache;
     };
     
+    
+    
     return self;
 };
 
