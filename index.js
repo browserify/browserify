@@ -9,8 +9,9 @@ var coffee = require('coffee-script');
 var source = require('source');
 
 var Package = require('./lib/package');
-var wrapper = require('./lib/wrap');
 var watchFile = require('./lib/watch');
+
+var wrapper = require('./lib/wrap');
 
 var exports = module.exports = function (opts) {
     if (!opts) opts = {};
@@ -256,7 +257,7 @@ exports.bundle = function (opts) {
     return opts.filter ? opts.filter(src) : src;
 };
 
-var wrappers = fs.readdirSync(__dirname + '/wrappers', 'utf8')
+var wrappers = fs.readdirSync(__dirname + '/wrappers')
     .filter(function (file) { return file.match(/\.js$/) })
     .reduce(function (acc, file) {
         var name = file.replace(/\.js$/, '');
