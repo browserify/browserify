@@ -1,8 +1,0 @@
-{
-    "name" : "$$$",
-    "version" : "0.0.1",
-    "main" : "./moo.js",
-    "dependencies" : {
-        "hashish" : ">=0.0.3"
-    }
-}

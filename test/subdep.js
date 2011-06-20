@@ -3,8 +3,20 @@ var browserify = require('browserify');
 var vm = require('vm');
 
 exports.subdep = function () {
-    var src = browserify.bundle(__dirname + '/subdep');
+    var src = browserify.bundle(__dirname + '/subdep/index.js');
     var c = {};
     vm.runInNewContext(src, c);
-    console.dir(Object.keys(c.require.modules));
+    assert.deepEqual(
+        Object.keys(c.require.modules),
+        [
+            '/package.json',
+            '/index.js',
+            '/node_modules/qq/package.json',
+            '/node_modules/qq/b.js',
+            '/node_modules/qq/node_modules/a/package.json',
+            '/node_modules/qq/node_modules/a/index.js',
+            '/node_modules/qq/node_modules/z/index.js',
+            'path'
+        ]
+    );
 };
