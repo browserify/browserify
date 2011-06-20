@@ -1,296 +1,162 @@
+var detective = require('detective');
+var findit = require('findit');
+var resolve = require('resolve');
+var Seq = require('seq');
+
 var fs = require('fs');
 var path = require('path');
 
-var EventEmitter = require('events').EventEmitter;
-var Hash = require('hashish');
-var Seq = require('seq');
+var wrappers = require('./lib/wrappers');
 
-var coffee = require('coffee-script');
-var source = require('source');
+module.exports = Wrap;
+function Wrap (startFiles) {
+    if (!(this instanceof Wrap)) return new Wrap(startFiles);
+    
+    this.files = {};
+    this.hashes = {};
+    this.aliases = {};
+    
+    this.prepends = [ wrappers.prelude, wrappers.process ];
+    this.appends = []
+    
+    this.require(startFiles || []);
+    this.require('path');
+}
 
-var Package = require('./lib/package');
-var watchFile = require('./lib/watch');
-
-var wrapper = require('./lib/wrap');
-
-var exports = module.exports = function (opts) {
-    if (!opts) opts = {};
-    var ee = opts.listen = opts.listen || new EventEmitter;
-    
-    ee.setMaxListeners(opts.maxListeners || 50);
-    var listening = false;
-    
-    var srcCache = exports.bundle(opts);
-    process.nextTick(function () {
-        if (self.middlewares.length === 0) {
-            ee.emit('ready', self.source());
-        }
-    });
-    
-    var modified = new Date();
-    var self = function (req, res, next) {
-        if (!listening) {
-            req.connection.server.on('close', ee.emit.bind(ee, 'close'));
-            ee.on('change', function (file) {
-                var newCache = exports.bundle(opts);
-                Seq(self.middlewares)
-                    .seqEach_(function (next, fn) {
-                        fn(newCache, function (src) {
-                            newCache = src;
-                            next.ok(newCache);
-                        });
-                    })
-                    .seq(function () {
-                        srcCache = newCache;
-                        ee.emit('ready', srcCache);
-                        listening = false;
-                    })
-                ;
-            });
-            listening = true;
-        }
-        
-        if (req.url.split('?')[0] === (opts.mount || '/browserify.js')) {
-            res.writeHead(200, {
-                'Last-Modified' : modified.toString(),
-                'Content-Type' : 'text/javascript',
-            });
-            res.end(srcCache);
-        }
-        else next();
-    };
-    
-    self.middlewares = [];
-    
-    var using = false;
-    self.use = function (fn) {
-        self.middlewares.push(fn);
-        
-        if (!using) {
-            process.nextTick(function () {
-                using = false;
-                
-                var newCache = srcCache;
-                Seq(self.middlewares)
-                    .seqEach_(function (next, fn) {
-                        fn.call(self, newCache, function (src) {
-                            newCache = src;
-                            next.ok(newCache);
-                        });
-                    })
-                    .seq(function () {
-                        srcCache = newCache;
-                        ee.emit('ready', srcCache);
-                    })
-                ;
-            });
-        }
-        using = true;
-        return self;
-    };
-    
-    self.on = function () {
-        ee.on.apply(ee, arguments);
-        return self;
-    };
-    
-    self.source = function () {
-        return srcCache;
-    };
-    
-    
-    
-    return self;
+Wrap.prototype.prepend = function (src) {
+    this.prepends.unshift(src);
 };
 
-exports.bundle = function (opts) {
-    if (!opts) opts = {};
-    if (typeof opts === 'string') {
-        opts = { base : opts };
-        var opts_ = arguments[1];
-        if (typeof opts_ === 'object') {
-            Object.keys(opts_).forEach(function (key) {
-                opts[key] = opts_[key];
-            });
-        }
-    }
+Wrap.prototype.append = function (src) {
+    this.appends.push(src);
+};
+
+Wrap.prototype.bundle = function () {
+    var files = this.files;
     
-    var shim = 'shim' in opts ? opts.shim : true;
-    var req = opts.require || [];
-    
-    var src = wrappers.prelude
-        + wrappers.node_compat
-        + (shim ? source.modules('es5-shim')['es5-shim'] : '')
-        + builtins
-    ;
-    
-    var packages = [];
-    
-    var resolve = function (p) {
-        if (p.match(/^[.\/]/)) return p;
-        
-        try {
-            return path.dirname(require.resolve(p + '/package.json'));
-        }
-        catch (err) {
-            return p.match(/\.js$/)
-                ? require.resolve(p)
-                : path.dirname(require.resolve(p))
-            ;
-        }
-    };
-    
-    if (typeof opts.require === 'string') {
-        packages.push(Package(opts.require, resolve(opts.require), null, tPkg));
-    }
-    else if (Array.isArray(opts.require)) {
-        opts.require.forEach(function (ps) {
-            if (typeof ps === 'object') {
-                Hash(ps).forEach(function (p, key) {
-                    packages.push(Package(key, resolve(p), null, tPkg));
-                });
+    return []
+        .concat(this.prepends)
+        .concat(Object.keys(files).map(function (key) {
+            var file = files[key];
+            var root = file.root;
+            var name = key;
+            
+            if (isPrefixOf(root + '/', name)) {
+                var mfile = './' + name.slice(root.length + 1);
+            }
+            else if (resolve.isCore(name) || !name.match(/^(\.\.?)?\//)) {
+                var mfile = name;
+            }
+            else if (name.match(/\/node_modules\//)) {
+                var mfile = name.match(/\/node_modules\/(.+)/)[1];
+console.dir(mfile);
             }
             else {
-                packages.push(Package(ps, resolve(ps), null, tPkg));
-            }
-        });
-    }
-    else if (typeof opts.require === 'object') {
-        Hash(opts.require).forEach(function (p, key) {
-            packages.push(Package(key, resolve(p), null, tPkg));
-        });
-    }
-    
-    var name = opts.name || '.';
-    var tPkg = {
-        listen : opts.listen,
-        watch : opts.watch,
-        base : opts.base,
-    };
-    
-    if (opts.main && !opts.base) {
-        tPkg.main = path.basename(opts.main);
-        
-        packages.push(Package(name, path.dirname(opts.main), null, tPkg));
-    }
-    else if (typeof opts.base === 'string') {
-        if (opts.main) {
-            tPkg.main = opts.main.match(/^\//)
-                ? path.relative(opts.base, opts.main)
-                : opts.main
-            ;
-        }
-        
-        packages.push(Package(name, resolve(opts.base), null, tPkg));
-    }
-    else if (Array.isArray(opts.base)) {
-        opts.base.forEach(function (ps) {
-            if (typeof ps === 'object') {
-                Hash(ps).forEach(function (p, key) {
-                    packages.push(Package(key, resolve(p), null, tPkg));
-                });
-            }
-            else {
-                packages.push(Package(name, resolve(ps), null, tPkg));
-            }
-        });
-    }
-    else if (typeof opts.base === 'object') {
-        Hash(opts.base).forEach(function (p, key) {
-            packages.push(Package(key, resolve(p), null, tPkg));
-        });
-    }
-    
-    src += Package.merge(packages);
-    var deps = packages.reduce(function (acc, p) {
-        if (p.name) acc[p.name] = true;
-        return acc;
-    }, {});
-    
-    (function processDeps (pkgs) {
-        if (pkgs.length === 0) return;
-        
-        var newDeps = {};
-        
-        pkgs.forEach(function (pkg) {
-            if (!deps[pkg.name]) {
-                deps[pkg.name] = true;
-                src += pkg.toString();
+                throw new Error('Can only load non-root modules'
+                    + ' in a node_modules directory for file: ' + name
+                );
             }
             
-            Object.keys(pkg.dependencies.needs).forEach(function (dep) {
-                var dir = pkg.basedir + '/node_modules/' + dep;
-                if (!deps[dep] && !path.existsSync(dir)) {
-                    newDeps[dep] = true;
-                }
-            });
-        });
-        
-        processDeps(Object.keys(newDeps).map(function (dep) {
-            return Package(dep, resolve(dep), null, tPkg);
-        }));
-    })(packages);
-    
-    if (opts.entry) {
-        if (!Array.isArray(opts.entry)) {
-            opts.entry = [ opts.entry ];
-        }
-        
-        opts.entry.forEach(function (entry) {
-            watchFile(entry, opts);
-            src += wrappers.entry
+            return wrappers.body
                 .replace(/\$__filename/g, function () {
-                    return JSON.stringify('./' + path.basename(entry))
+                    return JSON.stringify(mfile)
                 })
                 .replace(/\$__dirname/g, function () {
-                    return JSON.stringify('.')
+                    return JSON.stringify(path.dirname(mfile))
                 })
-                .replace('$body', function () {
-                    return (entry.match(/\.coffee$/) ? coffee.compile : String)(
-                        fs.readFileSync(entry, 'utf8')
-                    );
+                .replace(/\$body/, function () {
+                    return file.body.toString().replace(/^#![^\n]*\n/, '');
                 })
             ;
-        });
-    }
-    
-    return opts.filter ? opts.filter(src) : src;
+        }))
+        .concat(this.appends)
+        .join('\n')
+    ;
 };
 
-var wrappers = fs.readdirSync(__dirname + '/wrappers')
-    .filter(function (file) { return file.match(/\.js$/) })
-    .reduce(function (acc, file) {
-        var name = file.replace(/\.js$/, '');
-        acc[name] = fs.readFileSync(__dirname + '/wrappers/' + file, 'utf8');
-        return acc;
-    }, {})
-;
-
-var builtins = fs.readdirSync(__dirname + '/builtins')
-    .filter(function (file) {
-        return file.match(/\.js$/)
-            && !path.basename(file).match(/^\./)
-    })
-    .map(function (file) {
-        var f = __dirname + '/builtins/' + file;
-        var src = fs.readFileSync(f, 'utf8').replace(/^#![^\n]*\n/, '');
-        var name = file.replace(/\.js$/, '');
+Wrap.prototype.require = function (startFiles) {
+    var files = this.files;
+    var checkedPackages = {};
+    
+    if (!Array.isArray(startFiles)) {
+        startFiles = [ startFiles ];
+    }
+    
+    startFiles.forEach(function (file) {
+        var dir = process.cwd();
+        if (resolve.isCore(file)) {
+            var res = file;
+        }
+        else if (file.match(/^(\.\.?)?\//)) {
+            var res = path.resolve(process.cwd(), file);
+            var dir = path.dirname(res);
+        }
+        else {
+            var res = file;
+        }
         
-        return wrappers.body
-            .replace(/\$__dirname/g, function () {
-                return JSON.stringify(path.dirname(file));
-            })
-            .replace(/\$__filename/g, function () {
-                return JSON.stringify(name);
-            })
-            .replace('$body', function () {
-                return src
-                    + '\nrequire.modules['
-                    + JSON.stringify(name)
-                    + '].builtin = true;\n'
-                ;
-            })
-        ;
-    })
-    .join('\n')
-;
+        walker(res, dir, dir);
+    });
+    
+    return this;
+    
+    function walker (mfile, basedir, root) {
+        if (resolve.isCore(mfile)) {
+            var file = path.resolve(__dirname, './builtins/' + mfile + '.js');
+            var name = mfile;
+            if (!path.existsSync(file)) {
+                throw new Error('No wrapper for core module ' + mfile);
+            }
+        }
+        else {
+            try {
+                var file = resolve.sync(mfile, { basedir : basedir });
+                var name = isPrefixOf(root + '/', file) ? file : mfile;
+                basedir = path.dirname(file);
+                
+                var pkgfile = basedir + '/package.json';
+                if (!checkedPackages[pkgfile]) {
+                    checkedPackages[pkgfile] = true;
+                    if (path.existsSync(pkgfile)) {
+                        files[pkgfile] = {
+                            root : root,
+                            body : 'return ' + fs.readFileSync(pkgfile, 'utf8')
+                        };
+                    }
+                }
+            }
+            catch (err) {
+                throw new Error('Cannot find module ' + JSON.stringify(mfile)
+                    + ' from directory ' + JSON.stringify(basedir)
+                );
+            }
+        }
+        
+        if (files[name]) return;
+        
+        var body = fs.readFileSync(file);
+        files[name] = { root : root, body : body };
+        
+        var required = detective.find(body);
+        
+        if (required.expressions.length) {
+            console.error('Expressions in require() statements:');
+            required.expressions.forEach(function (ex) {
+                console.error('    require(' + ex + ')');
+            });
+        }
+        
+        var keys = Object.keys(
+            required.strings.reduce(function (acc, r) {
+                acc[r] = true;
+                return acc;
+            }, {})
+        );
+        
+        keys.forEach(function (f) { walker(f, basedir, root) });
+    }
+};
+
+function isPrefixOf (x, y) {
+    return y.slice(0, x.length) === x;
+}

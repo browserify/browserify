@@ -1,5 +1,5 @@
 var assert = require('assert');
-var browserify = require('../lib/wrap');
+var browserify = require('../');
 var vm = require('vm');
 
 exports.bundle = function () {

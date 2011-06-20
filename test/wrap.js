@@ -1,6 +1,6 @@
 var assert = require('assert');
 var path = require('path');
-var wrapper = require('../lib/wrap');
+var wrapper = require('../');
 
 exports.wrap = function () {
     var files = wrapper(__dirname + '/wrap/a.js').files;
