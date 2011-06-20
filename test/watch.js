@@ -14,7 +14,7 @@ exports.watch = function () {
     var filters = 0;
     
     var bundle = require('browserify')({
-        base : __dirname + '/watch',
+        require : __dirname + '/watch/a.js',
         mount : '/bundle.js',
         filter : function (src) {
             filters ++;
@@ -55,23 +55,22 @@ exports.watch = function () {
             var a1 = c1.require('./a');
             
             var a2 = Math.floor(Math.random() * 10000);
+            var s2_ = bundle.bundle();
             
-            bundle.on('ready', function (s2_) {
-                getBundle(function (s2) {
-                    assert.notEqual(s1, s2, 'sources are equal');
-                    
-                    var c2 = {};
-                    vm.runInNewContext(s2, c2);
-                    var a2_ = c2.require('./a');
-                    
-                    fs.writeFileSync(
-                        __dirname + '/watch/a.js',
-                        'module.exports = ' + a1
-                    );
-                    
-                    server.close();
-                    assert.eql(a2, a2_);
-                });
+            getBundle(function (s2) {
+                assert.notEqual(s1, s2, 'sources are equal');
+                
+                var c2 = {};
+                vm.runInNewContext(s2, c2);
+                var a2_ = c2.require('./a');
+                
+                fs.writeFileSync(
+                    __dirname + '/watch/a.js',
+                    'module.exports = ' + a1
+                );
+                
+                server.close();
+                assert.eql(a2, a2_);
             });
             
             fs.writeFileSync(

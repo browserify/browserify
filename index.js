@@ -57,7 +57,15 @@ var exports = module.exports = function (opts) {
             else {
                 fs.watchFile(file, watcher);
             }
+            
+            return body;
         })
+    }
+    
+    if (opts.filter) {
+        w.use('post', function (body) {
+            return opts.filter(body);
+        });
     }
     
     w.ignore(opts.ignore || []);
@@ -76,8 +84,18 @@ var exports = module.exports = function (opts) {
     
     var modified = new Date();
     var _cache = null;
+    var listening = false;
     var self = function (req, res, next) {
         if (!_cache) self.bundle();
+        
+        if (!listening && req.connection && req.connection.server) {
+            req.connection.server.on('close', function () {
+                Object.keys(w.files).forEach(function (file) {
+                    fs.unwatchFile(file);
+                });
+            });
+        }
+        listening = true;
         
         if (req.url.split('?')[0] === (opts.mount || '/browserify.js')) {
             res.statusCode = 200;
