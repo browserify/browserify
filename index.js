@@ -17,6 +17,18 @@ var exports = module.exports = function (opts) {
     }
     
     var w = wrap(opts.require);
+    
+    if (opts.entry) {
+        if (Array.isArray(opts.entry)) {
+            opts.entry.forEach(function (e) {
+                w.addEntry(e);
+            });
+        }
+        else {
+            w.addEntry(opts.entry);
+        }
+    }
+    
     var self = function (req, res, next) {
         // ...
     };

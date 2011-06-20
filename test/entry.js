@@ -13,57 +13,20 @@ var setTimeout_ = function (cb, t) {
 
 exports.entry = function () {
     var src = browserify.bundle({
-        base : __dirname + '/pkg/a',
         entry : __dirname + '/entry/main.js',
     });
     
-    var c = {
-        assert : assert,
-        console : console,
-        setTimeout : setTimeout_,
-        clearTimeout : clearTimeout,
-        to : setTimeout(function () {
-            assert.fail('entry never fired')
-        }, 5000),
-    };
-    vm.runInNewContext(src, c);
-};
-
-exports.entryCoffee = function () {
-    var src = browserify.bundle({
-        base : __dirname + '/pkg/a',
-        entry : __dirname + '/entry/main.coffee',
-    });
+    var to = setTimeout(function () {
+        assert.fail('never called done()');
+    }, 5000);
     
     var c = {
-        assert : assert,
-        setTimeout : setTimeout_,
-        clearTimeout : clearTimeout,
-        to : setTimeout(function () {
-            assert.fail('entry never fired')
-        }, 5000),
-    };
-    vm.runInNewContext(src, c);
-};
-
-exports.entries = function () {
-    var src = browserify.bundle({
-        base : __dirname + '/pkg/a',
-        entry : [
-            __dirname + '/entry/one.js',
-            __dirname + '/entry/two.js',
-        ],
-    });
-    
-    var c = {
-        setTimeout : setTimeout_,
-        clearTimeout : clearTimeout,
-        t1 : setTimeout(function () {
-            assert.fail('first entry never fired')
-        }, 5000),
-        t2 : setTimeout(function () {
-            assert.fail('second entry never fired')
-        }, 5000),
+        setTimeout : process.nextTick,
+        done : function (one, two) {
+            clearTimeout(to);
+            assert.equal(one, 1);
+            assert.equal(two, 2);
+        }
     };
     vm.runInNewContext(src, c);
 };
