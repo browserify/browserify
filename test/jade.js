@@ -4,9 +4,12 @@ var vm = require('vm');
 var jade = require('jade');
 
 exports.jade = function () {
-    var src = browserify.bundle({
-        require : 'jade'
+    var b = browserify({
+        require : 'jade',
+        ignore : [ 'stylus', 'markdown', 'discount', 'markdown-js' ]
     });
+    var src = b.bundle();
+    
     assert.ok(typeof src === 'string');
     assert.ok(src.length > 0);
     
