@@ -14,6 +14,9 @@ exports.coffee = function () {
     assert.equal(c.require('./bar.js'), 500);
     assert.equal(c.require('./bar'), 500);
     
-    assert.equal(c.require('./'), 10 * 10 * 500);
-    assert.equal(c.require('./index.coffee'), 10 * 10 * 500);
+    assert.equal(c.require('./baz.coffee'), 1000);
+    assert.equal(c.require('./baz'), 1000);
+    
+    assert.equal(c.require('./'), 10 * 10 * 500 + 1000);
+    assert.equal(c.require('./index.coffee'), 10 * 10 * 500 + 1000);
 };
