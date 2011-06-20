@@ -1,7 +1,8 @@
 var wrap = require('./lib/wrap');
 var fs = require('fs');
+var path = require('path');
 
-module.exports = function (opts) {
+var exports = module.exports = function (opts) {
     if (typeof opts === 'string') {
         opts = { require : [ opts ] };
     }
@@ -9,15 +10,13 @@ module.exports = function (opts) {
         opts = { require : opts };
     }
     else if (typeof opts === 'object') {
-        
+        throw new Error('not implemented')
     }
+    
     if (!opts.require) opts.require = [];
     
     if (opts.base) {
-        var files = fs.readDirSync(opts.base);
-        opts.require = opts.require.concat(
-            files.filter(function (file) { return file.match(/\.js$/) })
-        );
+        throw new Error('base is no longer a valid parameter');
     }
     
     var w = wrap(opts.require);
@@ -34,4 +33,8 @@ module.exports = function (opts) {
     });
     
     return self;
+};
+
+exports.bundle = function (opts) {
+    return exports(opts).bundle();
 };

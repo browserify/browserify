@@ -1,9 +1,0 @@
-{
-    "name" : "quux",
-    "browserify" : {
-        "base" : {
-            "aa" : "./aaa",
-            "zz" : "./zzz"
-        }
-    }
-}
