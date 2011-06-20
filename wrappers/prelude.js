@@ -43,6 +43,7 @@ require.resolve = (function () {
         }
 
         function loadAsDirectorySync (x) {
+            x = x.replace(/\/+$/, '');
             var pkgfile = x + '/package.json';
             if (require.modules[pkgfile]) {
                 var pkg = require.modules[pkgfile]();
