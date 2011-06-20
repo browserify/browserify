@@ -1,4 +1,4 @@
 bar = require './bar'
-foo = require './foo'
+foo = require './foo.coffee'
 
 module.exports = foo(foo bar)

@@ -4,7 +4,7 @@ var fs = require('fs');
 var browserify = require('browserify');
 
 exports.coffee = function () {
-    var src = browserify.bundle(__dirname + '/coffee');
+    var src = browserify.bundle(__dirname + '/coffee/index.coffee');
     var c = {};
     vm.runInNewContext(src, c);
     

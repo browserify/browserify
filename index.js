@@ -19,7 +19,10 @@ var exports = module.exports = function (opts) {
         throw new Error('base is no longer a valid parameter');
     }
     
-    var w = wrap(opts.require, opts.ignore);
+    var w = wrap()
+        .ignore(opts.ignore)
+        .require(opts.require)
+    ;
     
     if (opts.entry) {
         if (Array.isArray(opts.entry)) {

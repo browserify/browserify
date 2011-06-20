@@ -7,7 +7,7 @@ exports.subdep = function () {
     var c = {};
     vm.runInNewContext(src, c);
     assert.deepEqual(
-        Object.keys(c.require.modules),
+        Object.keys(c.require.modules).sort(),
         [
             '/package.json',
             '/index.js',
@@ -17,6 +17,6 @@ exports.subdep = function () {
             '/node_modules/qq/node_modules/a/index.js',
             '/node_modules/qq/node_modules/z/index.js',
             'path'
-        ]
+        ].sort()
     );
 };
