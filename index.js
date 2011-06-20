@@ -1,6 +1,5 @@
 var wrap = require('./lib/wrap');
 var fs = require('fs');
-var path = require('path');
 var coffee = require('coffee-script');
 
 var exports = module.exports = function (opts) {
@@ -17,16 +16,52 @@ var exports = module.exports = function (opts) {
     if (!opts.require) opts.require = [];
     
     if (opts.base) {
-        throw new Error('base is no longer a valid parameter');
+        throw new Error(
+            'Base is no longer a valid option.'
+            + 'Pass in file or files to the require option and browserify will'
+            + ' look at the require()s recursively to include only the files it'
+            + 'needs automatically.'
+        );
     }
     
+    var watches = [];
     var w = wrap()
         .use('.coffee', function (body) {
             return coffee.compile(body)
         })
-        .ignore(opts.ignore)
-        .require(opts.require)
     ;
+    
+    if (opts.watch) {
+        w.use(function (body, file) {
+            var watcher = function (curr, prev) {
+                if (curr.nlink === 0) {
+                    // deleted
+                    delete w.files[file];
+                    
+                    _cache = null;
+                }
+                else if (curr.mtime !== prev.mtime) {
+                    // modified
+                    fs.unwatchFile(file);
+                    var f = w.files[file];
+                    delete w.files[file];
+                    w.require(file, f.root);
+                    
+                    _cache = null;
+                }
+            };
+            
+            if (typeof opts.watch === 'object') {
+                fs.watchFile(file, opts.watch, watcher);
+            }
+            else {
+                fs.watchFile(file, watcher);
+            }
+        })
+    }
+    
+    w.ignore(opts.ignore || []);
+    w.require(opts.require);
     
     if (opts.entry) {
         if (Array.isArray(opts.entry)) {
