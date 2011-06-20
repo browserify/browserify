@@ -3,7 +3,10 @@ var fs = require('fs');
 var path = require('path');
 
 var exports = module.exports = function (opts) {
-    if (Array.isArray(opts)) {
+    if (!opts) {
+        opts = {};
+    }
+    else if (Array.isArray(opts)) {
         opts = { require : opts };
     }
     else if (typeof opts !== 'object') {

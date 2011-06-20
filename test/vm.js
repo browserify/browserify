@@ -4,7 +4,7 @@ var browserify = require('browserify');
 var jsdom = require('jsdom');
 
 exports.vmRunInNewContext = function () {
-    var src = browserify.bundle();
+    var src = browserify().require('vm').bundle();
     var html = '<html><head></head><body></body></html>';
     
     jsdom.env(html, function (err, window) {
