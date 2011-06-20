@@ -32,8 +32,17 @@ var exports = module.exports = function (opts) {
         }
     }
     
+    var modified = new Date();
+    var _cache = null;
     var self = function (req, res, next) {
-        // ...
+        if (!_cache) self.bundle();
+        
+        if (req.url.split('?')[0] === (opts.mount || '/browserify.js')) {
+            res.statusCode = 200;
+            res.setHeader('last-modified', modified.toString());
+            res.setHeader('content-type', 'text/javascript');
+            res.end(_cache);
+        }
     };
     
     Object.keys(w).forEach(function (key) {
@@ -43,6 +52,12 @@ var exports = module.exports = function (opts) {
     Object.keys(wrap.prototype).forEach(function (key) {
         self[key] = w[key].bind(w);
     });
+    
+    self.bundle = function () {
+        var src = w.bundle.apply(w, arguments);
+        _cache = src;
+        return src;
+    };
     
     return self;
 };
