@@ -117,12 +117,13 @@ exports.bundle = function (opts) {
     }
     
     var shim = 'shim' in opts ? opts.shim : true;
+    var useBuiltins = 'builtins' in opts ? opts.builtins : true;
     var req = opts.require || [];
     
     var src = fs.readFileSync(__dirname + '/wrappers/prelude.js', 'utf8')
         + fs.readFileSync(__dirname + '/wrappers/node_compat.js', 'utf8')
         + (shim ? source.modules('es5-shim')['es5-shim'] : '')
-        + builtins
+        + (useBuiltins ? builtins : '')
     ;
     
     var packages = [];
