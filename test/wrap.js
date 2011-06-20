@@ -1,9 +1,9 @@
 var assert = require('assert');
 var path = require('path');
-var wrapper = require('../');
+var browserify = require('../');
 
 exports.wrap = function () {
-    var files = wrapper(__dirname + '/wrap/a.js').files;
+    var files = browserify(__dirname + '/wrap/a.js').files;
     
     assert.deepEqual(Object.keys(files).sort(), [
         'path', 'vm',
@@ -16,7 +16,7 @@ exports.wrap = function () {
 };
 
 exports.wrapArray = function () {
-    var files = wrapper([
+    var files = browserify([
         __dirname + '/wrap/a.js',
         __dirname + '/wrap/skipme.js',
     ]).files;
