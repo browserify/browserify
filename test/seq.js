@@ -2,7 +2,7 @@ var assert = require('assert');
 var connect = require('connect');
 var http = require('http');
 var vm = require('vm');
-var browserify = require('browserify');
+var browserify = require('../');
 
 exports.seq = function () {
     var port = 10000 + Math.floor(Math.random() * (Math.pow(2,16) - 10000));

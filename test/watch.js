@@ -13,7 +13,7 @@ exports.watch = function () {
     }, 5000);
     var filters = 0;
     
-    var bundle = require('browserify')({
+    var bundle = require('../')({
         require : __dirname + '/watch/a.js',
         mount : '/bundle.js',
         filter : function (src) {

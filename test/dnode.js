@@ -1,6 +1,6 @@
 var assert = require('assert');
 var vm = require('vm');
-var browserify = require('browserify');
+var browserify = require('../');
 
 exports.dnode = function () {
     var src = browserify.bundle({ require : 'dnode' });

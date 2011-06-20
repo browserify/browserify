@@ -1,6 +1,6 @@
 var assert = require('assert');
 var vm = require('vm');
-var browserify = require('browserify');
+var browserify = require('../');
 var jsdom = require('jsdom');
 
 exports.vmRunInNewContext = function () {

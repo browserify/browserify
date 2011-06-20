@@ -1,5 +1,5 @@
 var assert = require('assert');
-var browserify = require('browserify');
+var browserify = require('../');
 var vm = require('vm');
 var jade = require('jade');
 

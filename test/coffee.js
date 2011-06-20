@@ -1,7 +1,7 @@
 var assert = require('assert');
 var vm = require('vm');
 var fs = require('fs');
-var browserify = require('browserify');
+var browserify = require('../');
 
 exports.coffee = function () {
     var src = browserify.bundle(__dirname + '/coffee/index.coffee');
