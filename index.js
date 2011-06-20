@@ -1,7 +1,5 @@
 var detective = require('detective');
-var findit = require('findit');
 var resolve = require('resolve');
-var Seq = require('seq');
 
 var fs = require('fs');
 var path = require('path');

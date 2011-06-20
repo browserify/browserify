@@ -21,14 +21,10 @@
         "javascript"
     ],
     "dependencies" : {
-        "findit" : ">=0.0.3 <0.1",
-        "seq" : ">=0.3.1 <0.4",
-        "source" : ">=0.0.3 <0.1",
         "es5-shim" : "1.0.0",
-        "coffee-script" : ">=1.1.1 <1.2",
-        "hashish" : ">=0.0.2",
-        "semver" : ">=1.0.6 <1.1",
-        "file" : "0.1.1"
+        "detective" : ">=0.0.1 <0.1",
+        "resolve" : ">=0.0.2 <0.1",
+        "coffee-script" : ">=1.1.1 <1.2"
     },
     "devDependencies" : {
         "connect" : ">=1.4.1 <1.5",
