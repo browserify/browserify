@@ -3,14 +3,11 @@ var fs = require('fs');
 var path = require('path');
 
 var exports = module.exports = function (opts) {
-    if (typeof opts === 'string') {
-        opts = { require : [ opts ] };
-    }
-    else if (Array.isArray(opts)) {
+    if (Array.isArray(opts)) {
         opts = { require : opts };
     }
-    else if (typeof opts === 'object') {
-        throw new Error('not implemented')
+    else if (typeof opts !== 'object') {
+        opts = { require : [ opts ] };
     }
     
     if (!opts.require) opts.require = [];

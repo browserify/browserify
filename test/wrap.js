@@ -21,6 +21,7 @@ exports.wrapArray = function () {
         __dirname + '/wrap/skipme.js',
     ]).files;
     
+    console.dir(Object.keys(files));
     assert.deepEqual(Object.keys(files).sort(), [
         'path', 'vm',
         __dirname + '/wrap/a.js',

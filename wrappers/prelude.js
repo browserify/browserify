@@ -1,5 +1,5 @@
 var require = function (file, cwd) {
-    var resolved = require.resolve(file, cwd || '');
+    var resolved = require.resolve(file, cwd || '/');
     var mod = require.modules[resolved];
     var res = mod._cached ? mod._cached : mod();
     return res;
@@ -9,81 +9,73 @@ var __require = require;
 require.paths = [];
 require.modules = {};
 
-require.resolve = function (file, cwd) {
-    var path = require.modules['path']();
-    var resolve = function (p) {
-        if (p === '.' || p === './') return '.';
+require.resolve = (function () {
+    var core = [ 'assert', 'events', 'fs', 'path', 'vm' ]
+        .reduce(function (acc, x) {
+            acc[x] = true;
+            return acc;
+        }, {})
+    ;
+    
+    return function (x, cwd) {
+        if (core[x]) return x;
+        var path = require.modules.path();
+        var y = cwd || '.';
         
-        var res = path.resolve(cwd, p);
-        if (p.match(/^\.\.?\//) && (cwd === '' || cwd.match(/^\./))) {
-            res = './' + res;
-        }
-        return res;
-    };
-    
-    var routes = [];
-    
-    if (!file.match(/\/|\./) && require.modules[file]) {
-        // core modules
-        if (require.modules[file].builtin) routes.push(file);
-    }
-    
-    if (file.match(/^\.\.?\//)) {
-        // relative paths
-        routes.push(resolve(file));
-    }
-    else {
-        var ps = cwd.split('/');
-        for (var i = ps.length; i > 0; i--) {
-            var p = ps.slice(0, i).join('/');
-            if (p.length) routes.push(p + '/node_modules/' + file);
+        if (x.match(/^(?:\.\.?\/|\/)/)) {
+            var m = loadAsFileSync(path.resolve(y, x))
+                || loadAsDirectorySync(path.resolve(y, x));
+            if (m) return m;
         }
         
-        routes.push('./node_modules/' + file);
-        routes.push(file);
-    }
-    
-    for (var i = 0; i < routes.length; i++) {
-        var route = routes[i];
+        var n = loadNodeModulesSync(x, y);
+        if (n) return n;
         
-        var paths = [
-            [ route + '/package.json', function (p) {
-                var pkg = require.modules[p]();
+        throw new Error("Cannot find module '" + x + "'");
+        
+        function loadAsFileSync (x) {
+            if (require.modules[x]) {
+                return x;
+            }
+            else if (require.modules[x + '.js']) {
+                return x + '.js';
+            }
+        }
+
+        function loadAsDirectorySync (x) {
+            var pkgfile = x + '/package.json';
+            if (require.modules[pkgfile]) {
+                var pkg = require.modules[pkgfile]();
                 if (pkg.main) {
-                    var res = path.resolve(route, pkg.main);
-                    if (route.match(/^\./)) res = './' + res;
-                    return res;
+                    var m = loadAsFileSync(path.resolve(x, pkg.main));
+                    if (m) return m;
                 }
-            } ],
-            route,
-            route + '.js',
-            route + '.coffee',
-            route + '/index.js',
-            route + '/index.coffee'
-        ];
-        
-        for (var j = 0; j < paths.length; j++) {
-            var fn = String;
-            var p = paths[j];
-            
-            if (Array.isArray(p)) {
-                fn = p[1];
-                p = p[0];
             }
             
-            if (require.modules[p]) {
-                var res = fn(p);
-                if (res) {
-                    var post = [
-                        '', '.js', '.coffee', '/index.js', '/index.coffee'
-                    ].filter(function (x) {
-                        return require.modules[res + x]
-                    })[0];
-                    if (post !== undefined) return res + post;
-                }
+            return loadAsFileSync(x + '/index');
+        }
+
+        function loadNodeModulesSync (x, start) {
+            var dirs = nodeModulesPathsSync(start);
+            for (var i = 0; i < dirs.length; i++) {
+                var dir = dirs[i];
+                var m = loadAsFileSync(dir + '/' + x);
+                if (m) return m;
+                var n = loadAsDirectorySync(dir + '/' + x);
+                if (n) return n;
             }
         }
-    }
-    
-    throw new Error('Cannot find module ' + JSON.stringify(file));
-};
+
+        function nodeModulesPathsSync (start) {
+            var parts = start.split(/\/+/);
+            
+            var dirs = [];
+            for (var i = parts.length - 1; i >= 0; i--) {
+                if (parts[i] === 'node_modules') continue;
+                var dir = parts.slice(0, i + 1).join('/') + '/node_modules';
+                dirs.push(dir);
+            }
+            return dirs;
+        }
+    };
+})();
