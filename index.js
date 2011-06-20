@@ -21,11 +21,8 @@ var exports = module.exports = function (opts) {
     }
     
     var w = wrap()
-        .use(function (file, body) {
-            if (file.match(/\.coffee$/)) {
-                return coffee.compile(body)
-            }
-            else return body
+        .use('.coffee', function (body) {
+            return coffee.compile(body)
         })
         .ignore(opts.ignore)
         .require(opts.require)

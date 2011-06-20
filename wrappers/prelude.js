@@ -8,7 +8,7 @@ var __require = require;
 
 require.paths = [];
 require.modules = {};
-require.extensions = [ '.js', '.coffee' ];
+require.extensions = $extensions;
 
 require.resolve = (function () {
     var core = [ 'assert', 'events', 'fs', 'path', 'vm' ]
