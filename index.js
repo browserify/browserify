@@ -1,6 +1,7 @@
 var wrap = require('./lib/wrap');
 var fs = require('fs');
 var path = require('path');
+var coffee = require('coffee-script');
 
 var exports = module.exports = function (opts) {
     if (!opts) {
@@ -20,6 +21,12 @@ var exports = module.exports = function (opts) {
     }
     
     var w = wrap()
+        .use(function (file, body) {
+            if (file.match(/\.coffee$/)) {
+                return coffee.compile(body)
+            }
+            else return body
+        })
         .ignore(opts.ignore)
         .require(opts.require)
     ;

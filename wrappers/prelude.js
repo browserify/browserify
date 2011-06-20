@@ -8,6 +8,7 @@ var __require = require;
 
 require.paths = [];
 require.modules = {};
+require.extensions = [ '.js', '.coffee' ];
 
 require.resolve = (function () {
     var core = [ 'assert', 'events', 'fs', 'path', 'vm' ]
@@ -37,11 +38,13 @@ require.resolve = (function () {
             if (require.modules[x]) {
                 return x;
             }
-            else if (require.modules[x + '.js']) {
-                return x + '.js';
+            
+            for (var i = 0; i < require.extensions.length; i++) {
+                var ext = require.extensions[i];
+                if (require.modules[x + ext]) return x + ext;
             }
         }
-
+        
         function loadAsDirectorySync (x) {
             x = x.replace(/\/+$/, '');
             var pkgfile = x + '/package.json';
