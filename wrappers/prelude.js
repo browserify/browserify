@@ -73,6 +73,9 @@ require.resolve = (function () {
                 var n = loadAsDirectorySync(dir + '/' + x);
                 if (n) return n;
             }
+            
+            var m = loadAsFileSync(x);
+            if (x) return x;
         }
         
         function nodeModulesPathsSync (start) {
