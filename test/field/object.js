@@ -1,1 +1,1 @@
-module.exports = require('z-objects')
+module.exports = require('z-object')

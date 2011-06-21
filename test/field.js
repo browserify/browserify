@@ -6,10 +6,22 @@ exports.fieldString = function () {
     var dir = __dirname + '/field/';
     var src = browserify(dir + '/string.js').bundle();
     
-    var c = { console : console };
+    var c = {};
     vm.runInNewContext(src, c);
     assert.equal(
         c.require('./string.js'),
+        'browser'
+    );
+};
+
+exports.fieldObject = function () {
+    var dir = __dirname + '/field/';
+    var src = browserify(dir + '/object.js').bundle();
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    assert.equal(
+        c.require('./object.js'),
         'browser'
     );
 };
