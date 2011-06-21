@@ -282,7 +282,7 @@ Browserify exports a faux `process` object with these attributes:
 require('events')
 -----------------
 
-You can `require('events').EventEmitters` just like in node.js code.
+You can `require('events').EventEmitter` just like in node.js code.
 
 require('vm')
 -------------
