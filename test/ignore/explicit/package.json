@@ -1,8 +1,0 @@
-{
-    "directories" : {
-        "lib" : ".",
-        "test" : "t",
-        "example" : "e",
-        "bin" : "b"
-    }
-}

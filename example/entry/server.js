@@ -3,8 +3,8 @@ var server = connect.createServer();
 
 server.use(connect.static(__dirname));
 server.use(require('browserify')({
-    base : __dirname + '/js',
-    entry : __dirname + '/entry.js',
+    entry : __dirname + '/js/entry.js',
+    watch : true,
 }));
 
 server.listen(9393);

@@ -3,27 +3,19 @@ Browserify
 
 Browser-side require() for your node modules and npm packages
 
-Browserify bundles all of your javascript when your server fires up at the mount
-point you specify.
+Just point a javascript file or two at browserify and it will walk the AST to
+read all your `require()`s recursively. The resulting bundle has everything you
+need, including pulling in libraries you might have installed using npm!
 
 ![browserify!](http://substack.net/images/browserify/browserify.png)
 
-More features:
+* Relative `require()`s work browser-side just as they do in node.
 
-* recursively bundle dependencies of npm modules
+* Coffee script gets automatically compiled and you can register custom
+  compilers of your own!
 
-* node core modules (path, vm, events)
-
-* uses es5-shim and crockford's json2.js for browsers that suck
-
-* filters for {min,ugl}ification
-
-* coffee script works too!
-
-* bundle browser source components of modules specially with the "browserify"
-    package.json field
-
-* watch files for changes and automatically re-bundle in middleware mode
+* Browser-versions of certain core node modules such as `path`, `events`, and
+  `vm` are included as necessary automatically.
 
 examples
 ========
@@ -39,9 +31,8 @@ var server = connect.createServer();
 
 server.use(connect.static(__dirname));
 server.use(require('browserify')({
-    base : __dirname + '/js',
-    mount : '/browserify.js',
-    filter : require('jsmin').jsmin,
+    require : __dirname + '/js/foo.js',
+    mount : '/browserify.js'
 }));
 
 server.listen(9797);
@@ -107,7 +98,7 @@ var server = connect.createServer();
 server.use(connect.static(__dirname));
 server.use(require('browserify')({
     mount : '/browserify.js',
-    require : [ 'traverse' ],
+    require : 'traverse',
 }));
 
 server.listen(4040);
@@ -147,80 +138,77 @@ methods
 var browserify = require('browserify');
 ````
 
-browserify(opts)
+var b = browserify(opts={})
+---------------------------
+
+Return a middleware with attached methods that will host up a browserified
+script at `opts.mount` or `"/browserify.js"` if unspecified.
+
+`opts` may also contain these fields:
+
+* require - calls `b.require()`
+* ignore - calls `b.ignore()`
+* entry - calls `b.addEntry()`
+* filter - registers a "post" extension using `b.use()`
+* watch - set watches on files, see below
+
+If `opts` is a string, it is interpreted as a `require` value.
+
+### watch :: Boolean or Object
+
+Set watches on files and automatically rebundle when a file changes.
+
+This option defaults to false. If `opts.watch` is set to true, default watch
+arguments are assumed or you can pass in an object to pass along as the second
+parameter to `fs.watchFile()`.
+
+b.bundle()
+----------
+
+Return the bundled source as a string.
+
+b.require(file)
+---------------
+
+Require a file or files for inclusion in the bundle.
+
+If `file` is an array, require each element in it.
+
+If `file` is a non-array object, map an alias to a package name.
+For instance to be able to map `require('jquery')` to the jquery-browserify
+package, you can do:
+
+````javascript
+b.require({ jquery : 'jquery-browserify' })
+````
+
+and the same thing in middleware-form:
+
+````javascript
+browserify({ require : { jquery : 'jquery-browserify' } })
+````
+
+To mix alias objects with regular requires you could do:
+
+````javascript
+browserify({ require : [ 'seq', { jquery : 'jquery-browserify' }, 'traverse' ])
+````
+
+In practice you won't need to `b.require()` very many files since all the
+`require()`s are read from each file that you require and automatically
+included.
+
+b.ignore(file)
+--------------
+
+Omit a file or files from being included by the AST walk to hunt down
+`require()` statements.
+
+b.addEntry(file)
 ----------------
 
-Return a middleware that will host up a browserified script at `opts.mount` or
-`"/browserify.js"` if unspecified. All other options are passed to
-`browserify.bundle(opts)` to generate the source.
-
-The middleware function also has several functions attached to it, described in
-the middleware section below.
-
-browserify.bundle(base)
------------------------
-browserify.bundle(opts)
------------------------
-
-Return a string with the bundled source code given the options in `opts`:
-
-### base :: String, Array, or Object
-
-Recursively bundle all `.js` and `.coffee` files.
-
-Base can be a directory, an Array of directories, or an object that
-maps names to directories such that `require('name/submodule')` works.
-
-If there is a package.json at the `base` directory it will be read
-according to the `package.json` procedure below.
-
-### name :: String
-
-Preface the files in `base` with this name.
-
-### main :: String
-
-Map `require(name)` for the `name` field to this file.
-
-### shim :: Boolean
-
-Whether to include [es5-shim](https://github.com/kriskowal/es5-shim) for legacy
-javascript engines.
-
-True if unspecified.
-
-### require :: String, Array, or Object
-
-Bundle all of these module names and their dependencies.
-
-If the name has a slash in it, only that file will be included, otherwise all
-.js and .coffee files which are not in the test directory and are not binaries
-will be bundled into the final output.
-
-If `require` is an object, map a name to use browser-side to a package name. For
-instance to make `require('jquery')` load jquery-browserify browser-side, do:
-
-````javascript
-    require : { jquery : 'jquery-browserify' }
-````
-
-You can mix and match Array style and Object style too:
-
-````javascript
-    require : [
-        'seq',
-        'traverse',
-        {
-            jquery : 'jquery-browserify',
-            hash : 'hashish',
-        }
-    ]
-````
-
-### entry :: String or Array
-
-Append this file to the end of the bundle in order to execute code without
-having to `require()` it.
+Append a file to the end of the bundle and execute it without having to
+`require()` it.
 
 Specifying an entry point will let you `require()` other modules without having
 to load the entry point in a `<script>` tag yourself.
@@ -228,66 +216,57 @@ to load the entry point in a `<script>` tag yourself.
 If entry is an Array, concatenate these files together and append to the end of
 the bundle.
 
-### watch :: Boolean or Object
+b.filter
 
-Set watches on files and propagates "change" events to `opts.listen`.
+b.use(ext, fn)
+--------------
 
-Defaults to true and sets up listeners in middleware mode, otherwise false.
+Register a handler to wrap extensions.
 
-You can also pass in an object that is passed along to `fs.watchFile` with these
-default parameters:
+Wrap every file matching the extension `ext` with the function `fn`.
+
+For every `file` included into the bundle `fn` gets called for matching file
+types as `fn.call(b, body, file)` for the bundle instance `b` and the file
+content string `body`. `fn` should return the new wrapped contents.
+
+If `ext` is unspecified, execute the wrapper for every file.
+
+If `ext` is 'post', execute the wrapper on the entire bundle.
+
+Coffee script support is just implemented internally as a `.use()` extension:
 
 ````javascript
-{ persistent : true, interval : 500 }
+b.use('.coffee', function (body) {
+    return coffee.compile(body);
+});
 ````
+
+b.prepend(content)
+------------------
+
+Prepend unwrapped content to the beginning of the bundle.
+
+b.append(content)
+-----------------
+
+Append unwrapped content to the end of the bundle.
+
+b.alias(to, from)
+-----------------
+
+Alias a package name from another package name.
 
 package.json
 ============
 
-During bundling the package.json of a module or base directory will be read for
-its `name` and `main` fields, which will be used unless those fields are defined
-in `opts`.
+In order to resolve main files for projects, the package.json "main" field is
+read.
 
-If the package.json has a "browserify" field, its contents will take precedence
-over the standard package.json contents. This special field is meant for
-packages that have a special browser-side component like dnode and socket.io.
-If a main is specified in a "browserify" hash and no "base" is given, only that
-"main" file will be bundled.
+If a package.json has a "browserify" field, you can override the standard "main"
+behavior with something special just for browsers.
 
-middleware
-==========
-
-When you call `browserify()` you get back a function that you can throw at
-connect or express-style servers, but you can also call functions directly.
-
-````javascript
-
-````
-
-.use(fn)
---------
-
-Use an asynchronous middleware `fn(src, next)`, which gets called with src, the
-browserified source and next, a function that expects to be called with the new
-source.
-
-Use `.use()` when you want to chain together multiple filters or you need a
-filter that works asynchronously. A "ready" event fires with the transformed
-source when your source is done threading through the middlewares.
-
-Returns `this` so you can chain and inside `fn`, `this` is the bundle object.
-
-.on(name, fn)
--------------
-
-Emit events from `opts.listen` here too, including "ready" and "change".
-
-Returns `this` so you can chain.
-
-.source()
----------
-
-Get at the current source.
+The "browserify" field can be a string that points to the browser-specific
+"main" file or it can be an object with a "main" field in it.
 
 compatability
 =============

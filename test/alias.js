@@ -4,13 +4,13 @@ var http = require('http');
 var vm = require('vm');
 var browserify = require('../');
 
-exports.seq = function () {
+exports.alias = function () {
     var port = 10000 + Math.floor(Math.random() * (Math.pow(2,16) - 10000));
     var server = connect.createServer();
     
     server.use(browserify({
         mount : '/bundle.js',
-        require : [ 'seq' ],
+        require : { moo : 'seq' }
     }));
     
     server.listen(port, makeRequest);
@@ -32,7 +32,10 @@ exports.seq = function () {
                 assert.fail('seq chain never finished');
             }, 5000);
             
-            var context = { setTimeout : setTimeout };
+            var context = {
+                setTimeout : setTimeout,
+                console : console
+            };
             
             var src = '';
             res.on('data', function (buf) {
@@ -41,7 +44,11 @@ exports.seq = function () {
             
             res.on('end', function () {
                 vm.runInNewContext(src, context);
-                context.require('seq')([1,2,3])
+                assert.ok(context.require('moo'));
+                assert.ok(context.require('seq'));
+                assert.equal(context.require('seq'), context.require('moo'));
+                
+                context.require('moo')([1,2,3])
                     .parMap(function (x) {
                         this(null, x * 100)
                     })

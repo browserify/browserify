@@ -1,1 +1,1 @@
-clearTimeout(t2);
+module.exports = 2;

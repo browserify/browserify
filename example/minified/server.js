@@ -3,7 +3,7 @@ var server = connect.createServer();
 
 server.use(connect.static(__dirname));
 server.use(require('browserify')({
-    base : __dirname + '/js',
+    require : __dirname + '/js/foo.js',
     mount : '/browserify.js',
     filter : require('uglify-js'),
 }));
