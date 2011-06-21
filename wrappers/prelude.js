@@ -55,9 +55,13 @@ require.resolve = (function () {
             var pkgfile = x + '/package.json';
             if (require.modules[pkgfile]) {
                 var pkg = require.modules[pkgfile]();
-                if (pkg.browserify && pkg.browserify.main) {
-                    var main = pkg.browserify.main;
-                    var m = loadAsFileSync(path.resolve(x, main));
+                var b = pkg.browserify;
+                if (typeof b === 'object' && b.main) {
+                    var m = loadAsFileSync(path.resolve(x, b.main));
+                    if (m) return m;
+                }
+                else if (typeof b === 'string') {
+                    var m = loadAsFileSync(path.resolve(x, b));
                     if (m) return m;
                 }
                 else if (pkg.main) {
@@ -84,7 +88,9 @@ require.resolve = (function () {
         }
         
         function nodeModulesPathsSync (start) {
-            var parts = start.split(/\/+/);
+            var parts;
+            if (start === '/') parts = [ '' ];
+            else parts = path.normalize(start).split(/\/+/);
             
             var dirs = [];
             for (var i = parts.length - 1; i >= 0; i--) {
@@ -92,6 +98,7 @@ require.resolve = (function () {
                 var dir = parts.slice(0, i + 1).join('/') + '/node_modules';
                 dirs.push(dir);
             }
+            
             return dirs;
         }
     };
