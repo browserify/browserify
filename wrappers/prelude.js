@@ -50,7 +50,12 @@ require.resolve = (function () {
             var pkgfile = x + '/package.json';
             if (require.modules[pkgfile]) {
                 var pkg = require.modules[pkgfile]();
-                if (pkg.main) {
+                if (pkg.browserify && pkg.browserify.main) {
+                    var main = pkg.browserify.main;
+                    var m = loadAsFileSync(path.resolve(x, main));
+                    if (m) return m;
+                }
+                else if (pkg.main) {
                     var m = loadAsFileSync(path.resolve(x, pkg.main));
                     if (m) return m;
                 }

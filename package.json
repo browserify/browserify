@@ -23,7 +23,7 @@
     "dependencies" : {
         "es5-shim" : "1.0.0",
         "detective" : ">=0.0.1 <0.1",
-        "resolve" : ">=0.0.3 <0.1",
+        "resolve" : ">=0.0.4 <0.1",
         "coffee-script" : ">=1.1.1 <1.2"
     },
     "devDependencies" : {
