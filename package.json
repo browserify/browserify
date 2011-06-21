@@ -21,7 +21,6 @@
         "javascript"
     ],
     "dependencies" : {
-        "es5-shim" : "1.0.0",
         "detective" : ">=0.0.1 <0.1",
         "resolve" : ">=0.0.4 <0.1",
         "coffee-script" : ">=1.1.1 <1.2"
@@ -33,6 +32,7 @@
         "backbone" : ">=0.3.3",
         "dnode" : ">=0.7.1 <0.8",
         "jade": "=0.10.4",
+        "seq": "=0.3.3",
         "expresso" : "=0.7.x",
         "jquery-browserify" : "*",
         "jsdom" : "=0.2.x"
