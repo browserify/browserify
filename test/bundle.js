@@ -10,7 +10,7 @@ exports.bundle = function () {
     
     var to = setTimeout(function () {
         assert.fail('never ran');
-    }, 10000);
+    }, 15000);
     
     var c = {
         setTimeout : setTimeout,

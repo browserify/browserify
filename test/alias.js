@@ -32,7 +32,10 @@ exports.alias = function () {
                 assert.fail('seq chain never finished');
             }, 5000);
             
-            var context = { setTimeout : setTimeout };
+            var context = {
+                setTimeout : setTimeout,
+                console : console
+            };
             
             var src = '';
             res.on('data', function (buf) {

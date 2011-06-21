@@ -22,6 +22,8 @@ require.resolve = (function () {
     ;
     
     return function (x, cwd) {
+        if (!cwd) cwd = '/';
+        
         if (core[x]) return x;
         var path = require.modules.path();
         var y = cwd || '.';
@@ -78,7 +80,7 @@ require.resolve = (function () {
             }
             
             var m = loadAsFileSync(x);
-            if (x) return x;
+            if (m) return m;
         }
         
         function nodeModulesPathsSync (start) {
@@ -94,3 +96,25 @@ require.resolve = (function () {
         }
     };
 })();
+
+require.alias = function (from, to) {
+    var path = require.modules.path();
+    var res = null;
+    try {
+        res = require.resolve(from + '/package.json', '/');
+    }
+    catch (err) {
+        res = require.resolve(from, '/');
+    }
+    var basedir = path.dirname(res);
+    
+    Object.keys(require.modules)
+        .filter(function (x) {
+            return x.slice(0, basedir.length + 1) === basedir + '/'
+        })
+        .forEach(function (x) {
+            var f = x.slice(basedir.length);
+            require.modules[to + f] = require.modules[basedir + f];
+        })
+    ;
+};
