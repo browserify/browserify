@@ -109,12 +109,14 @@ require.alias = function (from, to) {
     var basedir = path.dirname(res);
     
     Object.keys(require.modules)
-        .filter(function (x) {
-            return x.slice(0, basedir.length + 1) === basedir + '/'
-        })
         .forEach(function (x) {
-            var f = x.slice(basedir.length);
-            require.modules[to + f] = require.modules[basedir + f];
+            if (x.slice(0, basedir.length + 1) === basedir + '/') {
+                var f = x.slice(basedir.length);
+                require.modules[to + f] = require.modules[basedir + f];
+            }
+            else if (x === basedir) {
+                require.modules[to] = require.modules[basedir];
+            }
         })
     ;
 };
