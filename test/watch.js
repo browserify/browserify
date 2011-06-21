@@ -10,7 +10,7 @@ exports.watch = function () {
     
     var to = setTimeout(function () {
         assert.fail('filter never updated');
-    }, 5000);
+    }, 10000);
     var filters = 0;
     
     var bundle = require('../')({
@@ -29,7 +29,7 @@ exports.watch = function () {
     server.use(connect.static(__dirname + '/watch'));
     
     server.listen(port, function () {
-        setTimeout(compareSources, 100);
+        setTimeout(compareSources, 1000);
     });
     
     function getBundle (cb) {
