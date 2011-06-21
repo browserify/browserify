@@ -25,3 +25,15 @@ exports.fieldObject = function () {
         'browser'
     );
 };
+
+exports.missObject = function () {
+    var dir = __dirname + '/field/';
+    var src = browserify(dir + '/miss.js').bundle();
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    assert.equal(
+        c.require('./miss.js'),
+        '!browser'
+    );
+};
