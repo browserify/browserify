@@ -36,16 +36,27 @@ var exports = module.exports = function (opts) {
             var watcher = function (curr, prev) {
                 if (curr.nlink === 0) {
                     // deleted
-                    delete w.files[file];
+                    if (w.files[file]) {
+                        delete w.files[file];
+                    }
+                    else if (w.entries[file] !== undefined) {
+                        w.appends.splice(w.entries[file], 1);
+                    }
                     
                     _cache = null;
                 }
                 else if (curr.mtime !== prev.mtime) {
                     // modified
                     fs.unwatchFile(file);
-                    var f = w.files[file];
-                    delete w.files[file];
-                    w.require(file, f.root);
+                    if (w.files[file]) {
+                        var f = w.files[file];
+                        delete w.files[file];
+                        w.require(file, f.root);
+                    }
+                    else if (w.entries[file] !== undefined) {
+                        w.appends.splice(w.entries[file], 1);
+                        w.addEntry(file);
+                    }
                     
                     _cache = null;
                 }

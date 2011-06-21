@@ -5,3 +5,5 @@ var foo = require('./foo');
 window.onload = function () {
     document.getElementById('result').innerHTML = foo(100);
 };
+
+if (window.document.readyState === 'complete') window.onload();
