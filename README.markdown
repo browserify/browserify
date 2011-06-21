@@ -3,27 +3,19 @@ Browserify
 
 Browser-side require() for your node modules and npm packages
 
-Browserify bundles all of your javascript when your server fires up at the mount
-point you specify.
+Just point a javascript file or two at browserify and it will walk the AST to
+read all your `require()`s recursively. The resulting bundle has everything you
+need, including pulling in libraries you might have installed using npm!
 
 ![browserify!](http://substack.net/images/browserify/browserify.png)
 
-More features:
+* Relative `require()`s work browser-side just as they do in node.
 
-* recursively bundle dependencies of npm modules
+* Coffee script gets automatically compiled and you can register custom
+  compilers of your own too!
 
-* node core modules (path, vm, events)
-
-* uses es5-shim and crockford's json2.js for browsers that suck
-
-* filters for {min,ugl}ification
-
-* coffee script works too!
-
-* bundle browser source components of modules specially with the "browserify"
-    package.json field
-
-* watch files for changes and automatically re-bundle in middleware mode
+* Browser-versions of certain core node modules such as `path`, `events`, and
+  `vm` are included as necessary automatically.
 
 examples
 ========
@@ -39,7 +31,7 @@ var server = connect.createServer();
 
 server.use(connect.static(__dirname));
 server.use(require('browserify')({
-    base : __dirname + '/js',
+    require : __dirname + '/js/foo.js',
     mount : '/browserify.js',
     filter : require('jsmin').jsmin,
 }));
@@ -107,7 +99,7 @@ var server = connect.createServer();
 server.use(connect.static(__dirname));
 server.use(require('browserify')({
     mount : '/browserify.js',
-    require : [ 'traverse' ],
+    require : 'traverse',
 }));
 
 server.listen(4040);

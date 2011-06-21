@@ -63,7 +63,7 @@ require.resolve = (function () {
             
             return loadAsFileSync(x + '/index');
         }
-
+        
         function loadNodeModulesSync (x, start) {
             var dirs = nodeModulesPathsSync(start);
             for (var i = 0; i < dirs.length; i++) {
@@ -74,7 +74,7 @@ require.resolve = (function () {
                 if (n) return n;
             }
         }
-
+        
         function nodeModulesPathsSync (start) {
             var parts = start.split(/\/+/);
             
