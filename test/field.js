@@ -37,3 +37,15 @@ exports.missObject = function () {
         '!browser'
     );
 };
+
+exports.fieldSub = function () {
+    var dir = __dirname + '/field/';
+    var src = browserify(dir + '/sub.js').bundle();
+    
+    var c = {};
+    vm.runInNewContext(src, c);
+    assert.equal(
+        c.require('./sub.js'),
+        'browser'
+    );
+};

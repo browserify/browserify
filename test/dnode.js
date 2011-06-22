@@ -24,10 +24,12 @@ exports.dnode = function () {
     assert.deepEqual(
         [
             'path', 'events', 'stream',
-            '/node_modules/dnode/browser/index.js',
-            // move this one later when socket.io supports browserify
-            '/node_modules/dnode/browser/socket.io.js',
+            
             '/node_modules/dnode/package.json',
+            '/node_modules/dnode/browser/index.js',
+            '/node_modules/dnode/browser/socket.io.js',
+            // ^ move this one later when socket.io supports browserify
+            
             '/node_modules/dnode/node_modules/dnode-protocol/index.js',
             '/node_modules/dnode/node_modules/dnode-protocol/package.json',
             '/node_modules/traverse/index.js',
