@@ -26,13 +26,13 @@ var exports = module.exports = function (opts) {
     
     var watches = [];
     var w = wrap()
-        .use('.coffee', function (body) {
+        .register('.coffee', function (body) {
             return coffee.compile(body)
         })
     ;
     
     if (opts.watch) {
-        w.use(function (body, file) {
+        w.register(function (body, file) {
             var watcher = function (curr, prev) {
                 if (curr.nlink === 0) {
                     // deleted
@@ -74,7 +74,7 @@ var exports = module.exports = function (opts) {
     }
     
     if (opts.filter) {
-        w.use('post', function (body) {
+        w.register('post', function (body) {
             return opts.filter(body);
         });
     }

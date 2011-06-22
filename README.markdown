@@ -233,6 +233,9 @@ If `ext` is unspecified, execute the wrapper for every file.
 
 If `ext` is 'post', execute the wrapper on the entire bundle.
 
+If `ext` is 'pre', call the wrapper function with the bundle object before the
+source is generated.
+
 If `ext` is an object, pull the extension from `ext.extension` and the wrapper
 function `fn` from `ext.wrapper`. This makes it easy to write plugins like
 [fileify](https://github.com/substack/node-fileify).
