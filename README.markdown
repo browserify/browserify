@@ -149,7 +149,7 @@ script at `opts.mount` or `"/browserify.js"` if unspecified.
 * require - calls `b.require()`
 * ignore - calls `b.ignore()`
 * entry - calls `b.addEntry()`
-* filter - registers a "post" extension using `b.use()`
+* filter - registers a "post" extension using `b.register()`
 * watch - set watches on files, see below
 
 If `opts` is a string, it is interpreted as a `require` value.
@@ -218,8 +218,8 @@ the bundle.
 
 b.filter
 
-b.use(ext, fn)
---------------
+b.register(ext, fn)
+-------------------
 
 Register a handler to wrap extensions.
 
@@ -240,13 +240,19 @@ If `ext` is an object, pull the extension from `ext.extension` and the wrapper
 function `fn` from `ext.wrapper`. This makes it easy to write plugins like
 [fileify](https://github.com/substack/node-fileify).
 
-Coffee script support is just implemented internally as a `.use()` extension:
+Coffee script support is just implemented internally as a `.register()`
+extension:
 
 ````javascript
-b.use('.coffee', function (body) {
+b.register('.coffee', function (body) {
     return coffee.compile(body);
 });
 ````
+
+b.use(fn)
+---------
+
+Use a middleware plugin, `fn`. `fn` is called with the instance object `b`.
 
 b.prepend(content)
 ------------------
