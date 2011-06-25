@@ -48,15 +48,7 @@ var exports = module.exports = function (opts) {
                 else if (curr.mtime !== prev.mtime) {
                     // modified
                     fs.unwatchFile(file);
-                    if (w.files[file]) {
-                        var f = w.files[file];
-                        delete w.files[file];
-                        w.require(file, f.root);
-                    }
-                    else if (w.entries[file] !== undefined) {
-                        w.appends.splice(w.entries[file], 1);
-                        w.addEntry(file);
-                    }
+                    w.reload(file);
                     
                     _cache = null;
                 }
