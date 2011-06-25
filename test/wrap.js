@@ -6,7 +6,8 @@ exports.wrap = function () {
     var files = browserify(__dirname + '/wrap/a.js').files;
     
     assert.deepEqual(Object.keys(files).sort(), [
-        'path', 'vm',
+        path.normalize(__dirname + '/../builtins/path.js'),
+        path.normalize(__dirname + '/../builtins/vm.js'),
         __dirname + '/wrap/a.js',
         __dirname + '/wrap/node_modules/b/main.js',
         __dirname + '/wrap/node_modules/b/package.json',
@@ -22,7 +23,8 @@ exports.wrapArray = function () {
     ]).files;
     
     assert.deepEqual(Object.keys(files).sort(), [
-        'path', 'vm',
+        path.normalize(__dirname + '/../builtins/path.js'),
+        path.normalize(__dirname + '/../builtins/vm.js'),
         __dirname + '/wrap/a.js',
         __dirname + '/wrap/node_modules/b/main.js',
         __dirname + '/wrap/node_modules/b/package.json',
