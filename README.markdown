@@ -149,6 +149,8 @@ script at `opts.mount` or `"/browserify.js"` if unspecified.
 * require - calls `b.require()`
 * ignore - calls `b.ignore()`
 * entry - calls `b.addEntry()`
+* prepend - calls `b.prepend()`
+* append - calls `b.append()`
 * filter - registers a "post" extension using `b.register()`
 * watch - set watches on files, see below
 
