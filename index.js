@@ -113,7 +113,7 @@ var exports = module.exports = function (opts) {
     });
     
     Object.keys(wrap.prototype).forEach(function (key) {
-        self[key] = w[key].bind(w);
+        self[key] = w[key].bind(self);
     });
     
     self.bundle = function () {
