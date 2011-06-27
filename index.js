@@ -89,8 +89,6 @@ var exports = module.exports = function (opts) {
     var _cache = null;
     var listening = false;
     var self = function (req, res, next) {
-        if (!_cache) self.bundle();
-        
         if (!listening && req.connection && req.connection.server) {
             req.connection.server.on('close', function () {
                 Object.keys(w.files).forEach(function (file) {
@@ -101,11 +99,13 @@ var exports = module.exports = function (opts) {
         listening = true;
         
         if (req.url.split('?')[0] === (opts.mount || '/browserify.js')) {
+            if (!_cache) self.bundle();
             res.statusCode = 200;
             res.setHeader('last-modified', modified.toString());
             res.setHeader('content-type', 'text/javascript');
             res.end(_cache);
         }
+        else next()
     };
     
     Object.keys(w).forEach(function (key) {
