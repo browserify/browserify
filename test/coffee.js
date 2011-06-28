@@ -24,9 +24,17 @@ exports.coffee = function () {
 exports.coffeeEntry = function () {
     var b = browserify({ entry : __dirname + '/coffee/entry.coffee' });
     var src = b.bundle();
-    var c = {};
+    
+    var to = setTimeout(function () {
+        assert.fail('never called done');
+    }, 5000);
+    
+    var c = {
+        setTimeout : setTimeout,
+        done : function (fn) {
+            clearTimeout(to);
+            assert.equal(fn(10), 100);
+        }
+    };
     vm.runInNewContext(src, c);
-    process.nextTick(function () {
-        assert.equal(c.nested(10), 100);
-    });
 };
