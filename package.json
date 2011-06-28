@@ -24,6 +24,7 @@
         "detective" : ">=0.0.1 <0.1",
         "resolve" : ">=0.0.4 <0.1",
         "nub" : "0.0.x",
+        "commondir" : "0.0.x",
         "coffee-script" : ">=1.1.1 <1.2"
     },
     "devDependencies" : {
