@@ -20,3 +20,13 @@ exports.coffee = function () {
     assert.equal(c.require('./'), 10 * 10 * 500 + 1000);
     assert.equal(c.require('./index.coffee'), 10 * 10 * 500 + 1000);
 };
+
+exports.coffeeEntry = function () {
+    var b = browserify({ entry : __dirname + '/coffee/entry.coffee' });
+    var src = b.bundle();
+    var c = {};
+    vm.runInNewContext(src, c);
+    process.nextTick(function () {
+        assert.equal(c.nested(10), 100);
+    });
+};
