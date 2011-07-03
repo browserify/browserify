@@ -107,8 +107,6 @@ var exports = module.exports = function (opts) {
         else next()
     };
     
-    self.modified = null;
-    
     Object.keys(w).forEach(function (key) {
         self[key] = w[key];
     });
@@ -121,9 +119,17 @@ var exports = module.exports = function (opts) {
         };
     });
     
+    var firstBundle = true;
+    self.modified = new Date;
+    
     self.bundle = function () {
         var src = w.bundle.apply(w, arguments);
-        self.modified = new Date;
+        
+        if (!firstBundle) {
+            self.modified = new Date;
+        }
+        firstBundle = false;
+        
         _cache = src;
         return src;
     };
