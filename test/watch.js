@@ -23,6 +23,8 @@ exports.watch = function () {
         },
         watch : { interval : 100 },
     });
+    var m0 = bundle.mtime;
+    assert.ok(m0);
     
     server.use(bundle);
     
@@ -63,6 +65,10 @@ exports.watch = function () {
                 var c2 = {};
                 vm.runInNewContext(s2, c2);
                 var a2_ = c2.require('./a');
+                
+                var m1 = bundle.mtime;
+                assert.ok(m1);
+                assert.ok(m1 > m0);
                 
                 fs.writeFileSync(
                     __dirname + '/watch/a.js',
