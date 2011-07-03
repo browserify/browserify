@@ -131,6 +131,11 @@ index.html
 </html>
 ````
 
+Note that you could also put the body from the second `<script>` tag into a
+javascript file of its own and pass that file to the `entry` field. Such an
+action would render the `require : 'traverse'` in server.js unnecessary since
+browserify hunts down `require()`s from the AST.
+
 methods
 =======
 
@@ -153,6 +158,8 @@ script at `opts.mount` or `"/browserify.js"` if unspecified.
 * watch - set watches on files, see below
 
 If `opts` is a string, it is interpreted as a `require` value.
+
+Any query string after `opts.mount` will be ignored.
 
 ### watch :: Boolean or Object
 
@@ -216,7 +223,11 @@ to load the entry point in a `<script>` tag yourself.
 If entry is an Array, concatenate these files together and append to the end of
 the bundle.
 
-b.filter
+b.filter(fn)
+------------
+
+Transform the source using the filter function `fn(src)`. The return value of
+`fn` should be the new source.
 
 b.register(ext, fn)
 -------------------
@@ -268,6 +279,13 @@ b.alias(to, from)
 -----------------
 
 Alias a package name from another package name.
+
+b.modified
+----------
+
+Contains a Date object with the time the bundle was last modified. This field is
+useful in conjunction with the `watch` field described in the `browserify()` to
+generate unique `<script>` `src` values to force script reloading.
 
 package.json
 ============
