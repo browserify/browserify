@@ -23,9 +23,6 @@ exports.watch = function () {
         },
         watch : { interval : 100 },
     });
-    var m0 = bundle.mtime;
-    assert.ok(m0);
-    
     server.use(bundle);
     
     server.use(connect.static(__dirname + '/watch'));
@@ -52,6 +49,9 @@ exports.watch = function () {
     
     function compareSources () {
         getBundle(function (s1) {
+            var m0 = bundle.modified;
+            assert.ok(m0);
+             
             var c1 = {};
             vm.runInNewContext(s1, c1);
             var a1 = c1.require('./a');
@@ -66,7 +66,7 @@ exports.watch = function () {
                 vm.runInNewContext(s2, c2);
                 var a2_ = c2.require('./a');
                 
-                var m1 = bundle.mtime;
+                var m1 = bundle.modified;
                 assert.ok(m1);
                 assert.ok(m1 > m0);
                 

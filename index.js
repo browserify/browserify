@@ -85,7 +85,6 @@ var exports = module.exports = function (opts) {
         }
     }
     
-    var modified = new Date();
     var _cache = null;
     var listening = false;
     var self = function (req, res, next) {
@@ -101,23 +100,30 @@ var exports = module.exports = function (opts) {
         if (req.url.split('?')[0] === (opts.mount || '/browserify.js')) {
             if (!_cache) self.bundle();
             res.statusCode = 200;
-            res.setHeader('last-modified', modified.toString());
+            res.setHeader('last-modified', self.modified.toString());
             res.setHeader('content-type', 'text/javascript');
             res.end(_cache);
         }
         else next()
     };
     
+    self.modified = null;
+    
     Object.keys(w).forEach(function (key) {
         self[key] = w[key];
     });
     
     Object.keys(wrap.prototype).forEach(function (key) {
-        self[key] = w[key].bind(self);
+        self[key] = function () {
+            var s = w[key].apply(self, arguments)
+            if (s === self) { _cache = null }
+            return s;
+        };
     });
     
     self.bundle = function () {
         var src = w.bundle.apply(w, arguments);
+        self.modified = new Date;
         _cache = src;
         return src;
     };
