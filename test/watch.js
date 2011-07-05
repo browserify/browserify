@@ -22,6 +22,7 @@ exports.watch = function () {
             return src;
         },
         watch : { interval : 100 },
+        entry : __dirname + '/watch/b.js'
     });
     server.use(bundle);
     
@@ -55,8 +56,10 @@ exports.watch = function () {
             var c1 = {};
             vm.runInNewContext(s1, c1);
             var a1 = c1.require('./a');
+            var b1 = c1.require('./b');
             
             var a2 = Math.floor(Math.random() * 10000);
+            var b2 = Math.floor(Math.random() * 10000);
             var s2_ = bundle.bundle();
             
             getBundle(function (s2) {
@@ -65,6 +68,7 @@ exports.watch = function () {
                 var c2 = {};
                 vm.runInNewContext(s2, c2);
                 var a2_ = c2.require('./a');
+                var b2_ = c2.require('./b');
                 
                 var m1 = bundle.modified;
                 assert.ok(m1);
@@ -74,14 +78,23 @@ exports.watch = function () {
                     __dirname + '/watch/a.js',
                     'module.exports = ' + a1
                 );
+                fs.writeFileSync(
+                    __dirname + '/watch/b.js',
+                    'module.exports = ' + b1
+                );
                 
                 server.close();
                 assert.eql(a2, a2_);
+                assert.eql(b2, b2_);
             });
             
             fs.writeFileSync(
                 __dirname + '/watch/a.js',
                 'module.exports = ' + a2
+            );
+            fs.writeFileSync(
+                __dirname + '/watch/b.js',
+                'module.exports = ' + b2
             );
         });
     }
