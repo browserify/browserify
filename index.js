@@ -54,12 +54,16 @@ var exports = module.exports = function (opts) {
                 }
             };
             
-            if (typeof opts.watch === 'object') {
-                fs.watchFile(file, opts.watch, watcher);
-            }
-            else {
-                fs.watchFile(file, watcher);
-            }
+            process.nextTick(function () {
+                if (w.files[file] && w.files[file].synthetic) return;
+                
+                if (typeof opts.watch === 'object') {
+                    fs.watchFile(file, opts.watch, watcher);
+                }
+                else {
+                    fs.watchFile(file, watcher);
+                }
+            });
             
             return body;
         })
