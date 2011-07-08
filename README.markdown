@@ -32,7 +32,7 @@ var server = connect.createServer();
 server.use(connect.static(__dirname));
 server.use(require('browserify')({
     require : __dirname + '/js/foo.js',
-    mount : '/browserify.js'
+    filter : require('uglify-js'), // minifiers are super easy!
 }));
 
 server.listen(9797);
