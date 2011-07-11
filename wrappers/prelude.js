@@ -14,12 +14,13 @@ require.modules = {};
 require.extensions = $extensions;
 
 require.resolve = (function () {
-    var core = [ 'assert', 'events', 'fs', 'path', 'vm' ]
-        .reduce(function (acc, x) {
-            acc[x] = true;
-            return acc;
-        }, {})
-    ;
+    var core = {
+        'assert': true,
+        'events': true,
+        'fs': true,
+        'path': true,
+        'vm': true
+    };
     
     return function (x, cwd) {
         if (!cwd) cwd = '/';
@@ -90,7 +91,7 @@ require.resolve = (function () {
         function nodeModulesPathsSync (start) {
             var parts;
             if (start === '/') parts = [ '' ];
-            else parts = path.normalize(start).split(/\/+/);
+            else parts = path.normalize(start).split('/');
             
             var dirs = [];
             for (var i = parts.length - 1; i >= 0; i--) {
