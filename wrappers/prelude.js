@@ -91,7 +91,7 @@ require.resolve = (function () {
         function nodeModulesPathsSync (start) {
             var parts;
             if (start === '/') parts = [ '' ];
-            else parts = path.normalize(start).split(/\/+/);
+            else parts = path.normalize(start).split('/');
             
             var dirs = [];
             for (var i = parts.length - 1; i >= 0; i--) {
