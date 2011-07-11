@@ -14,12 +14,13 @@ require.modules = {};
 require.extensions = $extensions;
 
 require.resolve = (function () {
-    var core = [ 'assert', 'events', 'fs', 'path', 'vm' ]
-        .reduce(function (acc, x) {
-            acc[x] = true;
-            return acc;
-        }, {})
-    ;
+    var core = {
+        'assert': true,
+        'events': true,
+        'fs': true,
+        'path': true,
+        'vm': true
+    };
     
     return function (x, cwd) {
         if (!cwd) cwd = '/';
