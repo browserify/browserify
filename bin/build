@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+
+var browserify = require('../index'),
+    argv = require('optimist')
+                  .default('b', __dirname)
+                  .describe('b', 'The base path of the app you want to Browserify.')
+                  .default('outpath', '/../')
+                  .describe('outpath', 'The path to save your Browserified code to.')
+                  .default('o', '/browserified.js')
+                  .describe('o', 'The filename to save your Browserified code as.')
+                  .demand(['s', 't'])
+                  .describe('t', 'The base path where your HTML templates reside.')
+                  .describe('s', 'The main script / entry point of your app.')
+                  .argv, 
+    fs = require('fs'),
+    path = require('path');
+
+var bundle = browserify(),
+    basePath = argv.b,
+    templatePath = argv.t,
+    entryPoint = argv.s,
+    outPath = argv.outpath,
+    outFile = argv.o;
+
+
+
+console.log(basePath);
+console.log('Generating bundle... ', basePath, templatePath);
+
+bundle.use(formify(path.normalize(basePath + templatePath), { watch : false }));
+bundle.require(path.normalize(basePath + entryPoint), {target: outFile});
+
+fs.writeFileSync(path.normalize(outPath + outFile), bundle.bundle());
+
+function formify() {
+  var fileify = require('fileify');
+  return function (bundle) {
+    bundle.use(fileify(path.normalize(templatePath + 'index.js'), path.normalize(basePath + templatePath), '.html'));
+  };
+  
+}
+
