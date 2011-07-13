@@ -5,12 +5,12 @@ var browserify = require('../index'),
                   .default('b', __dirname)
                   .describe('b', 'The base path of the app you want to Browserify.')
                   .default('outpath', '/../')
-                  .describe('outpath', 'The path to save your Browserified code to.')
-                  .default('o', '/browserified.js')
+                  .describe('outpath', 'The relative path to save your Browserified code to.')
+                  .default('o', 'browserified.js')
                   .describe('o', 'The filename to save your Browserified code as.')
                   .demand(['s', 't'])
-                  .describe('t', 'The base path where your HTML templates reside.')
-                  .describe('s', 'The main script / entry point of your app.')
+                  .describe('t', 'The relative path where your HTML templates reside.')
+                  .describe('s', 'The relative path of the main script / entry point of your app.')
                   .argv, 
     fs = require('fs'),
     path = require('path');
@@ -30,7 +30,7 @@ console.log('Generating bundle... ', basePath, templatePath);
 bundle.use(formify(path.normalize(basePath + templatePath), { watch : false }));
 bundle.require(path.normalize(basePath + entryPoint), {target: outFile});
 
-fs.writeFileSync(path.normalize(outPath + outFile), bundle.bundle());
+fs.writeFileSync(path.normalize(basePath + outPath + '/' + outFile), bundle.bundle());
 
 function formify() {
   var fileify = require('fileify');
