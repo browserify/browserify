@@ -1,23 +1,26 @@
 #!/usr/bin/env node
 
-var browserify = require('../index'),
-    argv = require('optimist')
-                  .default('b', __dirname)
-                  .alias('b', 'basepath')
-                  .describe('b', 'The base path of the app you want to Browserify.')
-                  .default('outpath', '/../')
-                  .describe('outpath', 'The relative path to save your Browserified code to.')
-                  .default('o', 'browserified.js')
-                  .alias('o', 'outfile')
-                  .describe('o', 'The filename to save your Browserified code as.')
-                  .demand(['s', 't'])
-                  .alias('t', 'templates')
-                  .alias('s', 'main')
-                  .describe('t', 'The relative path where your HTML templates reside.')
-                  .describe('s', 'The relative path of the main script / entry point of your app.')
-                  .argv, 
-    fs = require('fs'),
-    path = require('path');
+var browserify = require('../');
+
+var argv = require('optimist')
+    .default('b', __dirname)
+    .alias('b', 'basepath')
+    .describe('b', 'The base path of the app you want to Browserify.')
+    .default('outpath', '/../')
+    .describe('outpath', 'The relative path to save your Browserified code to.')
+    .default('o', 'browserified.js')
+    .alias('o', 'outfile')
+    .describe('o', 'The filename to save your Browserified code as.')
+    .demand(['s', 't'])
+    .alias('t', 'templates')
+    .alias('s', 'main')
+    .describe('t', 'The relative path where your HTML templates reside.')
+    .describe('s', 'The relative path of the main script / entry point of your app.')
+    .argv
+;
+
+var fs = require('fs');
+var path = require('path');
 
 var bundle = browserify(),
     basePath = argv.b,
@@ -25,8 +28,6 @@ var bundle = browserify(),
     entryPoint = argv.s,
     outPath = argv.outpath,
     outFile = argv.o;
-
-
 
 console.log(basePath);
 console.log('Generating bundle... ', basePath, templatePath);
@@ -41,6 +42,4 @@ function formify() {
   return function (bundle) {
     bundle.use(fileify(path.normalize(templatePath + 'index.js'), path.normalize(basePath + templatePath), '.html'));
   };
-  
 }
-
