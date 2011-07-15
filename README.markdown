@@ -17,6 +17,8 @@ need, including pulling in libraries you might have installed using npm!
 * Browser-versions of certain core node modules such as `path`, `events`, and
   `vm` are included as necessary automatically.
 
+* Command-line bundling tool or use from node.
+
 examples
 ========
 
@@ -287,6 +289,24 @@ Contains a Date object with the time the bundle was last modified. This field is
 useful in conjunction with the `watch` field described in the `browserify()` to
 generate unique `<script>` `src` values to force script reloading.
 
+command-line usage
+==================
+
+    Usage: browserify [entry files] {OPTIONS}
+    
+    Options:
+      --outfile, -o  Write the browserify bundle to this file
+                                                              [default: "bundle.js"]
+      --require, -r  A module name or file to bundle.require()
+                     Optionally use a colon separator to set the target.            
+      --entry, -e    An entry point of your app                                     
+      --alias, -a    Register an alias with a colon separator: "to:from"
+                     Example: --alias 'jquery:jquery-browserify'                    
+      --plugin, -p   Use a plugin. Use a colon separator to specify additional
+                     plugin arguments as a JSON string.
+                     Example: --plugin 'fileify:["files","."]'                      
+      --help, -h     Show this message                                              
+
 package.json
 ============
 
@@ -349,3 +369,15 @@ read more
 =========
 
 [browserify: browser-side require() for your node.js](http://substack.net/posts/24ab8c)
+
+install
+=======
+
+Using [npm](http://npmjs.org) just do:
+
+    npm install browserify
+
+to install into your project's node_modules directory, or if you want to use the
+command-line tool, install globally with:
+
+    npm install -g browserify
