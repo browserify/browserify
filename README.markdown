@@ -176,8 +176,9 @@ parameter to `fs.watchFile()`.
 ### fastmatch :: Boolean or Object
 
 The fastmatch uses a regular expression for resolving requires. This is much faster
-then the AST method used by detective but will likely fail on minified or
-obfuscated code.
+then the AST method used by detective, but will likely fail on minified or
+obfuscated code. It will also match comments or other strings, so you may
+run into problems.
 
 b.bundle()
 ----------
