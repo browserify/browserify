@@ -25,7 +25,7 @@ var exports = module.exports = function (opts) {
     }
     
     var watches = [];
-    var w = wrap()
+    var w = wrap({fastmatch: opts.fastmatch, verbose: opts.verbose})
         .register('.coffee', function (body) {
             return coffee.compile(body)
         })

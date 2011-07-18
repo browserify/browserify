@@ -158,6 +158,8 @@ script at `opts.mount` or `"/browserify.js"` if unspecified.
 * entry - calls `b.addEntry()`
 * filter - registers a "post" extension using `b.register()`
 * watch - set watches on files, see below
+* fastmatch - uses a simpler and much faster dependency resovlver
+* verbose - prints filenames of processed files
 
 If `opts` is a string, it is interpreted as a `require` value.
 
@@ -170,6 +172,12 @@ Set watches on files and automatically rebundle when a file changes.
 This option defaults to false. If `opts.watch` is set to true, default watch
 arguments are assumed or you can pass in an object to pass along as the second
 parameter to `fs.watchFile()`.
+
+### fastmatch :: Boolean or Object
+
+The fastmatch uses a regular expression for resolving requires. This is much faster
+then the AST method used by detective but will likely fail on minified or
+obfuscated code.
 
 b.bundle()
 ----------
