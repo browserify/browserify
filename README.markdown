@@ -138,6 +138,26 @@ javascript file of its own and pass that file to the `entry` field. Such an
 action would render the `require : 'traverse'` in server.js unnecessary since
 browserify hunts down `require()`s from the AST.
 
+convert a commonjs package into a browser require-able standalone file example
+-----------
+
+Using `npm` >= 1.0 from the commandz line:
+Install the `traverse` package locally (into the `node_modules` folder)
+    
+    npm install traverse
+
+Utilize `browserify` to... browserify the commonjs package
+
+    npm install -g browserify
+    browserify --require traverse
+
+Look at the files! There is a new one: `bundle.js`. Now go into HTML land:
+
+    <script src="bundle.js"></script>
+    <script> 
+       var traverse = require('traverse');
+    </script>
+
 methods
 =======
 
