@@ -146,10 +146,10 @@ Install the `traverse` package locally (into the `node_modules` folder)
     
     npm install traverse
 
-Utilize `browserify` to... browserify the commonjs package
+Utilize `browserify` to... browserify the package
 
     npm install -g browserify
-    browserify --require traverse
+    browserify --require traverse -o bundle.js
 
 Look at the files! There is a new one: `bundle.js`. Now go into HTML land:
 
@@ -312,11 +312,11 @@ generate unique `<script>` `src` values to force script reloading.
 command-line usage
 ==================
 
-    Usage: browserify [entry files] {OPTIONS}
+    Usage: node ./bin/cli.js [entry files] {OPTIONS}
     
     Options:
-      --outfile, -o  Write the browserify bundle to this file
-                                                              [default: "bundle.js"]
+      --outfile, -o  Write the browserify bundle to this file.
+                     If unspecified, browserify prints to stdout.                   
       --require, -r  A module name or file to bundle.require()
                      Optionally use a colon separator to set the target.            
       --entry, -e    An entry point of your app                                     
@@ -326,6 +326,8 @@ command-line usage
                      plugin arguments as a JSON string.
                      Example: --plugin 'fileify:["files","."]'                      
       --help, -h     Show this message                                              
+    
+    Specify a parameter.
 
 package.json
 ============
