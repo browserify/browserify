@@ -9,8 +9,9 @@ var argv = require('optimist')
     .wrap(80)
     .option('outfile', {
         alias : 'o',
-        desc : 'Write the browserify bundle to this file',
-        default : 'bundle.js',
+        desc : 'Write the browserify bundle to this file.\n'
+            + 'If unspecified, browserify prints to stdout.'
+        ,
     })
     .option('require', {
         alias : 'r',
@@ -45,7 +46,7 @@ var argv = require('optimist')
     .argv
 ;
 
-if (path.existsSync(argv.outfile)) {
+if (argv.outfile && path.existsSync(argv.outfile)) {
     console.error('outfile exists.');
     process.exit();
 }
@@ -92,4 +93,9 @@ var bundle = browserify();
     bundle.addEntry(entry);
 });
 
-fs.writeFileSync(argv.outfile, bundle.bundle());
+if (argv.outfile) {
+    fs.writeFileSync(argv.outfile, bundle.bundle());
+}
+else {
+    console.log(bundle.bundle());
+}
