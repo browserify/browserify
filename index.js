@@ -48,7 +48,7 @@ var exports = module.exports = function (opts) {
                 else if (curr.mtime !== prev.mtime) {
                     // modified
                     fs.unwatchFile(file);
-                    w.reload(file, opts);
+                    w.reload(file);
                     
                     _cache = null;
                 }
