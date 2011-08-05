@@ -28,6 +28,18 @@ function normalizeArray(parts, allowAboveRoot) {
   return parts;
 }
 
+function arrayFilter(arr, fun) {
+  var res = [],
+      val;
+  for (var i = 0; i < arr.length; i++) {
+    val = arr[i];
+    if (fun(val, i, arr)) {
+      res.push(val);
+    }
+  }
+  return res;
+}
+
 // Regex to split a filename into [*, dir, basename, ext]
 // posix version
 var splitPathRe = /^(.+\/(?!$)|\/)?((?:.+?)?(\.[^.]*)?)$/;
@@ -56,7 +68,7 @@ for (var i = arguments.length; i >= -1 && !resolvedAbsolute; i--) {
 // handle relative paths to be safe (might happen when process.cwd() fails)
 
 // Normalize the path
-resolvedPath = normalizeArray(resolvedPath.split('/').filter(function(p) {
+resolvedPath = normalizeArray(arrayFilter(resolvedPath.split('/'), function(p) {
     return !!p;
   }), !resolvedAbsolute).join('/');
 
@@ -70,7 +82,7 @@ var isAbsolute = path.charAt(0) === '/',
     trailingSlash = path.slice(-1) === '/';
 
 // Normalize the path
-path = normalizeArray(path.split('/').filter(function(p) {
+path = normalizeArray(arrayFilter(path.split('/'), function(p) {
     return !!p;
   }), !isAbsolute).join('/');
 
@@ -88,7 +100,7 @@ path = normalizeArray(path.split('/').filter(function(p) {
 // posix version
 exports.join = function() {
   var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(paths.filter(function(p, index) {
+  return exports.normalize(arrayFilter(paths, function(p, index) {
     return p && typeof p === 'string';
   }).join('/'));
 };
