@@ -1,3 +1,19 @@
+var Object_keys = function (obj) {
+    if (Object.keys) return Object.keys(obj)
+    else {
+        var res = [];
+        for (var key in obj) res.push(key)
+        return res;
+    }
+};
+
+var forEach = function (xs, fn) {
+    if (xs.forEach) return xs.forEach(fn)
+    else for (var i = 0; i < xs.length; i++) {
+        fn(xs[i], i, xs);
+    }
+};
+
 var Script = exports.Script = function NodeScript (code) {
     if (!(this instanceof Script)) return new Script(code);
     this.code = code;
@@ -43,7 +59,7 @@ Script.prototype.runInContext = function (context) {
     return this.runInNewContext(context);
 };
 
-Object_keys(Script.prototype).forEach(function (name) {
+forEach(Object_keys(Script.prototype), function (name) {
     exports[name] = Script[name] = function (code) {
         var s = Script(code);
         return s[name].apply(s, [].slice.call(arguments, 1));
@@ -61,17 +77,4 @@ exports.createContext = Script.createContext = function (context) {
         acc[key] = context[key];
         return acc;
     }, {});
-};
-
-var Object_keys = Object.keys || function (obj) {
-    var res = [];
-    for (var key in obj) res.push(key)
-    return res;
-};
-
-var forEach = function (xs, fn) {
-    if (xs.forEach) return xs.forEach(fn)
-    else for (var i = 0; i < xs.length; i++) {
-        fn(xs[i], i, xs);
-    }
 };
