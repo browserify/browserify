@@ -4,8 +4,8 @@ var server = connect.createServer();
 server.use(connect.static(__dirname));
 server.use(require('browserify')({
     entry : __dirname + '/main.js',
-    require : { jquery : 'jquery-browserify' },
+    watch : true
 }));
 
-server.listen(9393);
-console.log('Listening on 9393...');
+server.listen(8080);
+console.log('Listening on 8080...');

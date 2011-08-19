@@ -19,13 +19,14 @@ var Script = exports.Script = function NodeScript (code) {
     this.code = code;
 };
 
+var iframe = document.createElement('iframe');
+if (!iframe.style) iframe.style = {};
+iframe.style.display = 'none';
+
+var iframeCapable = true; // until proven otherwise
+
 Script.prototype.runInNewContext = function (context) {
     if (!context) context = {};
-    
-    var iframe = document.createElement('iframe');
-    //iframe.setAttribute('src', 'about:blank');
-    if (!iframe.style) iframe.style = {};
-    iframe.style.display = 'none';
     
     document.body.appendChild(iframe);
     
@@ -36,15 +37,27 @@ Script.prototype.runInNewContext = function (context) {
     
     forEach(Object_keys(context), function (key) {
         win[key] = context[key];
+        iframe[key] = context[key];
     });
-    
-    var res = win.eval(this.code);
+     
+    if (win.eval) {
+        // chrome and ff can just .eval()
+        var res = win.eval(this.code);
+    }
+    else {
+        // this works in IE9 but not anything newer
+        iframe.setAttribute('src',
+            'javascript:__browserifyVmResult=(' + this.code + ')'
+        );
+        var res = win.__browserifyVmResult;
+    }
     
     forEach(Object_keys(win), function (key) {
         context[key] = win[key];
     });
     
     document.body.removeChild(iframe);
+    
     return res;
 };
 
