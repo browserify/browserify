@@ -73,8 +73,9 @@ exports.createScript = function (code) {
 exports.createContext = Script.createContext = function (context) {
     // not really sure what this one does
     // seems to just make a shallow copy
-    return Object_keys(context).reduce(function (acc, key) {
-        acc[key] = context[key];
-        return acc;
-    }, {});
+    var copy = {};
+    forEach(Object_keys(context), function (key) {
+        copy[key] = context[key];
+    });
+    return copy;
 };
