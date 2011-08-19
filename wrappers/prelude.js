@@ -116,15 +116,22 @@ require.alias = function (from, to) {
     }
     var basedir = path.dirname(res);
     
-    Object.keys(require.modules)
-        .forEach(function (x) {
-            if (x.slice(0, basedir.length + 1) === basedir + '/') {
-                var f = x.slice(basedir.length);
-                require.modules[to + f] = require.modules[basedir + f];
-            }
-            else if (x === basedir) {
-                require.modules[to] = require.modules[basedir];
-            }
-        })
-    ;
+    var keys = Object_keys(require.modules);
+    
+    for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        if (key.slice(0, basedir.length + 1) === basedir + '/') {
+            var f = key.slice(basedir.length);
+            require.modules[to + f] = require.modules[basedir + f];
+        }
+        else if (key === basedir) {
+            require.modules[to] = require.modules[basedir];
+        }
+    }
+};
+
+var Object_keys = Object.keys || function (obj) {
+    var res = [];
+    for (var key in obj) res.push(key)
+    return res;
 };

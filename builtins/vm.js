@@ -18,13 +18,13 @@ Script.prototype.runInNewContext = function (context) {
         || window[window.length - 1]
     ;
     
-    Object.keys(context).forEach(function (key) {
+    forEach(Object_keys(context), function (key) {
         win[key] = context[key];
     });
     
     var res = win.eval(this.code);
     
-    Object.keys(win).forEach(function (key) {
+    forEach(Object_keys(win), function (key) {
         context[key] = win[key];
     });
     
@@ -43,7 +43,7 @@ Script.prototype.runInContext = function (context) {
     return this.runInNewContext(context);
 };
 
-Object.keys(Script.prototype).forEach(function (name) {
+Object_keys(Script.prototype).forEach(function (name) {
     exports[name] = Script[name] = function (code) {
         var s = Script(code);
         return s[name].apply(s, [].slice.call(arguments, 1));
@@ -57,8 +57,21 @@ exports.createScript = function (code) {
 exports.createContext = Script.createContext = function (context) {
     // not really sure what this one does
     // seems to just make a shallow copy
-    return Object.keys(context).reduce(function (acc, key) {
+    return Object_keys(context).reduce(function (acc, key) {
         acc[key] = context[key];
         return acc;
     }, {});
+};
+
+var Object_keys = Object.keys || function (obj) {
+    var res = [];
+    for (var key in obj) res.push(key)
+    return res;
+};
+
+var forEach = function (xs, fn) {
+    if (xs.forEach) return xs.forEach(fn)
+    else for (var i = 0; i < xs.length; i++) {
+        fn(xs[i], i, xs);
+    }
 };
