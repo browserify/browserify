@@ -1,15 +1,49 @@
+var Object_keys = function (obj) {
+    if (Object.keys) return Object.keys(obj)
+    else {
+        var res = [];
+        for (var key in obj) res.push(key)
+        return res;
+    }
+};
+
+var forEach = function (xs, fn) {
+    if (xs.forEach) return xs.forEach(fn)
+    else for (var i = 0; i < xs.length; i++) {
+        fn(xs[i], i, xs);
+    }
+};
+
 var Script = exports.Script = function NodeScript (code) {
     if (!(this instanceof Script)) return new Script(code);
     this.code = code;
 };
 
+var iframe = document.createElement('iframe');
+if (!iframe.style) iframe.style = {};
+iframe.style.display = 'none';
+
+var iframeCapable = true; // until proven otherwise
+if (navigator.appName === 'Microsoft Internet Explorer') {
+    var m = navigator.appVersion.match(/\bMSIE (\d+\.\d+);/);
+    if (m && parseFloat(m[1]) < 9.0) {
+        iframeCapable = false;
+    }
+}
+
 Script.prototype.runInNewContext = function (context) {
     if (!context) context = {};
     
-    var iframe = document.createElement('iframe');
-    //iframe.setAttribute('src', 'about:blank');
-    if (!iframe.style) iframe.style = {};
-    iframe.style.display = 'none';
+    if (!iframeCapable) {
+        var keys = Object_keys(context);
+        var args = [];
+        for (var i = 0; i < keys.length; i++) {
+            args.push(context[keys[i]]);
+        }
+        
+        var fn = new Function(keys, 'return ' + this.code);
+        return fn.apply(null, args);
+    }
     
     document.body.appendChild(iframe);
     
@@ -18,17 +52,35 @@ Script.prototype.runInNewContext = function (context) {
         || window[window.length - 1]
     ;
     
-    Object.keys(context).forEach(function (key) {
+    forEach(Object_keys(context), function (key) {
         win[key] = context[key];
+        iframe[key] = context[key];
     });
+     
+    if (win.eval) {
+        // chrome and ff can just .eval()
+        var res = win.eval(this.code);
+    }
+    else {
+        // this works in IE9 but not anything newer
+        iframe.setAttribute('src',
+            'javascript:__browserifyVmResult=(' + this.code + ')'
+        );
+        if ('__browserifyVmResult' in win) {
+            var res = win.__browserifyVmResult;
+        }
+        else {
+            iframeCapable = false;
+            res = this.runInThisContext(context);
+        }
+    }
     
-    var res = win.eval(this.code);
-    
-    Object.keys(win).forEach(function (key) {
+    forEach(Object_keys(win), function (key) {
         context[key] = win[key];
     });
     
     document.body.removeChild(iframe);
+    
     return res;
 };
 
@@ -43,7 +95,7 @@ Script.prototype.runInContext = function (context) {
     return this.runInNewContext(context);
 };
 
-Object.keys(Script.prototype).forEach(function (name) {
+forEach(Object_keys(Script.prototype), function (name) {
     exports[name] = Script[name] = function (code) {
         var s = Script(code);
         return s[name].apply(s, [].slice.call(arguments, 1));
@@ -57,8 +109,9 @@ exports.createScript = function (code) {
 exports.createContext = Script.createContext = function (context) {
     // not really sure what this one does
     // seems to just make a shallow copy
-    return Object.keys(context).reduce(function (acc, key) {
-        acc[key] = context[key];
-        return acc;
-    }, {});
+    var copy = {};
+    forEach(Object_keys(context), function (key) {
+        copy[key] = context[key];
+    });
+    return copy;
 };

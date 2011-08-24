@@ -1,3 +1,11 @@
+function filter (xs, fn) {
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (fn(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
 // resolves . and .. elements in a path array with directory names there
 // must be no slashes, empty elements, or device names (c:\) in the array
 // (so also no leading and trailing slashes - it does not distinguish
@@ -56,7 +64,7 @@ for (var i = arguments.length; i >= -1 && !resolvedAbsolute; i--) {
 // handle relative paths to be safe (might happen when process.cwd() fails)
 
 // Normalize the path
-resolvedPath = normalizeArray(resolvedPath.split('/').filter(function(p) {
+resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
     return !!p;
   }), !resolvedAbsolute).join('/');
 
@@ -70,7 +78,7 @@ var isAbsolute = path.charAt(0) === '/',
     trailingSlash = path.slice(-1) === '/';
 
 // Normalize the path
-path = normalizeArray(path.split('/').filter(function(p) {
+path = normalizeArray(filter(path.split('/'), function(p) {
     return !!p;
   }), !isAbsolute).join('/');
 
@@ -88,7 +96,7 @@ path = normalizeArray(path.split('/').filter(function(p) {
 // posix version
 exports.join = function() {
   var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(paths.filter(function(p, index) {
+  return exports.normalize(filter(paths, function(p, index) {
     return p && typeof p === 'string';
   }).join('/'));
 };
