@@ -341,7 +341,7 @@ behavior with something special just for browsers.
 The "browserify" field can be a string that points to the browser-specific
 "main" file or it can be an object with a "main" field in it.
 
-compatability
+compatibility
 =============
 
 process
