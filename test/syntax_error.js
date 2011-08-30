@@ -21,11 +21,19 @@ exports.syntaxError = function () {
         check(bundle, function (err) {
             if (err) assert.fail(err);
             
+            var error = console.error ;
+            console.error = function (s) {
+                clearTimeout(to);
+                console.error = error;
+            };
+            
             fs.writeFile(main, '[', function (err) {
                 if (err) assert.fail(err);
+                
                 check(bundle, function (err) {
                     if (err) assert.fail(err);
-                    clearTimeout(to);
+                    assert.ok(err === undefined);
+                    fs.unwatchFile(main);
                 });
             });
         });
@@ -34,14 +42,18 @@ exports.syntaxError = function () {
 
 function check (bundle, cb) {
     try {
-        vm.runInNewContext(bundle.bundle(), {
-            setTimeout : setTimeout,
+        var src = bundle.bundle();
+        var logged = false;
+        vm.runInNewContext(src, {
+            setTimeout : function (fn) { fn() },
             console : {
                 log : function (s) {
                     cb(s !== 'bloop');
+                    logged = true;
                 }
-            }
+            },
         });
+        if (!logged) cb();
     }
     catch (err) {
         assert.fail(err);

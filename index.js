@@ -49,10 +49,11 @@ var exports = module.exports = function (opts) {
                     // modified
                     fs.unwatchFile(file);
                     try {
-                      w.reload(file);
-                      _cache = null;
-                    } catch (e) {
-                      console.error(e);
+                        w.reload(file);
+                        _cache = null;
+                    }
+                    catch (e) {
+                        console.error(e && e.stack || e);
                     }
                 }
             };
