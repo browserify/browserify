@@ -28,6 +28,7 @@ exports.vmRunInNewContext = function () {
     function runTests(window, iframe) {
         var c0 = {
             window : window,
+            navigator : {},
             document : window.document,
         };
         vm.runInNewContext(src, c0);
