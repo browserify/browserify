@@ -391,12 +391,13 @@ When browsers send a conditional-GET (i.e. with a If-Modified-Since header), Not
 Modified (304) responses are set, as appropriate.
 
 In addition, Browserify supports "strong" caching headers like Expires and
-Cache-Control: max-age.  If a GET request query parameter equals b.modified (see above), 
-these headers are automatically set.
+Cache-Control: max-age.  This is only enabled if you append a URL fingerprint (timestamp)
+to the query parameter of the requested bundle URL.  That is, if and only if a GET request
+query parameter equals b.modified (see above), these headers are automatically set.
 
 For example, if you send GET '/browserify.js?1315449580708' and the last modified date of
 the bundle is Thu, 08 Sep 2011 02:39:40 GMT, then Browserify will set the Expires header
-to 1 year from now.
+to 1 year from now.  Otherwise, no "strong" caching headers (i.e. Expires, Cache-Control: max-age) are added.
 
 Tip: You don't need to check b.modified during each HTTP request.  Browserify makes the
 entire mount URL available to you via req.browserifyMount.  And, if you are using
@@ -408,6 +409,34 @@ req.browserifyMount = (opts.mount || '/browserify.js') + '?' + self.modified.get
 if(typeof res.local === "function")
 	res.local('browserifyMount', req.browserifyMount);
 ````
+
+How about an example?
+
+````javascript
+var express = require('express');
+var server = express.createServer();
+server.use(require('browserify')({
+	mount: '/browserify.js',
+    require : __dirname + '/js/foo.js',
+    filter : require('uglify-js')
+}));
+
+server.get("/", function(req, res) {
+	res.render('index.jade', {layout: false});
+});
+server.listen(9797);
+````
+
+Finally, in index.jade...
+
+	!!! strict
+	html(xmlns="http://www.w3.org/1999/xhtml")
+		head
+			meta(http-equiv="content-type", content="application/xhtml+xml; charset=UTF-8")
+			script(type="text/javascript", src=browserifyMount)
+			title= title
+		body
+			h1 This is a test!
 
 protips
 =======
