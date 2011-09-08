@@ -105,6 +105,9 @@ var exports = module.exports = function (opts) {
         }
         listening = true;
         
+		//Populate the _cache even if we aren't getting the bundle on this request
+		if (!_cache) self.bundle();
+		
 		//Make mount point available to other middleware and views
 		req.browserifyMount = (opts.mount || '/browserify.js') + '?' + self.modified.getTime();
 		if(typeof res.local === "function")
@@ -112,7 +115,6 @@ var exports = module.exports = function (opts) {
 		
 		var url = req.url.split('?');
         if (url[0] === (opts.mount || '/browserify.js')) {
-            if (!_cache) self.bundle();
 			res.setHeader('Last-Modified', self.modified.toUTCString());
 			res.setHeader('Content-Type', 'text/javascript');
 			/* Date header not needed, but included in case browsers get mad about long Expire dates?
