@@ -1,4 +1,4 @@
-process.nextTick(function () {
+(function () {
     var module = { exports : {} };
     var exports = module.exports;
     var __dirname = $__dirname;
@@ -10,4 +10,4 @@ process.nextTick(function () {
     require.modules = __require.modules;
     
     $body;
-});
+})();
