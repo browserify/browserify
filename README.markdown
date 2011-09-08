@@ -19,6 +19,8 @@ need, including pulling in libraries you might have installed using npm!
 
 * Command-line bundling tool or use from node.
 
+* Built-in caching and watching.
+
 examples
 ========
 
@@ -380,6 +382,32 @@ __filename
 
 The faux file path, scrubbed of true path information so as not to expose your
 filesystem organization.
+
+caching
+=======
+
+Browserify now supports caching!  Last-Modified headers are set automatically.
+When browsers send a conditional-GET (i.e. with a If-Modified-Since header), Not
+Modified (304) responses are set, as appropriate.
+
+In addition, Browserify supports "strong" caching headers like Expires and
+Cache-Control: max-age.  If a GET request query parameter equals b.modified (see above), 
+these headers are automatically set.
+
+For example, if you send GET '/browserify.js?1315449580708' and the last modified date of
+the bundle is Thu, 08 Sep 2011 02:39:40 GMT, then Browserify will set the Expires header
+to 1 year from now.
+
+Tip: You don't need to check b.modified during each HTTP request.  Browserify makes the
+entire mount URL available to you via req.browserifyMount.  And, if you are using
+Express, you can use the 'browserifyMount' local in your views.
+
+````javascript
+//This now happens in the Browserify middleware
+req.browserifyMount = (opts.mount || '/browserify.js') + '?' + self.modified.getTime();
+if(typeof res.local === "function")
+	res.local('browserifyMount', req.browserifyMount);
+````
 
 protips
 =======
