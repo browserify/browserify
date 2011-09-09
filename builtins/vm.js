@@ -26,7 +26,7 @@ iframe.style.display = 'none';
 var iframeCapable = true; // until proven otherwise
 if (navigator.appName === 'Microsoft Internet Explorer') {
     var m = navigator.appVersion.match(/\bMSIE (\d+\.\d+);/);
-    if (m && parseFloat(m[1]) < 9.0) {
+    if (m && parseFloat(m[1]) <= 9.0) {
         iframeCapable = false;
     }
 }
