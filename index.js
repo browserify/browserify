@@ -1,6 +1,7 @@
 var wrap = require('./lib/wrap');
 var fs = require('fs');
 var coffee = require('coffee-script');
+var EventEmitter = require('events').EventEmitter;
 
 var exports = module.exports = function (opts) {
     if (!opts) {
@@ -24,7 +25,7 @@ var exports = module.exports = function (opts) {
         );
     }
     
-    var watches = [];
+    var watches = {};
     var w = wrap()
         .register('.coffee', function (body) {
             return coffee.compile(body)
@@ -51,13 +52,18 @@ var exports = module.exports = function (opts) {
                     try {
                         w.reload(file);
                         _cache = null;
+                        self.emit('bundle');
                     }
                     catch (e) {
-                        console.error(e && e.stack || e);
+                        self.emit('syntaxError', e);
+                        if (self.listeners('syntaxError').length === 0) {
+                            console.error(e && e.stack || e);
+                        }
                     }
                 }
             };
             
+            watches[file] = true;
             process.nextTick(function () {
                 if (w.files[file] && w.files[file].synthetic) return;
                 
@@ -98,9 +104,7 @@ var exports = module.exports = function (opts) {
     var self = function (req, res, next) {
         if (!listening && req.connection && req.connection.server) {
             req.connection.server.on('close', function () {
-                Object.keys(w.files).forEach(function (file) {
-                    fs.unwatchFile(file);
-                });
+                self.end();
             });
         }
         listening = true;
@@ -127,10 +131,27 @@ var exports = module.exports = function (opts) {
         };
     });
     
+    Object.keys(EventEmitter.prototype).forEach(function (key) {
+        self[key] = w[key].bind(w);
+    });
+    
     var firstBundle = true;
     self.modified = new Date;
     
+    var ok = true;
+    self.on('bundle', function () {
+        ok = true;
+    });
+    
+    self.on('syntaxError', function (err) {
+        ok = false;
+    });
+    
+    var lastOk = null;
     self.bundle = function () {
+        if (!ok && _cache) return _cache;
+        if (!ok && lastOk) return lastOk;
+        
         var src = w.bundle.apply(w, arguments);
         
         if (!firstBundle) {
@@ -139,7 +160,14 @@ var exports = module.exports = function (opts) {
         firstBundle = false;
         
         _cache = src;
+        if (ok) lastOk = src;
         return src;
+    };
+    
+    self.end = function () {
+        Object.keys(watches).forEach(function (file) {
+            fs.unwatchFile(file);
+        });
     };
     
     return self;
