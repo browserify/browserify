@@ -105,41 +105,41 @@ var exports = module.exports = function (opts) {
         }
         listening = true;
         
-		//Populate the _cache even if we aren't getting the bundle on this request
-		if (!_cache) self.bundle();
-		
-		//Make mount point available to other middleware and views
-		req.browserifyMount = (opts.mount || '/browserify.js') + '?' + self.modified.getTime();
-		if(typeof res.local === "function")
-			res.local('browserifyMount', req.browserifyMount);
-		
-		var url = req.url.split('?');
+        //Populate the _cache even if we aren't getting the bundle on this request
+        if (!_cache) self.bundle();
+        
+        //Make mount point available to other middleware and views
+        req.browserifyMount = (opts.mount || '/browserify.js') + '?' + self.modified.getTime();
+        if(typeof res.local === "function")
+            res.local('browserifyMount', req.browserifyMount);
+        
+        var url = req.url.split('?');
         if (url[0] === (opts.mount || '/browserify.js')) {
-			res.setHeader('Last-Modified', self.modified.toUTCString());
-			res.setHeader('Content-Type', 'text/javascript');
-			/* Date header not needed, but included in case browsers get mad about long Expire dates?
-			What's an extra couple bytes anyway?  Besides, it's being cached, so it's very minimal
-			overhead... go with it. */
-			res.setHeader('Date', new Date().toUTCString() );
-			/* Add Expires header only if the query parameter is set to the last modified date.
-			This is important since the server may elect NOT to use "URL fingerprinting" and browsers
-			end up caching the file indefinitely. */
-			if(url[1] != undefined && url[1] == self.modified.getTime() )
-			{
-				var d = new Date();
-				d.setFullYear(d.getFullYear() + 1);
-				res.setHeader('Expires', d.toUTCString() );
-				res.setHeader('Cache-Control', 'public, max-age=31536000'); //31536000 = 365 days * 24 * 60 * 60
-			}
-			
-			if(new Date(req.headers["if-modified-since"]).toUTCString() == self.modified.toUTCString() ) {
-				res.statusCode = 304;
-				res.end();
-			}
-			else {
-				res.statusCode = 200;
-				res.end(_cache);
-			}
+            res.setHeader('Last-Modified', self.modified.toUTCString());
+            res.setHeader('Content-Type', 'text/javascript');
+            /* Date header not needed, but included in case browsers get mad about long Expire dates?
+            What's an extra couple bytes anyway?  Besides, it's being cached, so it's very minimal
+            overhead... go with it. */
+            res.setHeader('Date', new Date().toUTCString() );
+            /* Add Expires header only if the query parameter is set to the last modified date.
+            This is important since the server may elect NOT to use "URL fingerprinting" and browsers
+            end up caching the file indefinitely. */
+            if(url[1] != undefined && url[1] == self.modified.getTime() )
+            {
+                var d = new Date();
+                d.setFullYear(d.getFullYear() + 1);
+                res.setHeader('Expires', d.toUTCString() );
+                res.setHeader('Cache-Control', 'public, max-age=31536000'); //31536000 = 365 days * 24 * 60 * 60
+            }
+            
+            if(new Date(req.headers["if-modified-since"]).toUTCString() == self.modified.toUTCString() ) {
+                res.statusCode = 304;
+                res.end();
+            }
+            else {
+                res.statusCode = 200;
+                res.end(_cache);
+            }
         }
         else next()
     };

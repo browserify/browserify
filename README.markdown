@@ -407,7 +407,7 @@ Express, you can use the 'browserifyMount' local in your views.
 //This now happens in the Browserify middleware
 req.browserifyMount = (opts.mount || '/browserify.js') + '?' + self.modified.getTime();
 if(typeof res.local === "function")
-	res.local('browserifyMount', req.browserifyMount);
+    res.local('browserifyMount', req.browserifyMount);
 ````
 
 How about an example?
@@ -416,27 +416,27 @@ How about an example?
 var express = require('express');
 var server = express.createServer();
 server.use(require('browserify')({
-	mount: '/browserify.js',
+    mount: '/browserify.js',
     require : __dirname + '/js/foo.js',
     filter : require('uglify-js')
 }));
 
 server.get("/", function(req, res) {
-	res.render('index.jade', {layout: false});
+    res.render('index.jade', {layout: false});
 });
 server.listen(9797);
 ````
 
 Finally, in index.jade...
 
-	!!! strict
-	html(xmlns="http://www.w3.org/1999/xhtml")
-		head
-			meta(http-equiv="content-type", content="application/xhtml+xml; charset=UTF-8")
-			script(type="text/javascript", src=browserifyMount)
-			title= title
-		body
-			h1 This is a test!
+    !!! strict
+    html(xmlns="http://www.w3.org/1999/xhtml")
+        head
+            meta(http-equiv="content-type", content="application/xhtml+xml; charset=UTF-8")
+            script(type="text/javascript", src=browserifyMount)
+            title= title
+        body
+            h1 This is a test!
 
 protips
 =======
