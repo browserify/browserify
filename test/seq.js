@@ -1,10 +1,12 @@
-var assert = require('assert');
 var connect = require('connect');
 var http = require('http');
 var vm = require('vm');
 var browserify = require('../');
+var test = require('tap').test;
 
-exports.seq = function () {
+test('seq', function (t) {
+    t.plan(2);
+    
     var port = 10000 + Math.floor(Math.random() * (Math.pow(2,16) - 10000));
     var server = connect.createServer();
     
@@ -15,22 +17,11 @@ exports.seq = function () {
     
     server.listen(port, makeRequest);
     
-    var to = setTimeout(function () {
-        assert.fail('server never started');
-    }, 5000);
-    
-    
     function makeRequest () {
-        clearTimeout(to);
-        
         var req = { host : 'localhost', port : port, path : '/bundle.js' };
         http.get(req, function (res) {
-            assert.eql(res.statusCode, 200);
+            t.equal(res.statusCode, 200);
             server.close();
-            
-            var tf = setTimeout(function () {
-                assert.fail('seq chain never finished');
-            }, 5000);
             
             var context = { setTimeout : setTimeout };
             
@@ -46,11 +37,11 @@ exports.seq = function () {
                         this(null, x * 100)
                     })
                     .seq(function () {
-                        clearTimeout(tf);
-                        assert.eql([].slice.call(arguments), [100,200,300]);
+                        t.deepEqual(this.stack, [100,200,300]);
+                        t.end();
                     })
                 ;
             });
         });
     }
-};
+});

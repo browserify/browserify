@@ -1,16 +1,15 @@
-var assert = require('assert');
 var connect = require('connect');
 var http = require('http');
 var vm = require('vm');
 var fs = require('fs');
+var test = require('tap').test;
 
-exports.watch = function () {
+test('watch', function (t) {
+    t.plan(8);
+    
     var port = 10000 + Math.floor(Math.random() * (Math.pow(2,16) - 10000));
     var server = connect.createServer();
     
-    var to = setTimeout(function () {
-        assert.fail('filter never updated');
-    }, 10000);
     var filters = 0;
     
     var bundle = require('../')({
@@ -18,7 +17,7 @@ exports.watch = function () {
         mount : '/bundle.js',
         filter : function (src) {
             filters ++;
-            if (filters == 2) clearTimeout(to);
+            if (filters === 2) t.ok(true, 'has 2');
             return src;
         },
         watch : { interval : 100 },
@@ -34,7 +33,7 @@ exports.watch = function () {
     function getBundle (cb) {
         var req = { host : 'localhost', port : port, path : '/bundle.js' };
         http.get(req, function (res) {
-            assert.eql(res.statusCode, 200);
+            t.equal(res.statusCode, 200);
             
             var src = '';
             res.on('data', function (buf) {
@@ -50,7 +49,7 @@ exports.watch = function () {
     function compareSources () {
         getBundle(function (s1) {
             var m0 = bundle.modified;
-            assert.ok(m0);
+            t.ok(m0);
              
             var c1 = {};
             vm.runInNewContext(s1, c1);
@@ -60,15 +59,15 @@ exports.watch = function () {
             var s2_ = bundle.bundle();
             
             getBundle(function (s2) {
-                assert.notEqual(s1, s2, 'sources are equal');
+                t.notEqual(s1, s2, 'sources are equal');
                 
                 var c2 = {};
                 vm.runInNewContext(s2, c2);
                 var a2_ = c2.require('./a');
                 
                 var m1 = bundle.modified;
-                assert.ok(m1);
-                assert.ok(m1 > m0);
+                t.ok(m1);
+                t.ok(m1 > m0);
                 
                 fs.writeFileSync(
                     __dirname + '/watch/a.js',
@@ -76,7 +75,8 @@ exports.watch = function () {
                 );
                 
                 server.close();
-                assert.eql(a2, a2_);
+                t.deepEqual(a2, a2_);
+                t.end();
             });
             
             fs.writeFileSync(
@@ -85,4 +85,4 @@ exports.watch = function () {
             );
         });
     }
-};
+});

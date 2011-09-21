@@ -1,3 +1,10 @@
+var isArray = typeof Array.isArray === 'function'
+    ? Array.isArray
+    : function (xs) {
+        return Object.toString.call(xs) === '[object Array]'
+    }
+;
+
 /*!
  * querystring
  * Copyright(c) 2010 TJ Holowaychuk <tj@vision-media.ca>
@@ -71,7 +78,7 @@ exports.parse = function(str){
 
           // end
           if (!part) {
-            if (Array.isArray(parent[key])) {
+            if (isArray(parent[key])) {
               parent[key].push(val);
             } else if ('object' == typeof parent[key]) {
               parent[key] = val;
@@ -84,7 +91,7 @@ exports.parse = function(str){
           } else {
             obj = parent[key] = parent[key] || [];
             if (']' == part) {
-              if (Array.isArray(obj)) {
+              if (isArray(obj)) {
                 if ('' != val) obj.push(val);
               } else if ('object' == typeof obj) {
                 obj[Object.keys(obj).length] = val;
@@ -94,11 +101,11 @@ exports.parse = function(str){
             // prop
             } else if (~part.indexOf(']')) {
               part = part.substr(0, part.length - 1);
-              if(notint.test(part) && Array.isArray(obj)) obj = promote(parent, key);
+              if(notint.test(part) && isArray(obj)) obj = promote(parent, key);
               parse(parts, obj, part);
             // key
             } else {
-              if(notint.test(part) && Array.isArray(obj)) obj = promote(parent, key);
+              if(notint.test(part) && isArray(obj)) obj = promote(parent, key);
               parse(parts, obj, part);
             }
           }
@@ -107,7 +114,7 @@ exports.parse = function(str){
         parse(parts, parent, 'base');
       // optimize
       } else {
-        if (notint.test(key) && Array.isArray(parent.base)) {
+        if (notint.test(key) && isArray(parent.base)) {
           var t = {};
           for(var k in parent.base) t[k] = parent.base[k];
           parent.base = t;
@@ -128,7 +135,7 @@ exports.parse = function(str){
  */
 
 var stringify = exports.stringify = function(obj, prefix) {
-  if (Array.isArray(obj)) {
+  if (isArray(obj)) {
     return stringifyArray(obj, prefix);
   } else if ('[object Object]' == toString.call(obj)) {
     return stringifyObject(obj, prefix);
@@ -208,7 +215,7 @@ function set(obj, key, val) {
   var v = obj[key];
   if (undefined === v) {
     obj[key] = val;
-  } else if (Array.isArray(v)) {
+  } else if (isArray(v)) {
     v.push(val);
   } else {
     obj[key] = [v, val];

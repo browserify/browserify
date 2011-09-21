@@ -1,30 +1,32 @@
-var assert = require('assert');
 var browserify = require('../');
 var vm = require('vm');
 var jade = require('jade');
+var test = require('tap').test;
 
-exports.jade = function () {
+test('jade', function (t) {
+    t.plan(5);
     var b = browserify({
         require : 'jade',
         ignore : [ 'stylus', 'markdown', 'discount', 'markdown-js' ]
     });
     var src = b.bundle();
     
-    assert.ok(typeof src === 'string');
-    assert.ok(src.length > 0);
+    t.ok(typeof src === 'string');
+    t.ok(src.length > 0);
     
     var c = { console : console };
     vm.runInNewContext(src, c);
     var j = c.require('jade');
-    assert.eql(
+    t.deepEqual(
         Object.keys(jade),
         Object.keys(j)
     );
     
     var r = jade.render('div #{x}\n  span moo', { locals : { x : 42 } });
-    assert.eql(r, '<div>42<span>moo</span></div>');
-    assert.eql(
+    t.equal(r, '<div>42<span>moo</span></div>');
+    t.equal(
         j.render('div #{x}\n  span moo', { locals : { x : 42 } }),
         r
     );
-};
+    t.end();
+});

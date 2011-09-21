@@ -1,6 +1,6 @@
-var assert = require('assert');
 var browserify = require('../');
 var vm = require('vm');
+var test = require('tap').test;
 
 var setTimeout_ = function (cb, t) {
     if (!t) {
@@ -11,22 +11,20 @@ var setTimeout_ = function (cb, t) {
     }
 };
 
-exports.entry = function () {
+test('entry', function (t) {
+    t.plan(2);
+    
     var src = browserify.bundle({
         entry : __dirname + '/entry/main.js',
     });
     
-    var to = setTimeout(function () {
-        assert.fail('never called done()');
-    }, 5000);
-    
     var c = {
         setTimeout : process.nextTick,
         done : function (one, two) {
-            clearTimeout(to);
-            assert.equal(one, 1);
-            assert.equal(two, 2);
+            t.equal(one, 1);
+            t.equal(two, 2);
+            t.end();
         }
     };
     vm.runInNewContext(src, c);
-};
+});

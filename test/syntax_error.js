@@ -1,61 +1,51 @@
-var assert = require('assert');
 var fs = require('fs');
-var vm = require('vm');
-var browserify = require('../');
+var spawn = require('child_process').spawn;
+var lazy = require('lazy');
 
-exports.syntaxError = function () {
-    var main = __dirname + '/syntax_error/main.js';
+var browserify = require('../');
+var test = require('tap').test;
+
+var main = __dirname + '/syntax_error/main.js';
+var bin = __dirname + '/syntax_error/bin.js';
+
+test('syntaxError', function (t) {
+    t.plan(3);
     
     fs.writeFile(main, 'console.log("bloop")', function (err) {
-        if (err) assert.fail(err);
+        if (err) t.fail(err);
         
-        var bundle = browserify({
-            entry : __dirname + '/syntax_error/main.js',
-            watch : true
+        var ps = spawn('node', [ bin ]);
+        ps.stderr.on('data', function (buf) {
+            t.fail(buf.toString());
         });
         
-        var to = setTimeout(function () {
-            assert.fail('never finished');
-        }, 5000);
-        
-        check(bundle, function (err) {
-            if (err) assert.fail(err);
+        var i = 0;
+        lazy(ps.stdout).lines.map(String).forEach(function (line) {
+            i ++;
+            if (line.match(/^error/)) {
+                t.fail(line);
+            }
             
-            var error = console.error ;
-            console.error = function (s) {
-                clearTimeout(to);
-                console.error = error;
-            };
-            
-            fs.writeFile(main, '[', function (err) {
-                if (err) assert.fail(err);
+            if (i === 1) {
+                t.equal(line, 'log bloop', 'logs properly');
                 
-                check(bundle, function (err) {
-                    if (err) assert.fail(err);
-                    assert.ok(err === undefined);
-                    fs.unwatchFile(main);
-                });
-            });
+                setTimeout(function () {
+                    fs.writeFile(main, '[', function (err) {
+                        if (err) t.fail(err);
+                    });
+                }, 200);
+            }
+            else if (i === 2) {
+                t.equal(line, 'caught', 'invalid syntax caught');
+            }
+            else if (i === 3) {
+                t.equal(line, 'ok', 'old source matches the new source');
+                ps.kill();
+                t.end();
+            }
+            else {
+                t.fail('i = ' + i);
+            }
         });
     });
-};
-
-function check (bundle, cb) {
-    try {
-        var src = bundle.bundle();
-        var logged = false;
-        vm.runInNewContext(src, {
-            setTimeout : function (fn) { fn() },
-            console : {
-                log : function (s) {
-                    cb(s !== 'bloop');
-                    logged = true;
-                }
-            },
-        });
-        if (!logged) cb();
-    }
-    catch (err) {
-        assert.fail(err);
-    }
-}
+});
