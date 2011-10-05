@@ -392,6 +392,8 @@ read more
 
 [browserify: browser-side require() for your node.js](http://substack.net/posts/24ab8c)
 
+[ad-hoc browserify CDN!](http://browserify.nodejitsu.com/)
+
 install
 =======
 
