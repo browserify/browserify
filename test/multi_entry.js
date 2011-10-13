@@ -14,8 +14,7 @@ test('multi entry', function (t) {
     
     var c = {
         times : 0,
-        t : t,
-        console : console
+        t : t
     };
     vm.runInNewContext(src, c);
 });

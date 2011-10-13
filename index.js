@@ -13,7 +13,7 @@ var exports = module.exports = function (entryFile, opts) {
     
     if (Array.isArray(entryFile)) {
         if (Array.isArray(opts.entry)) {
-            opts.entry.push.apply(opts.entry, entryFile);
+            opts.entry.unshift.apply(opts.entry, entryFile);
         }
         else if (opts.entry) {
             opts.entry = entryFile.concat(opts.entry);
@@ -24,7 +24,7 @@ var exports = module.exports = function (entryFile, opts) {
     }
     else if (typeof entryFile === 'string') {
         if (Array.isArray(opts.entry)) {
-            opts.entry.push(entryFile);
+            opts.entry.unshift(entryFile);
         }
         else if (opts.entry) {
             opts.entry = [ opts.entry, entryFile ];
