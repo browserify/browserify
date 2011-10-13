@@ -14,9 +14,7 @@ var setTimeout_ = function (cb, t) {
 test('entry', function (t) {
     t.plan(2);
     
-    var src = browserify.bundle({
-        entry : __dirname + '/entry/main.js',
-    });
+    var src = browserify.bundle(__dirname + '/entry/main.js');
     
     var c = {
         setTimeout : process.nextTick,
