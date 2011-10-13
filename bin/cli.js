@@ -2,7 +2,6 @@
 
 var browserify = require('../');
 var fs = require('fs');
-var path = require('path');
 
 var argv = require('optimist')
     .usage('Usage: $0 [entry files] {OPTIONS}')
@@ -58,11 +57,6 @@ var argv = require('optimist')
     })
     .argv
 ;
-
-if (argv.outfile && path.existsSync(argv.outfile)) {
-    console.error('outfile exists.');
-    process.exit();
-}
 
 var bundle = browserify({ watch : argv.watch });
 ([].concat(argv.plugin || [])).forEach(function (plugin) {
