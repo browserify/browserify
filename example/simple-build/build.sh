@@ -1,3 +1,3 @@
 #!/bin/bash
 
-browserify js/entry.js -wv -o browserify.js
+browserify js/entry.js -v -o browserify.js

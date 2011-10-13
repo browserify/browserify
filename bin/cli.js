@@ -110,7 +110,7 @@ if (argv.outfile) {
         });
     }
     
-    fs.writeFileSync(argv.outfile, bundle.bundle());
+    write();
     if (argv.watch) bundle.on('bundle', write)
 }
 else {
