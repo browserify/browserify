@@ -6,7 +6,7 @@ var test = require('tap').test;
 test('coffee', function (t) {
     t.plan(8);
     
-    var src = browserify.bundle(__dirname + '/coffee/index.coffee');
+    var src = browserify.bundle({ require : __dirname + '/coffee/index.coffee' });
     var c = {};
     vm.runInNewContext(src, c);
     

@@ -4,7 +4,9 @@ var test = require('tap').test;
 
 test('dollar', function (t) {
     t.plan(3);
-    var src = browserify.bundle(__dirname + '/dollar/dollar/index.js');
+    var src = browserify({
+        require : __dirname + '/dollar/dollar/index.js'
+    }).bundle();
     
     t.ok(typeof src === 'string');
     t.ok(src.length > 0);

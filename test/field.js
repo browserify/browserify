@@ -7,7 +7,7 @@ test('fieldString', function (t) {
     t.plan(1);
     
     var dir = __dirname + '/field/';
-    var src = browserify(dir + '/string.js').bundle();
+    var src = browserify({ require : dir + '/string.js' }).bundle();
     
     var c = {};
     vm.runInNewContext(src, c);
@@ -22,7 +22,7 @@ test('fieldObject', function (t) {
     t.plan(1);
     
     var dir = __dirname + '/field/';
-    var src = browserify(dir + '/object.js').bundle();
+    var src = browserify({ require : dir + '/object.js' }).bundle();
     
     var c = {};
     vm.runInNewContext(src, c);
@@ -37,7 +37,7 @@ test('missObject', function (t) {
     t.plan(1);
     
     var dir = __dirname + '/field/';
-    var src = browserify(dir + '/miss.js').bundle();
+    var src = browserify({ require : dir + '/miss.js' }).bundle();
     
     var c = {};
     vm.runInNewContext(src, c);
@@ -52,7 +52,7 @@ test('fieldSub', function (t) {
     t.plan(1);
     
     var dir = __dirname + '/field/';
-    var src = browserify(dir + '/sub.js').bundle();
+    var src = browserify({ require : dir + '/sub.js' }).bundle();
     
     var c = {};
     vm.runInNewContext(src, c);

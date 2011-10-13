@@ -5,7 +5,7 @@ var test = require('tap').test;
 test('subdep', function (t) {
     t.plan(1);
     
-    var src = browserify.bundle(__dirname + '/subdep/index.js');
+    var src = browserify.bundle({ require : __dirname + '/subdep/index.js' });
     var c = {};
     vm.runInNewContext(src, c);
     t.deepEqual(

@@ -4,7 +4,7 @@ var test = require('tap').test;
 
 test('wrap', function (t) {
     t.plan(1);
-    var files = browserify(__dirname + '/wrap/a.js').files;
+    var files = browserify({ require : __dirname + '/wrap/a.js' }).files;
     
     t.deepEqual(Object.keys(files).sort(), [
         path.normalize(__dirname + '/../builtins/path.js'),
@@ -20,10 +20,12 @@ test('wrap', function (t) {
 
 test('wrapArray', function (t) {
     t.plan(1);
-    var files = browserify([
-        __dirname + '/wrap/a.js',
-        __dirname + '/wrap/skipme.js',
-    ]).files;
+    var files = browserify({
+        require : [
+            __dirname + '/wrap/a.js',
+            __dirname + '/wrap/skipme.js',
+        ]
+    }).files;
     
     t.deepEqual(Object.keys(files).sort(), [
         path.normalize(__dirname + '/../builtins/path.js'),
