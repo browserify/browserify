@@ -317,17 +317,38 @@ __filename
 The faux file path, scrubbed of true path information so as not to expose your
 filesystem organization.
 
-protips
-=======
-
-* `npm install jquery-browserify` to have npm and browserify handle your jquery
-deployment!
-
 recipes
 =======
 
-convert a node module into a browser require-able standalone file example
--------------------------------------------------------------------------
+use an npm module in the browser
+--------------------------------
+
+First install a module:
+
+    npm install traverse
+
+Then write an `entry.js`:
+
+````javascript
+var traverse = require('traverse');
+var obj = traverse({ a : 3, b : [ 4, 5 ] }).map(function (x) {
+    if (typeof x === 'number') this.update(x * 100)
+});
+console.dir(obj);
+````
+
+then build it!
+
+    browserify entry.js -o bundle.js
+
+then put it in your html
+
+    <script src="bundle.js"></script>
+
+and the entry.js will just run and `require('traverse')` will just work™.
+
+convert a node module into a browser require-able standalone file
+-----------------------------------------------------------------
 
 Using `npm` >= 1.0 from the commandz line:
 Install the `traverse` package locally (into the `node_modules` folder)
@@ -353,6 +374,8 @@ read more
 [browserify: browser-side require() for your node.js](http://substack.net/posts/24ab8c)
 
 [ad-hoc browserify CDN!](http://browserify.nodejitsu.com/)
+
+[jquery-browserify](https://github.com/jmars/jquery-browserify)
 
 install
 =======
