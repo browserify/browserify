@@ -136,7 +136,7 @@ var Object_keys = Object.keys || function (obj) {
     return res;
 };
 
-var createModule = function(dirname, filename, fname) {
+require.createModule = function(dirname, filename, fname) {
 	require.modules[filename] = function () {
 		  var module = { exports : {} };
 		  var exports = module.exports;
