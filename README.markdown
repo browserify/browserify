@@ -1,7 +1,12 @@
 Browserify
 ==========
 
-Browser-side require() for your node modules and npm packages
+Browser-side require() for your node modules and npm packages.
+
+Just point a javascript file or two at browserify:
+
+
+
 
 Just point a javascript file or two at browserify and it will walk the AST to
 read all your `require()`s recursively. The resulting bundle has everything you

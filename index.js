@@ -3,15 +3,35 @@ var fs = require('fs');
 var coffee = require('coffee-script');
 var EventEmitter = require('events').EventEmitter;
 
-var exports = module.exports = function (opts) {
-    if (!opts) {
-        opts = {};
+var exports = module.exports = function (entryFile, opts) {
+    if (typeof entryFile === 'object') {
+        opts = entryFile;
+        entryFile = null;
     }
-    else if (Array.isArray(opts)) {
-        opts = { entry : opts };
+    
+    if (!opts) opts = {};
+    
+    if (Array.isArray(entryFile)) {
+        if (Array.isArray(opts.entry)) {
+            opts.entry.push.apply(opts.entry, entryFile);
+        }
+        else if (opts.entry) {
+            opts.entry = entryFile.concat(opts.entry);
+        }
+        else {
+            opts.entry = entryFile;
+        }
     }
-    else if (typeof opts !== 'object') {
-        opts = { entry : opts }
+    else if (typeof entryFile === 'string') {
+        if (Array.isArray(opts.entry)) {
+            opts.entry.push(entryFile);
+        }
+        else if (opts.entry) {
+            opts.entry = [ opts.entry, entryFile ];
+        }
+        else {
+            opts.entry = entryFile;
+        }
     }
     
     if (!opts.require) opts.require = [];
