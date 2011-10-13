@@ -8,10 +8,10 @@ var exports = module.exports = function (opts) {
         opts = {};
     }
     else if (Array.isArray(opts)) {
-        opts = { require : opts };
+        opts = { entry : opts };
     }
     else if (typeof opts !== 'object') {
-        opts = { require : [ opts ] };
+        opts = { entry : opts }
     }
     
     if (!opts.require) opts.require = [];
