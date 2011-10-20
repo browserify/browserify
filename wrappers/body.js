@@ -1,4 +1,3 @@
-var $__fname = function (module, exports, require) {
-	$__body
-};
-createModule($__dirname, $__filename, $__fname);
+require.define($__filename, function (require, module, exports, __dirname, __filename) {
+    $__body
+});

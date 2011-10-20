@@ -13,19 +13,19 @@ require.paths = [];
 require.modules = {};
 require.extensions = $extensions;
 
+require._core = {
+    'assert': true,
+    'events': true,
+    'fs': true,
+    'path': true,
+    'vm': true
+};
+
 require.resolve = (function () {
-    var core = {
-        'assert': true,
-        'events': true,
-        'fs': true,
-        'path': true,
-        'vm': true
-    };
-    
     return function (x, cwd) {
         if (!cwd) cwd = '/';
         
-        if (core[x]) return x;
+        if (require._core[x]) return x;
         var path = require.modules.path();
         var y = cwd || '.';
         
@@ -130,32 +130,35 @@ require.alias = function (from, to) {
     }
 };
 
+require.define = function (filename, fn) {
+    var dirname = require._core[filename]
+        ? ''
+        : require.modules.path().dirname(filename)
+    ;
+    
+    var require_ = function (file) { return require(file, dirname) };
+    require_.resolve = function (name) {
+      return require.resolve(name, dirname);
+    };
+    require_.modules = require.modules;
+    var module_ = { exports : {} };
+    
+    require.modules[filename] = function () {
+        fn.call(
+            module_.exports,
+            require_,
+            module_,
+            module_.exports,
+            dirname,
+            filename
+        );
+        require.modules[filename]._cached = module_.exports;
+        return module_.exports;
+    };
+};
+
 var Object_keys = Object.keys || function (obj) {
     var res = [];
     for (var key in obj) res.push(key)
     return res;
-};
-
-var createModule = function(dirname, filename, fname) {
-	require.modules[filename] = function () {
-		  var module = { exports : {} };
-		  var exports = module.exports;
-		  var __dirname = dirname;
-		  var __filename = filename;
-
-		  var require = function (file) {
-		      return __require(file, __dirname);
-		  };
-
-		  require.resolve = function (file) {
-		      return __require.resolve(name, __dirname);
-		  };
-
-		  require.modules = __require.modules;
-
-		  fname.call(module, module, exports, require);
-
-		  __require.modules[__filename]._cached = module.exports;
-		  return module.exports;
-	};
 };
