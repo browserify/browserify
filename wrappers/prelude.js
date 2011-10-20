@@ -135,3 +135,27 @@ var Object_keys = Object.keys || function (obj) {
     for (var key in obj) res.push(key)
     return res;
 };
+
+var createModule = function(dirname, filename, fname) {
+	require.modules[filename] = function () {
+		  var module = { exports : {} };
+		  var exports = module.exports;
+		  var __dirname = dirname;
+		  var __filename = filename;
+
+		  var require = function (file) {
+		      return __require(file, __dirname);
+		  };
+
+		  require.resolve = function (file) {
+		      return __require.resolve(name, __dirname);
+		  };
+
+		  require.modules = __require.modules;
+
+		  fname.call(module, module, exports, require);
+
+		  __require.modules[__filename]._cached = module.exports;
+		  return module.exports;
+	};
+};
