@@ -6,5 +6,6 @@ var browserify = require('browserify');
 var bundle = browserify(__dirname + '/js/entry.js');
 server.use(bundle);
 
-server.listen(8080);
-console.log('Listening on :8080');
+var port = parseInt(process.argv[2] || 8080, 10);
+server.listen(port);
+console.log('Listening on :' + port);
