@@ -135,14 +135,18 @@ require.define = function (filename, fn) {
         : require.modules.path().dirname(filename)
     ;
     
-    var require_ = function (file) { return require(file, dirname) };
+    var require_ = function (file) {
+        return require(file, dirname)
+    };
     require_.resolve = function (name) {
-      return require.resolve(name, dirname);
+        return require.resolve(name, dirname);
     };
     require_.modules = require.modules;
+    require_.define = require.define;
     var module_ = { exports : {} };
     
     require.modules[filename] = function () {
+        require.modules[filename]._cached = module_.exports;
         fn.call(
             module_.exports,
             require_,
