@@ -60,7 +60,7 @@ var bundle = require('browserify')(__dirname + '/entry.js');
 app.use(bundle);
 ````
 
-Then just throw a `<script src="/browserify"></script>` into your HTML!
+Then just throw a `<script src="/browserify.js"></script>` into your HTML!
 
 using the API
 -------------
