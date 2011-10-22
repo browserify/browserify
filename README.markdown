@@ -46,7 +46,7 @@ using the CLI tool
 browserify entry.js -o browserify.js
 ````
 
-Then just throw a `<script src="/browserify"></script>` into your HTML!
+Then just throw a `<script src="/browserify.js"></script>` into your HTML!
 
 using the middleware
 --------------------
