@@ -19,8 +19,6 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var punycode = require('punycode');
-
 exports.parse = urlParse;
 exports.resolve = urlResolve;
 exports.resolveObject = urlResolveObject;
@@ -221,19 +219,6 @@ function urlParse(url, parseQueryString, slashesDenoteHost) {
 
     // hostnames are always lower case.
     out.hostname = out.hostname.toLowerCase();
-
-    // IDNA Support: Returns a puny coded representation of "domain".
-    // It only converts the part of the domain name that
-    // has non ASCII characters. I.e. it dosent matter if
-    // you call it with a domain that already is in ASCII.
-    var domainArray = out.hostname.split('.');
-    var newOut = [];
-    for (var i = 0; i < domainArray.length; ++i) {
-      var s = domainArray[i];
-      newOut.push(s.match(/[^A-Za-z0-9_-]/) ?
-          'xn--' + punycode.encode(s) : s);
-    }
-    out.hostname = newOut.join('.');
 
     out.host = ((out.auth) ? out.auth + '@' : '') +
         (out.hostname || '') +
