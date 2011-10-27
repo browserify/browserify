@@ -147,6 +147,20 @@ This option defaults to false. If `opts.watch` is set to true, default watch
 arguments are assumed or you can pass in an object to pass along as the second
 parameter to `fs.watchFile()`.
 
+### bundle events
+
+`b` bundles will also emit events.
+
+#### 'syntaxError', err
+
+This event gets emitted when there is a syntax error somewhere in the build
+process. If you don't listen for this event, the error will be printed to
+stderr.
+
+#### 'bundle'
+
+In watch mode, this event is emitted when a new bundle has been generated.
+
 b.bundle()
 ----------
 

@@ -165,6 +165,9 @@ var exports = module.exports = function (entryFile, opts) {
     
     self.on('syntaxError', function (err) {
         ok = false;
+        if (self.listeners('syntaxError').length <= 1) {
+            console.error(err && err.stack || err);
+        }
     });
     
     var lastOk = null;
