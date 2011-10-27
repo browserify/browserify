@@ -34,6 +34,12 @@ var argv = require('optimist')
             + 'plugin arguments as a JSON string.\n'
             + 'Example: --plugin \'fileify:["files","."]\''
     })
+    .option('ignore', {
+        alias : 'i',
+        desc : 'Omit a file or files from being included by the AST walk '
+            + 'to hunt down require() statements.\n'
+            + 'Example: --ignore \'system\''
+    })
     .option('watch', {
         alias : 'w',
         desc : 'Watch for changes. The script will stay open and write updates '
@@ -58,7 +64,7 @@ var argv = require('optimist')
     .argv
 ;
 
-var bundle = browserify({ watch : argv.watch });
+var bundle = browserify({ watch : argv.watch, ignore: [].concat(argv.ignore || []) });
 ([].concat(argv.plugin || [])).forEach(function (plugin) {
     if (plugin.match(/:/)) {
         var ps = plugin.split(':');
@@ -111,7 +117,7 @@ if (argv.outfile) {
     }
     
     write();
-    if (argv.watch) bundle.on('bundle', write)
+    if (argv.watch) bundle.on('bundle', write);
 }
 else {
     console.log(bundle.bundle());
