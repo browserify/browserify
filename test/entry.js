@@ -25,4 +25,9 @@ test('entry', function (t) {
         }
     };
     vm.runInNewContext(src, c);
+    
+    t.deepEqual(
+        Object.keys(c.require.modules).sort(),
+        [ 'path', '/one.js', '/two.js', '/main.js' ].sort()
+    );
 });
