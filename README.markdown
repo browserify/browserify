@@ -91,7 +91,7 @@ command-line usage
 ==================
 
 ````
-Usage: browserify [entry files] {OPTIONS}
+Usage: node ./bin/cli.js [entry files] {OPTIONS}
 
 Options:
   --outfile, -o  Write the browserify bundle to this file.
@@ -104,6 +104,8 @@ Options:
   --plugin, -p   Use a plugin. Use a colon separator to specify additional
                  plugin arguments as a JSON string.
                  Example: --plugin 'fileify:["files","."]'                      
+  --prelude      Include the code that defines require() in this bundle.
+                                                      [boolean]  [default: true]
   --watch, -w    Watch for changes. The script will stay open and write updates
                  to the output every time any of the bundled files change.
                  This option only works in tandem with -o.                      
