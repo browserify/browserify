@@ -34,6 +34,11 @@ var argv = require('optimist')
             + 'plugin arguments as a JSON string.\n'
             + 'Example: --plugin \'fileify:["files","."]\''
     })
+    .option('prelude', {
+        default : true,
+        type : 'boolean',
+        desc : 'Include the code that defines require() in this bundle.'
+    })
     .option('watch', {
         alias : 'w',
         desc : 'Watch for changes. The script will stay open and write updates '
@@ -59,6 +64,11 @@ var argv = require('optimist')
 ;
 
 var bundle = browserify({ watch : argv.watch });
+if (argv.noprelude || argv.prelude === false) {
+    bundle.files = [];
+    bundle.prepends = [];
+}
+
 ([].concat(argv.plugin || [])).forEach(function (plugin) {
     if (plugin.match(/:/)) {
         var ps = plugin.split(':');

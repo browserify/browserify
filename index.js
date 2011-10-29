@@ -140,7 +140,10 @@ var exports = module.exports = function (entryFile, opts) {
     };
     
     Object.keys(w).forEach(function (key) {
-        self[key] = w[key];
+        Object.defineProperty(self, key, {
+            set : function (value) { w[key] = value },
+            get : function () { return w[key] }
+        });
     });
     
     Object.keys(wrap.prototype).forEach(function (key) {
