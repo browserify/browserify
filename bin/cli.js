@@ -22,6 +22,10 @@ var argv = require('optimist')
         alias : 'e',
         desc : 'An entry point of your app'
     })
+    .option('ignore', {
+        alias : 'i',
+        desc : 'Ignore a file'
+    })
     .option('alias', {
         alias : 'a',
         desc : 'Register an alias with a colon separator: "to:from"\n'
@@ -68,6 +72,7 @@ if (argv.noprelude || argv.prelude === false) {
     bundle.files = [];
     bundle.prepends = [];
 }
+if (argv.ignore) bundle.ignore(argv.ignore);
 
 ([].concat(argv.plugin || [])).forEach(function (plugin) {
     if (plugin.match(/:/)) {
