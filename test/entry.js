@@ -14,9 +14,7 @@ var setTimeout_ = function (cb, t) {
 test('entry', function (t) {
     t.plan(2);
     
-    var src = browserify.bundle({
-        entry : __dirname + '/entry/main.js',
-    });
+    var src = browserify.bundle(__dirname + '/entry/main.js');
     
     var c = {
         setTimeout : process.nextTick,
@@ -27,4 +25,9 @@ test('entry', function (t) {
         }
     };
     vm.runInNewContext(src, c);
+    
+    t.deepEqual(
+        Object.keys(c.require.modules).sort(),
+        [ 'path', '/one.js', '/two.js', '/main.js' ].sort()
+    );
 });

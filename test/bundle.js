@@ -3,7 +3,7 @@ var vm = require('vm');
 var test = require('tap').test;
 
 test('bundle', function (t) {
-    var src = browserify('seq').bundle();
+    var src = browserify({ require : 'seq' }).bundle();
     t.plan(3);
     
     t.ok(typeof src === 'string');

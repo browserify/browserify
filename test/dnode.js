@@ -5,7 +5,7 @@ var test = require('tap').test;
 test('dnode', function (t) {
     t.plan(3);
     
-    var src = browserify.bundle('dnode');
+    var src = browserify.bundle({ require : 'dnode' });
     var c = {
         console : console,
         navigator : {

@@ -1,58 +1,31 @@
 Browserify
 ==========
 
-Browser-side require() for your node modules and npm packages
-
-Just point a javascript file or two at browserify and it will walk the AST to
-read all your `require()`s recursively. The resulting bundle has everything you
-need, including pulling in libraries you might have installed using npm!
+Make node-style require() work in the browser, as if by magic!
 
 ![browserify!](http://substack.net/images/browserify/browserify.png)
 
-* Relative `require()`s work browser-side just as they do in node.
-
-* Coffee script gets automatically compiled and you can register custom
-  compilers of your own!
-
-* Browser-versions of certain core node modules such as `path`, `events`, and
-  `vm` are included as necessary automatically.
-
-* Command-line bundling tool or use from node.
-
-examples
-========
-
-simple example
---------------
-
-server.js
+Just write an `entry.js` to start with some `require()`s in it:
 
 ````javascript
-var connect = require('connect');
-var server = connect.createServer();
+var foo = require('./foo');
 
-server.use(connect.static(__dirname));
-server.use(require('browserify')({
-    require : __dirname + '/js/foo.js',
-    filter : require('uglify-js'), // minifiers are super easy!
-}));
-
-server.listen(9797);
-console.log('Listening on 9797...');
-````
-
-js/foo.js
-
-````javascript
-var bar = require('./bar');
-var baz = require('./baz');
-
-module.exports = function (x) {
-    return x * bar.coeff(x) + baz.wowsy(x);
+window.onload = function () {
+    document.getElementById('result').innerHTML = foo(100);
 };
 ````
 
-js/bar.js
+and then a `foo.js`:
+
+````javascript
+var bar = require('./bar');
+
+module.exports = function (x) {
+    return x * bar.coeff(x) + (x * 3 - 2)
+};
+````
+
+and then a `bar.js`:
 
 ````javascript
 exports.coeff = function (x) {
@@ -60,103 +33,88 @@ exports.coeff = function (x) {
 };
 ````
 
-js/baz.coffee
+Now you need to build this. You can either:
 
-````coffeescript
-exports.wowsy = (beans) ->
-    beans * 3 - 2
+1. use the browserify CLI tool
+2. use the middleware
+3. use the API
+
+using the CLI tool
+------------------
+
+````
+browserify entry.js -o browserify.js
 ````
 
-index.html
+Then just throw a `<script src="/browserify.js"></script>` into your HTML!
 
-````html
-<html>
-<head>
-    <script type="text/javascript" src="/browserify.js"></script>
-    <script type="text/javascript">
-        var foo = require('./foo');
-        
-        window.onload = function () {
-            document.getElementById('result').innerHTML = foo(100);
-        };
-    </script>
-</head>
-<body>
-    foo =
-    <span style='font-family: monospace' id="result"></span>
-</body>
-</html>
-````
-
-npm example
------------
-
-server.js
+using the middleware
+--------------------
 
 ````javascript
-var connect = require('connect');
-var server = connect.createServer();
+var express = require('express');
+var app = express.createServer();
+app.listen(8080);
 
-server.use(connect.static(__dirname));
-server.use(require('browserify')({
-    mount : '/browserify.js',
-    require : 'traverse',
-}));
-
-server.listen(4040);
-console.log('Listening on 4040...');
+var bundle = require('browserify')(__dirname + '/entry.js');
+app.use(bundle);
 ````
 
-index.html
+Then just throw a `<script src="/browserify.js"></script>` into your HTML!
 
-````html
-<html>
-<head>
-    <script type="text/javascript" src="/browserify.js"></script>
-    <script type="text/javascript">
-        var Traverse = require('traverse');
-        var obj = [ 5, 6, -3, [ 7, 8, -2, 1 ], { f : 10, g : -13 } ];
-        Traverse(obj).forEach(function (x) {
-            if (x < 0) this.update(x + 128);
-        });
-        
-        window.onload = function () {
-            document.getElementById('result').innerHTML
-                = JSON.stringify(obj);
-        };
-    </script>
-</head>
-<body>
-    foo =
-    <span style='font-family: monospace' id="result"></span>
-</body>
-</html>
+using the API
+-------------
+
+See below.
+
+features at a glance
+====================
+
+* use [npm](http://npmjs.org) modules in the browser
+
+* `require()`s work browser-side just as they do in node
+
+* coffee script just works™ — just require('./beans.coffee') or whichever
+
+* lots of node builtins just work™:
+
+    > * require('events')
+    > * require('path')
+    > * require('vm')
+    > * require('querystring')
+
+* lots of ways to compile
+
+* watch mode automatically recompiles your bundle when files change
+
+command-line usage
+==================
+
 ````
+Usage: node ./bin/cli.js [entry files] {OPTIONS}
 
-Note that you could also put the body from the second `<script>` tag into a
-javascript file of its own and pass that file to the `entry` field. Such an
-action would render the `require : 'traverse'` in server.js unnecessary since
-browserify hunts down `require()`s from the AST.
+Options:
+  --outfile, -o  Write the browserify bundle to this file.
+                 If unspecified, browserify prints to stdout.                   
+  --require, -r  A module name or file to bundle.require()
+                 Optionally use a colon separator to set the target.            
+  --entry, -e    An entry point of your app                                     
+  --alias, -a    Register an alias with a colon separator: "to:from"
+                 Example: --alias 'jquery:jquery-browserify'                    
+  --plugin, -p   Use a plugin. Use a colon separator to specify additional
+                 plugin arguments as a JSON string.
+                 Example: --plugin 'fileify:["files","."]'                      
+  --prelude      Include the code that defines require() in this bundle.
+                                                      [boolean]  [default: true]
+  --watch, -w    Watch for changes. The script will stay open and write updates
+                 to the output every time any of the bundled files change.
+                 This option only works in tandem with -o.                      
+  --verbose, -v  Write out how many bytes were written in -o mode. This is
+                 especially useful with --watch.                                
+  --help, -h     Show this message                                              
 
-convert a node module into a browser require-able standalone file example
--------------------------------------------------------------------------
-
-Using `npm` >= 1.0 from the commandz line:
-Install the `traverse` package locally (into the `node_modules` folder)
-    
-    npm install traverse
-
-Utilize `browserify` to... browserify the package
-
-    npm install -g browserify
-    browserify --require traverse -o bundle.js
-
-Look at the files! There is a new one: `bundle.js`. Now go into HTML land:
-
-    <script src="bundle.js"></script>
-    <script> 
-       var traverse = require('traverse');
-    </script>
+Specify a parameter.
+````
 
 methods
 =======
@@ -190,6 +148,20 @@ Set watches on files and automatically rebundle when a file changes.
 This option defaults to false. If `opts.watch` is set to true, default watch
 arguments are assumed or you can pass in an object to pass along as the second
 parameter to `fs.watchFile()`.
+
+### bundle events
+
+`b` bundles will also emit events.
+
+#### 'syntaxError', err
+
+This event gets emitted when there is a syntax error somewhere in the build
+process. If you don't listen for this event, the error will be printed to
+stderr.
+
+#### 'bundle'
+
+In watch mode, this event is emitted when a new bundle has been generated.
 
 b.bundle()
 ----------
@@ -309,26 +281,6 @@ Contains a Date object with the time the bundle was last modified. This field is
 useful in conjunction with the `watch` field described in the `browserify()` to
 generate unique `<script>` `src` values to force script reloading.
 
-command-line usage
-==================
-
-    Usage: node ./bin/cli.js [entry files] {OPTIONS}
-    
-    Options:
-      --outfile, -o  Write the browserify bundle to this file.
-                     If unspecified, browserify prints to stdout.                   
-      --require, -r  A module name or file to bundle.require()
-                     Optionally use a colon separator to set the target.            
-      --entry, -e    An entry point of your app                                     
-      --alias, -a    Register an alias with a colon separator: "to:from"
-                     Example: --alias 'jquery:jquery-browserify'                    
-      --plugin, -p   Use a plugin. Use a colon separator to specify additional
-                     plugin arguments as a JSON string.
-                     Example: --plugin 'fileify:["files","."]'                      
-      --help, -h     Show this message                                              
-    
-    Specify a parameter.
-
 package.json
 ============
 
@@ -381,16 +333,65 @@ __filename
 The faux file path, scrubbed of true path information so as not to expose your
 filesystem organization.
 
-protips
+recipes
 =======
 
-* `npm install jquery-browserify` to have npm and browserify handle your jquery
-deployment!
+use an npm module in the browser
+--------------------------------
+
+First install a module:
+
+    npm install traverse
+
+Then write an `entry.js`:
+
+````javascript
+var traverse = require('traverse');
+var obj = traverse({ a : 3, b : [ 4, 5 ] }).map(function (x) {
+    if (typeof x === 'number') this.update(x * 100)
+});
+console.dir(obj);
+````
+
+then build it!
+
+    browserify entry.js -o bundle.js
+
+then put it in your html
+
+    <script src="bundle.js"></script>
+
+and the entry.js will just run and `require('traverse')` will just work™.
+
+convert a node module into a browser require-able standalone file
+-----------------------------------------------------------------
+
+Using `npm` >= 1.0 from the commandz line:
+Install the `traverse` package locally (into the `node_modules` folder)
+    
+    npm install traverse
+
+Utilize `browserify` to... browserify the package
+
+    npm install -g browserify
+    browserify --require traverse -o bundle.js
+
+Look at the files! There is a new one: `bundle.js`. Now go into HTML land:
+
+    <script src="bundle.js"></script>
+    <script> 
+       var traverse = require('traverse');
+    </script>
+
 
 read more
 =========
 
 [browserify: browser-side require() for your node.js](http://substack.net/posts/24ab8c)
+
+[ad-hoc browserify CDN!](http://browserify.nodejitsu.com/)
+
+[jquery-browserify](https://github.com/jmars/jquery-browserify)
 
 install
 =======

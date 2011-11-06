@@ -2,7 +2,6 @@
 
 var browserify = require('../');
 var fs = require('fs');
-var path = require('path');
 
 var argv = require('optimist')
     .usage('Usage: $0 [entry files] {OPTIONS}')
@@ -35,6 +34,24 @@ var argv = require('optimist')
             + 'plugin arguments as a JSON string.\n'
             + 'Example: --plugin \'fileify:["files","."]\''
     })
+    .option('prelude', {
+        default : true,
+        type : 'boolean',
+        desc : 'Include the code that defines require() in this bundle.'
+    })
+    .option('watch', {
+        alias : 'w',
+        desc : 'Watch for changes. The script will stay open and write updates '
+            + 'to the output every time any of the bundled files change.\n'
+            + 'This option only works in tandem with -o.'
+        ,
+    })
+    .option('verbose', {
+        alias : 'v',
+        desc : 'Write out how many bytes were written in -o mode. '
+            + 'This is especially useful with --watch.'
+        ,
+    })
     .option('help', {
         alias : 'h',
         desc : 'Show this message'
@@ -46,12 +63,12 @@ var argv = require('optimist')
     .argv
 ;
 
-if (argv.outfile && path.existsSync(argv.outfile)) {
-    console.error('outfile exists.');
-    process.exit();
+var bundle = browserify({ watch : argv.watch });
+if (argv.noprelude || argv.prelude === false) {
+    bundle.files = [];
+    bundle.prepends = [];
 }
 
-var bundle = browserify();
 ([].concat(argv.plugin || [])).forEach(function (plugin) {
     if (plugin.match(/:/)) {
         var ps = plugin.split(':');
@@ -94,7 +111,17 @@ var bundle = browserify();
 });
 
 if (argv.outfile) {
-    fs.writeFileSync(argv.outfile, bundle.bundle());
+    function write () {
+        var src = bundle.bundle();
+        fs.writeFile(argv.outfile, src, function () {
+            if (argv.verbose) {
+                console.log(Buffer(src).length + ' bytes written');
+            }
+        });
+    }
+    
+    write();
+    if (argv.watch) bundle.on('bundle', write)
 }
 else {
     console.log(bundle.bundle());

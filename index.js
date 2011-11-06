@@ -3,15 +3,35 @@ var fs = require('fs');
 var coffee = require('coffee-script');
 var EventEmitter = require('events').EventEmitter;
 
-var exports = module.exports = function (opts) {
-    if (!opts) {
-        opts = {};
+var exports = module.exports = function (entryFile, opts) {
+    if (typeof entryFile === 'object') {
+        opts = entryFile;
+        entryFile = null;
     }
-    else if (Array.isArray(opts)) {
-        opts = { require : opts };
+    
+    if (!opts) opts = {};
+    
+    if (Array.isArray(entryFile)) {
+        if (Array.isArray(opts.entry)) {
+            opts.entry.unshift.apply(opts.entry, entryFile);
+        }
+        else if (opts.entry) {
+            opts.entry = entryFile.concat(opts.entry);
+        }
+        else {
+            opts.entry = entryFile;
+        }
     }
-    else if (typeof opts !== 'object') {
-        opts = { require : [ opts ] };
+    else if (typeof entryFile === 'string') {
+        if (Array.isArray(opts.entry)) {
+            opts.entry.unshift(entryFile);
+        }
+        else if (opts.entry) {
+            opts.entry = [ opts.entry, entryFile ];
+        }
+        else {
+            opts.entry = entryFile;
+        }
     }
     
     if (!opts.require) opts.require = [];
@@ -120,7 +140,10 @@ var exports = module.exports = function (opts) {
     };
     
     Object.keys(w).forEach(function (key) {
-        self[key] = w[key];
+        Object.defineProperty(self, key, {
+            set : function (value) { w[key] = value },
+            get : function () { return w[key] }
+        });
     });
     
     Object.keys(wrap.prototype).forEach(function (key) {
@@ -145,6 +168,9 @@ var exports = module.exports = function (opts) {
     
     self.on('syntaxError', function (err) {
         ok = false;
+        if (self.listeners('syntaxError').length <= 1) {
+            console.error(err && err.stack || err);
+        }
     });
     
     var lastOk = null;
