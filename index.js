@@ -158,7 +158,6 @@ var exports = module.exports = function (entryFile, opts) {
                 res.end();
             }
             else {
-                res.setHeader('Content-Length', _cache.length);
                 res.setHeader('ETag', '"' + self.digest + '"');
                 res.statusCode = 200;
                 res.end(_cache);
