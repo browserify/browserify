@@ -32,16 +32,16 @@
         "optimist" : ">=0.2.6 <0.3"
     },
     "devDependencies" : {
-        "tap" : "=0.0.x",
+        "tap" : "0.0.x",
         "connect" : ">=1.4.1 <1.5",
         "hashish" : ">=0.0.2 <0.1",
         "traverse" : ">=0.3.8 <0.4",
         "backbone" : ">=0.3.3",
         "dnode" : ">=0.7.1 <0.8",
-        "jade": "=0.10.4",
-        "seq": "=0.3.3",
+        "jade": "0.10.4",
+        "seq": "0.3.3",
         "jquery-browserify" : "*",
-        "jsdom" : "=0.2.x"
+        "jsdom" : "0.2.x"
     },
     "author" : {
         "name" : "James Halliday",
