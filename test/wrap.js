@@ -1,11 +1,12 @@
-var assert = require('assert');
 var path = require('path');
 var browserify = require('../');
+var test = require('tap').test;
 
-exports.wrap = function () {
-    var files = browserify(__dirname + '/wrap/a.js').files;
+test('wrap', function (t) {
+    t.plan(1);
+    var files = browserify({ require : __dirname + '/wrap/a.js' }).files;
     
-    assert.deepEqual(Object.keys(files).sort(), [
+    t.deepEqual(Object.keys(files).sort(), [
         path.normalize(__dirname + '/../builtins/path.js'),
         path.normalize(__dirname + '/../builtins/vm.js'),
         __dirname + '/wrap/a.js',
@@ -14,15 +15,19 @@ exports.wrap = function () {
         __dirname + '/wrap/c.js',
         __dirname + '/wrap/x.js',
     ].sort());
-};
+    t.end();
+});
 
-exports.wrapArray = function () {
-    var files = browserify([
-        __dirname + '/wrap/a.js',
-        __dirname + '/wrap/skipme.js',
-    ]).files;
+test('wrapArray', function (t) {
+    t.plan(1);
+    var files = browserify({
+        require : [
+            __dirname + '/wrap/a.js',
+            __dirname + '/wrap/skipme.js',
+        ]
+    }).files;
     
-    assert.deepEqual(Object.keys(files).sort(), [
+    t.deepEqual(Object.keys(files).sort(), [
         path.normalize(__dirname + '/../builtins/path.js'),
         path.normalize(__dirname + '/../builtins/vm.js'),
         __dirname + '/wrap/a.js',
@@ -33,4 +38,5 @@ exports.wrapArray = function () {
         __dirname + '/wrap/skipme.js',
         __dirname + '/wrap/node_modules/skipmetoo/index.js',
     ].sort());
-};
+    t.end();
+});

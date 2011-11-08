@@ -1,15 +1,19 @@
-var assert = require('assert');
 var browserify = require('../');
 var vm = require('vm');
+var test = require('tap').test;
 
-exports.dollar = function () {
-    var src = browserify.bundle(__dirname + '/dollar/dollar/index.js');
+test('dollar', function (t) {
+    t.plan(3);
+    var src = browserify({
+        require : __dirname + '/dollar/dollar/index.js'
+    }).bundle();
     
-    assert.ok(typeof src === 'string');
-    assert.ok(src.length > 0);
+    t.ok(typeof src === 'string');
+    t.ok(src.length > 0);
     
     var c = {};
     vm.runInNewContext(src, c);
     var res = vm.runInNewContext('require("./")(100)', c);
-    assert.eql(res, 10000);
-};
+    t.equal(res, 10000);
+    t.end();
+});

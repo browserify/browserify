@@ -1,9 +1,11 @@
-var assert = require('assert');
 var vm = require('vm');
 var browserify = require('../');
+var test = require('tap').test;
 
-exports.dnode = function () {
-    var src = browserify.bundle('dnode');
+test('dnode', function (t) {
+    t.plan(3);
+    
+    var src = browserify.bundle({ require : 'dnode' });
     var c = {
         console : console,
         navigator : {
@@ -18,10 +20,10 @@ exports.dnode = function () {
     vm.runInNewContext(src, c);
     var dnode = c.require('dnode');
     
-    assert.ok(dnode, 'dnode object exists');
-    assert.ok(dnode.connect, 'dnode.connect exists');
+    t.ok(dnode, 'dnode object exists');
+    t.ok(dnode.connect, 'dnode.connect exists');
     
-    assert.deepEqual(
+    t.deepEqual(
         [
             'path', 'events', 'stream',
             
@@ -37,4 +39,5 @@ exports.dnode = function () {
         ].sort(),
         Object.keys(c.require.modules).sort()
     );
-};
+    t.end();
+});

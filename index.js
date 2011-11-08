@@ -1,16 +1,37 @@
 var wrap = require('./lib/wrap');
 var fs = require('fs');
 var coffee = require('coffee-script');
+var EventEmitter = require('events').EventEmitter;
 
-var exports = module.exports = function (opts) {
-    if (!opts) {
-        opts = {};
+var exports = module.exports = function (entryFile, opts) {
+    if (typeof entryFile === 'object') {
+        opts = entryFile;
+        entryFile = null;
     }
-    else if (Array.isArray(opts)) {
-        opts = { require : opts };
+    
+    if (!opts) opts = {};
+    
+    if (Array.isArray(entryFile)) {
+        if (Array.isArray(opts.entry)) {
+            opts.entry.unshift.apply(opts.entry, entryFile);
+        }
+        else if (opts.entry) {
+            opts.entry = entryFile.concat(opts.entry);
+        }
+        else {
+            opts.entry = entryFile;
+        }
     }
-    else if (typeof opts !== 'object') {
-        opts = { require : [ opts ] };
+    else if (typeof entryFile === 'string') {
+        if (Array.isArray(opts.entry)) {
+            opts.entry.unshift(entryFile);
+        }
+        else if (opts.entry) {
+            opts.entry = [ opts.entry, entryFile ];
+        }
+        else {
+            opts.entry = entryFile;
+        }
     }
     
     if (!opts.require) opts.require = [];
@@ -48,12 +69,21 @@ var exports = module.exports = function (opts) {
                 else if (curr.mtime !== prev.mtime) {
                     // modified
                     fs.unwatchFile(file);
-                    w.reload(file);
-                    
-                    _cache = null;
+                    try {
+                        w.reload(file);
+                        _cache = null;
+                        self.emit('bundle');
+                    }
+                    catch (e) {
+                        self.emit('syntaxError', e);
+                        if (self.listeners('syntaxError').length === 0) {
+                            console.error(e && e.stack || e);
+                        }
+                    }
                 }
             };
             
+            watches[file] = true;
             process.nextTick(function () {
                 if (w.files[file] && w.files[file].synthetic) return;
                 
@@ -94,9 +124,7 @@ var exports = module.exports = function (opts) {
     var self = function (req, res, next) {
         if (!listening && req.connection && req.connection.server) {
             req.connection.server.on('close', function () {
-                Object.keys(w.files).forEach(function (file) {
-                    fs.unwatchFile(file);
-                });
+                self.end();
             });
         }
         listening = true;
@@ -112,7 +140,10 @@ var exports = module.exports = function (opts) {
     };
     
     Object.keys(w).forEach(function (key) {
-        self[key] = w[key];
+        Object.defineProperty(self, key, {
+            set : function (value) { w[key] = value },
+            get : function () { return w[key] }
+        });
     });
     
     Object.keys(wrap.prototype).forEach(function (key) {
@@ -123,10 +154,30 @@ var exports = module.exports = function (opts) {
         };
     });
     
+    Object.keys(EventEmitter.prototype).forEach(function (key) {
+        self[key] = w[key].bind(w);
+    });
+    
     var firstBundle = true;
     self.modified = new Date;
     
+    var ok = true;
+    self.on('bundle', function () {
+        ok = true;
+    });
+    
+    self.on('syntaxError', function (err) {
+        ok = false;
+        if (self.listeners('syntaxError').length <= 1) {
+            console.error(err && err.stack || err);
+        }
+    });
+    
+    var lastOk = null;
     self.bundle = function () {
+        if (!ok && _cache) return _cache;
+        if (!ok && lastOk) return lastOk;
+        
         var src = w.bundle.apply(w, arguments);
         
         if (!firstBundle) {
@@ -135,7 +186,14 @@ var exports = module.exports = function (opts) {
         firstBundle = false;
         
         _cache = src;
+        if (ok) lastOk = src;
         return src;
+    };
+    
+    self.end = function () {
+        Object.keys(watches).forEach(function (file) {
+            fs.unwatchFile(file);
+        });
     };
     
     return self;

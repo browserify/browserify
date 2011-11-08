@@ -7,25 +7,24 @@ var require = function (file, cwd) {
     var res = mod._cached ? mod._cached : mod();
     return res;
 }
-var __require = require;
 
 require.paths = [];
 require.modules = {};
 require.extensions = $extensions;
 
+require._core = {
+    'assert': true,
+    'events': true,
+    'fs': true,
+    'path': true,
+    'vm': true
+};
+
 require.resolve = (function () {
-    var core = {
-        'assert': true,
-        'events': true,
-        'fs': true,
-        'path': true,
-        'vm': true
-    };
-    
     return function (x, cwd) {
         if (!cwd) cwd = '/';
         
-        if (core[x]) return x;
+        if (require._core[x]) return x;
         var path = require.modules.path();
         var y = cwd || '.';
         
@@ -128,6 +127,37 @@ require.alias = function (from, to) {
             require.modules[to] = require.modules[basedir];
         }
     }
+};
+
+require.define = function (filename, fn) {
+    var dirname = require._core[filename]
+        ? ''
+        : require.modules.path().dirname(filename)
+    ;
+    
+    var require_ = function (file) {
+        return require(file, dirname)
+    };
+    require_.resolve = function (name) {
+        return require.resolve(name, dirname);
+    };
+    require_.modules = require.modules;
+    require_.define = require.define;
+    var module_ = { exports : {} };
+    
+    require.modules[filename] = function () {
+        require.modules[filename]._cached = module_.exports;
+        fn.call(
+            module_.exports,
+            require_,
+            module_,
+            module_.exports,
+            dirname,
+            filename
+        );
+        require.modules[filename]._cached = module_.exports;
+        return module_.exports;
+    };
 };
 
 var Object_keys = Object.keys || function (obj) {

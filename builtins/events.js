@@ -1,7 +1,12 @@
 if (!process.EventEmitter) process.EventEmitter = function () {};
 
 var EventEmitter = exports.EventEmitter = process.EventEmitter;
-var isArray = Array.isArray;
+var isArray = typeof Array.isArray === 'function'
+    ? Array.isArray
+    : function (xs) {
+        return Object.toString.call(xs) === '[object Array]'
+    }
+;
 
 // By default EventEmitters will print a warning if more than
 // 10 listeners are added to it. This is a useful default which

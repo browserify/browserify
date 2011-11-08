@@ -1,16 +1,13 @@
-var assert = require('assert');
 var browserify = require('../');
 var vm = require('vm');
+var test = require('tap').test;
 
-exports.bundle = function () {
-    var src = browserify('seq').bundle();
+test('bundle', function (t) {
+    var src = browserify({ require : 'seq' }).bundle();
+    t.plan(3);
     
-    assert.ok(typeof src === 'string');
-    assert.ok(src.length > 0);
-    
-    var to = setTimeout(function () {
-        assert.fail('never ran');
-    }, 15000);
+    t.ok(typeof src === 'string');
+    t.ok(src.length > 0);
     
     var c = {
         setTimeout : setTimeout,
@@ -25,8 +22,8 @@ exports.bundle = function () {
             }, 10)
         })
         .seq(function (x,y,z) {
-            clearTimeout(to);
-            assert.eql([x,y,z], [100,200,300]);
+            t.deepEqual([x,y,z], [100,200,300]);
+            t.end();
         })
     ;
-};
+});

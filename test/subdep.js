@@ -1,12 +1,14 @@
-var assert = require('assert');
 var browserify = require('../');
 var vm = require('vm');
+var test = require('tap').test;
 
-exports.subdep = function () {
-    var src = browserify.bundle(__dirname + '/subdep/index.js');
+test('subdep', function (t) {
+    t.plan(1);
+    
+    var src = browserify.bundle({ require : __dirname + '/subdep/index.js' });
     var c = {};
     vm.runInNewContext(src, c);
-    assert.deepEqual(
+    t.deepEqual(
         Object.keys(c.require.modules).sort(),
         [
             '/package.json',
@@ -19,4 +21,5 @@ exports.subdep = function () {
             'path'
         ].sort()
     );
-};
+    t.end();
+});
