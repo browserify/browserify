@@ -91,7 +91,7 @@ command-line usage
 ==================
 
 ````
-Usage: node ./bin/cli.js [entry files] {OPTIONS}
+Usage: browserify [entry files] {OPTIONS}
 
 Options:
   --outfile, -o  Write the browserify bundle to this file.
@@ -99,8 +99,12 @@ Options:
   --require, -r  A module name or file to bundle.require()
                  Optionally use a colon separator to set the target.            
   --entry, -e    An entry point of your app                                     
+  --ignore, -i   Ignore a file                                                  
   --alias, -a    Register an alias with a colon separator: "to:from"
                  Example: --alias 'jquery:jquery-browserify'                    
+  --cache, -c    Turn on caching at $HOME/.config/browserling/cache.json or use
+                 a file for caching.
+                                                                 [default: true]
   --plugin, -p   Use a plugin. Use a colon separator to specify additional
                  plugin arguments as a JSON string.
                  Example: --plugin 'fileify:["files","."]'                      
