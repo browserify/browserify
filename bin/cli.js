@@ -35,7 +35,8 @@ var argv = require('optimist')
     .option('cache', {
         alias : 'c',
         desc : 'Turn on caching at $HOME/.config/browserling/cache.json '
-            + 'or use a file for caching.\n'
+            + 'or use a file for caching.\n',
+        default : true,
     })
     .option('plugin', {
         alias : 'p',
