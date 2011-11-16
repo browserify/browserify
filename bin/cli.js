@@ -32,6 +32,11 @@ var argv = require('optimist')
             + "Example: --alias 'jquery:jquery-browserify'"
         ,
     })
+    .option('cache', {
+        alias : 'c',
+        desc : 'Turn on caching at $HOME/.config/browserling/cache.json '
+            + 'or use a file for caching.\n'
+    })
     .option('plugin', {
         alias : 'p',
         desc : 'Use a plugin. Use a colon separator to specify additional '
@@ -67,7 +72,7 @@ var argv = require('optimist')
     .argv
 ;
 
-var bundle = browserify({ watch : argv.watch });
+var bundle = browserify({ watch : argv.watch, cache : argv.cache });
 if (argv.noprelude || argv.prelude === false) {
     bundle.files = [];
     bundle.prepends = [];
