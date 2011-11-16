@@ -136,6 +136,7 @@ script at `opts.mount` or `"/browserify.js"` if unspecified.
 * entry - calls `b.addEntry()`
 * filter - registers a "post" extension using `b.register()`
 * watch - set watches on files, see below
+* cache - turn on caching for AST traversals, see below
 
 If `opts` is a string, it is interpreted as a `require` value.
 
@@ -148,6 +149,13 @@ Set watches on files and automatically rebundle when a file changes.
 This option defaults to false. If `opts.watch` is set to true, default watch
 arguments are assumed or you can pass in an object to pass along as the second
 parameter to `fs.watchFile()`.
+
+### cache :: Boolean or String
+
+If `cache` is a boolean, turn on caching at
+`$HOME/.config/browserify/cache.json`.
+
+If `cache` is a string, turn on caching at the filename specified by `cache`.
 
 ### bundle events
 
