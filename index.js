@@ -46,7 +46,7 @@ var exports = module.exports = function (entryFile, opts) {
     }
     
     var watches = {};
-    var w = wrap()
+    var w = wrap({ cache : opts.cache })
         .register('.coffee', function (body) {
             return coffee.compile(body)
         })
@@ -154,7 +154,7 @@ var exports = module.exports = function (entryFile, opts) {
         });
     });
     
-    Object.keys(wrap.prototype).forEach(function (key) {
+    Object.keys(Object.getPrototypeOf(w)).forEach(function (key) {
         self[key] = function () {
             var s = w[key].apply(self, arguments)
             if (s === self) { _cache = null }
