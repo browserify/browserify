@@ -1,6 +1,6 @@
 {
     "name" : "browserify",
-    "version" : "1.7.6",
+    "version" : "1.8.0",
     "description" : "Browser-side require() for js directories and npm modules",
     "main" : "index.js",
     "bin" : {
@@ -24,7 +24,8 @@
         "javascript"
     ],
     "dependencies" : {
-        "detective" : ">=0.0.1 <0.1",
+        "detective" : "0.0.x",
+        "deputy" : "0.0.x",
         "resolve" : ">=0.0.4 <0.1",
         "nub" : "0.0.x",
         "commondir" : "0.0.x",
@@ -32,16 +33,16 @@
         "optimist" : ">=0.2.6 <0.3"
     },
     "devDependencies" : {
-        "tap" : "=0.0.x",
+        "tap" : "0.0.x",
         "connect" : ">=1.4.1 <1.5",
         "hashish" : ">=0.0.2 <0.1",
         "traverse" : ">=0.3.8 <0.4",
         "backbone" : ">=0.3.3",
         "dnode" : ">=0.7.1 <0.8",
-        "jade": "=0.10.4",
-        "seq": "=0.3.3",
+        "jade": "0.10.4",
+        "seq": "0.3.3",
         "jquery-browserify" : "*",
-        "jsdom" : "=0.2.x"
+        "jsdom" : "0.2.x"
     },
     "author" : {
         "name" : "James Halliday",

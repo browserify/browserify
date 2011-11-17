@@ -22,11 +22,21 @@ var argv = require('optimist')
         alias : 'e',
         desc : 'An entry point of your app'
     })
+    .option('ignore', {
+        alias : 'i',
+        desc : 'Ignore a file'
+    })
     .option('alias', {
         alias : 'a',
         desc : 'Register an alias with a colon separator: "to:from"\n'
             + "Example: --alias 'jquery:jquery-browserify'"
         ,
+    })
+    .option('cache', {
+        alias : 'c',
+        desc : 'Turn on caching at $HOME/.config/browserling/cache.json '
+            + 'or use a file for caching.\n',
+        default : true,
     })
     .option('plugin', {
         alias : 'p',
@@ -63,11 +73,12 @@ var argv = require('optimist')
     .argv
 ;
 
-var bundle = browserify({ watch : argv.watch });
+var bundle = browserify({ watch : argv.watch, cache : argv.cache });
 if (argv.noprelude || argv.prelude === false) {
     bundle.files = [];
     bundle.prepends = [];
 }
+if (argv.ignore) bundle.ignore(argv.ignore);
 
 ([].concat(argv.plugin || [])).forEach(function (plugin) {
     if (plugin.match(/:/)) {
