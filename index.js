@@ -158,7 +158,7 @@ var exports = module.exports = function (entryFile, opts) {
             var d = new Date();
             d.setFullYear(d.getFullYear() + 1);
             res.setHeader('Expires', d.toUTCString() );
-            res.setHeader('Cache-Control', 'public, max-age=0'); //31536000 = 365 days * 24 * 60 * 60
+            res.setHeader('Cache-Control', 'public, max-age=31536000'); //31536000 = 365 days * 24 * 60 * 60
             
             if(new Date(req.headers["if-modified-since"]).toUTCString() == self.modified.toUTCString() ||
                req.headers["if-none-match"] === self.digest) {
