@@ -45,16 +45,25 @@ var exports = module.exports = function (entryFile, opts) {
         );
     }
     
-    var watches = [];
-    var w = wrap({fastmatch: opts.fastmatch, verbose: opts.verbose})
+    var watches = {};
+    var w = wrap({
+            cache : opts.cache,
+            fastmatch: opts.fastmatch,
+            verbose: opts.verbose,
+        })
         .register('.coffee', function (body) {
             return coffee.compile(body)
         })
     ;
     
     if (opts.watch) {
+        var pending = {};
+        
         w.register(function (body, file) {
             var watcher = function (curr, prev) {
+                if (pending[file]) return;
+                pending[file] = true;
+                
                 if (curr.nlink === 0) {
                     // deleted
                     if (w.files[file]) {
@@ -67,19 +76,22 @@ var exports = module.exports = function (entryFile, opts) {
                     _cache = null;
                 }
                 else if (curr.mtime !== prev.mtime) {
-                    // modified
-                    fs.unwatchFile(file);
-                    try {
-                        w.reload(file);
-                        _cache = null;
-                        self.emit('bundle');
-                    }
-                    catch (e) {
-                        self.emit('syntaxError', e);
-                        if (self.listeners('syntaxError').length === 0) {
-                            console.error(e && e.stack || e);
+                    // modified, wait a little before reloading
+                    // since modifications tend to come in waves
+                    setTimeout(function () {
+                        try {
+                            w.reload(file);
+                            _cache = null;
+                            self.emit('bundle');
                         }
-                    }
+                        catch (e) {
+                            self.emit('syntaxError', e);
+                            if (self.listeners('syntaxError').length === 0) {
+                                console.error(e && e.stack || e);
+                            }
+                        }
+                        pending[file] = false;
+                    }, 10);
                 }
             };
             
@@ -146,7 +158,7 @@ var exports = module.exports = function (entryFile, opts) {
         });
     });
     
-    Object.keys(wrap.prototype).forEach(function (key) {
+    Object.keys(Object.getPrototypeOf(w)).forEach(function (key) {
         self[key] = function () {
             var s = w[key].apply(self, arguments)
             if (s === self) { _cache = null }

@@ -32,18 +32,20 @@ test('watch', function (t) {
     
     function getBundle (cb) {
         var req = { host : 'localhost', port : port, path : '/bundle.js' };
-        http.get(req, function (res) {
-            t.equal(res.statusCode, 200);
-            
-            var src = '';
-            res.on('data', function (buf) {
-                src += buf.toString();
+        setTimeout(function () {
+            http.get(req, function (res) {
+                t.equal(res.statusCode, 200);
+                
+                var src = '';
+                res.on('data', function (buf) {
+                    src += buf.toString();
+                });
+                
+                res.on('end', function () {
+                    cb(src)
+                });
             });
-            
-            res.on('end', function () {
-                cb(src)
-            });
-        });
+        }, 50);
     }
     
     function compareSources () {
