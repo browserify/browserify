@@ -56,6 +56,12 @@ var exports = module.exports = function (entryFile, opts) {
         })
     ;
     
+    if (opts.extensions) {
+        Object.keys(opts.extensions).forEach(function (ext) {
+            w.register(ext, opts.extensions[ext]);
+        });
+    }
+
     if (opts.watch) {
         var pending = {};
         
