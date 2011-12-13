@@ -141,6 +141,8 @@ script at `opts.mount` or `"/browserify.js"` if unspecified.
 * filter - registers a "post" extension using `b.register()`
 * watch - set watches on files, see below
 * cache - turn on caching for AST traversals, see below
+* fastmatch - uses a simpler and much faster dependency resovlver
+* verbose - prints filenames of processed files
 
 If `opts` is a string, it is interpreted as a `require` value.
 
@@ -160,6 +162,13 @@ If `cache` is a boolean, turn on caching at
 `$HOME/.config/browserify/cache.json`.
 
 If `cache` is a string, turn on caching at the filename specified by `cache`.
+
+### fastmatch :: Boolean or Object
+
+The fastmatch uses a regular expression for resolving requires. This is much faster
+then the AST method used by detective, but will likely fail on minified or
+obfuscated code. It will also match comments or other strings, so you may
+run into problems.
 
 ### bundle events
 

@@ -46,12 +46,22 @@ var exports = module.exports = function (entryFile, opts) {
     }
     
     var watches = {};
-    var w = wrap({ cache : opts.cache })
+    var w = wrap({
+            cache : opts.cache,
+            fastmatch: opts.fastmatch,
+            verbose: opts.verbose,
+        })
         .register('.coffee', function (body) {
             return coffee.compile(body)
         })
     ;
     
+    if (opts.extensions) {
+        Object.keys(opts.extensions).forEach(function (ext) {
+            w.register(ext, opts.extensions[ext]);
+        });
+    }
+
     if (opts.watch) {
         var pending = {};
         
