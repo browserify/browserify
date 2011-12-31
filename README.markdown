@@ -313,7 +313,8 @@ process
 
 Browserify exports a faux `process` object with these attributes:
 
-* nextTick(fn) - does setTimeout(fn, 0)
+* nextTick(fn) - uses [the postMessage trick](http://dbaron.org/log/20100309-faster-timeouts)
+    for a faster `setTimeout(fn, 0)` if it can
 * title - set to 'browser' for browser code, 'node' in regular node code
 
 require('events')
