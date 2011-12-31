@@ -19,7 +19,7 @@ if (!process.nextTick) process.nextTick = (function () {
     return function (fn) {
         if (canPost) {
             queue.push(fn);
-            window.postMessage('browserify-tick', 'x');
+            window.postMessage('browserify-tick', '*');
         }
         else setTimeout(fn, 0);
     };
