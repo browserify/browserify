@@ -2,7 +2,9 @@ if (typeof process === 'undefined') process = {};
 
 if (!process.nextTick) process.nextTick = (function () {
     var queue = [];
-    var canPost = window.postMessage && window.addEventListener
+    var canPost = typeof window !== 'undefined'
+        && window.postMessage && window.addEventListener
+    ;
     
     if (canPost) {
         window.addEventListener('message', function (ev) {
