@@ -55,6 +55,9 @@ var exports = module.exports = function (entryFile, opts) {
     if (opts.watch) {
         
         w.register(function (body, file) {
+			// if already being watched
+			if (watches[file]) return body;
+        	
             var watcher = function (curr, prev) {
                 
                 if (curr.nlink === 0) {
