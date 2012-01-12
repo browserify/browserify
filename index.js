@@ -71,7 +71,7 @@ var exports = module.exports = function (entryFile, opts) {
                     
                     _cache = null;
                 }
-                else if (curr.mtime !== prev.mtime) {
+                else if (curr.mtime.getTime() !== prev.mtime.getTime()) {
                     // modified, wait a little before reloading
                     // since modifications tend to come in waves
                     setTimeout(function () {
