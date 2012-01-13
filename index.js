@@ -55,9 +55,9 @@ var exports = module.exports = function (entryFile, opts) {
     if (opts.watch) {
         
         w.register(function (body, file) {
-			// if already being watched
-			if (watches[file]) return body;
-        	
+            // if already being watched
+            if (watches[file]) return body;
+            
             var watcher = function (curr, prev) {
                 
                 if (curr.nlink === 0) {
@@ -73,17 +73,17 @@ var exports = module.exports = function (entryFile, opts) {
                 }
                 else if (curr.mtime.getTime() !== prev.mtime.getTime()) {
                     // modified
-					try {
-						w.reload(file);
-						_cache = null;
-						self.emit('bundle');
-					}
-					catch (e) {
-						self.emit('syntaxError', e);
-						if (self.listeners('syntaxError').length === 0) {
-							console.error(e && e.stack || e);
-						}
-					}
+                    try {
+                        w.reload(file);
+                        _cache = null;
+                        self.emit('bundle');
+                    }
+                    catch (e) {
+                        self.emit('syntaxError', e);
+                        if (self.listeners('syntaxError').length === 0) {
+                            console.error(e && e.stack || e);
+                        }
+                    }
                 }
             };
             
