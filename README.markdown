@@ -3,6 +3,10 @@ Browserify
 
 Make node-style require() work in the browser, as if by magic!
 
+Browserify generates a single static bundle that you can drop into your
+application with a single `<script>` tag. You can use browserify with any kind
+of web stack that can host up static files.
+
 ![browserify!](http://substack.net/images/browserify/browserify.png)
 
 Just write an `entry.js` to start with some `require()`s in it:
