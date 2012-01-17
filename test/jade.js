@@ -22,11 +22,11 @@ test('jade', function (t) {
         Object.keys(j)
     );
     
-    var r = jade.render('div #{x}\n  span moo', { locals : { x : 42 } });
-    t.equal(r, '<div>42<span>moo</span></div>');
-    t.equal(
-        j.render('div #{x}\n  span moo', { locals : { x : 42 } }),
-        r
-    );
-    t.end();
+    jade.render('div #{x}\n  span moo', { x : 42 }, function (err, r0) {
+        t.equal(r0, '<div>42<span>moo</span></div>');
+        jade.render('div #{x}\n  span moo', { x : 42 }, function (err, r1) {
+            t.equal(r0, r1);
+            t.end();
+        });
+    });
 });
