@@ -1,4 +1,4 @@
-var browserify = require('browserify');
+var browserify = require('../../');
 var vm = require('vm');
 
 var main = __dirname + '/main.js';
