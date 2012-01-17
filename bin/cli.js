@@ -38,6 +38,11 @@ var argv = require('optimist')
             + 'or use a file for caching.\n',
         default : true,
     })
+    .option('debug', {
+        alias : 'd',
+        desc : 'Switch on debugging mode with //@ sourceURL=...s.',
+        type : 'boolean'
+    })
     .option('plugin', {
         alias : 'p',
         desc : 'Use a plugin. Use a colon separator to specify additional '
@@ -73,7 +78,12 @@ var argv = require('optimist')
     .argv
 ;
 
-var bundle = browserify({ watch : argv.watch, cache : argv.cache });
+var bundle = browserify({
+    watch : argv.watch,
+    cache : argv.cache,
+    debug : argv.debug
+});
+
 if (argv.noprelude || argv.prelude === false) {
     bundle.files = [];
     bundle.prepends = [];
