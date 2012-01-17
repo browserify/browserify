@@ -39,7 +39,7 @@ test('vmRunInNewContext', function (t) {
         t.equal(c0.process.binding('evals'), vm0);
          
         t.equal(
-            vm0.runInNewContext('a + 5', { a : 100 }),
+            vm0.runInNewContext.call(c0.window, 'a + 5', { a : 100 }),
             105
         );
         
