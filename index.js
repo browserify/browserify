@@ -1,5 +1,7 @@
 var wrap = require('./lib/wrap');
+var mount = require('./lib/mount');
 var fs = require('fs');
+var crypto = require('crypto');
 var coffee = require('coffee-script');
 var EventEmitter = require('events').EventEmitter;
 
@@ -137,12 +139,37 @@ var exports = module.exports = function (entryFile, opts) {
         }
         listening = true;
         
-        if (req.url.split('?')[0] === (opts.mount || '/browserify.js')) {
-            if (!_cache) self.bundle();
-            res.statusCode = 200;
-            res.setHeader('last-modified', self.modified.toString());
-            res.setHeader('content-type', 'text/javascript');
-            res.end(_cache);
+        //Populate the _cache even if we aren't getting the bundle on this request
+        if (!_cache) self.bundle();
+        
+        //Make mount point available to other middleware and views
+        req.browserifyMount = mount.create(opts.mount || '/browserify.js', self.digest);
+        if(typeof res.local === "function")
+            res.local('browserifyMount', req.browserifyMount);
+        
+        if (mount.equals(req.url, req.browserifyMount)) {
+            res.setHeader('Last-Modified', self.modified.toUTCString());
+            res.setHeader('Content-Type', 'text/javascript');
+            /* Date header not needed, but included in case browsers get mad about long Expire dates?
+            What's an extra couple bytes anyway?  Besides, it's being cached, so it's very minimal
+            overhead... go with it. */
+            res.setHeader('Date', new Date().toUTCString() );
+
+            var d = new Date();
+            d.setFullYear(d.getFullYear() + 1);
+            res.setHeader('Expires', d.toUTCString() );
+            res.setHeader('Cache-Control', 'public, max-age=31536000'); //31536000 = 365 days * 24 * 60 * 60
+            
+            if(new Date(req.headers["if-modified-since"]).toUTCString() == self.modified.toUTCString() ||
+               req.headers["if-none-match"] === self.digest) {
+                res.statusCode = 304;
+                res.end();
+            }
+            else {
+                res.setHeader('ETag', '"' + self.digest + '"');
+                res.statusCode = 200;
+                res.end(_cache);
+            }
         }
         else next()
     };
@@ -193,6 +220,7 @@ var exports = module.exports = function (entryFile, opts) {
         }
         firstBundle = false;
         
+        self.digest = crypto.createHash('md5').update(src).digest("hex");
         _cache = src;
         if (ok) lastOk = src;
         return src;

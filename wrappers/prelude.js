@@ -7,6 +7,7 @@ var require = function (file, cwd) {
     var res = mod._cached ? mod._cached : mod();
     return res;
 }
+var __require = require;
 
 require.paths = [];
 require.modules = {};
