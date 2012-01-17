@@ -91,11 +91,13 @@ features at a glance
 
 * watch mode automatically recompiles your bundle when files change
 
+* debug mode for real line numbers (just subtract 2)
+
 command-line usage
 ==================
 
 ````
-Usage: browserify [entry files] {OPTIONS}
+Usage: node ./bin/cli.js [entry files] {OPTIONS}
 
 Options:
   --outfile, -o  Write the browserify bundle to this file.
@@ -109,6 +111,7 @@ Options:
   --cache, -c    Turn on caching at $HOME/.config/browserling/cache.json or use
                  a file for caching.
                                                                  [default: true]
+  --debug, -d    Switch on debugging mode with //@ sourceURL=...s.     [boolean]
   --plugin, -p   Use a plugin. Use a colon separator to specify additional
                  plugin arguments as a JSON string.
                  Example: --plugin 'fileify:["files","."]'                      
@@ -121,7 +124,6 @@ Options:
                  especially useful with --watch.                                
   --help, -h     Show this message                                              
 
-Specify a parameter.
 ````
 
 methods
@@ -145,6 +147,8 @@ script at `opts.mount` or `"/browserify.js"` if unspecified.
 * filter - registers a "post" extension using `b.register()`
 * watch - set watches on files, see below
 * cache - turn on caching for AST traversals, see below
+* debug - turn on source mapping for debugging with `//@ sourceURL=...`
+in browsers that support it
 
 If `opts` is a string, it is interpreted as a `require` value.
 
