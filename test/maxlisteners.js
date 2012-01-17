@@ -1,5 +1,4 @@
-var assert = require('assert');
-var EventEmitter = require('browserify/builtins/events').EventEmitter;
+var EventEmitter = require('../builtins/events').EventEmitter;
 var test = require('tap').test;
 
 test('setMaxListener', function (t) {

@@ -34,7 +34,7 @@
     },
     "devDependencies" : {
         "tap" : "0.0.x",
-        "connect" : ">=1.4.1 <1.5",
+        "connect" : "1.8.5",
         "hashish" : ">=0.0.2 <0.1",
         "traverse" : ">=0.3.8 <0.4",
         "backbone" : ">=0.3.3",
@@ -42,7 +42,8 @@
         "jade": "0.10.4",
         "seq": "0.3.3",
         "jquery-browserify" : "*",
-        "jsdom" : "0.2.x"
+        "jsdom" : "0.2.x",
+        "lazy" : "1.0.x"
     },
     "author" : {
         "name" : "James Halliday",
