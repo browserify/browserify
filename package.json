@@ -33,7 +33,7 @@
         "optimist" : ">=0.2.6 <0.3"
     },
     "devDependencies" : {
-        "tap" : "0.0.x",
+        "tap" : "0.2.x",
         "connect" : "1.8.5",
         "hashish" : ">=0.0.2 <0.1",
         "traverse" : ">=0.3.8 <0.4",
