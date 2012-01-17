@@ -85,6 +85,7 @@ features at a glance
     > * require('events')
     > * require('path')
     > * require('vm')
+    > * require('util')
     > * require('querystring')
 
 * lots of ways to compile
