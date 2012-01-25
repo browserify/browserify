@@ -1,5 +1,11 @@
 #!/bin/bash
 echo -n 'testling user: '
 read user
-cat <(echo 'process={};') ../wrappers/process.js test.js \
-    | curl -sSNT- -u $user testling.com
+
+stty -echo
+echo -n 'password: '
+read pass
+stty echo
+
+cat <(echo 'process={};') ../wrappers/process.js tick.js \
+    | curl -sSNT- -u "$user:$pass" testling.com
