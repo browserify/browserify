@@ -279,7 +279,7 @@ var Object_create = Object.create || function (prototype, properties) {
         object = new Type();
         object.__proto__ = prototype;
     }
-    if (typeof properties !== 'undefined') {
+    if (typeof properties !== 'undefined' && Object.defineProperties) {
         Object.defineProperties(object, properties);
     }
     return object;
