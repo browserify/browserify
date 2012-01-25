@@ -14,3 +14,19 @@ test('util.inspect', function (t) {
     );
     t.end();
 });
+
+test('util.inherits', function (t) {
+    t.plan(2);
+    var src = browserify().require('util').require('events').bundle();
+    var c = {};
+    vm.runInNewContext(src, c);
+    var EE = c.require('events').EventEmitter;
+    
+    function Beep () {}
+    c.require('util').inherits(Beep, EE);
+    var beep = new Beep;
+    
+    t.ok(beep instanceof Beep);
+    t.ok(beep instanceof EE);
+    t.end();
+});
