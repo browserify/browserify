@@ -14,7 +14,8 @@ function tick () {
 
 function util () {
     tar -cf- util.js ../builtins/util.js |
-        curl -sSNT- -u "$user:$pass" 'http://testling.com/?main=util.js'
+        curl -sSNT- -u "$user:$pass" \
+        'http://testling.com/?main=util.js&noinstrument=builtins/util.js'
 }
 
 if test -z "$1"; then
