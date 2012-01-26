@@ -80,8 +80,8 @@ exports.inspect = function(obj, showHidden, depth, colors) {
     }
 
     // Look up the keys of the object.
-    var visible_keys = Object.keys(value);
-    var keys = showHidden ? Object.getOwnPropertyNames(value) : visible_keys;
+    var visible_keys = Object_keys(value);
+    var keys = showHidden ? Object_getOwnPropertyNames(value) : visible_keys;
 
     // Functions without properties can be shortcutted.
     if (typeof value === 'function' && keys.length === 0) {
@@ -237,8 +237,8 @@ function isRegExp(re) {
 function isDate(d) {
   if (d instanceof Date) return true;
   if (typeof d !== 'object') return false;
-  var properties = Date.prototype && Object.getOwnPropertyNames(Date.prototype);
-  var proto = d.__proto__ && Object.getOwnPropertyNames(d.__proto__);
+  var properties = Date.prototype && Object_getOwnPropertyNames(Date.prototype);
+  var proto = d.__proto__ && Object_getOwnPropertyNames(d.__proto__);
   return JSON.stringify(proto) === JSON.stringify(properties);
 }
 
@@ -261,6 +261,20 @@ function timestamp() {
 exports.log = function (msg) {};
 
 exports.pump = null;
+
+var Object_keys = Object.keys || function (obj) {
+    var res = [];
+    for (var key in obj) res.push(key);
+    return res;
+};
+
+var Object_getOwnPropertyNames = Object.getOwnPropertyNames || function (obj) {
+    var res = [];
+    for (var key in obj) {
+        if (Object.hasOwnProperty.call(obj, key)) res.push(key);
+    }
+    return res;
+};
 
 var Object_create = Object.create || function (prototype, properties) {
     // from es5-shim

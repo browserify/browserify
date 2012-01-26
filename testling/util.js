@@ -16,6 +16,9 @@ test('util.inherits', function (t) {
     var beep = new Beep;
     
     t.ok(beep instanceof Beep, 'is a Beep');
-    t.ok(beep instanceof EventEmitter, 'is an EventEmitter');
+    t.ok(
+        (beep instanceof EventEmitter) || typeof beep.emit === 'function',
+        'is an EventEmitter'
+    );
     t.end();
 });
