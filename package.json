@@ -30,7 +30,8 @@
         "nub" : "0.0.x",
         "commondir" : "0.0.x",
         "coffee-script" : ">=1.1.1 <1.2",
-        "optimist" : ">=0.2.6 <0.3"
+        "optimist" : ">=0.2.6 <0.3",
+        "punycode": "0.0.x"
     },
     "devDependencies" : {
         "tap" : "0.2.x",
