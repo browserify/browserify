@@ -53,12 +53,12 @@ var exports = module.exports = function (entryFile, opts) {
     ;
     
     if (opts.watch) {
-        var pending = {};
         
         w.register(function (body, file) {
+            // if already being watched
+            if (watches[file]) return body;
+            
             var watcher = function (curr, prev) {
-                if (pending[file]) return;
-                pending[file] = true;
                 
                 if (curr.nlink === 0) {
                     // deleted
@@ -71,23 +71,19 @@ var exports = module.exports = function (entryFile, opts) {
                     
                     _cache = null;
                 }
-                else if (curr.mtime !== prev.mtime) {
-                    // modified, wait a little before reloading
-                    // since modifications tend to come in waves
-                    setTimeout(function () {
-                        try {
-                            w.reload(file);
-                            _cache = null;
-                            self.emit('bundle');
+                else if (curr.mtime.getTime() !== prev.mtime.getTime()) {
+                    // modified
+                    try {
+                        w.reload(file);
+                        _cache = null;
+                        self.emit('bundle');
+                    }
+                    catch (e) {
+                        self.emit('syntaxError', e);
+                        if (self.listeners('syntaxError').length === 0) {
+                            console.error(e && e.stack || e);
                         }
-                        catch (e) {
-                            self.emit('syntaxError', e);
-                            if (self.listeners('syntaxError').length === 0) {
-                                console.error(e && e.stack || e);
-                            }
-                        }
-                        pending[file] = false;
-                    }, 10);
+                    }
                 }
             };
             
