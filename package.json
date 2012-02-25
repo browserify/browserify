@@ -26,11 +26,12 @@
     "dependencies" : {
         "detective" : "0.0.x",
         "deputy" : "0.0.x",
-        "resolve" : ">=0.0.4 <0.1",
+        "resolve" : "~0.0.4",
         "nub" : "0.0.x",
         "commondir" : "0.0.x",
-        "coffee-script" : ">=1.1.1 <1.2",
-        "optimist" : ">=0.2.6 <0.3"
+        "coffee-script" : "~1.1.1",
+        "optimist" : "~0.2.6",
+        "http-browserify" : "~0.1.0"
     },
     "devDependencies" : {
         "tap" : "0.2.x",
