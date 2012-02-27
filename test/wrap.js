@@ -8,7 +8,8 @@ test('wrap', function (t) {
     
     t.deepEqual(Object.keys(files).sort(), [
         path.normalize(__dirname + '/../builtins/path.js'),
-        path.normalize(__dirname + '/../builtins/vm.js'),
+        path.normalize(__dirname + '/../node_modules/vm-browserify/index.js'),
+        path.normalize(__dirname + '/../node_modules/vm-browserify/package.json'),
         __dirname + '/wrap/a.js',
         __dirname + '/wrap/node_modules/b/main.js',
         __dirname + '/wrap/node_modules/b/package.json',
@@ -29,7 +30,8 @@ test('wrapArray', function (t) {
     
     t.deepEqual(Object.keys(files).sort(), [
         path.normalize(__dirname + '/../builtins/path.js'),
-        path.normalize(__dirname + '/../builtins/vm.js'),
+        path.normalize(__dirname + '/../node_modules/vm-browserify/index.js'),
+        path.normalize(__dirname + '/../node_modules/vm-browserify/package.json'),
         __dirname + '/wrap/a.js',
         __dirname + '/wrap/node_modules/b/main.js',
         __dirname + '/wrap/node_modules/b/package.json',
