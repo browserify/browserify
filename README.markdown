@@ -89,6 +89,7 @@ features at a glance
     > * require('vm')
     > * require('http')
     > * require('assert')
+    > * require('url')
     > * require('buffer')
     > * require('util')
     > * require('querystring')
@@ -336,6 +337,9 @@ require('events')
 
 require('assert')
 -----------------
+
+require('url')
+--------------
 
 require('buffer')
 -----------------
