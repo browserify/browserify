@@ -85,6 +85,9 @@ features at a glance
     > * require('events')
     > * require('path')
     > * require('vm')
+    > * require('http')
+    > * require('assert')
+    > * require('buffer')
     > * require('util')
     > * require('querystring')
 
@@ -332,6 +335,12 @@ require('events')
 require('assert')
 -----------------
 
+require('buffer')
+-----------------
+
+require('buffer_ieee754')
+-------------------------
+
 require('stream')
 -----------------
 
@@ -341,6 +350,12 @@ require('vm')
 All the goodness of node's `require('vm')` has been emulated with iframe
 trickery. This functionality is made available by the
 [vm-browserify](https://github.com/substack/vm-browserify) project.
+
+require('http')
+---------------
+
+Implement the client side of the node http api using the
+[http-browserify](https://github.com/substack/http-browserify) project.
 
 require('path')
 ---------------
