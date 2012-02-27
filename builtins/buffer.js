@@ -73,8 +73,7 @@ function isArrayIsh(subject) {
          typeof subject.length === 'number';
 }
 
-Buffer.Buffer = Buffer;
-module.exports = Buffer;
+exports.Buffer = Buffer;
 
 Buffer.poolSize = 8 * 1024;
 var pool;
