@@ -26,12 +26,13 @@
     "dependencies" : {
         "detective" : "0.0.x",
         "deputy" : "0.0.x",
-        "resolve" : "~0.0.4",
+        "resolve" : "~0.2.0",
         "nub" : "0.0.x",
         "commondir" : "0.0.x",
         "coffee-script" : "~1.1.1",
         "optimist" : "~0.2.6",
-        "http-browserify" : "~0.1.0"
+        "http-browserify" : "~0.1.0",
+        "vm-browserify" : "~0.0.0"
     },
     "devDependencies" : {
         "tap" : "0.2.x",
@@ -43,7 +44,6 @@
         "jade": "0.20.0",
         "seq": "0.3.3",
         "jquery-browserify" : "*",
-        "jsdom" : "0.2.x",
         "lazy" : "1.0.x"
     },
     "author" : {

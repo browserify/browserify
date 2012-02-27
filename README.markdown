@@ -329,13 +329,18 @@ Browserify exports a faux `process` object with these attributes:
 require('events')
 -----------------
 
-You can `require('events').EventEmitter` just like in node.js code.
+require('assert')
+-----------------
+
+require('stream')
+-----------------
 
 require('vm')
 -------------
 
 All the goodness of node's `require('vm')` has been emulated with iframe
-trickery and `eval()` hacks.
+trickery. This functionality is made available by the
+[vm-browserify](https://github.com/substack/vm-browserify) project.
 
 require('path')
 ---------------
