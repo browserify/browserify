@@ -44,7 +44,8 @@
         "jade": "0.20.0",
         "seq": "0.3.3",
         "jquery-browserify" : "*",
-        "lazy" : "1.0.x"
+        "lazy" : "1.0.x",
+        "ecstatic" : "~0.1.4"
     },
     "author" : {
         "name" : "James Halliday",
