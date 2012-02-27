@@ -3,6 +3,8 @@ Browserify
 
 Make node-style require() work in the browser, as if by magic!
 
+[![build status](https://secure.travis-ci.org/substack/node-browserify.png)](http://travis-ci.org/substack/node-browserify)
+
 Browserify generates a single static bundle that you can drop into your
 application with a single `<script>` tag. You can use browserify with any kind
 of web stack that can host up static files.
