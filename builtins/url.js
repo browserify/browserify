@@ -5,6 +5,20 @@ exports.resolve = urlResolve;
 exports.resolveObject = urlResolveObject;
 exports.format = urlFormat;
 
+function arrayIndexOf(array, subject) {
+    for (var i = 0, j = array.length; i < j; i++) {
+        if(array[i] == subject) return i;
+    }
+    return -1;
+}
+
+var objectKeys = Object.keys || function objectKeys(object) {
+    if (object !== Object(object)) throw new TypeError('Invalid object');
+    var keys = [];
+    for (var key in object) if (object.hasOwnProperty(key)) keys[keys.length] = key;
+    return keys;
+}
+
 // Reference: RFC 3986, RFC 1808, RFC 2396
 
 // define these here so at least they only have to be
@@ -77,7 +91,7 @@ function urlParse(url, parseQueryString, slashesDenoteHost) {
   // cut off any delimiters.
   // This is to support parse stuff like "<http://foo.com>"
   for (var i = 0, l = rest.length; i < l; i++) {
-    if (delims.indexOf(rest.charAt(i)) === -1) break;
+    if (arrayIndexOf(delims, rest.charAt(i)) === -1) break;
   }
   if (i !== 0) rest = rest.substr(i);
 
@@ -112,12 +126,12 @@ function urlParse(url, parseQueryString, slashesDenoteHost) {
     // to the left of the first @ sign, unless some non-auth character
     // comes *before* the @-sign.
     // URLs are obnoxious.
-    var atSign = rest.indexOf('@');
+    var atSign = arrayIndexOf(rest, '@');
     if (atSign !== -1) {
       // there *may be* an auth
       var hasAuth = true;
       for (var i = 0, l = nonAuthChars.length; i < l; i++) {
-        var index = rest.indexOf(nonAuthChars[i]);
+        var index = arrayIndexOf(rest, nonAuthChars[i]);
         if (index !== -1 && index < atSign) {
           // not a valid auth.  Something like http://foo.com/bar@baz/
           hasAuth = false;
@@ -133,7 +147,7 @@ function urlParse(url, parseQueryString, slashesDenoteHost) {
 
     var firstNonHost = -1;
     for (var i = 0, l = nonHostChars.length; i < l; i++) {
-      var index = rest.indexOf(nonHostChars[i]);
+      var index = arrayIndexOf(rest, nonHostChars[i]);
       if (index !== -1 &&
           (firstNonHost < 0 || index < firstNonHost)) firstNonHost = index;
     }
@@ -148,7 +162,7 @@ function urlParse(url, parseQueryString, slashesDenoteHost) {
 
     // pull out port.
     var p = parseHost(out.host);
-    var keys = Object.keys(p);
+    var keys = objectKeys(p);
     for (var i = 0, l = keys.length; i < l; i++) {
       var key = keys[i];
       out[key] = p[key];
@@ -237,7 +251,7 @@ function urlParse(url, parseQueryString, slashesDenoteHost) {
     // Now make sure that delims never appear in a url.
     var chop = rest.length;
     for (var i = 0, l = delims.length; i < l; i++) {
-      var c = rest.indexOf(delims[i]);
+      var c = arrayIndexOf(rest, delims[i]);
       if (c !== -1) {
         chop = Math.min(c, chop);
       }
@@ -247,13 +261,13 @@ function urlParse(url, parseQueryString, slashesDenoteHost) {
 
 
   // chop off from the tail first.
-  var hash = rest.indexOf('#');
+  var hash = arrayIndexOf(rest, '#');
   if (hash !== -1) {
     // got a fragment string.
     out.hash = rest.substr(hash);
     rest = rest.slice(0, hash);
   }
-  var qm = rest.indexOf('?');
+  var qm = arrayIndexOf(rest, '?');
   if (qm !== -1) {
     out.search = rest.substr(qm);
     out.query = rest.substr(qm + 1);
@@ -311,7 +325,7 @@ function urlFormat(obj) {
       pathname = obj.pathname || '',
       query = obj.query &&
               ((typeof obj.query === 'object' &&
-                Object.keys(obj.query).length) ?
+                objectKeys(obj.query).length) ?
                  querystring.stringify(obj.query) :
                  '') || '',
       search = obj.search || (query && ('?' + query)) || '',
@@ -471,7 +485,7 @@ function urlResolveObject(source, relative) {
       //occationaly the auth can get stuck only in host
       //this especialy happens in cases like
       //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
-      var authInHost = source.host && source.host.indexOf('@') > 0 ?
+      var authInHost = source.host && arrayIndexOf(source.host, '@') > 0 ?
                        source.host.split('@') : false;
       if (authInHost) {
         source.auth = authInHost.shift();
@@ -551,7 +565,7 @@ function urlResolveObject(source, relative) {
     //occationaly the auth can get stuck only in host
     //this especialy happens in cases like
     //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
-    var authInHost = source.host && source.host.indexOf('@') > 0 ?
+    var authInHost = source.host && arrayIndexOf(source.host, '@') > 0 ?
                      source.host.split('@') : false;
     if (authInHost) {
       source.auth = authInHost.shift();
