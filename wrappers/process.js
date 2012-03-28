@@ -35,3 +35,6 @@ if (!process.binding) process.binding = function (name) {
 };
 
 if (!process.cwd) process.cwd = function () { return '.' };
+
+if (!process.env) process.env = {};
+if (!process.argv) process.argv = [];

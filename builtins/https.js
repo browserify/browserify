@@ -1,1 +1,1 @@
-// todo
+module.exports = require('http');
