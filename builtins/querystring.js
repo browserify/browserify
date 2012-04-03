@@ -1,9 +1,16 @@
 var isArray = typeof Array.isArray === 'function'
     ? Array.isArray
     : function (xs) {
-        return Object.toString.call(xs) === '[object Array]'
-    }
-;
+        return Object.prototype.toString.call(xs) === '[object Array]'
+    };
+
+var objectKeys = Object.keys || function objectKeys(object) {
+    if (object !== Object(object)) throw new TypeError('Invalid object');
+    var keys = [];
+    for (var key in object) if (object.hasOwnProperty(key)) keys[keys.length] = key;
+    return keys;
+}
+
 
 /*!
  * querystring
@@ -94,7 +101,7 @@ exports.parse = function(str){
               if (isArray(obj)) {
                 if ('' != val) obj.push(val);
               } else if ('object' == typeof obj) {
-                obj[Object.keys(obj).length] = val;
+                obj[objectKeys(obj).length] = val;
               } else {
                 obj = parent[key] = [parent[key], val];
               }
@@ -189,7 +196,7 @@ function stringifyArray(arr, prefix) {
 
 function stringifyObject(obj, prefix) {
   var ret = []
-    , keys = Object.keys(obj)
+    , keys = objectKeys(obj)
     , key;
   for (var i = 0, len = keys.length; i < len; ++i) {
     key = keys[i];
