@@ -4,7 +4,7 @@ var EventEmitter = exports.EventEmitter = process.EventEmitter;
 var isArray = typeof Array.isArray === 'function'
     ? Array.isArray
     : function (xs) {
-        return Object.toString.call(xs) === '[object Array]'
+        return Object.prototype.toString.call(xs) === '[object Array]'
     }
 ;
 
