@@ -1,5 +1,6 @@
 // UTILITY
 var util = require('util');
+var Buffer = require("buffer").Buffer;
 var pSlice = Array.prototype.slice;
 
 // 1. The assert module provides functions that throw
