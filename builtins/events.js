@@ -28,6 +28,9 @@ EventEmitter.prototype.emit = function(type) {
         (isArray(this._events.error) && !this._events.error.length))
     {
       if (arguments[1] instanceof Error) {
+        if (typeof console !== "undefined" && console.error) {
+          console.error("Error in browserify::events", arguments[1].stack);
+        }
         throw arguments[1]; // Unhandled 'error' event
       } else {
         throw new Error("Uncaught, unspecified 'error' event.");
