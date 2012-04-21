@@ -8,9 +8,9 @@ var exports = module.exports = function (entryFile, opts) {
         opts = entryFile;
         entryFile = null;
     }
-    
+
     if (!opts) opts = {};
-    
+
     if (Array.isArray(entryFile)) {
         if (Array.isArray(opts.entry)) {
             opts.entry.unshift.apply(opts.entry, entryFile);
@@ -33,9 +33,9 @@ var exports = module.exports = function (entryFile, opts) {
             opts.entry = entryFile;
         }
     }
-    
+
     if (!opts.require) opts.require = [];
-    
+
     if (opts.base) {
         throw new Error(
             'Base is no longer a valid option.'
@@ -44,23 +44,23 @@ var exports = module.exports = function (entryFile, opts) {
             + 'needs automatically.'
         );
     }
-    
+
     var watches = {};
     var w = wrap({ cache : opts.cache, debug : opts.debug })
         .register('.coffee', function (body) {
             return coffee.compile(body)
         })
     ;
-    
+
     if (opts.watch) {
         
-        w.register(function (body, file) {
+	w.register(function (body, file) {
             // if already being watched
             if (watches[file]) return body;
             
             var watcher = function (curr, prev) {
                 
-                if (curr.nlink === 0) {
+		if (curr.nlink === 0) {
                     // deleted
                     if (w.files[file]) {
                         delete w.files[file];
@@ -68,7 +68,7 @@ var exports = module.exports = function (entryFile, opts) {
                     else if (w.entries[file] !== undefined) {
                         w.appends.splice(w.entries[file], 1);
                     }
-                    
+
                     _cache = null;
                 }
                 else if (curr.mtime.getTime() !== prev.mtime.getTime()) {
@@ -86,11 +86,11 @@ var exports = module.exports = function (entryFile, opts) {
                     }
                 }
             };
-            
+
             watches[file] = true;
             process.nextTick(function () {
                 if (w.files[file] && w.files[file].synthetic) return;
-                
+
                 if (typeof opts.watch === 'object') {
                     fs.watchFile(file, opts.watch, watcher);
                 }
@@ -98,20 +98,20 @@ var exports = module.exports = function (entryFile, opts) {
                     fs.watchFile(file, watcher);
                 }
             });
-            
+
             return body;
         })
     }
-    
+
     if (opts.filter) {
         w.register('post', function (body) {
             return opts.filter(body);
         });
     }
-    
+
     w.ignore(opts.ignore || []);
     w.require(opts.require);
-    
+
     if (opts.entry) {
         if (Array.isArray(opts.entry)) {
             opts.entry.forEach(function (e) {
@@ -122,7 +122,7 @@ var exports = module.exports = function (entryFile, opts) {
             w.addEntry(opts.entry);
         }
     }
-    
+
     var _cache = null;
     var listening = false;
     var self = function (req, res, next) {
@@ -132,7 +132,7 @@ var exports = module.exports = function (entryFile, opts) {
             });
         }
         listening = true;
-        
+
         if (req.url.split('?')[0] === (opts.mount || '/browserify.js')) {
             if (!_cache) self.bundle();
             res.statusCode = 200;
@@ -142,14 +142,14 @@ var exports = module.exports = function (entryFile, opts) {
         }
         else next()
     };
-    
+
     Object.keys(w).forEach(function (key) {
         Object.defineProperty(self, key, {
             set : function (value) { w[key] = value },
             get : function () { return w[key] }
         });
     });
-    
+
     Object.keys(Object.getPrototypeOf(w)).forEach(function (key) {
         self[key] = function () {
             var s = w[key].apply(self, arguments)
@@ -157,49 +157,49 @@ var exports = module.exports = function (entryFile, opts) {
             return s;
         };
     });
-    
+
     Object.keys(EventEmitter.prototype).forEach(function (key) {
         self[key] = w[key].bind(w);
     });
-    
+
     var firstBundle = true;
     self.modified = new Date;
-    
+
     var ok = true;
     self.on('bundle', function () {
         ok = true;
     });
-    
+
     self.on('syntaxError', function (err) {
         ok = false;
         if (self.listeners('syntaxError').length <= 1) {
             console.error(err && err.stack || err);
         }
     });
-    
+
     var lastOk = null;
     self.bundle = function () {
         if (!ok && _cache) return _cache;
         if (!ok && lastOk) return lastOk;
-        
+
         var src = w.bundle.apply(w, arguments);
-        
+
         if (!firstBundle) {
             self.modified = new Date;
         }
         firstBundle = false;
-        
+
         _cache = src;
         if (ok) lastOk = src;
         return src;
     };
-    
+
     self.end = function () {
         Object.keys(watches).forEach(function (file) {
             fs.unwatchFile(file);
         });
     };
-    
+
     return self;
 };
 
