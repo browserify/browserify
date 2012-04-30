@@ -1,5 +1,3 @@
-
-before_install: npm cache clean
 language: node_js
 node_js:
   - 0.4
