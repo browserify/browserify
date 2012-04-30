@@ -52,8 +52,8 @@ require.resolve = (function () {
         }
         
         function loadAsDirectorySync (x) {
-            x = x.replace(/\/+$/, '');
-            var pkgfile = x + '/package.json';
+            var base = x.replace(/\/+$/, '');
+            var pkgfile = base + '/package.json';
             if (require.modules[pkgfile]) {
                 var pkg = require.modules[pkgfile]();
                 var b = pkg.browserify;
@@ -71,7 +71,7 @@ require.resolve = (function () {
                 }
             }
             
-            return loadAsFileSync(x + '/index');
+            return loadAsFileSync(base + '/index');
         }
         
         function loadNodeModulesSync (x, start) {
