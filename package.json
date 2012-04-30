@@ -32,7 +32,8 @@
         "coffee-script" : "~1.1.1",
         "optimist" : "~0.2.6",
         "http-browserify" : "~0.1.1",
-        "vm-browserify" : "~0.0.0"
+        "vm-browserify" : "~0.0.0",
+        "crypto-browserify": "~0"
     },
     "devDependencies" : {
         "tap" : "0.2.x",
