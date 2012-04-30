@@ -2,6 +2,13 @@
 
 var browserify = require('../');
 var fs = require('fs');
+var resolve = require('resolve');
+
+var rebased_require = function(id) {
+    var resolved = resolve.sync(plugin, {basedir : process.cwd()});
+    return require(resolved);
+};
+
 
 var argv = require('optimist')
     .usage('Usage: $0 [entry files] {OPTIONS}')
@@ -101,11 +108,11 @@ if (argv.ignore) bundle.ignore(argv.ignore);
         
         if (!Array.isArray(args)) args = [ args ];
         
-        var fn = require(ps[0]);
+        var fn = rebased_require(ps[0]);
         bundle.use(fn.apply(null, args));
     }
     else {
-        bundle.use(require(plugin));
+        bundle.use(rebased_require(plugin));
     }
 });
 
