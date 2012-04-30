@@ -5,7 +5,7 @@ var fs = require('fs');
 var resolve = require('resolve');
 
 var rebased_require = function(id) {
-    var resolved = resolve.sync(plugin, {basedir : process.cwd()});
+    var resolved = resolve.sync(id, {basedir : process.cwd()});
     return require(resolved);
 };
 
