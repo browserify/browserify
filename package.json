@@ -24,6 +24,7 @@
         "javascript"
     ],
     "dependencies" : {
+        "base64-js" : "0.0.2",
         "detective" : "~0.1.0",
         "deputy" : "0.0.x",
         "resolve" : "~0.2.0",
