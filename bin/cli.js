@@ -92,7 +92,7 @@ var bundle = browserify({
 });
 
 bundle.on('syntaxError', function (err) {
-    console.error(err && err.stack : String(err));
+    console.error(err && err.stack || String(err));
     process.exit(1);
 });
 
