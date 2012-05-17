@@ -91,6 +91,11 @@ var bundle = browserify({
     debug : argv.debug
 });
 
+bundle.on('syntaxError', function (err) {
+    console.error(err && err.stack : String(err));
+    process.exit(1);
+});
+
 if (argv.noprelude || argv.prelude === false) {
     bundle.files = [];
     bundle.prepends = [];
