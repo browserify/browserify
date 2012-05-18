@@ -1,6 +1,6 @@
 {
     "name" : "browserify",
-    "version" : "1.10.14",
+    "version" : "1.10.15",
     "description" : "Browser-side require() for js directories and npm modules",
     "main" : "index.js",
     "bin" : {
@@ -29,7 +29,7 @@
         "resolve" : "~0.2.0",
         "nub" : "0.0.x",
         "commondir" : "0.0.x",
-        "coffee-script" : "~1.1.1",
+        "coffee-script" : "1.x.x",
         "optimist" : "~0.2.6",
         "http-browserify" : "~0.1.1",
         "vm-browserify" : "~0.0.0",
