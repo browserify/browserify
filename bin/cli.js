@@ -157,5 +157,11 @@ if (argv.outfile) {
     if (argv.watch) bundle.on('bundle', write)
 }
 else {
-    console.log(bundle.bundle());
+    var src = bundle.bundle();
+    try { Function(src) }
+    catch (err) {
+        console.error(err.stack);
+        process.exit(1);
+    }
+    console.log(src);
 }
