@@ -50,3 +50,5 @@ if (!process.on) process.on = function(e, fn) {
         window.onerror = fn;
     }
 };
+
+if (!process.stdout) process.stdout = {};
