@@ -88,11 +88,13 @@ features at a glance
     > * require('path')
     > * require('vm')
     > * require('http')
+    > * require('crypto')
     > * require('assert')
     > * require('url')
     > * require('buffer')
     > * require('util')
     > * require('querystring')
+    > * require('stream')
 
 * lots of ways to compile
 
@@ -108,28 +110,28 @@ Usage: node ./bin/cli.js [entry files] {OPTIONS}
 
 Options:
   --outfile, -o  Write the browserify bundle to this file.
-                 If unspecified, browserify prints to stdout.                   
+                 If unspecified, browserify prints to stdout.
   --require, -r  A module name or file to bundle.require()
-                 Optionally use a colon separator to set the target.            
-  --entry, -e    An entry point of your app                                     
-  --ignore, -i   Ignore a file                                                  
+                 Optionally use a colon separator to set the target.
+  --entry, -e    An entry point of your app
+  --ignore, -i   Ignore a file
   --alias, -a    Register an alias with a colon separator: "to:from"
-                 Example: --alias 'jquery:jquery-browserify'                    
+                 Example: --alias 'jquery:jquery-browserify'
   --cache, -c    Turn on caching at $HOME/.config/browserling/cache.json or use
                  a file for caching.
                                                                  [default: true]
   --debug, -d    Switch on debugging mode with //@ sourceURL=...s.     [boolean]
   --plugin, -p   Use a plugin. Use a colon separator to specify additional
                  plugin arguments as a JSON string.
-                 Example: --plugin 'fileify:["files","."]'                      
+                 Example: --plugin 'fileify:["files","."]'
   --prelude      Include the code that defines require() in this bundle.
                                                       [boolean]  [default: true]
   --watch, -w    Watch for changes. The script will stay open and write updates
                  to the output every time any of the bundled files change.
-                 This option only works in tandem with -o.                      
+                 This option only works in tandem with -o.
   --verbose, -v  Write out how many bytes were written in -o mode. This is
-                 especially useful with --watch.                                
-  --help, -h     Show this message                                              
+                 especially useful with --watch.
+  --help, -h     Show this message
 
 ````
 
@@ -416,7 +418,7 @@ convert a node module into a browser require-able standalone file
 
 Using `npm` >= 1.0 from the commandz line:
 Install the `traverse` package locally (into the `node_modules` folder)
-    
+
     npm install traverse
 
 Utilize `browserify` to... browserify the package
@@ -427,7 +429,7 @@ Utilize `browserify` to... browserify the package
 Look at the files! There is a new one: `bundle.js`. Now go into HTML land:
 
     <script src="bundle.js"></script>
-    <script> 
+    <script>
        var traverse = require('traverse');
     </script>
 
