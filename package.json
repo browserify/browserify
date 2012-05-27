@@ -41,7 +41,7 @@
         "hashish" : ">=0.0.2 <0.1",
         "traverse" : ">=0.3.8 <0.4",
         "backbone" : "~0.9.2",
-        "dnode" : ">=0.7.1 <0.8",
+        "dnode" : "~0.9.11",
         "jade": "0.20.0",
         "seq": "0.3.3",
         "jquery-browserify" : "*",
