@@ -221,7 +221,7 @@ browserify({ require : { jquery : 'jquery-browserify' } })
 To mix alias objects with regular requires you could do:
 
 ````javascript
-browserify({ require : [ 'seq', { jquery : 'jquery-browserify' }, 'traverse' ])
+browserify({ require : [ 'seq', { jquery : 'jquery-browserify' }, 'traverse' ]})
 ````
 
 In practice you won't need to `b.require()` very many files since all the
