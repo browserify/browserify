@@ -41,7 +41,6 @@ var exports = module.exports = function (entryFile, opts) {
     ;
     
     if (opts.watch) {
-        
         w.register(function (body, file) {
             // if already being watched
             if (watches[file]) return body;
@@ -107,6 +106,20 @@ var exports = module.exports = function (entryFile, opts) {
         }
         else {
             w.addEntry(opts.entry);
+        }
+    }
+    
+    if (opts.require) {
+        if (Array.isArray(opts.require)) {
+            opts.require.forEach(function (r) {
+                w.require(r);
+            });
+        }
+        else if (typeof opts.require) {
+            Object.keys(opts.require).forEach(function (key) {
+                w.require(opts.require[key]);
+                w.alias(key, opts.require[key]);
+            });
         }
     }
     
