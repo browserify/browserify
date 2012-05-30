@@ -18,7 +18,8 @@ var exports = module.exports = function (entryFile, opts) {
         }
     }
     else if (typeof entryFile === 'object') {
-        throw new Error('require maps no longer supported');
+        opts = entryFile;
+        opts.entry = [];
     }
     else if (typeof entryFile === 'string') {
         if (Array.isArray(opts.entry)) {
