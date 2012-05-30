@@ -57,5 +57,5 @@
         "test" : "node node_modules/tap/bin/tap.js test/*.js"
     },
     "license" : "MIT/X11",
-    "engine" : { "node" : ">=0.4.0" }
+    "engine" : { "node" : ">=0.6.0" }
 }
