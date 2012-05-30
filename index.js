@@ -34,17 +34,6 @@ var exports = module.exports = function (entryFile, opts) {
         }
     }
     
-    if (!opts.require) opts.require = [];
-    
-    if (opts.base) {
-        throw new Error(
-            'Base is no longer a valid option.'
-            + 'Pass in file or files to the require option and browserify will'
-            + ' look at the require()s recursively to include only the files it'
-            + 'needs automatically.'
-        );
-    }
-    
     var watches = {};
     var w = wrap({ cache : opts.cache, debug : opts.debug })
         .register('.coffee', function (body) {
@@ -110,7 +99,6 @@ var exports = module.exports = function (entryFile, opts) {
     }
     
     w.ignore(opts.ignore || []);
-    w.require(opts.require);
     
     if (opts.entry) {
         if (Array.isArray(opts.entry)) {
