@@ -4,11 +4,6 @@ var coffee = require('coffee-script');
 var EventEmitter = require('events').EventEmitter;
 
 var exports = module.exports = function (entryFile, opts) {
-    if (typeof entryFile === 'object') {
-        opts = entryFile;
-        entryFile = null;
-    }
-    
     if (!opts) opts = {};
     
     if (Array.isArray(entryFile)) {
@@ -21,6 +16,9 @@ var exports = module.exports = function (entryFile, opts) {
         else {
             opts.entry = entryFile;
         }
+    }
+    else if (typeof entryFile === 'object') {
+        throw new Error('require maps no longer supported');
     }
     else if (typeof entryFile === 'string') {
         if (Array.isArray(opts.entry)) {
