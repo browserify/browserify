@@ -112,13 +112,22 @@ var exports = module.exports = function (entryFile, opts) {
     if (opts.require) {
         if (Array.isArray(opts.require)) {
             opts.require.forEach(function (r) {
-                w.require(r);
+                w.require(r, {
+                    target : '/node_modules/' + r + '/index.js'
+                });
             });
         }
-        else if (typeof opts.require) {
+        else if (typeof opts.require === 'object') {
             Object.keys(opts.require).forEach(function (key) {
-                w.require(opts.require[key]);
+                w.require(opts.require[key], {
+                    target : '/node_modules/' + opts.require[key] + '/index.js'
+                });
                 w.alias(key, opts.require[key]);
+            });
+        }
+        else {
+            w.require(opts.require, {
+                target : '/node_modules/' + opts.require + '/index.js'
             });
         }
     }
