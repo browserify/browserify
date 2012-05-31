@@ -9,7 +9,7 @@ test('error code', function (t) {
     var cwd = process.cwd();
     process.chdir(__dirname);
     
-    var ps = spawn(__dirname + '/../bin/cli.js', [
+    var ps = spawn(__dirname + '/../bin/cmd.js', [
         __dirname + '/error_code/src.js'
     ]);
     var err = '';
