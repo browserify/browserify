@@ -112,23 +112,33 @@ var exports = module.exports = function (entryFile, opts) {
     if (opts.require) {
         if (Array.isArray(opts.require)) {
             opts.require.forEach(function (r) {
-                w.require(r, {
-                    target : '/node_modules/' + r + '/index.js'
-                });
+                var params = {};
+                if (!/^[.\/]/.test(r)) {
+                    params.target = '/node_modules/' + r + '/index.js';
+                }
+                w.require(r, params);
             });
         }
         else if (typeof opts.require === 'object') {
             Object.keys(opts.require).forEach(function (key) {
-                w.require(opts.require[key], {
-                    target : '/node_modules/' + opts.require[key] + '/index.js'
-                });
+                var params = {};
+                if (!/^[.\/]/.test(opts.require[key])) {
+                    params.target = '/node_modules/'
+                        + opts.require[key] + '/index.js'
+                    ;
+                }
+                w.require(opts.require[key], params);
                 w.alias(key, opts.require[key]);
             });
         }
         else {
-            w.require(opts.require, {
-                target : '/node_modules/' + opts.require + '/index.js'
-            });
+            var params = {};
+            if (!/^[.\/]/.test(opts.require)) {
+                params.target = '/node_modules/'
+                    + opts.require + '/index.js'
+                ;
+            }
+            w.require(opts.require, params);
         }
     }
     
