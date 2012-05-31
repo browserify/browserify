@@ -8,7 +8,7 @@ test('bin', function (t) {
     var cwd = process.cwd();
     process.chdir(__dirname);
     
-    var ps = spawn(__dirname + '/../bin/cli.js', [ 'entry/main.js' ]);
+    var ps = spawn(__dirname + '/../bin/cmd.js', [ 'entry/main.js' ]);
     var src = '';
     ps.stdout.on('data', function (buf) {
         src += buf.toString();
