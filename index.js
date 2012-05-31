@@ -19,7 +19,6 @@ var exports = module.exports = function (entryFile, opts) {
     }
     else if (typeof entryFile === 'object') {
         opts = entryFile;
-        opts.entry = [];
     }
     else if (typeof entryFile === 'string') {
         if (Array.isArray(opts.entry)) {
