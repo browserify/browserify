@@ -4,12 +4,6 @@ var browserify = require('../');
 var fs = require('fs');
 var resolve = require('resolve');
 
-var rebased_require = function(id) {
-    var resolved = resolve.sync(id, {basedir : process.cwd()});
-    return require(resolved);
-};
-
-
 var argv = require('optimist')
     .usage('Usage: browserify [entry files] {OPTIONS}')
     .wrap(80)
@@ -49,12 +43,6 @@ var argv = require('optimist')
         alias : 'd',
         desc : 'Switch on debugging mode with //@ sourceURL=...s.',
         type : 'boolean'
-    })
-    .option('plugin', {
-        alias : 'p',
-        desc : 'Use a plugin. Use a colon separator to specify additional '
-            + 'plugin arguments as a JSON string.\n'
-            + 'Example: --plugin \'fileify:["files","."]\''
     })
     .option('prelude', {
         default : true,
@@ -101,25 +89,6 @@ if (argv.noprelude || argv.prelude === false) {
     bundle.prepends = [];
 }
 if (argv.ignore) bundle.ignore(argv.ignore);
-
-([].concat(argv.plugin || [])).forEach(function (plugin) {
-    if (plugin.match(/:/)) {
-        var ps = plugin.split(':');
-        var args = ps[1];
-        try {
-            args = JSON.parse(args);
-        }
-        catch (err) {}
-        
-        if (!Array.isArray(args)) args = [ args ];
-        
-        var fn = rebased_require(ps[0]);
-        bundle.use(fn.apply(null, args));
-    }
-    else {
-        bundle.use(rebased_require(plugin));
-    }
-});
 
 ([].concat(argv.alias || [])).forEach(function (alias) {
     if (!alias.match(/:/)) {
