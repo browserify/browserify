@@ -11,7 +11,7 @@ var rebased_require = function(id) {
 
 
 var argv = require('optimist')
-    .usage('Usage: $0 [entry files] {OPTIONS}')
+    .usage('Usage: browserify [entry files] {OPTIONS}')
     .wrap(80)
     .option('outfile', {
         alias : 'o',
