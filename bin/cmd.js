@@ -44,6 +44,12 @@ var argv = require('optimist')
         desc : 'Switch on debugging mode with //@ sourceURL=...s.',
         type : 'boolean'
     })
+    .option('plugin', {
+        alias : 'p',
+        desc : 'Use a plugin.\n'
+            + 'Example: --plugin aliasify'
+        ,
+    })
     .option('prelude', {
         default : true,
         type : 'boolean',
@@ -89,6 +95,11 @@ if (argv.noprelude || argv.prelude === false) {
     bundle.prepends = [];
 }
 if (argv.ignore) bundle.ignore(argv.ignore);
+
+([].concat(argv.plugin || [])).forEach(function (plugin) {
+    var resolved = resolve.sync(id, { basedir : process.cwd() });
+    bundle.use(require(resolved));
+});
 
 ([].concat(argv.alias || [])).forEach(function (alias) {
     if (!alias.match(/:/)) {

@@ -58,6 +58,8 @@ Options:
                  a file for caching.
                                                                  [default: true]
   --debug, -d    Switch on debugging mode with //@ sourceURL=...s.     [boolean]
+  --plugin, -p   Use a plugin.
+                 Example: --plugin aliasify                                     
   --prelude      Include the code that defines require() in this bundle.
                                                       [boolean]  [default: true]
   --watch, -w    Watch for changes. The script will stay open and write updates
