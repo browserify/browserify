@@ -3,7 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var coffee = require('coffee-script');
 var EventEmitter = require('events').EventEmitter;
-var exists = fs.existSync || path.existsSync;
+var exists = fs.exists || path.exists;
 
 function idFromPath (path) {
     return path.replace(/\\/g, '/');
@@ -59,35 +59,36 @@ var exports = module.exports = function (entryFile, opts) {
             if (watches[file]) return body;
             
             var watcher = function (event, filename) {
-                
-                if (!exists(file)) {
-                    // deleted
-                    if (w.files[file]) {
-                        delete w.files[file];
-                    }
-                    else if (w.entries[file] !== undefined) {
-                        w.appends.splice(w.entries[file], 1);
-                    }
-                    
-                    _cache = null;
-                }
-                else if (event === 'change') {
-                    // modified
-                    try {
-                        w.reload(file);
+                exists(file, function (ex) {
+                    if (!ex) {
+                        // deleted
+                        if (w.files[file]) {
+                            delete w.files[file];
+                        }
+                        else if (w.entries[file] !== undefined) {
+                            w.appends.splice(w.entries[file], 1);
+                        }
+                        
                         _cache = null;
-                        self.emit('bundle');
                     }
-                    catch (e) {
-                        self.emit('syntaxError', e);
-                        if (self.listeners('syntaxError').length === 0) {
-                            console.error(e && e.stack || e);
+                    else if (event === 'change') {
+                        // modified
+                        try {
+                            w.reload(file);
+                            _cache = null;
+                            self.emit('bundle');
+                        }
+                        catch (e) {
+                            self.emit('syntaxError', e);
+                            if (self.listeners('syntaxError').length === 0) {
+                                console.error(e && e.stack || e);
+                            }
                         }
                     }
-                }
-                else if (event === 'rename') {
-                    // todo
-                }
+                    else if (event === 'rename') {
+                        // todo
+                    }
+                });
             };
             
             watches[file] = true;
