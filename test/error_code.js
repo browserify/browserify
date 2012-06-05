@@ -1,5 +1,6 @@
 var test = require('tap').test;
 var spawn = require('child_process').spawn;
+var path = require('path');
 
 if (false) require('__32jlkbeep');
 
@@ -9,8 +10,9 @@ test('error code', function (t) {
     var cwd = process.cwd();
     process.chdir(__dirname);
     
-    var ps = spawn(__dirname + '/../bin/cmd.js', [
-        __dirname + '/error_code/src.js'
+    var ps = spawn('node', [
+        path.resolve(__dirname, '../bin/cmd.js'),
+        path.resolve(__dirname, 'error_code/src.js')
     ]);
     var err = '';
     ps.stderr.on('data', function (buf) { err += buf });

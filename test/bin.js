@@ -1,5 +1,6 @@
 var test = require('tap').test;
 var spawn = require('child_process').spawn;
+var path = require('path');
 var vm = require('vm');
 
 test('bin', function (t) {
@@ -8,7 +9,7 @@ test('bin', function (t) {
     var cwd = process.cwd();
     process.chdir(__dirname);
     
-    var ps = spawn(__dirname + '/../bin/cmd.js', [ 'entry/main.js' ]);
+    var ps = spawn('node', [ path.resolve(__dirname, '../bin/cmd.js'), 'entry/main.js' ]);
     var src = '';
     ps.stdout.on('data', function (buf) {
         src += buf.toString();

@@ -1,7 +1,21 @@
 var wrap = require('./lib/wrap');
 var fs = require('fs');
+var path = require('path');
 var coffee = require('coffee-script');
 var EventEmitter = require('events').EventEmitter;
+var exists = fs.exist || path.exists;
+
+function idFromPath (path) {
+    return path.replace(/\\/g, '/');
+}
+
+function isAbsolute (pathOrId) {
+    return path.normalize(pathOrId) === path.normalize(path.resolve(pathOrId));
+}
+
+function needsNodeModulesPrepended (id) {
+    return !/^[.\/]/.test(id) && !isAbsolute(id);
+}
 
 var exports = module.exports = function (entryFile, opts) {
     if (!opts) opts = {};
@@ -44,9 +58,9 @@ var exports = module.exports = function (entryFile, opts) {
             // if already being watched
             if (watches[file]) return body;
             
-            var watcher = function (curr, prev) {
+            var watcher = function (event, filename) {
                 
-                if (curr.nlink === 0) {
+                if (!exists(file)) {
                     // deleted
                     if (w.files[file]) {
                         delete w.files[file];
@@ -57,7 +71,7 @@ var exports = module.exports = function (entryFile, opts) {
                     
                     _cache = null;
                 }
-                else if (curr.mtime.getTime() !== prev.mtime.getTime()) {
+                else if (event === 'change') {
                     // modified
                     try {
                         w.reload(file);
@@ -71,6 +85,9 @@ var exports = module.exports = function (entryFile, opts) {
                         }
                     }
                 }
+                else if (event === 'rename') {
+                    // todo
+                }
             };
             
             watches[file] = true;
@@ -78,10 +95,10 @@ var exports = module.exports = function (entryFile, opts) {
                 if (w.files[file] && w.files[file].synthetic) return;
                 
                 if (typeof opts.watch === 'object') {
-                    fs.watchFile(file, opts.watch, watcher);
+                    watches[file] = fs.watch(file, opts.watch, watcher);
                 }
                 else {
-                    fs.watchFile(file, watcher);
+                    watches[file] = fs.watch(file, watcher);
                 }
             });
             
@@ -111,8 +128,10 @@ var exports = module.exports = function (entryFile, opts) {
     if (opts.require) {
         if (Array.isArray(opts.require)) {
             opts.require.forEach(function (r) {
+                r = idFromPath(r);
+
                 var params = {};
-                if (!/^[.\/]/.test(r)) {
+                if (needsNodeModulesPrepended(r)) {
                     params.target = '/node_modules/' + r + '/index.js';
                 }
                 w.require(r, params);
@@ -120,8 +139,10 @@ var exports = module.exports = function (entryFile, opts) {
         }
         else if (typeof opts.require === 'object') {
             Object.keys(opts.require).forEach(function (key) {
+                opts.require[key] = idFromPath(opts.require[key]);
+
                 var params = {};
-                if (!/^[.\/]/.test(opts.require[key])) {
+                if (needsNodeModulesPrepended(opts.require[key])) {
                     params.target = '/node_modules/'
                         + opts.require[key] + '/index.js'
                     ;
@@ -131,8 +152,10 @@ var exports = module.exports = function (entryFile, opts) {
             });
         }
         else {
+            opts.require = idFromPath(opts.require);
+
             var params = {};
-            if (!/^[.\/]/.test(opts.require)) {
+            if (needsNodeModulesPrepended(opts.require)) {
                 params.target = '/node_modules/'
                     + opts.require + '/index.js'
                 ;
@@ -214,7 +237,7 @@ var exports = module.exports = function (entryFile, opts) {
     
     self.end = function () {
         Object.keys(watches).forEach(function (file) {
-            fs.unwatchFile(file);
+            watches[file].close();
         });
     };
     
