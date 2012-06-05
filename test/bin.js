@@ -9,7 +9,9 @@ test('bin', function (t) {
     var cwd = process.cwd();
     process.chdir(__dirname);
     
-    var ps = spawn('node', [ path.resolve(__dirname, '../bin/cmd.js'), 'entry/main.js' ]);
+    var ps = spawn(process.execPath, [
+        path.resolve(__dirname, '../bin/cmd.js'), 'entry/main.js'
+    ]);
     var src = '';
     ps.stdout.on('data', function (buf) {
         src += buf.toString();
