@@ -3,6 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var coffee = require('coffee-script');
 var EventEmitter = require('events').EventEmitter;
+var exists = fs.exist || path.exists;
 
 function idFromPath (path) {
     return path.replace(/\\/g, '/');
@@ -57,9 +58,9 @@ var exports = module.exports = function (entryFile, opts) {
             // if already being watched
             if (watches[file]) return body;
             
-            var watcher = function (curr, prev) {
+            var watcher = function (event, filename) {
                 
-                if (curr.nlink === 0) {
+                if (!exists(file)) {
                     // deleted
                     if (w.files[file]) {
                         delete w.files[file];
@@ -70,7 +71,7 @@ var exports = module.exports = function (entryFile, opts) {
                     
                     _cache = null;
                 }
-                else if (curr.mtime.getTime() !== prev.mtime.getTime()) {
+                else if (event === 'change') {
                     // modified
                     try {
                         w.reload(file);
@@ -84,6 +85,9 @@ var exports = module.exports = function (entryFile, opts) {
                         }
                     }
                 }
+                else if (event === 'rename') {
+                    // todo
+                }
             };
             
             watches[file] = true;
@@ -91,10 +95,10 @@ var exports = module.exports = function (entryFile, opts) {
                 if (w.files[file] && w.files[file].synthetic) return;
                 
                 if (typeof opts.watch === 'object') {
-                    fs.watchFile(file, opts.watch, watcher);
+                    watches[file] = fs.watch(file, opts.watch, watcher);
                 }
                 else {
-                    fs.watchFile(file, watcher);
+                    watches[file] = fs.watch(file, watcher);
                 }
             });
             
@@ -233,7 +237,7 @@ var exports = module.exports = function (entryFile, opts) {
     
     self.end = function () {
         Object.keys(watches).forEach(function (file) {
-            fs.unwatchFile(file);
+            watches[file].close();
         });
     };
     

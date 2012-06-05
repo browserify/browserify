@@ -2,6 +2,7 @@ var connect = require('connect');
 var http = require('http');
 var vm = require('vm');
 var fs = require('fs');
+var path = require('path');
 var test = require('tap').test;
 
 test('watch', function (t) {
@@ -13,7 +14,7 @@ test('watch', function (t) {
     var filters = 0;
     
     var bundle = require('../')({
-        require : __dirname + '/watch/a.js',
+        require : path.resolve(__dirname, 'watch/a.js'),
         mount : '/bundle.js',
         filter : function (src) {
             filters ++;
@@ -24,7 +25,7 @@ test('watch', function (t) {
     });
     server.use(bundle);
     
-    server.use(connect.static(__dirname + '/watch'));
+    server.use(connect.static(path.resolve(__dirname, 'watch')));
     
     server.listen(port, function () {
         setTimeout(compareSources, 1000);
@@ -72,7 +73,7 @@ test('watch', function (t) {
                 t.ok(m1 > m0);
                 
                 fs.writeFileSync(
-                    __dirname + '/watch/a.js',
+                    path.resolve(__dirname, 'watch/a.js'),
                     'module.exports = ' + a1
                 );
                 
@@ -82,7 +83,7 @@ test('watch', function (t) {
             });
             
             fs.writeFileSync(
-                __dirname + '/watch/a.js',
+                path.resolve(__dirname, 'watch/a.js'),
                 'module.exports = ' + a2
             );
         });
