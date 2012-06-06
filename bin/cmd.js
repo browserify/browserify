@@ -97,7 +97,7 @@ if (argv.noprelude || argv.prelude === false) {
 if (argv.ignore) bundle.ignore(argv.ignore);
 
 ([].concat(argv.plugin || [])).forEach(function (plugin) {
-    var resolved = resolve.sync(id, { basedir : process.cwd() });
+    var resolved = resolve.sync(plugin, { basedir : process.cwd() });
     bundle.use(require(resolved));
 });
 
