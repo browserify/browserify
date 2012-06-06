@@ -24,6 +24,7 @@
         "javascript"
     ],
     "dependencies" : {
+        "buffer-browserify" : "~0.0.1",
         "detective" : "~0.1.1",
         "deputy" : "~0.0.0",
         "resolve" : "~0.2.0",
