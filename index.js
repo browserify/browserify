@@ -114,6 +114,7 @@ var exports = module.exports = function (entryFile, opts) {
     }
     
     w.ignore(opts.ignore || []);
+    w.noParse(opts.noParse || []);
     
     if (opts.entry) {
         if (Array.isArray(opts.entry)) {

@@ -89,8 +89,14 @@ included.
 b.ignore(file)
 --------------
 
-Omit a file or files from being included by the AST walk to hunt down
-`require()` statements.
+Do not include `file` in the bundled output. `file` can be a single
+[file|module] or an array of them.
+
+b.noParse(file)
+---------------
+
+Do not walk the AST of `file` while hunting down `require()`s.
+`file` can be a single [file|module] or an array of them.
 
 b.addEntry(file)
 ----------------
