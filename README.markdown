@@ -54,8 +54,9 @@ Options:
   --exports      Export these core objects, comma-separated list
                  with any of: require, process. If unspecified, the
                  export behavior will be inferred.
-                                                                                
-  --ignore, -i   Ignore a file                                                  
+
+  --ignore, -i   Exclude a file from the bundle
+  --noparse, -n  Include a file, but don't walk its AST. File may also be a comma-seperated list.
   --alias, -a    Register an alias with a colon separator: "to:from"
                  Example: --alias 'jquery:jquery-browserify'                    
   --cache, -c    Turn on caching at $HOME/.config/browserling/cache.json or use
