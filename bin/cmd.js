@@ -30,7 +30,11 @@ var argv = require('optimist')
     })
     .option('ignore', {
         alias : 'i',
-        desc : 'Ignore a file'
+        desc : 'Exclude a file from the bundle'
+    })
+    .option('noparse', {
+        alias : 'n',
+        desc : 'Include the file, but do not walk its AST. Accepts a single [file|module], or comma-seperated list'
     })
     .option('alias', {
         alias : 'a',
@@ -103,6 +107,7 @@ if (argv.noprelude || argv.prelude === false) {
     bundle.prepends = [];
 }
 if (argv.ignore) bundle.ignore(argv.ignore);
+if (argv.noparse) bundle.noParse(argv.noparse);
 
 ([].concat(argv.plugin || [])).forEach(function (plugin) {
     var resolved = resolve.sync(plugin, { basedir : process.cwd() });
