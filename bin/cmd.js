@@ -19,6 +19,13 @@ var argv = require('optimist')
             + 'Optionally use a colon separator to set the target.'
         ,
     })
+    .option('global', {
+        alias : 'g',
+        desc : 'A module to require and export as global\n'
+            + 'Optionally use a colon separator to set the variable name.\n'
+            + 'Use directly \'Buffer\' for the require(buffer).Buffer'
+        ,
+    })
     .option('entry', {
         alias : 'e',
         desc : 'An entry point of your app'
@@ -116,6 +123,16 @@ if (argv.ignore) bundle.ignore(argv.ignore);
     }
     else {
         bundle.require(req);
+    }
+});
+
+([].concat(argv.global || [])).forEach(function (global) {
+    if (global.match(/:/)) {
+        var s = global.split(':');
+        bundle.global(s[0], { as : s[1] });
+    }
+    else {
+        bundle.global(global);
     }
 });
 
