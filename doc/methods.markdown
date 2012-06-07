@@ -86,6 +86,37 @@ In practice you won't need to `b.require()` very many files since all the
 `require()`s are read from each file that you require and automatically
 included.
 
+b.global(module, as)
+--------------
+
+Require `module` and let it be a global variable.
+
+```js
+b.global('jquery')
+//-> window.jquery
+```
+
+Choose the global variable name :
+
+```js
+b.global('jquery', '$')
+//-> window.$
+```
+
+Let a sub-module (a property) of `module` be the global :
+
+```js
+b.global('events', {sub : 'EventEmitter'})
+//-> window.EventEmitter
+```
+
+**Note** : a special shortcut for *Buffer* :
+
+```js
+b.global('Buffer')
+//-> window.Buffer
+```
+
 b.ignore(file)
 --------------
 
