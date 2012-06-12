@@ -56,7 +56,7 @@ var exports = module.exports = function (entryFile, opts) {
             compiled = jade.compile(body, {
                 client: true,
                 compileDebug: false,
-                filename: entryFile
+                filename: this.filename
             });
             return 'module.exports = ' + compiled;
         })
