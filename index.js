@@ -2,6 +2,7 @@ var wrap = require('./lib/wrap');
 var fs = require('fs');
 var path = require('path');
 var coffee = require('coffee-script');
+var jade = require('jade');
 var EventEmitter = require('events').EventEmitter;
 var exists = fs.exists || path.exists;
 
@@ -50,6 +51,14 @@ var exports = module.exports = function (entryFile, opts) {
     var w = wrap({ cache : opts.cache, debug : opts.debug })
         .register('.coffee', function (body) {
             return coffee.compile(body)
+        })
+        .register('.jade', function(body) {
+            compiled = jade.compile(body, {
+                client: true,
+                compileDebug: false,
+                filename: entryFile
+            });
+            return 'module.exports = ' + compiled;
         })
     ;
     
