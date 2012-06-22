@@ -48,5 +48,5 @@ test('override require and process export', function (t) {
     ;
     var c = {};
     vm.runInNewContext(src, c);
-    t.same(Object.keys(c), [ 'require', 'process' ]);
+    t.same(Object.keys(c).sort(), [ 'require', 'process' ].sort());
 });
