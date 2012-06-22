@@ -20,7 +20,7 @@ test('no exports when entries are defined', function (t) {
 
 test('override require export', function (t) {
     t.plan(1);
-    var src = browserify({ export : [ 'require' ] })
+    var src = browserify({ exports : [ 'require' ] })
         .addEntry(__dirname + '/export/entry.js')
         .bundle()
     ;
@@ -31,7 +31,7 @@ test('override require export', function (t) {
 
 test('override process export', function (t) {
     t.plan(1);
-    var src = browserify({ export : [ 'process' ] })
+    var src = browserify({ exports : [ 'process' ] })
         .addEntry(__dirname + '/export/entry.js')
         .bundle()
     ;
@@ -42,7 +42,7 @@ test('override process export', function (t) {
 
 test('override require and process export', function (t) {
     t.plan(1);
-    var src = browserify({ export : [ 'require', 'process' ] })
+    var src = browserify({ exports : [ 'require', 'process' ] })
         .addEntry(__dirname + '/export/entry.js')
         .bundle()
     ;

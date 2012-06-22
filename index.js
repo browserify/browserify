@@ -47,7 +47,12 @@ var exports = module.exports = function (entryFile, opts) {
     }
     
     var watches = {};
-    var w = wrap({ cache : opts.cache, debug : opts.debug })
+    var opts_ = {
+        cache : opts.cache,
+        debug : opts.debug,
+        exports : opts.exports,
+    };
+    var w = wrap(opts_)
         .register('.coffee', function (body) {
             return coffee.compile(body)
         })
