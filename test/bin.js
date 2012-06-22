@@ -29,8 +29,8 @@ test('bin', function (t) {
         
         vm.runInNewContext(src, c);
         t.deepEqual(
-            [ 'path', '__browserify_process', '/one.js', '/two.js', '/main.js' ].sort(),
-            Object.keys(c.require.modules).sort()
+            Object.keys(c.require.modules).sort(),
+            [ 'path', '__browserify_process', '/one.js', '/two.js', '/main.js' ].sort()
         );
         t.ok(allDone);
         

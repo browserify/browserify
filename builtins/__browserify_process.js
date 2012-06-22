@@ -33,8 +33,8 @@ process.env = {};
 process.argv = [];
 
 process.binding = function (name) {
-    if (name === 'evals') return require('vm')
-    else throw new Error('No such module')
+    if (name === 'evals') return (require)('vm')
+    else throw new Error('No such module. (Possibly not yet loaded)')
 };
 
 (function () {
