@@ -51,6 +51,10 @@ Options:
   --require, -r  A module name or file to bundle.require()
                  Optionally use a colon separator to set the target.            
   --entry, -e    An entry point of your app                                     
+  --exports      Export these core objects, comma-separated list
+                 with any of: require, process. If unspecified, the
+                 export behavior will be inferred.
+                                                                                
   --ignore, -i   Ignore a file                                                  
   --alias, -a    Register an alias with a colon separator: "to:from"
                  Example: --alias 'jquery:jquery-browserify'                    
@@ -99,11 +103,16 @@ All you need to do is `require()` them like in node.
 process
 -------
 
-Browserify exports a faux `process` object with these attributes:
+Browserify makes available a faux `process` object to modules with these
+attributes:
 
 * nextTick(fn) - uses [the postMessage trick](http://dbaron.org/log/20100309-faster-timeouts)
     for a faster `setTimeout(fn, 0)` if it can
 * title - set to 'browser' for browser code, 'node' in regular node code
+* browser - `true`, good for testing if you're in a browser or in node
+
+By default the process object is only available inside of files wrapped by
+browserify. To expose it, use `--exports=process`
 
 __dirname
 ---------
