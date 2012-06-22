@@ -14,7 +14,10 @@ var setTimeout_ = function (cb, t) {
 test('entry', function (t) {
     t.plan(2);
     
-    var src = browserify.bundle(__dirname + '/entry/main.js');
+    var src = browserify({ exports : [ 'require' ] })
+        .addEntry(__dirname + '/entry/main.js')
+        .bundle()
+    ;
     
     var c = {
         setTimeout : process.nextTick,
@@ -28,6 +31,6 @@ test('entry', function (t) {
     
     t.deepEqual(
         Object.keys(c.require.modules).sort(),
-        [ 'path', '/one.js', '/two.js', '/main.js' ].sort()
+        [ 'path', '__browserify_process', '/one.js', '/two.js', '/main.js' ].sort()
     );
 });
