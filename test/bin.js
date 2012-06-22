@@ -10,7 +10,9 @@ test('bin', function (t) {
     process.chdir(__dirname);
     
     var ps = spawn(process.execPath, [
-        path.resolve(__dirname, '../bin/cmd.js'), 'entry/main.js'
+        path.resolve(__dirname, '../bin/cmd.js'),
+        'entry/main.js',
+        '--exports=require'
     ]);
     var src = '';
     ps.stdout.on('data', function (buf) {
@@ -27,7 +29,7 @@ test('bin', function (t) {
         
         vm.runInNewContext(src, c);
         t.deepEqual(
-            [ 'path', '/one.js', '/two.js', '/main.js' ].sort(),
+            [ 'path', '__browserify_process', '/one.js', '/two.js', '/main.js' ].sort(),
             Object.keys(c.require.modules).sort()
         );
         t.ok(allDone);

@@ -23,6 +23,11 @@ var argv = require('optimist')
         alias : 'e',
         desc : 'An entry point of your app'
     })
+    .option('exports', {
+        desc : 'Export these core objects, comma-separated list\n'
+            + 'with any of: require, process. If unspecified, the\n'
+            + 'export behavior will be inferred.\n'
+    })
     .option('ignore', {
         alias : 'i',
         desc : 'Ignore a file'
@@ -82,7 +87,8 @@ var argv = require('optimist')
 var bundle = browserify({
     watch : argv.watch,
     cache : argv.cache,
-    debug : argv.debug
+    debug : argv.debug,
+    exports : argv.exports && argv.exports.split(','),
 });
 
 bundle.on('syntaxError', function (err) {
