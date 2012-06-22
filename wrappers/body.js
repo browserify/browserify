@@ -1,3 +1,1 @@
-require.define($__filename, function (require, module, exports, __dirname, __filename) {
-$body
-});
+require.define($__filename,function(require,module,exports,__dirname,__filename,process){$body});

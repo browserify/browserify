@@ -3,7 +3,7 @@ var vm = require('vm');
 var test = require('tap').test;
 
 test('only export require', function (t) {
-    t.plan(2);
+    t.plan(1);
     var src = browserify().bundle();
     var c = {};
     vm.runInNewContext(src, c);
@@ -11,15 +11,15 @@ test('only export require', function (t) {
 });
 
 test('no exports when entries are defined', function (t) {
-    t.plan(2);
+    t.plan(1);
     var src = browserify(__dirname + '/export/entry.js').bundle();
     var c = {};
     vm.runInNewContext(src, c);
     t.same(c, {});
 });
 
-test('override export behavior', function (t) {
-    t.plan(2);
+test('override require export', function (t) {
+    t.plan(1);
     var src = browserify({ export : [ 'require' ] })
         .addEntry(__dirname + '/export/entry.js')
         .bundle()
@@ -29,8 +29,8 @@ test('override export behavior', function (t) {
     t.same(Object.keys(c), [ 'require' ]);
 });
 
-test('export process', function (t) {
-    t.plan(2);
+test('override process export', function (t) {
+    t.plan(1);
     var src = browserify({ export : [ 'process' ] })
         .addEntry(__dirname + '/export/entry.js')
         .bundle()
@@ -40,8 +40,8 @@ test('export process', function (t) {
     t.same(Object.keys(c), [ 'process' ]);
 });
 
-test('export require and process', function (t) {
-    t.plan(2);
+test('override require and process export', function (t) {
+    t.plan(1);
     var src = browserify({ export : [ 'require', 'process' ] })
         .addEntry(__dirname + '/export/entry.js')
         .bundle()
