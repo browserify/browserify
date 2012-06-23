@@ -11,7 +11,7 @@ test('retarget with -r', function (t) {
     
     var ps = spawn(process.execPath, [
         path.resolve(__dirname, '../bin/cmd.js'),
-        '-r', 'seq',
+        '-r', 'beep',
         '--exports=require'
     ]);
     var src = '';
@@ -22,6 +22,6 @@ test('retarget with -r', function (t) {
         
         var c = {};
         vm.runInNewContext(src, c);
-        t.equal(typeof c.require('seq'), 'function');
+        t.equal(c.require('beep'), 'boop');
     });
 });
