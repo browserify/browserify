@@ -119,10 +119,19 @@ if (argv.ignore) bundle.ignore(argv.ignore);
     if (req.match(/:/)) {
         var s = req.split(':');
         bundle.require(s[0], { target : s[1] });
+        return;
     }
-    else {
-        bundle.require(req);
+    
+    if (!/^[.\/]/.test(req)) {
+        try {
+            var res = resolve.sync(req, { basedir : process.cwd() });
+        }
+        catch (e) {
+            return bundle.require(req);
+        }
+        return bundle.require(res, { target : req });
     }
+    bundle.require(req);
 });
 
 (argv._.concat(argv.entry || [])).forEach(function (entry) {
