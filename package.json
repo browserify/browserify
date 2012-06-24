@@ -1,6 +1,6 @@
 {
     "name" : "browserify",
-    "version" : "1.13.2",
+    "version" : "1.13.3",
     "description" : "browser-side require() for js directories and npm modules",
     "main" : "index.js",
     "bin" : {
@@ -46,7 +46,8 @@
         "seq": "0.3.3",
         "jquery-browserify" : "*",
         "lazy" : "1.0.x",
-        "ecstatic" : "~0.1.4"
+        "ecstatic" : "~0.1.4",
+        "mkdirp" : "~0.3.3"
     },
     "author" : {
         "name" : "James Halliday",
