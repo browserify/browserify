@@ -4,7 +4,8 @@ var require = function (file, cwd) {
     if (!mod) throw new Error(
         'Failed to resolve module ' + file + ', tried ' + resolved
     );
-    var res = mod._cached ? mod._cached : mod();
+    var cached = require.cache[resolved];
+    var res = cached? cached.exports : mod();
     return res;
 }
 
@@ -161,6 +162,7 @@ require.alias = function (from, to) {
         var module_ = { exports : {} };
         
         require.modules[filename] = function () {
+            require.cache[filename] = module_;
             fn.call(
                 module_.exports,
                 require_,
@@ -170,7 +172,6 @@ require.alias = function (from, to) {
                 filename,
                 process
             );
-            require.cache[filename] = module_.exports;
             return module_.exports;
         };
     };
