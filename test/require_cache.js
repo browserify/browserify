@@ -5,7 +5,7 @@ var browserify = require('../');
 var test = require('tap').test;
 
 test('require.cache', function (t) {
-    t.plan(2);
+    t.plan(3);
     
     var src = browserify().require('seq').bundle();
     var c = {};
@@ -14,5 +14,7 @@ test('require.cache', function (t) {
     t.equal(c.require.cache[seqPath], undefined);
     
     var seq = c.require('seq');
-    t.equal(seq, c.require.cache[seqPath]);
+    t.equal(seq, c.require.cache[seqPath].exports);
+    var seqCached = c.require('seq');   // check if require() uses the cache
+    t.equal(seq, seqCached);
 });
