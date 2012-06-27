@@ -1,5 +1,3 @@
-var connect = require('connect');
-var http = require('http');
 var vm = require('vm');
 var browserify = require('../');
 var test = require('tap').test;
