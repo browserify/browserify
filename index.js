@@ -3,7 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var coffee = require('coffee-script');
 var EventEmitter = require('events').EventEmitter;
-var exists = fs.exists || path.exists;
+var exists = fs.exists || fs.exists;
 
 function idFromPath (path) {
     return path.replace(/\\/g, '/');
