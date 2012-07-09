@@ -101,7 +101,7 @@ var exports = module.exports = function (entryFile, opts) {
                         }
                     }
                     else if (event === 'rename') {
-                        fs.unwatchFile(filename);
+                        watches[file].close();
                         process.nextTick(watch);
                     }
                 });
