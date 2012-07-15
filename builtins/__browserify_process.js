@@ -1,6 +1,6 @@
-if (typeof process === 'undefined') process = {};
+var process = module.exports = {};
 
-if (!process.nextTick) process.nextTick = (function () {
+process.nextTick = (function () {
     var queue = [];
     var canPost = typeof window !== 'undefined'
         && window.postMessage && window.addEventListener
@@ -27,14 +27,22 @@ if (!process.nextTick) process.nextTick = (function () {
     };
 })();
 
-if (!process.title) process.title = 'browser';
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
 
-if (!process.binding) process.binding = function (name) {
-    if (name === 'evals') return require('vm')
-    else throw new Error('No such module')
+process.binding = function (name) {
+    if (name === 'evals') return (require)('vm')
+    else throw new Error('No such module. (Possibly not yet loaded)')
 };
 
-if (!process.cwd) process.cwd = function () { return '.' };
-
-if (!process.env) process.env = {};
-if (!process.argv) process.argv = [];
+(function () {
+    var cwd = '/';
+    var path;
+    process.cwd = function () { return cwd };
+    process.chdir = function (dir) {
+        if (!path) path = require('path');
+        cwd = path.resolve(dir, cwd);
+    };
+})();

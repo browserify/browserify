@@ -47,7 +47,12 @@ var exports = module.exports = function (entryFile, opts) {
     }
     
     var watches = {};
-    var w = wrap({ cache : opts.cache, debug : opts.debug })
+    var opts_ = {
+        cache : opts.cache,
+        debug : opts.debug,
+        exports : opts.exports,
+    };
+    var w = wrap(opts_)
         .register('.coffee', function (body) {
             return coffee.compile(body)
         })
@@ -115,17 +120,6 @@ var exports = module.exports = function (entryFile, opts) {
     
     w.ignore(opts.ignore || []);
     
-    if (opts.entry) {
-        if (Array.isArray(opts.entry)) {
-            opts.entry.forEach(function (e) {
-                w.addEntry(e);
-            });
-        }
-        else {
-            w.addEntry(opts.entry);
-        }
-    }
-    
     if (opts.require) {
         if (Array.isArray(opts.require)) {
             opts.require.forEach(function (r) {
@@ -162,6 +156,17 @@ var exports = module.exports = function (entryFile, opts) {
                 ;
             }
             w.require(opts.require, params);
+        }
+    }
+
+    if (opts.entry) {
+        if (Array.isArray(opts.entry)) {
+            opts.entry.forEach(function (e) {
+                w.addEntry(e);
+            });
+        }
+        else {
+            w.addEntry(opts.entry);
         }
     }
     

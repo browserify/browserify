@@ -18,6 +18,8 @@ Return a new bundle object.
 * cache - turn on caching for AST traversals, see below
 * debug - turn on source mapping for debugging with `//@ sourceURL=...`
 in browsers that support it
+* exports - an array of the core items to export to the namespace. Available
+items: 'require', 'process'
 
 If `opts` is a string, it is interpreted as a file to call `.addEntry()` with.
 
@@ -54,6 +56,12 @@ b.bundle()
 ----------
 
 Return the bundled source as a string.
+
+By default, `require` is not exported to the environment if there are entry
+files in the bundle but you can override that with `opts.exports`.
+
+`process` is only exported to the environment when `opts.exports` contains the
+string `'process'`.
 
 b.require(file)
 ---------------
