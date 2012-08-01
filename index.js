@@ -206,8 +206,12 @@ var exports = module.exports = function (entryFile, opts) {
     });
     
     Object.keys(EventEmitter.prototype).forEach(function (key) {
-        var prop = w[key];
-        self[key] = prop.bind && prop.bind(w) || prop;
+        if (typeof w[key] === 'function' && w[key].bind) {
+            self[key] = w[key].bind(w);
+        }
+        else {
+            self[key] = w[key];
+        }
     });
     
     var firstBundle = true;
