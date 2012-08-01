@@ -154,7 +154,7 @@ require.alias = function (from, to) {
             var requiredModule = require(file, dirname);
             var cached = require.cache[require.resolve(file, dirname)];
 
-            if (cached.parent === null) {
+            if (cached && cached.parent === null) {
                 cached.parent = module_;
             }
 
