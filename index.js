@@ -63,6 +63,16 @@ var exports = module.exports = function (entryFile, opts) {
             // if already being watched
             if (watches[file]) return body;
             
+            var watch = function () {
+                if (w.files[file] && w.files[file].synthetic) return;
+                
+                if (typeof opts.watch === 'object') {
+                    watches[file] = fs.watch(file, opts.watch, watcher);
+                }
+                else {
+                    watches[file] = fs.watch(file, watcher);
+                }
+            };
             var watcher = function (event, filename) {
                 exists(file, function (ex) {
                     if (!ex) {
@@ -91,22 +101,14 @@ var exports = module.exports = function (entryFile, opts) {
                         }
                     }
                     else if (event === 'rename') {
-                        // todo
+                        watches[file].close();
+                        process.nextTick(watch);
                     }
                 });
             };
             
             watches[file] = true;
-            process.nextTick(function () {
-                if (w.files[file] && w.files[file].synthetic) return;
-                
-                if (typeof opts.watch === 'object') {
-                    watches[file] = fs.watch(file, opts.watch, watcher);
-                }
-                else {
-                    watches[file] = fs.watch(file, watcher);
-                }
-            });
+            process.nextTick(watch);
             
             return body;
         })
