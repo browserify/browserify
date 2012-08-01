@@ -7,7 +7,7 @@ var require = function (file, cwd) {
     var cached = require.cache[resolved];
     var res = cached? cached.exports : mod();
     return res;
-}
+};
 
 require.paths = [];
 require.modules = {};
@@ -151,7 +151,14 @@ require.alias = function (from, to) {
         ;
         
         var require_ = function (file) {
-            return require(file, dirname);
+            var requiredModule = require(file, dirname),
+                cached = require.cache[require.resolve(file, dirname)];
+
+            if (cached.parent === null) {
+                cached.parent = module_;
+            }
+
+            return requiredModule;
         };
         require_.resolve = function (name) {
             return require.resolve(name, dirname);
@@ -159,7 +166,13 @@ require.alias = function (from, to) {
         require_.modules = require.modules;
         require_.define = require.define;
         require_.cache = require.cache;
-        var module_ = { exports : {} };
+        var module_ = {
+            id : filename,
+            filename: filename,
+            exports : {},
+            loaded : false,
+            parent: null
+        };
         
         require.modules[filename] = function () {
             require.cache[filename] = module_;
@@ -172,6 +185,7 @@ require.alias = function (from, to) {
                 filename,
                 process
             );
+            module_.loaded = true;
             return module_.exports;
         };
     };
