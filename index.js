@@ -53,8 +53,8 @@ var exports = module.exports = function (entryFile, opts) {
         exports : opts.exports,
     };
     var w = wrap(opts_)
-        .register('.coffee', function (body) {
-            return coffee.compile(body)
+        .register('.coffee', function (body, file) {
+            return coffee.compile(body, { filename : file });
         })
     ;
     
