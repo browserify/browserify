@@ -1,6 +1,6 @@
 {
     "name" : "browserify",
-    "version" : "1.14.1",
+    "version" : "1.14.2",
     "description" : "browser-side require() for js directories and npm modules",
     "main" : "index.js",
     "bin" : {
