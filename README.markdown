@@ -75,7 +75,7 @@ Options:
 
 ````
 
-compatability
+compatibility
 =============
 
 Many [npm](http://npmjs.org) modules that don't do IO will just work after being
