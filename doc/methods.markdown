@@ -136,6 +136,11 @@ If `ext` is 'post', execute the wrapper on the entire bundle.
 If `ext` is 'pre', call the wrapper function with the bundle object before the
 source is generated.
 
+If `ext` is 'path', execute the wrapper for every `file` before it is open,
+allowing the extension to change it. `fn` gets called as `fn.call(b, file)`
+for the bundle instance `b` and the file path `file`. `fn` should return the
+new path to the file.
+
 If `ext` is an object, pull the extension from `ext.extension` and the wrapper
 function `fn` from `ext.wrapper`. This makes it easy to write plugins like
 [fileify](https://github.com/substack/node-fileify).
