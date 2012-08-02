@@ -78,7 +78,7 @@ var exports = module.exports = function (entryFile, opts) {
         else next()
     };
     
-    if (opts.watch) watch(self, w, opts.watch);
+    if (opts.watch) watch(w, opts.watch);
     
     if (opts.filter) {
         w.register('post', function (body) {
@@ -165,24 +165,11 @@ var exports = module.exports = function (entryFile, opts) {
     var firstBundle = true;
     self.modified = new Date;
     
-    var ok = true;
-    self.on('bundle', function () {
-        ok = true;
-    });
-    
-    self.on('syntaxError', function (err) {
-        ok = false;
-        if (self.listeners('syntaxError').length <= 1) {
-            console.error(err && err.stack || err);
-        }
-    });
-    
-    var lastOk = null;
     self.bundle = function () {
-        if (!ok && w._cache) return w._cache;
-        if (!ok && lastOk) return lastOk;
+        if (w._cache) return w._cache;
         
         var src = w.bundle.apply(w, arguments);
+        self.ok = Object.keys(w.errors).length === 0;
         
         if (!firstBundle) {
             self.modified = new Date;
@@ -190,7 +177,6 @@ var exports = module.exports = function (entryFile, opts) {
         firstBundle = false;
         
         w._cache = src;
-        if (ok) lastOk = src;
         return src;
     };
     
