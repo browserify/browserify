@@ -93,7 +93,7 @@ var bundle = browserify({
 
 bundle.on('syntaxError', function (err) {
     console.error(err && err.stack || String(err));
-    process.exit(1);
+    if (!argv.watch) process.exit(1);
 });
 
 if (argv.noprelude || argv.prelude === false) {
