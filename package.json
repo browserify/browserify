@@ -26,7 +26,7 @@
     "dependencies" : {
         "detective" : "~0.2.0",
         "buffer-browserify" : "~0.0.1",
-        "deputy" : "~0.0.0",
+        "deputy" : "~0.0.3",
         "resolve" : "~0.2.0",
         "nub" : "~0.0.0",
         "commondir" : "~0.0.1",

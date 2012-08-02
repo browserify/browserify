@@ -1,9 +1,9 @@
-var wrap = require('./lib/wrap');
-var fs = require('fs');
 var path = require('path');
 var coffee = require('coffee-script');
 var EventEmitter = require('events').EventEmitter;
-var exists = fs.exists || path.exists;
+
+var wrap = require('./lib/wrap');
+var watch = require('./lib/watch');
 
 function idFromPath (path) {
     return path.replace(/\\/g, '/');
@@ -46,7 +46,6 @@ var exports = module.exports = function (entryFile, opts) {
         }
     }
     
-    var watches = {};
     var opts_ = {
         cache : opts.cache,
         debug : opts.debug,
@@ -58,61 +57,28 @@ var exports = module.exports = function (entryFile, opts) {
         })
     ;
     
-    if (opts.watch) {
-        w.register(function (body, file) {
-            // if already being watched
-            if (watches[file]) return body;
-            
-            var watch = function () {
-                if (w.files[file] && w.files[file].synthetic) return;
-                
-                if (typeof opts.watch === 'object') {
-                    watches[file] = fs.watch(file, opts.watch, watcher);
-                }
-                else {
-                    watches[file] = fs.watch(file, watcher);
-                }
-            };
-            var watcher = function (event, filename) {
-                exists(file, function (ex) {
-                    if (!ex) {
-                        // deleted
-                        if (w.files[file]) {
-                            delete w.files[file];
-                        }
-                        else if (w.entries[file] !== undefined) {
-                            w.appends.splice(w.entries[file], 1);
-                        }
-                        
-                        _cache = null;
-                    }
-                    else if (event === 'change') {
-                        // modified
-                        try {
-                            w.reload(file);
-                            _cache = null;
-                            self.emit('bundle');
-                        }
-                        catch (e) {
-                            self.emit('syntaxError', e);
-                            if (self.listeners('syntaxError').length === 0) {
-                                console.error(e && e.stack || e);
-                            }
-                        }
-                    }
-                    else if (event === 'rename') {
-                        watches[file].close();
-                        process.nextTick(watch);
-                    }
-                });
-            };
-            
-            watches[file] = true;
-            process.nextTick(watch);
-            
-            return body;
-        })
-    }
+    var listening = false;
+    w._cache = null;
+    
+    var self = function (req, res, next) {
+        if (!listening && req.connection && req.connection.server) {
+            req.connection.server.on('close', function () {
+                self.end();
+            });
+        }
+        listening = true;
+        
+        if (req.url.split('?')[0] === (opts.mount || '/browserify.js')) {
+            if (!w._cache) self.bundle();
+            res.statusCode = 200;
+            res.setHeader('last-modified', self.modified.toString());
+            res.setHeader('content-type', 'text/javascript');
+            res.end(w._cache);
+        }
+        else next()
+    };
+    
+    if (opts.watch) watch(self, w, opts.watch);
     
     if (opts.filter) {
         w.register('post', function (body) {
@@ -172,26 +138,6 @@ var exports = module.exports = function (entryFile, opts) {
         }
     }
     
-    var _cache = null;
-    var listening = false;
-    var self = function (req, res, next) {
-        if (!listening && req.connection && req.connection.server) {
-            req.connection.server.on('close', function () {
-                self.end();
-            });
-        }
-        listening = true;
-        
-        if (req.url.split('?')[0] === (opts.mount || '/browserify.js')) {
-            if (!_cache) self.bundle();
-            res.statusCode = 200;
-            res.setHeader('last-modified', self.modified.toString());
-            res.setHeader('content-type', 'text/javascript');
-            res.end(_cache);
-        }
-        else next()
-    };
-    
     Object.keys(w).forEach(function (key) {
         Object.defineProperty(self, key, {
             set : function (value) { w[key] = value },
@@ -202,7 +148,7 @@ var exports = module.exports = function (entryFile, opts) {
     Object.keys(Object.getPrototypeOf(w)).forEach(function (key) {
         self[key] = function () {
             var s = w[key].apply(self, arguments)
-            if (s === self) { _cache = null }
+            if (s === self) { w._cache = null }
             return s;
         };
     });
@@ -233,7 +179,7 @@ var exports = module.exports = function (entryFile, opts) {
     
     var lastOk = null;
     self.bundle = function () {
-        if (!ok && _cache) return _cache;
+        if (!ok && w._cache) return w._cache;
         if (!ok && lastOk) return lastOk;
         
         var src = w.bundle.apply(w, arguments);
@@ -243,14 +189,14 @@ var exports = module.exports = function (entryFile, opts) {
         }
         firstBundle = false;
         
-        _cache = src;
+        w._cache = src;
         if (ok) lastOk = src;
         return src;
     };
     
     self.end = function () {
-        Object.keys(watches).forEach(function (file) {
-            watches[file].close();
+        Object.keys(w.watches || {}).forEach(function (file) {
+            w.watches[file].close();
         });
     };
     
