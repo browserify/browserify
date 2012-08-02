@@ -19,6 +19,6 @@ test('error code', function (t) {
     
     ps.on('exit', function (code) {
         t.notEqual(code, 0);
-        t.ok(/^SyntaxError:/m.test(err));
+        t.ok(/^(Syntax|Parse)Error:/m.test(err));
     });
 });
