@@ -46,7 +46,7 @@ test('watch', function (t) {
                     cb(src)
                 });
             });
-        }, 50);
+        }, 150);
     }
     
     function compareSources () {
