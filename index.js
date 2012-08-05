@@ -53,7 +53,13 @@ var exports = module.exports = function (entryFile, opts) {
     };
     var w = wrap(opts_)
         .register('.coffee', function (body, file) {
-            return coffee.compile(body, { filename : file });
+            try {
+                var res = coffee.compile(body, { filename : file });
+            }
+            catch (err) {
+                w.emit('syntaxError', err);
+            }
+            return res;
         })
     ;
     
