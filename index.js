@@ -76,10 +76,14 @@ var exports = module.exports = function (entryFile, opts) {
         
         if (req.url.split('?')[0] === (opts.mount || '/browserify.js')) {
             if (!w._cache) self.bundle();
-            res.statusCode = 200;
-            res.setHeader('last-modified', self.modified.toString());
-            res.setHeader('content-type', 'text/javascript');
-            res.end(w._cache);
+            if(opts.respond) {
+                opts.respond(req, res, w._cache, self.modified.toString());
+            } else {
+                res.statusCode = 200;
+                res.setHeader('last-modified', self.modified.toString());
+                res.setHeader('content-type', 'text/javascript');
+                res.end(w._cache);
+            }
         }
         else next()
     };
