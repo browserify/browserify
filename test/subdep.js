@@ -18,7 +18,8 @@ test('subdep', function (t) {
             '/node_modules/qq/node_modules/a/package.json',
             '/node_modules/qq/node_modules/a/index.js',
             '/node_modules/qq/node_modules/z/index.js',
-            'path'
+            'path',
+            '__browserify_process'
         ].sort()
     );
     t.end();

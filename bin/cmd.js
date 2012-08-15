@@ -4,14 +4,8 @@ var browserify = require('../');
 var fs = require('fs');
 var resolve = require('resolve');
 
-var rebased_require = function(id) {
-    var resolved = resolve.sync(id, {basedir : process.cwd()});
-    return require(resolved);
-};
-
-
 var argv = require('optimist')
-    .usage('Usage: $0 [entry files] {OPTIONS}')
+    .usage('Usage: browserify [entry files] {OPTIONS}')
     .wrap(80)
     .option('outfile', {
         alias : 'o',
@@ -28,6 +22,11 @@ var argv = require('optimist')
     .option('entry', {
         alias : 'e',
         desc : 'An entry point of your app'
+    })
+    .option('exports', {
+        desc : 'Export these core objects, comma-separated list\n'
+            + 'with any of: require, process. If unspecified, the\n'
+            + 'export behavior will be inferred.\n'
     })
     .option('ignore', {
         alias : 'i',
@@ -52,9 +51,9 @@ var argv = require('optimist')
     })
     .option('plugin', {
         alias : 'p',
-        desc : 'Use a plugin. Use a colon separator to specify additional '
-            + 'plugin arguments as a JSON string.\n'
-            + 'Example: --plugin \'fileify:["files","."]\''
+        desc : 'Use a plugin.\n'
+            + 'Example: --plugin aliasify'
+        ,
     })
     .option('prelude', {
         default : true,
@@ -88,12 +87,15 @@ var argv = require('optimist')
 var bundle = browserify({
     watch : argv.watch,
     cache : argv.cache,
-    debug : argv.debug
+    debug : argv.debug,
+    exports : argv.exports && argv.exports.split(','),
 });
 
 bundle.on('syntaxError', function (err) {
-    console.error(err && err.stack || String(err));
-    process.exit(1);
+    console.error(err);
+    if (!argv.watch) {
+        process.exit(1);
+    }
 });
 
 if (argv.noprelude || argv.prelude === false) {
@@ -103,22 +105,8 @@ if (argv.noprelude || argv.prelude === false) {
 if (argv.ignore) bundle.ignore(argv.ignore);
 
 ([].concat(argv.plugin || [])).forEach(function (plugin) {
-    if (plugin.match(/:/)) {
-        var ps = plugin.split(':');
-        var args = ps[1];
-        try {
-            args = JSON.parse(args);
-        }
-        catch (err) {}
-        
-        if (!Array.isArray(args)) args = [ args ];
-        
-        var fn = rebased_require(ps[0]);
-        bundle.use(fn.apply(null, args));
-    }
-    else {
-        bundle.use(rebased_require(plugin));
-    }
+    var resolved = resolve.sync(plugin, { basedir : process.cwd() });
+    bundle.use(require(resolved));
 });
 
 ([].concat(argv.alias || [])).forEach(function (alias) {
@@ -133,10 +121,19 @@ if (argv.ignore) bundle.ignore(argv.ignore);
     if (req.match(/:/)) {
         var s = req.split(':');
         bundle.require(s[0], { target : s[1] });
+        return;
     }
-    else {
-        bundle.require(req);
+    
+    if (!/^[.\/]/.test(req)) {
+        try {
+            var res = resolve.sync(req, { basedir : process.cwd() });
+        }
+        catch (e) {
+            return bundle.require(req);
+        }
+        return bundle.require(res, { target : req });
     }
+    bundle.require(req);
 });
 
 (argv._.concat(argv.entry || [])).forEach(function (entry) {
@@ -146,6 +143,8 @@ if (argv.ignore) bundle.ignore(argv.ignore);
 if (argv.outfile) {
     function write () {
         var src = bundle.bundle();
+        if (!bundle.ok) return;
+        
         fs.writeFile(argv.outfile, src, function () {
             if (argv.verbose) {
                 console.log(Buffer(src).length + ' bytes written');
@@ -158,10 +157,5 @@ if (argv.outfile) {
 }
 else {
     var src = bundle.bundle();
-    try { Function(src) }
-    catch (err) {
-        console.error(err.stack);
-        process.exit(1);
-    }
-    console.log(src);
+    if (bundle.ok) console.log(src);
 }

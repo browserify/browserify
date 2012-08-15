@@ -1,10 +1,9 @@
 var test = require('tap').test;
 var spawn = require('child_process').spawn;
 var path = require('path');
+var vm = require('vm');
 
-if (false) require('__32jlkbeep');
-
-test('error code', function (t) {
+test('retarget with -r', function (t) {
     t.plan(2);
     
     var cwd = process.cwd();
@@ -12,13 +11,17 @@ test('error code', function (t) {
     
     var ps = spawn(process.execPath, [
         path.resolve(__dirname, '../bin/cmd.js'),
-        path.resolve(__dirname, 'error_code/src.js')
+        '-r', 'beep',
+        '--exports=require'
     ]);
-    var err = '';
-    ps.stderr.on('data', function (buf) { err += buf });
+    var src = '';
+    ps.stdout.on('data', function (buf) { src += buf });
     
     ps.on('exit', function (code) {
-        t.notEqual(code, 0);
-        t.ok(/^(Syntax|Parse)Error:/m.test(err));
+        t.equal(code, 0);
+        
+        var c = {};
+        vm.runInNewContext(src, c);
+        t.equal(c.require('beep'), 'boop');
     });
 });

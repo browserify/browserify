@@ -7,7 +7,10 @@ test('jade', function (t) {
     t.plan(5);
     var b = browserify({
         require : 'jade',
-        ignore : [ 'less', 'stylus', 'markdown', 'discount', 'markdown-js' ]
+        ignore : [
+            'coffee-script', 'less', 'sass', 'stylus', 'markdown', 'discount',
+            'markdown-js'
+        ]
     });
     var src = b.bundle();
     

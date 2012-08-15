@@ -1,5 +1,6 @@
 var test = require('tap').test;
 var spawn = require('child_process').spawn;
+var path = require('path');
 var vm = require('vm');
 
 test('bin', function (t) {
@@ -8,7 +9,11 @@ test('bin', function (t) {
     var cwd = process.cwd();
     process.chdir(__dirname);
     
-    var ps = spawn(__dirname + '/../bin/cli.js', [ 'entry/main.js' ]);
+    var ps = spawn(process.execPath, [
+        path.resolve(__dirname, '../bin/cmd.js'),
+        'entry/main.js',
+        '--exports=require'
+    ]);
     var src = '';
     ps.stdout.on('data', function (buf) {
         src += buf.toString();
@@ -24,8 +29,8 @@ test('bin', function (t) {
         
         vm.runInNewContext(src, c);
         t.deepEqual(
-            [ 'path', '/one.js', '/two.js', '/main.js' ].sort(),
-            Object.keys(c.require.modules).sort()
+            Object.keys(c.require.modules).sort(),
+            [ 'path', '__browserify_process', '/one.js', '/two.js', '/main.js' ].sort()
         );
         t.ok(allDone);
         
