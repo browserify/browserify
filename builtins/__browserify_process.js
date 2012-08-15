@@ -37,7 +37,6 @@ process.binding = function (name) {
     else throw new Error('No such module. (Possibly not yet loaded)')
 };
 
-
 (function () {
     var cwd = '/';
     var path;
