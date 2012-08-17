@@ -370,6 +370,16 @@ function isDate(d) {
   return JSON.stringify(proto) === JSON.stringify(properties);
 }
 
+function isError(e) {
+  return typeof e === 'object' && objectToString(e) === '[object Error]';
+}
+exports.isError = isError;
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
 function pad(n) {
   return n < 10 ? '0' + n.toString(10) : n.toString(10);
 }
