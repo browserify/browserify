@@ -1,1 +1,1 @@
-export(require('./beep.json'));
+ex(require('./beep.json'));

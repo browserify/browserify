@@ -4,9 +4,12 @@ var test = require('tap').test;
 
 test('json', function (t) {
     t.plan(1);
-    var src = browserify(__dirname + '/json/main.js').bundle();
+    var b = browserify(__dirname + '/json/main.js');
+    b.on('syntaxError', t.fail.bind(t));
+    var src = b.bundle();
+    
     var c = {
-        export : function (obj) {
+        ex : function (obj) {
             t.same(obj, { beep : 'boop', x : 555 });
         }
     };

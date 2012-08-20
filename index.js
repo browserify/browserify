@@ -51,17 +51,19 @@ var exports = module.exports = function (entryFile, opts) {
         debug : opts.debug,
         exports : opts.exports,
     };
-    var w = wrap(opts_)
-        .register('.coffee', function (body, file) {
-            try {
-                var res = coffee.compile(body, { filename : file });
-            }
-            catch (err) {
-                w.emit('syntaxError', err);
-            }
-            return res;
-        })
-    ;
+    var w = wrap(opts_);
+    w.register('.coffee', function (body, file) {
+        try {
+            var res = coffee.compile(body, { filename : file });
+        }
+        catch (err) {
+            w.emit('syntaxError', err);
+        }
+        return res;
+    });
+    w.register('.json', function (body, file) {
+        return 'module.exports = ' + body + ';\n';
+    });
     
     var listening = false;
     w._cache = null;
