@@ -17,13 +17,14 @@ process.nextTick = (function () {
             }
         }, true);
     }
-    
-    return function (fn) {
-        if (canPost) {
+
+        return function nextTick(fn) {
             queue.push(fn);
             window.postMessage('browserify-tick', '*');
-        }
-        else setTimeout(fn, 0);
+        };
+    }
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
     };
 })();
 
