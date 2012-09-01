@@ -8,7 +8,7 @@ read pass
 stty echo
 
 function tick () {
-    cat <(echo 'process={};') ../wrappers/process.js tick.js \
+    cat <(echo 'process={};') ../builtins/__browserify_process.js tick.js \
         | curl -sSNT- -u "$user:$pass" testling.com
 }
 

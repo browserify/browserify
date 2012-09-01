@@ -38,7 +38,10 @@ test('alias', function (t) {
                 vm.runInNewContext(src, context);
                 t.ok(context.require('moo'));
                 t.ok(context.require('seq'));
-                t.equal(context.require('seq'), context.require('moo'));
+                t.equal(
+                    String(context.require('seq')),
+                    String(context.require('moo'))
+                );
                 
                 context.require('moo')([1,2,3])
                     .parMap(function (x) {
