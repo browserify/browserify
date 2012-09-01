@@ -1,1 +1,2 @@
-require.alias($from, $to);
+/*browserify:alias */require.alias($from, $to);
+/*browserify:end*/
