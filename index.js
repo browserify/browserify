@@ -45,11 +45,13 @@ var exports = module.exports = function (entryFile, opts) {
             opts.entry = entryFile;
         }
     }
+    var logger = opts.logger || console;
     
     var opts_ = {
         cache : opts.cache,
         debug : opts.debug,
         exports : opts.exports,
+        logger : logger,
     };
     var w = wrap(opts_);
     w.register('.coffee', function (body, file) {
