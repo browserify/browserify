@@ -20,6 +20,7 @@ Return a new bundle object.
 in browsers that support it
 * exports - an array of the core items to export to the namespace. Available
 items: 'require', 'process'
+* logger - an object implementing a logger. see below
 
 If `opts` is a string, it is interpreted as a file to call `.addEntry()` with.
 
@@ -37,6 +38,11 @@ If `cache` is a boolean, turn on caching at
 `$HOME/.config/browserify/cache.json`.
 
 If `cache` is a string, turn on caching at the filename specified by `cache`.
+
+### logger :: Object
+
+This option defaults to `console`. It should implement `info`, `warn` and
+`error` methods.
 
 ### bundle events
 
