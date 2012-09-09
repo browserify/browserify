@@ -20,7 +20,7 @@ Return a new bundle object.
 in browsers that support it
 * exports - an array of the core items to export to the namespace. Available
 items: 'require', 'process'
-* logger - an object implementing a logger. see below
+* logger - an object implementing a logger, see below
 
 If `opts` is a string, it is interpreted as a file to call `.addEntry()` with.
 
