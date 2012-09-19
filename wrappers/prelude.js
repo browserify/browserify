@@ -139,6 +139,7 @@ require.alias = function (from, to) {
 
 (function () {
     var process = {};
+    var global = typeof window !== 'undefined' ? window : {};
     var definedProcess = false;
     
     require.define = function (filename, fn) {
@@ -185,7 +186,8 @@ require.alias = function (from, to) {
                 module_.exports,
                 dirname,
                 filename,
-                process
+                process,
+                global
             );
             module_.loaded = true;
             return module_.exports;

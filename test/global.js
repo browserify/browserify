@@ -12,7 +12,8 @@ test('global', function (t) {
     
     var c = {
         t : t,
-        window : { a : 555 }
+        a : 555,
     };
+    c.window = c;
     vm.runInNewContext(src, c);
 });
