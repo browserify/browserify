@@ -1,7 +1,7 @@
 {
     "name" : "browserify",
     "version" : "1.16.0",
-    "description" : "browser-side require() for js directories and npm modules",
+    "description" : "browser-side require() the node way",
     "main" : "index.js",
     "bin" : {
         "browserify" : "bin/cmd.js"
