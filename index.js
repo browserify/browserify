@@ -1,6 +1,7 @@
 var path = require('path');
 var coffee = require('coffee-script');
 var EventEmitter = require('events').EventEmitter;
+var LiveScript = require('LiveScript');
 
 var wrap = require('./lib/wrap');
 var watch = require('./lib/watch');
@@ -63,6 +64,15 @@ var exports = module.exports = function (entryFile, opts) {
     });
     w.register('.json', function (body, file) {
         return 'module.exports = ' + body + ';\n';
+    });
+    w.register('.ls', function (body, file) {
+        try {
+            var res = LiveScript.compile(body, { filename : file });
+        }
+        catch (err) {
+            w.emit('syntaxError', err);
+        }
+        return res;
     });
     
     var listening = false;
