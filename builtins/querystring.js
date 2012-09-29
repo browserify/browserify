@@ -148,10 +148,26 @@ var stringify = exports.stringify = function(obj, prefix) {
     return stringifyObject(obj, prefix);
   } else if ('string' == typeof obj) {
     return stringifyString(obj, prefix);
+  } else if ('number' == typeof obj) {
+    return stringifyNumber(obj, prefix);
   } else {
     return prefix;
   }
 };
+
+/**
+ * Stringify the given `num`.
+ *
+ * @param {Number} num
+ * @param {String} prefix
+ * @return {String}
+ * @api private
+ */
+
+function stringifyNumber(num, prefix) {
+  if (!prefix) throw new TypeError('stringify expects an object');
+  return prefix + '=' + (isFinite(num) ? num : '');
+}
 
 /**
  * Stringify the given `str`.
