@@ -54,7 +54,7 @@ var exports = module.exports = function (entryFile, opts) {
     var w = wrap(opts_);
     w.register('.coffee', function (body, file) {
         try {
-            var res = coffee.compile(body, { filename : file });
+            var res = coffee.compile(body, { filename : file, bare: true });
         }
         catch (err) {
             w.emit('syntaxError', err);
