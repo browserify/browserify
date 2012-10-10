@@ -66,33 +66,11 @@ string `'process'`.
 b.require(file)
 ---------------
 
-Require a file or files for inclusion in the bundle.
+Require a file for inclusion in the bundle.
 
-If `file` is an array, require each element in it.
-
-If `file` is a non-array object, map an alias to a package name.
-For instance to be able to map `require('jquery')` to the jquery-browserify
-package, you can do:
-
-````javascript
-b.require({ jquery : 'jquery-browserify' })
-````
-
-and the same thing in middleware-form:
-
-````javascript
-browserify({ require : { jquery : 'jquery-browserify' } })
-````
-
-To mix alias objects with regular requires you could do:
-
-````javascript
-browserify({ require : [ 'seq', { jquery : 'jquery-browserify' }, 'traverse' ])
-````
-
-In practice you won't need to `b.require()` very many files since all the
-`require()`s are read from each file that you require and automatically
-included.
+In practice you need to `b.require()` one (or very few) file(s) since the AST walk will
+recursively look for subsequent require() calls descendant from the starting point(s)
+you provide.
 
 b.ignore(file)
 --------------
