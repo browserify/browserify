@@ -154,6 +154,7 @@ require.alias = function (from, to) {
         ;
         
         var require_ = function (file) {
+            dirname = (dirname == ".") ? filename : dirname ;
             var requiredModule = require(file, dirname);
             var cached = require.cache[require.resolve(file, dirname)];
 
