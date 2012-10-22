@@ -138,13 +138,16 @@ require.alias = function (from, to) {
 };
 
 (function () {
-    // var process = {};
+    var process = {};
     var global = typeof window !== 'undefined' ? window : {};
     var definedProcess = false;
 
     require.define = function (filename, fn) {
         // if (!definedProcess && require.modules.__browserify_process) {
-        var process = require.modules.__browserify_process();
+        if (require.modules.__browserify_process) {
+            process = require.modules.__browserify_process();
+        }
+
             // definedProcess = true;
         // }
 
