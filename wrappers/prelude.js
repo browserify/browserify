@@ -143,13 +143,10 @@ require.alias = function (from, to) {
     var definedProcess = false;
 
     require.define = function (filename, fn) {
-        // if (!definedProcess && require.modules.__browserify_process) {
-        if (require.modules.__browserify_process) {
+        if (!definedProcess && require.modules.__browserify_process) {
             process = require.modules.__browserify_process();
+            definedProcess = true;
         }
-
-            // definedProcess = true;
-        // }
 
         var dirname = require._core[filename]
             ? ''
