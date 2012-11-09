@@ -18,13 +18,12 @@ Just write an `entry.js` to start with some `require()`s in it:
 var foo = require('./foo');
 var bar = require('../lib/bar');
 
-// or use modules installed by npm in node_modules/
-var domready = require('domready');
+// or use modules installed by npm into node_modules/
+var gamma = require('gamma');
 
-domready(function () {
-    var elem = document.getElementById('result');
-    elem.textContent = foo(100) + bar('baz');
-});
+var elem = document.getElementById('result');
+var x = foo(100) + bar('baz');
+elem.textContent = gamma(x);
 ````
 
 Now just use the `browserify` command to build a bundle starting at `entry.js`:
