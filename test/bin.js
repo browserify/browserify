@@ -18,10 +18,13 @@ test('bin', function (t) {
     ps.stdout.on('data', function (buf) {
         src += buf.toString();
     });
+    ps.stderr.pipe(process.stderr, { end : false });
     
     ps.on('exit', function (code) {
         t.equal(code, 0);
-        
+    });
+    
+    ps.stdout.on('end', function () {
         var allDone = false;
         var c = {
             done : function () { allDone = true }
@@ -33,7 +36,5 @@ test('bin', function (t) {
             [ 'path', '__browserify_process', '/one.js', '/two.js', '/main.js' ].sort()
         );
         t.ok(allDone);
-        
-        t.end();
     });
 });

@@ -143,8 +143,6 @@ if (argv.ignore) bundle.ignore(argv.ignore);
 if (argv.outfile) {
     function write () {
         var src = bundle.bundle();
-        if (!bundle.ok) return;
-        
         fs.writeFile(argv.outfile, src, function () {
             if (argv.verbose) {
                 console.log(Buffer(src).length + ' bytes written');
@@ -157,5 +155,5 @@ if (argv.outfile) {
 }
 else {
     var src = bundle.bundle();
-    if (bundle.ok) console.log(src);
+    console.log(src);
 }
