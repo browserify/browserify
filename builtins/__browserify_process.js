@@ -8,7 +8,7 @@ process.nextTick = (function () {
     ;
 
     if (canSetImmediate) {
-        return window.setImmediate;
+        return function (f) { return window.setImmediate(f) };
     }
 
     if (canPost) {
