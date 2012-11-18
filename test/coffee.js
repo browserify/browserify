@@ -21,18 +21,19 @@ test('coffee', function (t) {
     
     t.equal(c.require('./'), 10 * 10 * 500 + 1000);
     t.equal(c.require('./index.coffee'), 10 * 10 * 500 + 1000);
-    t.end();
 });
 
 test('coffeeEntry', function (t) {
-    var b = browserify({ entry : __dirname + '/coffee/entry.coffee' });
+    t.plan(1);
+    
+    var b = browserify();
+    b.addEntry(__dirname + '/coffee/entry.coffee');
     var src = b.bundle();
     
     var c = {
         setTimeout : setTimeout,
         done : function (fn) {
             t.equal(fn(10), 100);
-            t.end();
         }
     };
     vm.runInNewContext(src, c);
