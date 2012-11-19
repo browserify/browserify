@@ -3,6 +3,7 @@ var coffee = require('coffee-script');
 var EventEmitter = require('events').EventEmitter;
 
 var wrap = require('./lib/wrap');
+var funstance = require('funstance');
 
 function idFromPath (path) {
     return path.replace(/\\/g, '/');
@@ -50,7 +51,14 @@ exports = module.exports = function (entryFile, opts) {
         debug : opts.debug,
         exports : opts.exports,
     };
-    var w = wrap(opts_);
+    var w = funstance(wrap(opts_), function (e) {
+        var self = this;
+        if (!e) return;
+        if (!Array.isArray(e)) e = [ e ];
+        e.forEach(function (file) { self.addEntry(file) });
+        return self;
+    });
+    
     w.register('.coffee', function (body, file) {
         try {
             var res = coffee.compile(body, { filename : file });
