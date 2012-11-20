@@ -5,9 +5,10 @@ var test = require('tap').test;
 
 test('backbone', function (t) {
     t.plan(3);
-    var src = browserify.bundle({
-        require : 'backbone'
-    });
+    var b = browserify();
+    b.require('backbone');
+    var src = b.bundle();
+    
     t.ok(typeof src === 'string');
     t.ok(src.length > 0);
     
