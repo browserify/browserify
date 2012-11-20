@@ -3,7 +3,6 @@ var coffee = require('coffee-script');
 var EventEmitter = require('events').EventEmitter;
 
 var wrap = require('./lib/wrap');
-var funstance = require('funstance');
 
 function idFromPath (path) {
     return path.replace(/\\/g, '/');
@@ -19,31 +18,17 @@ function needsNodeModulesPrepended (id) {
 
 exports = module.exports = function (entryFile, opts) {
     if (!opts) opts = {};
-    
-    if (Array.isArray(entryFile)) {
-        if (Array.isArray(opts.entry)) {
-            opts.entry.unshift.apply(opts.entry, entryFile);
-        }
-        else if (opts.entry) {
-            opts.entry = entryFile.concat(opts.entry);
-        }
-        else {
-            opts.entry = entryFile;
-        }
-    }
-    else if (typeof entryFile === 'object') {
+    if (typeof entryFile === 'object') {
         opts = entryFile;
+        entryFile = undefined;
     }
-    else if (typeof entryFile === 'string') {
-        if (Array.isArray(opts.entry)) {
-            opts.entry.unshift(entryFile);
-        }
-        else if (opts.entry) {
-            opts.entry = [ opts.entry, entryFile ];
-        }
-        else {
-            opts.entry = entryFile;
-        }
+    else {
+        opts.entry = entryFile;
+    }
+    
+    
+    if (!Array.isArray(opts.entry)) {
+        opts.entry = opts.entry ? [ opts.entry ] : [];
     }
     
     var opts_ = {
@@ -51,13 +36,8 @@ exports = module.exports = function (entryFile, opts) {
         debug : opts.debug,
         exports : opts.exports,
     };
-    var w = funstance(wrap(opts_), function (e) {
-        var self = this;
-        if (!e) return;
-        if (!Array.isArray(e)) e = [ e ];
-        e.forEach(function (file) { self.addEntry(file) });
-        return self;
-    });
+    var w = wrap(opts_);
+    if (opts.entry) opts.entry.forEach(function (e) { w.addEntry(e) });
     
     w.register('.coffee', function (body, file) {
         try {
