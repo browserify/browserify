@@ -37,7 +37,6 @@ exports = module.exports = function (entryFile, opts) {
         exports : opts.exports,
     };
     var w = wrap(opts_);
-    if (opts.entry) opts.entry.forEach(function (e) { w.addEntry(e) });
     
     w.register('.coffee', function (body, file) {
         try {
@@ -100,6 +99,7 @@ exports = module.exports = function (entryFile, opts) {
             w.require(opts.require, params);
         }
     }
+    if (opts.entry) opts.entry.forEach(function (e) { w.addEntry(e) });
     
     return w;
 };
