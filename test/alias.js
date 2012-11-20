@@ -5,9 +5,11 @@ var browserify = require('../');
 var test = require('tap').test;
 
 test('alias', function (t) {
-    t.plan(4);
+    t.plan(2);
     
-    var src = browserify({ require : { moo : 'seq' } }).bundle();
+    var b = browserify()
+    b.require('seq');
+    var src = b.bundle();
     
     var context = {
         setTimeout : setTimeout,
@@ -15,14 +17,9 @@ test('alias', function (t) {
     };
     
     vm.runInNewContext(src, context);
-    t.ok(context.require('moo'));
     t.ok(context.require('seq'));
-    t.equal(
-        String(context.require('seq')),
-        String(context.require('moo'))
-    );
     
-    context.require('moo')([1,2,3])
+    context.require('seq')([1,2,3])
         .parMap(function (x) {
             this(null, x * 100)
         })
