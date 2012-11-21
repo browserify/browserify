@@ -1,46 +1,23 @@
 var path = require('path');
-var coffee = require('coffee-script');
 var EventEmitter = require('events').EventEmitter;
+var through = require('through');
 
-var wrap = require('./lib/wrap');
+var required = require('required');
 
-exports = module.exports = function (files, opts) {
-    if (!opts) opts = {};
-    if (typeof files === 'object') {
-        opts = files;
-        files = [];
-    }
+module.exports = function (files, cb) {
     files = [].concat(files).filter(Boolean);
+    var outStream = through();
     
-    var w = wrap(opts);
-    
-    w.register('.coffee', function (body, file) {
-        try {
-            var res = coffee.compile(body, { filename : file });
-        }
-        catch (err) {
-            w.emit('syntaxError', err);
-        }
-        return res;
+    required(files[0], function (err, deps) {
+        console.dir(flatten(deps));
     });
     
-    w.register('.json', function (body, file) {
-        return 'module.exports = ' + body + ';\n';
-    });
-    
-    if (opts.filter) {
-        w.register('post', function (body) {
-            return opts.filter(body);
-        });
-    }
-    
-    w.ignore(opts.ignore || []);
-    
-    files.forEach(function (file) { w.addEntry(file) });
-    
-    return w;
+    return outStream;
 };
 
-exports.bundle = function (opts) {
-    return exports(opts).bundle();
-};
+function flatten (deps, out) {
+    return deps.reduce(function (acc, d) {
+        if (!acc[d.id]) acc[d.id] = d;
+        return flatten(d.deps, acc);
+    }, out || {});
+}
