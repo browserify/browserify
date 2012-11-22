@@ -20,6 +20,7 @@ function Browserify (files) {
     self.cache = {};
     self.deps = {};
     self.stringify = JSONStream.stringify();
+    self.pending = 0;
     
     [ 'data', 'end', 'close', 'error' ].forEach(function (name) {
         self.stringify.on(name, self.emit.bind(self, name));
@@ -31,6 +32,7 @@ function Browserify (files) {
 
 Browserify.prototype.addEntry = function (file) {
     var self = this;
+    self.pending ++;
     
     required(file, { cache : self.cache }, function (err, deps) {
         if (err) return self.emit('error', err);
@@ -42,10 +44,14 @@ Browserify.prototype.addEntry = function (file) {
             self.deps[file] = ds[file];
             self.stringify.write(ds[file]);
         });
+        
+        if (--self.pending === 0) self.stringify.end();
     });
 };
 
 Browserify.prototype.require = function () {
+    var self = this;
+    self.pending ++;
 };
 
 Browserify.prototype.bundle = function () {
@@ -58,7 +64,10 @@ function flatten (deps, out) {
         if (!acc[d.filename]) acc[d.filename] = d;
         
         var res = flatten(d.deps, acc);
-        d.deps = d.deps.map(function (x) { return x.filename });
+        d.deps = d.deps.reduce(function (acc, x) {
+            acc[x.id] = x.filename;
+            return acc;
+        }, {});
         
         return res;
     }, out || {});
