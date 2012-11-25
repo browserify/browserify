@@ -7,6 +7,13 @@ var isArray = typeof Array.isArray === 'function'
         return Object.prototype.toString.call(xs) === '[object Array]'
     }
 ;
+function indexOf (xs, x) {
+    if (xs.indexOf) return xs.indexOf(x);
+    for (var i = 0; i < xs.length; i++) {
+        if (x === xs[i]) return i;
+    }
+    return -1;
+}
 
 // By default EventEmitters will print a warning if more than
 // 10 listeners are added to it. This is a useful default which
@@ -143,7 +150,7 @@ EventEmitter.prototype.removeListener = function(type, listener) {
   var list = this._events[type];
 
   if (isArray(list)) {
-    var i = list.indexOf(listener);
+    var i = indexOf(list, listener);
     if (i < 0) return this;
     list.splice(i, 1);
     if (list.length == 0)
