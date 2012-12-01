@@ -1,5 +1,10 @@
 var events = require('events');
 
+exports.isArray = isArray;
+exports.isDate = function(obj){return Object.prototype.toString.call(obj) === '[object Date]'};
+exports.isRegExp = function(obj){return Object.prototype.toString.call(obj) === '[object RegExp]'};
+
+
 exports.print = function () {};
 exports.puts = function () {};
 exports.debug = function() {};
