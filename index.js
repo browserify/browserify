@@ -94,6 +94,12 @@ var exports = module.exports = function (entryFile, opts) {
         });
     }
     
+    if (opts.contentfilter) {
+        w.register('content', function (target, body) {
+            return opts.contentfilter(target, body);
+        });
+    }
+    
     w.ignore(opts.ignore || []);
     
     if (opts.require) {
