@@ -57,6 +57,7 @@ var exports = module.exports = function (entryFile, opts) {
             var res = coffee.compile(body, { filename : file });
         }
         catch (err) {
+            err.file = file;
             w.emit('syntaxError', err);
         }
         return res;
