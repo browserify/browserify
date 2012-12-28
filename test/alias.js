@@ -6,7 +6,7 @@ var browserify = require('../');
 var test = require('tap').test;
 
 test('alias', function (t) {
-    t.plan(5);
+    t.plan(8);
     var port = 10000 + Math.floor(Math.random() * (Math.pow(2,16) - 10000));
     var server = connect.createServer();
     
@@ -38,6 +38,9 @@ test('alias', function (t) {
                 vm.runInNewContext(src, context);
                 t.ok(context.require('moo'));
                 t.ok(context.require('seq'));
+                t.ok(context.require('seq') === context.require('seq'), 'returns the same instance for the same module');
+                t.ok(context.require('moo') === context.require('moo'), 'returns the same instance for the same module alias');
+                t.ok(context.require('seq') === context.require('moo'), 'returns the same instance for an aliased module and the original');
                 t.equal(
                     String(context.require('seq')),
                     String(context.require('moo'))
