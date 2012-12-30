@@ -4,6 +4,7 @@ var Buffer = require("buffer").Buffer;
 var pSlice = Array.prototype.slice;
 
 function objectKeys(object) {
+  if (Object.keys) return Object.keys(object);
   var result = [];
   for (var name in object) {
     if (Object.prototype.hasOwnProperty.call(object, name)) {
