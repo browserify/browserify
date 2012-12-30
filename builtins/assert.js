@@ -3,6 +3,16 @@ var util = require('util');
 var Buffer = require("buffer").Buffer;
 var pSlice = Array.prototype.slice;
 
+function objectKeys(object) {
+  var result = [];
+  for (var name in object) {
+    if (Object.prototype.hasOwnProperty.call(object, name)) {
+      result.push(name);
+    }
+  }
+  return result;
+}
+
 // 1. The assert module provides functions that throw
 // AssertionError's when particular conditions are not met. The
 // assert module must conform to the following interface.
@@ -187,8 +197,8 @@ function objEquiv(a, b) {
     return _deepEqual(a, b);
   }
   try {
-    var ka = Object.keys(a),
-        kb = Object.keys(b),
+    var ka = objectKeys(a),
+        kb = objectKeys(b),
         key, i;
   } catch (e) {//happens when one is a string literal and the other isn't
     return false;
