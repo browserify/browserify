@@ -22,14 +22,18 @@ try {
     exports.clearTimeout = clearTimeout;
     exports.clearInterval = clearInterval;
 
-    // Chrome seems to depend on `this` pseudo variable being a `window` and
-    // throws invalid invocation exception otherwise. If that's a case next
-    // line will throw and in `catch` clause window bound timer functions will
-    // be exported instead.
+    // Chrome and PhantomJS seems to depend on `this` pseudo variable being a
+    // `window` and throws invalid invocation exception otherwise. If this code
+    // runs in such JS runtime next line will throw and `catch` clause will
+    // exported timers functions bound to a window.
     exports.setTimeout(function() {});
 } catch (_) {
-    exports.setTimeout = setTimeout.bind(window);
-    exports.clearTimeout = clearTimeout.bind(window);
-    exports.setInterval = setInterval.bind(window);
-    exports.clearInterval = clearInterval.bind(window);
+    function bind(f, context) {
+      return function() { return f.apply(context, arguments); };
+    }
+
+    exports.setTimeout = bind(setTimeout, window);
+    exports.setInterval = bind(setInterval, window);
+    exports.clearTimeout = bind(clearTimeout, window);
+    exports.clearInterval = bind(clearInterval, window);
 }
