@@ -29,9 +29,9 @@ try {
     exports.setTimeout(function() {});
 } catch (_) {
     function bind(f, context) {
-      return function() { return f.apply(context, arguments); };
+        return function () { return f.apply(context, arguments) };
     }
-
+    
     exports.setTimeout = bind(setTimeout, window);
     exports.setInterval = bind(setInterval, window);
     exports.clearTimeout = bind(clearTimeout, window);
