@@ -12,6 +12,7 @@ var require = function (file, cwd) {
 require.paths = [];
 require.modules = {};
 require.cache = {};
+require.aliases = {};
 require.extensions = $extensions;
 
 require._core = {
@@ -38,7 +39,10 @@ require.resolve = (function () {
         }
         
         var n = loadNodeModulesSync(x, y);
-        if (n) return n;
+        if (n) {
+            if (require.aliases[n]) return require.aliases[n];
+            return n;
+        }
         
         throw new Error("Cannot find module '" + x + "'");
         
@@ -130,9 +134,11 @@ require.alias = function (from, to) {
         if (key.slice(0, basedir.length + 1) === basedir + '/') {
             var f = key.slice(basedir.length);
             require.modules[to + f] = require.modules[basedir + f];
+            require.aliases[to + f] = basedir + f;
         }
         else if (key === basedir) {
             require.modules[to] = require.modules[basedir];
+            require.aliases[to] = basedir;
         }
     }
 };
