@@ -104,6 +104,8 @@ var exports = module.exports = function (entryFile, opts) {
                 var params = {};
                 if (needsNodeModulesPrepended(r)) {
                     params.target = '/node_modules/' + r + '/index.js';
+                } else if( r.match( /^\./ ) ) {
+                  params.target = path.resolve('/', r);
                 }
                 w.require(r, params);
             });
@@ -117,7 +119,10 @@ var exports = module.exports = function (entryFile, opts) {
                     params.target = '/node_modules/'
                         + opts.require[key] + '/index.js'
                     ;
+                } else if( opts.require[key].match( /^\./ ) ) {
+                  params.target = path.resolve('/', opts.require[key]);
                 }
+
                 w.require(opts.require[key], params);
                 w.alias(key, opts.require[key]);
             });
