@@ -1,5 +1,4 @@
 var path = require('path');
-var coffee = require('coffee-script');
 var EventEmitter = require('events').EventEmitter;
 
 var wrap = require('./lib/wrap');
@@ -52,15 +51,6 @@ var exports = module.exports = function (entryFile, opts) {
         exports : opts.exports,
     };
     var w = wrap(opts_);
-    w.register('.coffee', function (body, file) {
-        try {
-            var res = coffee.compile(body, { filename : file });
-        }
-        catch (err) {
-            w.emit('syntaxError', err);
-        }
-        return res;
-    });
     w.register('.json', function (body, file) {
         return 'module.exports = ' + body + ';\n';
     });
