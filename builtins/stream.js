@@ -31,12 +31,8 @@ Stream.prototype.pipe = function(dest, options) {
   dest.on('drain', ondrain);
 
   // If the 'end' option is not supplied, dest.end() will be called when
-  // source gets the 'end' or 'close' events.  Only dest.end() once, and
-  // only when all sources have ended.
+  // source gets the 'end' or 'close' events.  Only dest.end() once.
   if (!dest._isStdio && (!options || options.end !== false)) {
-    dest._pipeCount = dest._pipeCount || 0;
-    dest._pipeCount++;
-
     source.on('end', onend);
     source.on('close', onclose);
   }
@@ -46,16 +42,6 @@ Stream.prototype.pipe = function(dest, options) {
     if (didOnEnd) return;
     didOnEnd = true;
 
-    dest._pipeCount--;
-
-    // remove the listeners
-    cleanup();
-
-    if (dest._pipeCount > 0) {
-      // waiting for other incoming streams to end.
-      return;
-    }
-
     dest.end();
   }
 
@@ -64,17 +50,7 @@ Stream.prototype.pipe = function(dest, options) {
     if (didOnEnd) return;
     didOnEnd = true;
 
-    dest._pipeCount--;
-
-    // remove the listeners
-    cleanup();
-
-    if (dest._pipeCount > 0) {
-      // waiting for other incoming streams to end.
-      return;
-    }
-
-    dest.destroy();
+    if (typeof dest.destroy === 'function') dest.destroy();
   }
 
   // don't leave dangling pipes when there are errors.
