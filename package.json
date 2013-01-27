@@ -26,6 +26,7 @@
     "dependencies" : {
         "detective" : "~0.2.0",
         "buffer-browserify" : "~0.0.1",
+        "console-browserify": "~0.1.0",
         "deputy" : "~0.0.3",
         "syntax-error" : "~0.0.0",
         "resolve" : "~0.2.0",
