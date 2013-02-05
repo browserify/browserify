@@ -164,6 +164,11 @@ b.prepend(content)
 
 Prepend unwrapped content to the beginning of the bundle.
 
+b.insert(content)
+-----------------
+
+Insert unwrapped content prior to files added via `addEntry()`.
+
 b.append(content)
 -----------------
 
