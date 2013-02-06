@@ -24,6 +24,7 @@
         "javascript"
     ],
     "dependencies" : {
+        "zlib-browserify": "0.0.1",
         "detective" : "~0.2.0",
         "buffer-browserify" : "~0.0.1",
         "console-browserify": "~0.1.0",
