@@ -6,6 +6,10 @@ var JSONStream = require('JSONStream');
 var entries = argv._.concat(argv.e).filter(Boolean);
 var b = browserify(entries);
 
+[].concat(argv.r).concat(argv.require).filter(Boolean)
+    .forEach(function (r) { b.require(r) })
+;
+
 if (argv.pack) {
     process.stdin.pipe(b.pack()).pipe(process.stdout);
     process.stdin.resume();
