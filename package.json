@@ -32,6 +32,7 @@
         "resolve" : "~0.2.0",
         "nub" : "~0.0.0",
         "commondir" : "~0.0.1",
+        "duplexer" : "~0.0.2",
         "coffee-script" : "1.x.x",
         "optimist" : "~0.3.4",
         "http-browserify" : "~0.1.1",
