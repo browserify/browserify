@@ -192,5 +192,7 @@ require.alias = function (from, to) {
             module_.loaded = true;
             return module_.exports;
         };
+
+        require.modules[filename].source = fn
     };
 })();
