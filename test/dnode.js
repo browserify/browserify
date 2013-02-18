@@ -5,7 +5,9 @@ var test = require('tap').test;
 test('dnode', function (t) {
     t.plan(2);
     
-    var src = browserify.bundle({ require : 'dnode' });
+    var b = browserify();
+    b.require('dnode');
+    
     var c = {
         console : console,
         navigator : {
@@ -17,11 +19,14 @@ test('dnode', function (t) {
         },
         document : {},
     };
-    vm.runInNewContext(src, c);
-    var dnode = c.require('dnode');
     
-    t.ok(dnode, 'dnode object exists');
-    t.ok(dnode.connect, 'dnode.connect exists');
-    
-    t.end();
+    b.bundle(function (err, src) {
+        vm.runInNewContext(src, c);
+        var dnode = c.require('dnode');
+        
+        t.ok(dnode, 'dnode object exists');
+        t.ok(dnode.connect, 'dnode.connect exists');
+        
+        t.end();
+    });
 });

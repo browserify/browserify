@@ -5,17 +5,18 @@ var test = require('tap').test;
 
 test('backbone', function (t) {
     t.plan(3);
-    var src = browserify.bundle({
-        require : 'backbone'
+    var b = browserify();
+    b.require('backbone');
+    b.bundle(function (err, src) {
+        t.ok(typeof src === 'string');
+        t.ok(src.length > 0);
+        
+        var c = { console: console };
+        vm.runInNewContext(src, c);
+        t.deepEqual(
+            Object.keys(backbone).sort(),
+            Object.keys(c.require('backbone')).sort()
+        );
+        t.end();
     });
-    t.ok(typeof src === 'string');
-    t.ok(src.length > 0);
-    
-    var c = { console : console };
-    vm.runInNewContext(src, c);
-    t.deepEqual(
-        Object.keys(backbone).sort(),
-        Object.keys(c.require('backbone')).sort()
-    );
-    t.end();
 });

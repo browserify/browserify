@@ -4,7 +4,7 @@
     "description" : "browser-side require() the node way",
     "main" : "index.js",
     "bin" : {
-        "browserify" : "bin/cmd.js"
+        "browserify" : "bin/cmd.js_"
     },
     "directories" : {
         "example" : "example",
@@ -25,12 +25,14 @@
     ],
     "dependencies" : {
         "detective" : "~0.2.0",
+        "lexical-scope" : "~0.0.0",
         "buffer-browserify" : "~0.0.1",
         "console-browserify": "~0.1.0",
         "deputy" : "~0.0.3",
         "syntax-error" : "~0.0.0",
         "resolve" : "~0.2.0",
         "nub" : "~0.0.0",
+        "through" : "~2.2.0",
         "commondir" : "~0.0.1",
         "duplexer" : "~0.0.2",
         "coffee-script" : "1.x.x",
@@ -45,7 +47,7 @@
         "hashish" : ">=0.0.2 <0.1",
         "traverse" : ">=0.3.8 <0.4",
         "backbone" : "~0.9.2",
-        "dnode" : "~0.9.11",
+        "dnode" : "~1.0.3",
         "jade": "0.20.0",
         "seq": "0.3.3",
         "jquery-browserify" : "*",

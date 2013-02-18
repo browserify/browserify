@@ -2,6 +2,7 @@ var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
 var through = require('through');
 var duplexer = require('duplexer');
+var parseScope = require('lexical-scope');
 
 module.exports = function (files) {
     return new Browserify(files);
@@ -10,6 +11,7 @@ module.exports = function (files) {
 function Browserify (files) {
     this.files = [].concat(files).filter(Boolean);
     this.exports = {};
+    this._globals = {};
 }
 
 Browserify.prototype.addEntry = function (file) {
@@ -18,14 +20,15 @@ Browserify.prototype.addEntry = function (file) {
 
 Browserify.prototype.require = function (name) {
     var file = require.resolve(name); // TODO: make async
-    this.exports[name] = file;
+    this.exports[file] = name;
     this.files.push(file);
 };
 
 Browserify.prototype.bundle = function (cb) {
     var d = this.deps()
+    var g = this.insertGlobals();
     var p = this.pack();
-    d.pipe(p);
+    d.pipe(g).pipe(p);
     
     if (cb) {
         var data = '';
@@ -38,17 +41,36 @@ Browserify.prototype.bundle = function (cb) {
 };
 
 Browserify.prototype.deps = function () {
-    return mdeps(this.files);
+    var self = this;
+    return mdeps(self.files);
+};
+
+Browserify.prototype.insertGlobals = function () {
+    return through();
+    return through(function (row) {
+        var scope = parseScope(row.source);
+        if (scope.globals.implicit.process && !self._globals.process) {
+            self._globals.process = true;
+        }
+    });
 };
 
 Browserify.prototype.pack = function () {
+    var self = this;
     var packer = browserPack({ raw: true });
     var ids = {};
     var idIndex = 0;
     
     var input = through(function (row) {
-        var ix = ids[row.id] || idIndex++;
-        if (!ids[ix]) ids[ix] = row.id;
+        var ix;
+        if (self.exports[row.id]) {
+            ix = self.exports[row.id];
+        }
+        else {
+            ix = ids[row.id] || idIndex++;
+        }
+        if (!ids[row.id]) ids[row.id] = ix;
+        
         row.id = ix;
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
             var file = row.deps[key];
@@ -56,19 +78,25 @@ Browserify.prototype.pack = function () {
             acc[key] = ids[file];
             return acc;
         }, {});
-        this.emit('data', row);
+        this.queue(row);
     });
     
     var first = true;
-    var hasExports = Object.keys(exports).length;
+    var hasExports = Object.keys(self.exports).length;
     var output = through(write, end);
     
     function writePrelude () {
         if (!first) return;
-        if (!hasExports) return output.emit('data', ';');
-        output.emit('data', [
+        if (!hasExports) return output.queue(';');
+        output.queue([
             'require=(function(o,r){',
-            '})(typeof require!=="undefined"&&require,'
+                'return function(n){',
+                    'var x=r(n);',
+                    'if(x!==undefined)return x;',
+                    'if(o)return o(n);',
+                    'throw new Error("Cannot find module \'"+n+"\'")',
+                '}',
+            '})(typeof require!=="undefined"&&require,',
         ].join(''));
     }
     
@@ -79,12 +107,12 @@ Browserify.prototype.pack = function () {
     function write (buf) {
         if (first) writePrelude();
         first = false;
-        this.emit('data', buf);
+        this.queue(buf);
     }
     
     function end () {
         if (first) writePrelude();
-        this.emit('data', hasExports ? ');' : ';');
+        this.queue(hasExports ? ');' : ';');
         this.emit('end');
     }
 };

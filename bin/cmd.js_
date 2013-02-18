@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var browserify = require('../');
+var browserify = require('../index.js_');
 var fs = require('fs');
 var resolve = require('resolve');
 
