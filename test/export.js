@@ -2,51 +2,34 @@ var browserify = require('../');
 var vm = require('vm');
 var test = require('tap').test;
 
-test('only export require', function (t) {
+test('no exports when no files are loaded', function (t) {
     t.plan(1);
-    var src = browserify().bundle();
-    var c = {};
-    vm.runInNewContext(src, c);
-    t.same(Object.keys(c), [ 'require' ]);
+    var b = browserify();
+    b.bundle(function (err, src) {
+        var c = {};
+        vm.runInNewContext(src, c);
+        t.same(Object.keys(c), []);
+    });
 });
 
 test('no exports when entries are defined', function (t) {
     t.plan(1);
-    var src = browserify(__dirname + '/export/entry.js').bundle();
-    var c = {};
-    vm.runInNewContext(src, c);
-    t.same(c, {});
+    var b = browserify();
+    b.add(__dirname + '/export/entry.js');
+    b.bundle(function (err, src) {
+        var c = {};
+        vm.runInNewContext(src, c);
+        t.same(c, {});
+    });
 });
 
-test('override require export', function (t) {
+test('require export when files are required', function (t) {
     t.plan(1);
-    var src = browserify({ exports : [ 'require' ] })
-        .addEntry(__dirname + '/export/entry.js')
-        .bundle()
-    ;
-    var c = {};
-    vm.runInNewContext(src, c);
-    t.same(Object.keys(c), [ 'require' ]);
-});
-
-test('override process export', function (t) {
-    t.plan(1);
-    var src = browserify({ exports : [ 'process' ] })
-        .addEntry(__dirname + '/export/entry.js')
-        .bundle()
-    ;
-    var c = {};
-    vm.runInNewContext(src, c);
-    t.same(Object.keys(c), [ 'process' ]);
-});
-
-test('override require and process export', function (t) {
-    t.plan(1);
-    var src = browserify({ exports : [ 'require', 'process' ] })
-        .addEntry(__dirname + '/export/entry.js')
-        .bundle()
-    ;
-    var c = {};
-    vm.runInNewContext(src, c);
-    t.same(Object.keys(c).sort(), [ 'require', 'process' ].sort());
+    var b = browserify();
+    b.require(__dirname + '/export/entry.js');
+    b.bundle(function (err, src) {
+        var c = {};
+        vm.runInNewContext(src, c);
+        t.same(Object.keys(c), [ 'require' ]);
+    });
 });
