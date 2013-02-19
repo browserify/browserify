@@ -1,9 +1,12 @@
-var mdeps = require('module-deps');
-var browserPack = require('browser-pack');
 var through = require('through');
 var duplexer = require('duplexer');
+
+var mdeps = require('module-deps');
+var browserPack = require('browser-pack');
 var parseScope = require('lexical-scope');
-var resolve = require('resolve');
+var browserResolve = require('browser-resolve');
+
+var path = require('path');
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 
@@ -24,11 +27,18 @@ Browserify.prototype.addEntry = function (file) {
     this.files.push(file);
 };
 
-Browserify.prototype.require = function (name) {
+Browserify.prototype.require = function (name, fromFile) {
     var self = this;
+    if (!fromFile) {
+        fromFile = require.main
+            && require.main.filename
+            || path.join(process.cwd(), '_fake')
+        ;
+    }
     self._pending ++;
     
-    resolve(name, function (err, file) {
+    browserResolve(name, { filename: fromFile }, function (err, file) {
+console.dir([ err, file ]);
         if (err) return self.emit('error', err);
         self.exports[file] = name;
         self.files.push(file);
@@ -65,7 +75,7 @@ Browserify.prototype.bundle = function (cb) {
 
 Browserify.prototype.deps = function () {
     var self = this;
-    return mdeps(self.files);
+    return mdeps(self.files, { resolve: browserResolve });
 };
 
 var processModulePath = require.resolve('process/browser.js');
@@ -79,7 +89,7 @@ Browserify.prototype.insertGlobals = function () {
             if (!self._globals.process) {
                 tr.pause();
                 
-                var d = mdeps(processModulePath);
+                var d = mdeps(processModulePath, { resolve: browserResolve });
                 d.on('data', function (r) { tr.emit('data', r) });
                 d.on('end', function () { tr.resume() });
             }

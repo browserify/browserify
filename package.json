@@ -29,7 +29,6 @@
         "through": "~2.2.0",
         "duplexer": "~0.0.2",
         "lexical-scope": "~0.0.0",
-        "resolve": "~0.3.0",
         "browser-resolve": "~0.0.1",
         "inherits": "~1.0.0",
         "process": "0.5.1",
