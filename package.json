@@ -30,7 +30,7 @@
         "console-browserify": "~0.1.0",
         "deputy" : "~0.0.3",
         "syntax-error" : "~0.0.0",
-        "resolve" : "~0.2.0",
+        "resolve" : "~0.3.0",
         "nub" : "~0.0.0",
         "through" : "~2.2.0",
         "commondir" : "~0.0.1",

@@ -3,15 +3,21 @@ var browserPack = require('browser-pack');
 var through = require('through');
 var duplexer = require('duplexer');
 var parseScope = require('lexical-scope');
+var resolve = require('resolve');
+var inherits = require('inherits');
+var EventEmitter = require('events').EventEmitter;
 
 module.exports = function (files) {
     return new Browserify(files);
 };
 
+inherits(Browserify, EventEmitter);
+
 function Browserify (files) {
     this.files = [].concat(files).filter(Boolean);
     this.exports = {};
     this._globals = {};
+    this._pending = 0;
 }
 
 Browserify.prototype.addEntry = function (file) {
@@ -19,15 +25,32 @@ Browserify.prototype.addEntry = function (file) {
 };
 
 Browserify.prototype.require = function (name) {
-    var file = require.resolve(name); // TODO: make async
-    this.exports[file] = name;
-    this.files.push(file);
+    var self = this;
+    self._pending ++;
+    
+    resolve(name, function (err, file) {
+        if (err) return self.emit('error', err);
+        self.exports[file] = name;
+        self.files.push(file);
+        if (--self._pending === 0) self.emit('_ready');
+    });
 };
 
 Browserify.prototype.bundle = function (cb) {
-    var d = this.deps()
-    var g = this.insertGlobals();
-    var p = this.pack();
+    var self = this;
+    
+    if (self._pending) {
+        var tr = through();
+        
+        self.on('_ready', function () {
+            self.bundle(cb).pipe(tr);
+        });
+        return tr;
+    }
+    
+    var d = self.deps()
+    var g = self.insertGlobals();
+    var p = self.pack();
     d.pipe(g).pipe(p);
     
     if (cb) {
