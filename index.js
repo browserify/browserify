@@ -43,6 +43,8 @@ Browserify.prototype.require = function (name, fromFile) {
         self.files.push(file);
         if (--self._pending === 0) self.emit('_ready');
     });
+    
+    return self;
 };
 
 Browserify.prototype.bundle = function (cb) {
