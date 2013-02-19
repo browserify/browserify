@@ -49,19 +49,25 @@ var processModulePath = require.resolve('process/browser.js');
 Browserify.prototype.insertGlobals = function () {
     var self = this;
     return through(function (row) {
+        var tr = this;
         var scope = parseScope(row.source);
+        
         if (scope.globals.implicit.indexOf('process') >= 0) {
             if (!self._globals.process) {
-                self.files.push(processModulePath);
+                tr.pause();
+                
+                var d = mdeps(processModulePath);
+                d.on('data', function (r) { tr.emit('data', r) });
+                d.on('end', function () { tr.resume() });
             }
+            
             self._globals.process = true;
-            row.source = 'var process=require('
-                + JSON.stringify(processModulePath)
-                + ');'
+            row.deps.__browserify_process = processModulePath;
+            row.source = 'var process=require("__browserify_process");'
                 + row.source
             ;
         }
-        this.queue(row);
+        tr.queue(row);
     });
 };
 
@@ -84,7 +90,7 @@ Browserify.prototype.pack = function () {
         row.id = ix;
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
             var file = row.deps[key];
-            if (!ids[file]) ids[file] = idIndex++;
+            if (ids[file] === undefined) ids[file] = idIndex++;
             acc[key] = ids[file];
             return acc;
         }, {});
