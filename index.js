@@ -45,13 +45,23 @@ Browserify.prototype.deps = function () {
     return mdeps(self.files);
 };
 
+var processModulePath = require.resolve('process/browser.js');
 Browserify.prototype.insertGlobals = function () {
-    return through();
+    var self = this;
     return through(function (row) {
         var scope = parseScope(row.source);
-        if (scope.globals.implicit.process && !self._globals.process) {
+        if (scope.globals.implicit.indexOf('process') >= 0) {
+            if (!self._globals.process) {
+                self.files.push(processModulePath);
+            }
             self._globals.process = true;
+            row.source = 'var process=require('
+                + JSON.stringify(processModulePath)
+                + ');'
+                + row.source
+            ;
         }
+        this.queue(row);
     });
 };
 

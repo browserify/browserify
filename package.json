@@ -39,7 +39,8 @@
         "optimist" : "~0.3.4",
         "http-browserify" : "~0.1.1",
         "vm-browserify" : "~0.0.0",
-        "crypto-browserify": "~0"
+        "crypto-browserify": "~0",
+        "process": "0.5.1"
     },
     "devDependencies" : {
         "tap" : "~0.2.5",
