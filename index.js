@@ -23,7 +23,7 @@ function Browserify (files) {
     this._pending = 0;
 }
 
-Browserify.prototype.addEntry = function (file) {
+Browserify.prototype.add = function (file) {
     this.files.push(file);
 };
 
