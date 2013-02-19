@@ -117,6 +117,7 @@ Browserify.prototype.pack = function () {
         else {
             ix = ids[row.id] !== undefined ? ids[row.id] : idIndex++;
         }
+        if (ids[row.id] === undefined) ids[row.id] = ix;
         
         row.id = ix;
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
