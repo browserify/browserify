@@ -3,30 +3,25 @@ var browserify = require('../');
 var test = require('tap').test;
 
 test('dnode', function (t) {
-    t.plan(2);
+    t.plan(3);
     
     var b = browserify();
     b.require('dnode');
     
     var c = {
-        console : console,
-        navigator : {
-            userAgent : 'foo',
-            platform : 'bar',
-        },
-        window : {
-            addEventListener : function () {},
-        },
-        document : {},
+        console: console,
+        setTimeout: setTimeout
     };
     
     b.bundle(function (err, src) {
         vm.runInNewContext(src, c);
         var dnode = c.require('dnode');
         
-        t.ok(dnode, 'dnode object exists');
-        t.ok(dnode.connect, 'dnode.connect exists');
-        
-        t.end();
+        t.equal(typeof dnode, 'function', 'dnode object exists');
+        t.equal(
+            dnode.connect, undefined,
+            "dnode.connect doesn't exist in browsers"
+        );
+        t.ok(dnode().pipe, "dnode() is pipe-able");
     });
 });

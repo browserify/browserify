@@ -38,7 +38,6 @@ Browserify.prototype.require = function (name, fromFile) {
     self._pending ++;
     
     browserResolve(name, { filename: fromFile }, function (err, file) {
-console.dir([ err, file ]);
         if (err) return self.emit('error', err);
         self.exports[file] = name;
         self.files.push(file);
@@ -112,13 +111,12 @@ Browserify.prototype.pack = function () {
     
     var input = through(function (row) {
         var ix;
-        if (self.exports[row.id]) {
+        if (self.exports[row.id] !== undefined) {
             ix = self.exports[row.id];
         }
         else {
-            ix = ids[row.id] || idIndex++;
+            ix = ids[row.id] !== undefined ? ids[row.id] : idIndex++;
         }
-        if (ids[row.id] === undefined) ids[row.id] = ix;
         
         row.id = ix;
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
