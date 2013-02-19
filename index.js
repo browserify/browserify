@@ -39,12 +39,16 @@ Browserify.prototype.require = function (name, fromFile) {
     
     browserResolve(name, { filename: fromFile }, function (err, file) {
         if (err) return self.emit('error', err);
-        self.exports[file] = name;
-        self.files.push(file);
+        self.expose(name, file);
         if (--self._pending === 0) self.emit('_ready');
     });
     
     return self;
+};
+
+Browserify.prototype.expose = function (name, file) {
+    this.exports[file] = name;
+    this.files.push(file);
 };
 
 Browserify.prototype.bundle = function (cb) {
