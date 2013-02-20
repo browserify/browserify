@@ -88,6 +88,11 @@ Browserify.prototype.bundle = function (cb) {
         d.on('error', cb);
         p.on('error', cb);
     }
+    else {
+        d.on('error', self.emit.bind(self, 'error'));
+        p.on('error', self.emit.bind(self, 'error'));
+    }
+    
     return p;
 };
 
