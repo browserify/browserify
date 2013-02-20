@@ -6,9 +6,8 @@ var test = require('tap').test;
 test('fieldString', function (t) {
     t.plan(1);
     
-    var dir = __dirname + '/field';
     var b = browserify();
-    b.expose('./string.js', dir + '/string.js');
+    b.expose('./string.js', __dirname + '/field/string.js');
     b.bundle(function (err, src) {
         var c = {};
         vm.runInNewContext(src, c);
@@ -22,9 +21,8 @@ test('fieldString', function (t) {
 test('fieldObject', function (t) {
     t.plan(1);
     
-    var dir = __dirname + '/field/';
     var b = browserify();
-    b.expose('./object.js', dir + '/object.js');
+    b.expose('./object.js', __dirname + '/field/object.js');
     b.bundle(function (err, src) {
         var c = {};
         vm.runInNewContext(src, c);
@@ -38,9 +36,8 @@ test('fieldObject', function (t) {
 test('missObject', function (t) {
     t.plan(1);
     
-    var dir = __dirname + '/field/';
     var b = browserify();
-    b.expose('./miss.js', dir + '/miss.js');
+    b.expose('./miss.js', __dirname + '/field/miss.js');
     b.bundle(function (err, src) {
         var c = {};
         vm.runInNewContext(src, c);
@@ -54,9 +51,8 @@ test('missObject', function (t) {
 test('fieldSub', function (t) {
     t.plan(1);
     
-    var dir = __dirname + '/field/';
     var b = browserify();
-    b.expose('./sub.js', dir + '/sub.js');
+    b.expose('./sub.js', __dirname + '/field/sub.js');
     b.bundle(function (err, src) {
         var c = {};
         vm.runInNewContext(src, c);

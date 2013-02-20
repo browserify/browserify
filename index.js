@@ -6,6 +6,17 @@ var browserPack = require('browser-pack');
 var parseScope = require('lexical-scope');
 var browserResolve = require('browser-resolve');
 
+var packageFilter = function (info) {
+    if (info.browserify && !info.browser) {
+        info.browser = info.browserify;
+    }
+    return info;
+};
+var resolver = function (id, parent, cb) {
+    parent.packageFilter = packageFilter;
+    return browserResolve(id, parent, cb);
+};
+
 var path = require('path');
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
@@ -37,7 +48,8 @@ Browserify.prototype.require = function (name, fromFile) {
     }
     self._pending ++;
     
-    browserResolve(name, { filename: fromFile }, function (err, file) {
+    var opts = { filename: fromFile, packageFilter: packageFilter };
+    browserResolve(name, opts, function (err, file) {
         if (err) return self.emit('error', err);
         self.expose(name, file);
         if (--self._pending === 0) self.emit('_ready');
@@ -80,7 +92,7 @@ Browserify.prototype.bundle = function (cb) {
 
 Browserify.prototype.deps = function () {
     var self = this;
-    return mdeps(self.files, { resolve: browserResolve });
+    return mdeps(self.files, { resolve: resolver });
 };
 
 var processModulePath = require.resolve('process/browser.js');
@@ -94,7 +106,7 @@ Browserify.prototype.insertGlobals = function () {
             if (!self._globals.process) {
                 tr.pause();
                 
-                var d = mdeps(processModulePath, { resolve: browserResolve });
+                var d = mdeps(processModulePath, { resolve: resolver });
                 d.on('data', function (r) { tr.emit('data', r) });
                 d.on('end', function () { tr.resume() });
             }
