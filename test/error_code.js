@@ -2,8 +2,6 @@ var test = require('tap').test;
 var spawn = require('child_process').spawn;
 var path = require('path');
 
-if (false) require('__32jlkbeep');
-
 test('error code', function (t) {
     t.plan(2);
     

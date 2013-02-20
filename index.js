@@ -1,6 +1,7 @@
 var through = require('through');
 var duplexer = require('duplexer');
 var commondir = require('commondir');
+var checkSyntax = require('syntax-error');
 
 var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
@@ -170,6 +171,9 @@ Browserify.prototype.pack = function () {
         if (/\.json$/.test(row.id)) {
             row.source = 'module.exports=' + row.source;
         }
+        
+        var err = checkSyntax(row.source, row.id);
+        if (err) self.emit('error', err);
         
         row.id = ix;
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {

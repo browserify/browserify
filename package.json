@@ -25,6 +25,7 @@
         "through": "~2.2.0",
         "duplexer": "~0.0.2",
         "lexical-scope": "~0.0.3",
+        "syntax-error": "~0.0.0",
         "browser-resolve": "~0.0.2",
         "commondir": "~0.0.1",
         "inherits": "~1.0.0",
