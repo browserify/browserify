@@ -30,3 +30,14 @@ test('__filename and __dirname', function (t) {
         t.equal(x.dirname, '/');
     });
 });
+
+test('process.nextTick', function (t) {
+    t.plan(1);
+    
+    var b = browserify();
+    b.add(__dirname + '/global/tick.js');
+    b.bundle(function (err, src) {
+        var c = { t: t, setTimeout: setTimeout };
+        vm.runInNewContext(src, c);
+    });
+});
