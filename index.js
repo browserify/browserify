@@ -100,9 +100,15 @@ Browserify.prototype.insertGlobals = function () {
     var self = this;
     return through(function (row) {
         var tr = this;
-        if (!/\bprocess\b/.test(row.source)) return tr.queue(row);
+        if (
+            !/\bprocess\b/.test(row.source)
+            && !/\bglobal\b/.test(row.source)
+            && !/\b__filename\b/.test(row.source)
+            && !/\b__dirname\b/.test(row.source)
+        ) return tr.queue(row);
         
         var scope = parseScope(row.source);
+        var globals = {};
         
         if (scope.globals.implicit.indexOf('process') >= 0) {
             if (!self._globals.process) {
@@ -115,10 +121,21 @@ Browserify.prototype.insertGlobals = function () {
             
             self._globals.process = true;
             row.deps.__browserify_process = processModulePath;
-            row.source = 'var process=require("__browserify_process");'
-                + row.source
-            ;
+            globals.process = 'require("__browserify_process")';
         }
+        if (scope.globals.implicit.indexOf('global') >= 0) {
+            globals.global = 'window';
+        }
+        
+        row.source = '(function('
+            + Object.keys(globals)
+            + '){' + row.source + '\n})('
+            + Object.keys(globals)
+                .map(function (key) { return globals[key] })
+                .join(',')
+            + ')'
+        ;
+        
         tr.queue(row);
     });
 };
