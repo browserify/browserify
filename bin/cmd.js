@@ -1,7 +1,15 @@
 #!/usr/bin/env node
 var browserify = require('../');
-var argv = require('./argv');
+var argv = require('optimist').argv;
 var JSONStream = require('JSONStream');
+var fs = require('fs');
+
+if (argv.h || argv.help || process.argv.length <= 2) {
+    return fs.createReadStream(__dirname + '/usage.txt')
+        .pipe(process.stdout)
+        .on('close', function () { process.exit(1) })
+    ;
+}
 
 var entries = argv._.concat(argv.e).filter(Boolean);
 var b = browserify(entries);
@@ -22,4 +30,11 @@ if (argv.deps) {
     return;
 }
 
-b.bundle().pipe(process.stdout);
+var outfile = argv.o || argv.outfile;
+if (outfile) {
+    var ws = fs.createWriteStream(outfile);
+    b.bundle().pipe(ws);
+}
+else {
+    b.bundle().pipe(process.stdout);
+}
