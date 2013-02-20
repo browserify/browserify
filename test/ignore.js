@@ -10,6 +10,7 @@ test('ignore', function (t) {
     b.ignore( __dirname + '/ignore/skip.js');
     
     b.bundle(function (err, src) {
+        if (err) t.fail(err);
         vm.runInNewContext(src, { t: t });
     });
 });

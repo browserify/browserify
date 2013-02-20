@@ -24,14 +24,15 @@ function Browserify (files) {
     this._globals = {};
     this._pending = 0;
     this._entries = [];
+    this._ignore = {};
     
     [].concat(files).filter(Boolean).forEach(this.add.bind(this));
 }
 
 Browserify.prototype.add = function (file) {
-    file = path.resolve(file);
-    this.files.push(file);
-    this._entries.push(file);
+    var r = path.resolve(file);
+    this.files.push(r);
+    this._entries.push(r);
 };
 
 Browserify.prototype.require = function (name, fromFile) {
@@ -56,6 +57,10 @@ Browserify.prototype.expose = function (name, file) {
     this.files.push(file);
 };
 
+Browserify.prototype.ignore = function (file) {
+    this._ignore[file] = true;
+};
+
 Browserify.prototype.bundle = function (cb) {
     var self = this;
     
@@ -68,7 +73,7 @@ Browserify.prototype.bundle = function (cb) {
         return tr;
     }
     
-    var d = self.deps()
+    var d = self.deps();
     var g = self.insertGlobals();
     var p = self.pack();
     d.pipe(g).pipe(p);
@@ -92,6 +97,8 @@ Browserify.prototype.deps = function () {
     var self = this;
     var d = mdeps(self.files, { resolve: self._resolve.bind(self) });
     return d.pipe(through(function (row) {
+        if (row.id === emptyModulePath) return;
+        
         var ix = self._entries.indexOf(row.id);
         row.entry = ix >= 0;
         if (ix >= 0) row.order = ix;
@@ -232,10 +239,12 @@ var packageFilter = function (info) {
     return info;
 };
 
+var emptyModulePath = require.resolve('./_empty');
 Browserify.prototype._resolve = function (id, parent, cb) {
+    if (this._ignore[id]) return cb(null, emptyModulePath);
+    var r = path.resolve(path.dirname(parent.filename), id);
+    if (this._ignore[r]) return cb(null, emptyModulePath);
+    
     parent.packageFilter = packageFilter;
     return browserResolve(id, parent, cb);
-};
-
-Browserify.prototype.ignore = function (file) {
 };
