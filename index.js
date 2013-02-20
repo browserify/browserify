@@ -5,7 +5,7 @@ var checkSyntax = require('syntax-error');
 var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
 var browserResolve = require('browser-resolve');
-var insertGlobals = require('insert-globals');
+var insertGlobals = require('insert-module-globals');
 
 var path = require('path');
 var inherits = require('inherits');
