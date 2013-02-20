@@ -1,8 +1,13 @@
-var EventEmitter = require('../builtins/events').EventEmitter;
 var test = require('tap').test;
+var browserify = require('../');
+var vm = require('vm');
 
 test('setMaxListener', function (t) {
-    var ee = new EventEmitter;
-    ee.setMaxListeners(5);
-    t.end();
+    t.plan(1);
+    var b = browserify();
+    b.add(__dirname + '/maxlisteners/main.js');
+    b.bundle(function (err, src) {
+        vm.runInNewContext(src);
+        t.ok(true); // didn't crash
+    });
 });

@@ -127,9 +127,8 @@ Browserify.prototype.insertGlobals = function () {
             globals.global = 'window';
         }
         
-        row.source = '(function('
-            + Object.keys(globals)
-            + '){' + row.source + '\n})('
+        row.source = '(function(' + Object.keys(globals) + ')'
+            + '{' + row.source + '\n})('
             + Object.keys(globals)
                 .map(function (key) { return globals[key] })
                 .join(',')
