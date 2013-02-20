@@ -100,6 +100,8 @@ Browserify.prototype.insertGlobals = function () {
     var self = this;
     return through(function (row) {
         var tr = this;
+        if (!/\bprocess\b/.test(row.source)) return tr.queue(row);
+        
         var scope = parseScope(row.source);
         
         if (scope.globals.implicit.indexOf('process') >= 0) {
