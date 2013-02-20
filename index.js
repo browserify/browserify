@@ -30,14 +30,19 @@ module.exports = function (files) {
 inherits(Browserify, EventEmitter);
 
 function Browserify (files) {
-    this.files = [].concat(files).filter(Boolean);
+    this.files = [];
     this.exports = {};
     this._globals = {};
     this._pending = 0;
+    this._entries = [];
+    
+    [].concat(files).filter(Boolean).forEach(this.add.bind(this));
 }
 
 Browserify.prototype.add = function (file) {
+    file = path.resolve(file);
     this.files.push(file);
+    this._entries.push(file);
 };
 
 Browserify.prototype.require = function (name, fromFile) {
@@ -96,7 +101,13 @@ Browserify.prototype.bundle = function (cb) {
 
 Browserify.prototype.deps = function () {
     var self = this;
-    return mdeps(self.files, { resolve: resolver });
+    var d = mdeps(self.files, { resolve: resolver });
+    return d.pipe(through(function (row) {
+        var ix = self._entries.indexOf(row.id);
+        row.entry = ix >= 0;
+        if (ix >= 0) row.order = ix;
+        this.queue(row);
+    }));
 };
 
 var processModulePath = require.resolve('process/browser.js');
@@ -123,7 +134,10 @@ Browserify.prototype.insertGlobals = function () {
                 tr.pause();
                 
                 var d = mdeps(processModulePath, { resolve: resolver });
-                d.on('data', function (r) { tr.emit('data', r) });
+                d.on('data', function (r) {
+                    r.entry = false;
+                    tr.emit('data', r);
+                });
                 d.on('end', function () { tr.resume() });
             }
             

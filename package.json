@@ -21,7 +21,7 @@
     ],
     "dependencies": {
         "module-deps": "~0.2.0",
-        "browser-pack": "~0.1.2",
+        "browser-pack": "~0.2.0",
         "through": "~2.2.0",
         "duplexer": "~0.0.2",
         "lexical-scope": "~0.0.3",
