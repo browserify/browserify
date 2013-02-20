@@ -105,7 +105,10 @@ Browserify.prototype.deps = function () {
 var processModulePath = require.resolve('process/browser.js');
 Browserify.prototype.insertGlobals = function () {
     var self = this;
-    var basedir = commondir(self.files.map(path.dirname));
+    var basedir = self.files.length
+        ? commondir(self.files.map(path.dirname))
+        : '/'
+    ;
     
     return through(function (row) {
         var tr = this;
