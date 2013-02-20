@@ -14,6 +14,11 @@ if (argv.h || argv.help || process.argv.length <= 2) {
 var entries = argv._.concat(argv.e).filter(Boolean);
 var b = browserify(entries);
 
+b.on('error', function (err) {
+    console.error(err);
+    process.exit(1);
+});
+
 [].concat(argv.r).concat(argv.require).filter(Boolean)
     .forEach(function (r) { b.require(r) })
 ;
