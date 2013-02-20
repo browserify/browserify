@@ -108,8 +108,7 @@ Browserify.prototype.insertGlobals = function () {
     
     return through(function (row) {
         var tr = this;
-        if (
-            !/\bprocess\b/.test(row.source)
+        if (!/\bprocess\b/.test(row.source)
             && !/\bglobal\b/.test(row.source)
             && !/\b__filename\b/.test(row.source)
             && !/\b__dirname\b/.test(row.source)
