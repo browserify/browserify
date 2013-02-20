@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-var browserify = require('./v2');
-var argv = require('optimist').argv;
+var browserify = require('../');
+var argv = require('./argv');
 var JSONStream = require('JSONStream');
 
 var entries = argv._.concat(argv.e).filter(Boolean);
