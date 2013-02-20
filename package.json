@@ -34,11 +34,11 @@
     },
     "devDependencies": {
         "tap": "~0.4.0",
-        "mkdirp": "~0.3.3"
+        "mkdirp": "~0.3.3",
         
         "backbone": "~0.9.2",
         "dnode": "~1.0.3",
-        "seq": "0.3.3",
+        "seq": "0.3.3"
     },
     "author" : {
         "name" : "James Halliday",

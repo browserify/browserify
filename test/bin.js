@@ -11,29 +11,21 @@ test('bin', function (t) {
     
     var ps = spawn(process.execPath, [
         path.resolve(__dirname, '../bin/cmd.js'),
-        'entry/main.js',
-        '--exports=require'
+        'entry/main.js'
     ]);
     var src = '';
-    ps.stdout.on('data', function (buf) {
-        src += buf.toString();
-    });
+    var err = '';
+    ps.stdout.on('data', function (buf) { src += buf });
+    ps.stderr.on('data', function (buf) { err += buf });
     
     ps.on('exit', function (code) {
         t.equal(code, 0);
+        t.equal(err, '');
         
         var allDone = false;
-        var c = {
-            done : function () { allDone = true }
-        };
+        var c = { done : function () { allDone = true } };
         
         vm.runInNewContext(src, c);
-        t.deepEqual(
-            Object.keys(c.require.modules).sort(),
-            [ 'path', '__browserify_process', '/one.js', '/two.js', '/main.js' ].sort()
-        );
         t.ok(allDone);
-        
-        t.end();
     });
 });
