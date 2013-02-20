@@ -43,10 +43,7 @@ Browserify.prototype.add = function (file) {
 Browserify.prototype.require = function (name, fromFile) {
     var self = this;
     if (!fromFile) {
-        fromFile = require.main
-            && require.main.filename
-            || path.join(process.cwd(), '_fake')
-        ;
+        fromFile =path.join(process.cwd(), '_fake');
     }
     self._pending ++;
     
