@@ -5,16 +5,17 @@ var test = require('tap').test;
 test('multi entry', function (t) {
     t.plan(3);
     
-    var src = browserify(__dirname + '/multi_entry/a.js', {
-        entry : [
-            __dirname + '/multi_entry/b.js',
-            __dirname + '/multi_entry/c.js'
-        ]
-    }).bundle();
+    var b = browserify([
+        __dirname + '/multi_entry/a.js',
+        __dirname + '/multi_entry/b.js'
+    ]);
+    b.add(__dirname + '/multi_entry/c.js');
     
-    var c = {
-        times : 0,
-        t : t
-    };
-    vm.runInNewContext(src, c);
+    b.bundle(function (err, src) {
+        var c = {
+            times : 0,
+            t : t
+        };
+        vm.runInNewContext(src, c);
+    });
 });
