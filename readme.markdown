@@ -20,7 +20,7 @@ paths like `'./foo'` and `'../lib/bar'` or module paths like `'gamma'` that will
 search `node_modules/` using
 [node's module lookup algorithm](https://github.com/substack/node-resolve).
 
-````javascript
+``` js
 var foo = require('./foo');
 var bar = require('../lib/bar');
 var gamma = require('gamma');
@@ -33,7 +33,7 @@ elem.textContent = gamma(x);
 Now just use the `browserify` command to build a bundle starting at `main.js`:
 
 ```
-$ browserify main.js -o bundle.js
+$ browserify main.js > bundle.js
 ```
 
 All of the modules that `entry.js` needs are included in the `bundle.js` from a
@@ -42,6 +42,83 @@ recursive walk of the `require()` graph using
 
 To use this bundle, just toss a `<script src="bundle.js"></script>` into your
 html!
+
+## external requires
+
+You can just as easily create bundle that will export a `require()` function so
+you can `require()` modules from another script tag. Here we'll create a
+`bundle.js` with the [through](https://npmjs.org/package/through)
+and [duplexer](https://npmjs.org/package/duplexer) modules.
+
+```
+$ browserify -r through -r duplexer > bundle.js
+```
+
+Then in your page you can do:
+
+``` js
+<script src="bundle.js"></script>
+<script>
+  var through = require('through');
+  var duplexer = require('duplexer');
+  /* ... */
+</script>
+```
+
+## multiple bundles
+
+If browserify finds a `require` function already defined in the page scope, it
+will fall back to that function if it didn't find any matches in its own set of
+bundled modules.
+
+In this way you can use browserify to split up bundles among multiple pages to
+get the benefit of caching for shared, infrequently-changing modules, while
+still being able to use `require()`. Just use a combination of `--ignore` and
+`--require` to factor out common dependencies.
+
+For example, if a website with 2 pages, `beep.js`:
+
+``` js
+var robot = require('./robot.js');
+console.log(robot('beep'));
+```
+
+and `boop.js`:
+
+``` js
+var robot = require('./robot.js');
+console.log(robot('boop'));
+```
+
+both depend on `robot.js`:
+
+``` js
+module.exports = function (s) { return s.toUpperCase() + '!' };
+```
+
+```
+$ browserify -r ./robot.js > static/common.js
+$ browserify -i ./robot.js beep.js > static/beep.js
+$ browserify -i ./robot.js boop.js > static/boop.js
+```
+
+Then on the beep page you can have:
+
+``` html
+<script src="common.js"></script>
+<script src="beep.js"></script>
+```
+
+while the boop page can have:
+
+``` html
+<script src="common.js"></script>
+<script src="boop.js"></script>
+```
+
+Note that because browserify compiles static lookups at build-time, you'll need
+to use the exact same string in the `-r` as in the `require()` statements inside
+the sub-bundles.
 
 # usage
 
