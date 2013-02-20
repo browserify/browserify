@@ -24,12 +24,10 @@
         "browser-pack": "~0.2.0",
         "through": "~2.2.0",
         "duplexer": "~0.0.2",
-        "lexical-scope": "~0.0.3",
+        "insert-globals": "~0.0.0",
         "syntax-error": "~0.0.0",
         "browser-resolve": "~0.0.2",
-        "commondir": "~0.0.1",
         "inherits": "~1.0.0",
-        "process": "0.5.1",
         "optimist": "~0.3.5",
         "JSONStream": "~0.4.3"
     },

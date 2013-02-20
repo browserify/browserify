@@ -1,12 +1,11 @@
 var through = require('through');
 var duplexer = require('duplexer');
-var commondir = require('commondir');
 var checkSyntax = require('syntax-error');
 
 var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
-var parseScope = require('lexical-scope');
 var browserResolve = require('browser-resolve');
+var insertGlobals = require('insert-globals');
 
 var path = require('path');
 var inherits = require('inherits');
@@ -21,7 +20,6 @@ inherits(Browserify, EventEmitter);
 function Browserify (files) {
     this.files = [];
     this.exports = {};
-    this._globals = {};
     this._pending = 0;
     this._entries = [];
     this._ignore = {};
@@ -38,7 +36,7 @@ Browserify.prototype.add = function (file) {
 Browserify.prototype.require = function (name, fromFile) {
     var self = this;
     if (!fromFile) {
-        fromFile =path.join(process.cwd(), '_fake');
+        fromFile = path.join(process.cwd(), '_fake');
     }
     self._pending ++;
     
@@ -74,7 +72,7 @@ Browserify.prototype.bundle = function (cb) {
     }
     
     var d = self.deps();
-    var g = self.insertGlobals();
+    var g = insertGlobals(self.files, { resolve: self._resolve.bind(self) });
     var p = self.pack();
     d.pipe(g).pipe(p);
     
@@ -104,63 +102,6 @@ Browserify.prototype.deps = function () {
         if (ix >= 0) row.order = ix;
         this.queue(row);
     }));
-};
-
-var processModulePath = require.resolve('process/browser.js');
-Browserify.prototype.insertGlobals = function () {
-    var self = this;
-    var basedir = self.files.length
-        ? commondir(self.files.map(path.dirname))
-        : '/'
-    ;
-    
-    return through(function (row) {
-        var tr = this;
-        if (!/\bprocess\b/.test(row.source)
-            && !/\bglobal\b/.test(row.source)
-            && !/\b__filename\b/.test(row.source)
-            && !/\b__dirname\b/.test(row.source)
-        ) return tr.queue(row);
-        
-        var scope = parseScope(row.source);
-        var globals = {};
-        
-        if (scope.globals.implicit.indexOf('process') >= 0) {
-            if (!self._globals.process) {
-                tr.pause();
-                
-                var resolver = self._resolve.bind(self);
-                var d = mdeps(processModulePath, { resolve: resolver });
-                d.on('data', function (r) {
-                    r.entry = false;
-                    tr.emit('data', r);
-                });
-                d.on('end', function () { tr.resume() });
-            }
-            
-            self._globals.process = true;
-            row.deps.__browserify_process = processModulePath;
-            globals.process = 'require("__browserify_process")';
-        }
-        if (scope.globals.implicit.indexOf('global') >= 0) {
-            globals.global = 'window';
-        }
-        if (scope.globals.implicit.indexOf('__filename') >= 0) {
-            var file = '/' + path.relative(basedir, row.id);
-            globals.__filename = JSON.stringify(file);
-        }
-        if (scope.globals.implicit.indexOf('__dirname') >= 0) {
-            var dir = path.dirname('/' + path.relative(basedir, row.id));
-            globals.__dirname = JSON.stringify(dir);
-        }
-        
-        var keys = Object.keys(globals);
-        row.source = '(function(' + keys + '){' + row.source + '\n})('
-            + keys.map(function (key) { return globals[key] }).join(',') + ')'
-        ;
-        
-        tr.queue(row);
-    });
 };
 
 Browserify.prototype.pack = function () {
