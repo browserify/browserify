@@ -11,8 +11,7 @@ test('retarget with -r', function (t) {
     
     var ps = spawn(process.execPath, [
         path.resolve(__dirname, '../bin/cmd.js'),
-        '-r', 'beep',
-        '--exports=require'
+        '-r', 'beep'
     ]);
     var src = '';
     ps.stdout.on('data', function (buf) { src += buf });
