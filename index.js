@@ -8,17 +8,6 @@ var browserPack = require('browser-pack');
 var parseScope = require('lexical-scope');
 var browserResolve = require('browser-resolve');
 
-var packageFilter = function (info) {
-    if (info.browserify && !info.browser) {
-        info.browser = info.browserify;
-    }
-    return info;
-};
-var resolver = function (id, parent, cb) {
-    parent.packageFilter = packageFilter;
-    return browserResolve(id, parent, cb);
-};
-
 var path = require('path');
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
@@ -101,7 +90,7 @@ Browserify.prototype.bundle = function (cb) {
 
 Browserify.prototype.deps = function () {
     var self = this;
-    var d = mdeps(self.files, { resolve: resolver });
+    var d = mdeps(self.files, { resolve: self._resolve.bind(self) });
     return d.pipe(through(function (row) {
         var ix = self._entries.indexOf(row.id);
         row.entry = ix >= 0;
@@ -133,6 +122,7 @@ Browserify.prototype.insertGlobals = function () {
             if (!self._globals.process) {
                 tr.pause();
                 
+                var resolver = self._resolve.bind(self);
                 var d = mdeps(processModulePath, { resolve: resolver });
                 d.on('data', function (r) {
                     r.entry = false;
@@ -233,4 +223,19 @@ Browserify.prototype.pack = function () {
         this.queue(hasExports ? ');' : ';');
         this.emit('end');
     }
+};
+
+var packageFilter = function (info) {
+    if (info.browserify && !info.browser) {
+        info.browser = info.browserify;
+    }
+    return info;
+};
+
+Browserify.prototype._resolve = function (id, parent, cb) {
+    parent.packageFilter = packageFilter;
+    return browserResolve(id, parent, cb);
+};
+
+Browserify.prototype.ignore = function (file) {
 };
