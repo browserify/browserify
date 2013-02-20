@@ -1,6 +1,7 @@
 Usage: browserify [entry files] {OPTIONS}
 
 Options:
+
   --outfile, -o  Write the browserify bundle to this file.
                  If unspecified, browserify prints to stdout.
 
@@ -8,6 +9,8 @@ Options:
                  Optionally use a colon separator to set the target.
 
   --entry, -e    An entry point of your app
+  
+  --ignore, -i   Omit a file from the output bundle.
 
   --help, -h     Show this message
 

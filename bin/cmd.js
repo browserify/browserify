@@ -19,6 +19,9 @@ b.on('error', function (err) {
     process.exit(1);
 });
 
+[].concat(argv.i).concat(argv.ignore).filter(Boolean)
+    .forEach(function (i) { b.ignore(i) })
+;
 [].concat(argv.r).concat(argv.require).filter(Boolean)
     .forEach(function (r) { b.require(r) })
 ;
