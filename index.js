@@ -156,6 +156,10 @@ Browserify.prototype.pack = function () {
         }
         if (ids[row.id] === undefined) ids[row.id] = ix;
         
+        if (/\.json$/.test(row.id)) {
+            row.source = 'module.exports=' + row.source;
+        }
+        
         row.id = ix;
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
             var file = row.deps[key];
