@@ -1,5 +1,6 @@
 var through = require('through');
 var duplexer = require('duplexer');
+var commondir = require('commondir');
 
 var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
@@ -98,6 +99,8 @@ Browserify.prototype.deps = function () {
 var processModulePath = require.resolve('process/browser.js');
 Browserify.prototype.insertGlobals = function () {
     var self = this;
+    var basedir = commondir(self.files.map(path.dirname));
+    
     return through(function (row) {
         var tr = this;
         if (
@@ -126,13 +129,18 @@ Browserify.prototype.insertGlobals = function () {
         if (scope.globals.implicit.indexOf('global') >= 0) {
             globals.global = 'window';
         }
+        if (scope.globals.implicit.indexOf('__filename') >= 0) {
+            var file = '/' + path.relative(basedir, row.id);
+            globals.__filename = JSON.stringify(file);
+        }
+        if (scope.globals.implicit.indexOf('__dirname') >= 0) {
+            var dir = path.dirname('/' + path.relative(basedir, row.id));
+            globals.__dirname = JSON.stringify(dir);
+        }
         
-        row.source = '(function(' + Object.keys(globals) + ')'
-            + '{' + row.source + '\n})('
-            + Object.keys(globals)
-                .map(function (key) { return globals[key] })
-                .join(',')
-            + ')'
+        var keys = Object.keys(globals);
+        row.source = '(function(' + keys + '){' + row.source + '\n})('
+            + keys.map(function (key) { return globals[key] }).join(',') + ')'
         ;
         
         tr.queue(row);
