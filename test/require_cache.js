@@ -2,17 +2,18 @@ var vm = require('vm');
 var browserify = require('../');
 var test = require('tap').test;
 
-test('require.cache', function (t) {
-    t.plan(3);
+test('cached require results', function (t) {
+    t.plan(1);
     
-    var src = browserify().require('seq').bundle();
-    var c = {};
-    vm.runInNewContext(src, c);
-    var seqPath = c.require.resolve('seq');
-    t.equal(c.require.cache[seqPath], undefined);
-    
-    var seq = c.require('seq');
-    t.equal(seq, c.require.cache[seqPath].exports);
-    var seqCached = c.require('seq');   // check if require() uses the cache
-    t.equal(seq, seqCached);
+    var b = browserify();
+    b.require('seq');
+    b.bundle(function (err, src) {
+        var c = {};
+        vm.runInNewContext(src, c);
+        
+        var seq0 = c.require('seq');
+        var seq1 = c.require('seq');
+        
+        t.ok(seq0 === seq1);
+    });
 });
