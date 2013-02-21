@@ -94,14 +94,16 @@ Browserify.prototype.bundle = function (cb) {
 Browserify.prototype.deps = function () {
     var self = this;
     var d = mdeps(self.files, { resolve: self._resolve.bind(self) });
-    return d.pipe(through(function (row) {
+    return d.pipe(through(write));
+    
+    function write (row) {
         if (row.id === emptyModulePath) return;
         
         var ix = self._entries.indexOf(row.id);
         row.entry = ix >= 0;
         if (ix >= 0) row.order = ix;
         this.queue(row);
-    }));
+    }
 };
 
 Browserify.prototype.pack = function () {
@@ -169,7 +171,7 @@ Browserify.prototype.pack = function () {
     function end () {
         if (first) writePrelude();
         this.queue(hasExports ? ');' : ';');
-        this.emit('end');
+        this.queue(null);
     }
 };
 
