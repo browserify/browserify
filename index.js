@@ -66,6 +66,8 @@ Browserify.prototype.bundle = function (opts, cb) {
         opts = {};
     }
     if (!opts) opts = {};
+    if (opts.insertGlobals === undefined) opts.insertGlobals = false;
+    if (opts.detectGlobals === undefined) opts.detectGlobals = true;
     
     if (self._pending) {
         var tr = through();
@@ -77,7 +79,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     }
     
     var d = self.deps();
-    var g = opts.detectGlobals !== false || opts.insertGlobals
+    var g = opts.detectGlobals || opts.insertGlobals
         ? insertGlobals(self.files, {
             resolve: self._resolve.bind(self),
             always: opts.insertGlobals
