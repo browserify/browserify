@@ -110,6 +110,9 @@ Browserify.prototype.deps = function () {
     
     function write (row) {
         if (row.id === emptyModulePath) return;
+        if (/\.json$/.test(row.id)) {
+            row.source = 'module.exports=' + row.source;
+        }
         
         var ix = self._entries.indexOf(row.id);
         row.entry = ix >= 0;
@@ -133,10 +136,6 @@ Browserify.prototype.pack = function () {
             ix = ids[row.id] !== undefined ? ids[row.id] : idIndex++;
         }
         if (ids[row.id] === undefined) ids[row.id] = ix;
-        
-        if (/\.json$/.test(row.id)) {
-            row.source = 'module.exports=' + row.source;
-        }
         
         var err = checkSyntax(row.source, row.id);
         if (err) self.emit('error', err);
