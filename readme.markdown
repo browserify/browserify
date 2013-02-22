@@ -125,7 +125,7 @@ the sub-bundles.
 ```
 Usage: browserify [entry files] {OPTIONS}
 
-Options:
+Standard Options:
 
   --outfile, -o  Write the browserify bundle to this file.
                  If unspecified, browserify prints to stdout.
@@ -139,6 +139,25 @@ Options:
 
   --help, -h     Show this message
 
+Advanced Options:
+
+  --insert-globals, --ig    [default: false]
+
+    Skip detection and always insert definitions for process, global,
+    __filename, and __dirname.
+                  
+    benefit: faster builds
+    cost: extra bytes
+ 
+  --detect-globals, --dg    [default: true ]
+
+    Detect the presence of process, global, __filename, and __dirname and define
+    these values when present.
+
+    benefit: npm modules more likely to work
+    cost: slower builds
+ 
+Specify a parameter.
 ```
 
 # compatibility
