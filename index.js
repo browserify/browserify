@@ -59,8 +59,13 @@ Browserify.prototype.ignore = function (file) {
     this._ignore[file] = true;
 };
 
-Browserify.prototype.bundle = function (cb) {
+Browserify.prototype.bundle = function (opts, cb) {
     var self = this;
+    if (typeof opts === 'function') {
+        cb = opts;
+        opts = {};
+    }
+    if (!opts) opts = {};
     
     if (self._pending) {
         var tr = through();
@@ -72,7 +77,13 @@ Browserify.prototype.bundle = function (cb) {
     }
     
     var d = self.deps();
-    var g = insertGlobals(self.files, { resolve: self._resolve.bind(self) });
+    var g = opts.detectGlobals !== false || opts.insertGlobals
+        ? insertGlobals(self.files, {
+            resolve: self._resolve.bind(self),
+            always: opts.insertGlobals
+        })
+        : through()
+    ;
     var p = self.pack();
     d.pipe(g).pipe(p);
     
@@ -87,6 +98,7 @@ Browserify.prototype.bundle = function (cb) {
         d.on('error', self.emit.bind(self, 'error'));
         p.on('error', self.emit.bind(self, 'error'));
     }
+    p.pause = function () {};
     
     return p;
 };

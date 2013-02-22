@@ -1,8 +1,18 @@
 #!/usr/bin/env node
 var browserify = require('../');
-var argv = require('optimist').boolean(['deps','pack']).argv;
-var JSONStream = require('JSONStream');
 var fs = require('fs');
+
+var JSONStream = require('JSONStream');
+var defined = require('defined');
+
+var argv = require('optimist')
+    .boolean(['deps','pack','ig','dg'])
+    .alias('insert-globals', 'ig')
+    .alias('detect-globals', 'dg')
+    .default('ig', false)
+    .default('dg', true)
+    .argv
+;
 
 if (argv.h || argv.help || process.argv.length <= 2) {
     return fs.createReadStream(__dirname + '/usage.txt')
@@ -41,11 +51,15 @@ if (argv.deps) {
     return;
 }
 
+var bundle = b.bundle({
+    detectGlobals: argv['detect-globals'] !== false && argv.dg !== false,
+    insertGlobals: argv['insert-globals'] || argv.ig
+});
+
 var outfile = argv.o || argv.outfile;
 if (outfile) {
-    var ws = fs.createWriteStream(outfile);
-    b.bundle().pipe(ws);
+    bundle.pipe(fs.createWriteStream(outfile));
 }
 else {
-    b.bundle().pipe(process.stdout);
+    bundle.pipe(process.stdout);
 }
