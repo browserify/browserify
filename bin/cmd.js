@@ -7,6 +7,7 @@ var argv = require('optimist')
     .boolean(['deps','pack','ig','dg'])
     .alias('insert-globals', 'ig')
     .alias('detect-globals', 'dg')
+    .alias('ig', 'fast')
     .default('ig', false)
     .default('dg', true)
     .argv

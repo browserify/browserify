@@ -141,7 +141,7 @@ Standard Options:
 
 Advanced Options:
 
-  --insert-globals, --ig    [default: false]
+  --insert-globals, --ig, --fast    [default: false]
 
     Skip detection and always insert definitions for process, global,
     __filename, and __dirname.
@@ -149,7 +149,7 @@ Advanced Options:
     benefit: faster builds
     cost: extra bytes
  
-  --detect-globals, --dg    [default: true ]
+  --detect-globals, --dg            [default: true ]
 
     Detect the presence of process, global, __filename, and __dirname and define
     these values when present.
