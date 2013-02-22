@@ -68,6 +68,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     if (!opts) opts = {};
     if (opts.insertGlobals === undefined) opts.insertGlobals = false;
     if (opts.detectGlobals === undefined) opts.detectGlobals = true;
+    if (opts.ignoreMissing === undefined) opts.ignoreMissing = false;
     
     if (self._pending) {
         var tr = through();
@@ -78,7 +79,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         return tr;
     }
     
-    var d = self.deps();
+    var d = self.deps(opts);
     var g = opts.detectGlobals || opts.insertGlobals
         ? insertGlobals(self.files, {
             resolve: self._resolve.bind(self),
@@ -105,9 +106,15 @@ Browserify.prototype.bundle = function (opts, cb) {
     return p;
 };
 
-Browserify.prototype.deps = function () {
+Browserify.prototype.deps = function (params) {
     var self = this;
-    var d = mdeps(self.files, { resolve: self._resolve.bind(self) });
+    var opts = {
+        resolve: self._resolve.bind(self)
+    };
+    if (params && params.ignoreMissing) {
+        opts.ignoreMissing = true;
+    }
+    var d = mdeps(self.files, opts);
     return d.pipe(through(write));
     
     function write (row) {
