@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 var browserify = require('../');
 var fs = require('fs');
-
 var JSONStream = require('JSONStream');
-var defined = require('defined');
 
 var argv = require('optimist')
     .boolean(['deps','pack','ig','dg'])
