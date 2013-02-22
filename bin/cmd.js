@@ -7,6 +7,7 @@ var argv = require('optimist')
     .boolean(['deps','pack','ig','dg'])
     .alias('insert-globals', 'ig')
     .alias('detect-globals', 'dg')
+    .alias('ignore-missing', 'im')
     .default('ig', false)
     .default('dg', true)
     .argv
@@ -51,7 +52,8 @@ if (argv.deps) {
 
 var bundle = b.bundle({
     detectGlobals: argv['detect-globals'] !== false && argv.dg !== false,
-    insertGlobals: argv['insert-globals'] || argv.ig
+    insertGlobals: argv['insert-globals'] || argv.ig,
+    ignoreMissing: argv['ignore-missing'] || argv.im
 });
 
 var outfile = argv.o || argv.outfile;
