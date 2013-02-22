@@ -141,7 +141,7 @@ Standard Options:
 
 Advanced Options:
 
-  --insert-globals, --ig    [default: false]
+  --insert-globals, --ig, --fast    [default: false]
 
     Skip detection and always insert definitions for process, global,
     __filename, and __dirname.
@@ -149,7 +149,7 @@ Advanced Options:
     benefit: faster builds
     cost: extra bytes
  
-  --detect-globals, --dg    [default: true ]
+  --detect-globals, --dg            [default: true ]
 
     Detect the presence of process, global, __filename, and __dirname and define
     these values when present.
@@ -193,6 +193,50 @@ in the bundled output in a browser-appropriate way:
 * global - top-level scope object (window)
 * __filename - file path of the currently executing file
 * __dirname - directory path of the currently executing file
+
+# methods
+
+``` js
+var browserify = require('browserify')
+```
+
+## var b = browserify(files=[])
+
+Create a browserify instance `b` from the entry main `files`.
+`files` can be an array of files or a single file.
+
+## b.add(file)
+
+Add an entry file from `file` that will be executed when the bundle loads.
+
+## b.require(name)
+
+Make `name` available from outside the bundle with `require(name)`.
+
+The package `name` is anything that can be resolved by `require.resolve()`.
+
+## b.expose(name, file)
+
+Expose the filename at `file` to outside the bundle at `require(name)`.
+
+## b.bundle(opts, cb)
+
+Bundle the files and their dependencies into a single javascript file.
+
+Return a readable stream with the javascript file contents or
+optionally specify a `cb(err, src)` to get the buffered results.
+
+When `opts.insertGlobals` is true, always insert `process`, `global`,
+`__filename`, and `__dirname` without analyzing the AST for faster builds but
+larger output bundles. Default false.
+
+When `opts.detectGlobals` is true, scan all files for `process`, `global`,
+`__filename`, and `__dirname`, defining as necessary. With this option npm
+modules are more likely to work but bundling takes longer. Default true.
+
+## b.ignore(name)
+
+Prevent the module or file at `name` from showing up in the output bundle.
 
 # package.json
 

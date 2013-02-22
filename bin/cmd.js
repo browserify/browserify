@@ -4,11 +4,13 @@ var fs = require('fs');
 var JSONStream = require('JSONStream');
 
 var argv = require('optimist')
-    .boolean(['deps','pack','ig','dg'])
+    .boolean(['deps','pack','ig','dg', 'im'])
     .alias('insert-globals', 'ig')
     .alias('detect-globals', 'dg')
     .alias('ignore-missing', 'im')
+    .alias('ig', 'fast')
     .default('ig', false)
+    .default('im', false)
     .default('dg', true)
     .argv
 ;
