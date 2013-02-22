@@ -223,6 +223,16 @@ The package `name` is anything that can be resolved by `require.resolve()`.
 
 Expose the filename at `file` to outside the bundle at `require(name)`.
 
+## b.fake(moduleName, alternativePath)
+
+Replace some `moduleName` module with alternative implementation located at
+`alternativePath`. For example:
+
+```javascript
+b.fake('express', __dirname + '/fake-express.js');
+b.fake('fs', __dirname + '/client-side-fs.js');
+```
+
 ## b.bundle(opts, cb)
 
 Bundle the files and their dependencies into a single javascript file.

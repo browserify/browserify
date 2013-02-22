@@ -23,6 +23,7 @@ function Browserify (files) {
     this._pending = 0;
     this._entries = [];
     this._ignore = {};
+    this._fake = {};
     
     [].concat(files).filter(Boolean).forEach(this.add.bind(this));
 }
@@ -31,6 +32,10 @@ Browserify.prototype.add = function (file) {
     var r = path.resolve(file);
     this.files.push(r);
     this._entries.push(r);
+};
+
+Browserify.prototype.fake = function (name, path) {
+    this._fake[name] = path;
 };
 
 Browserify.prototype.require = function (name, fromFile) {
@@ -205,6 +210,7 @@ var packageFilter = function (info) {
 var emptyModulePath = require.resolve('./_empty');
 Browserify.prototype._resolve = function (id, parent, cb) {
     if (this._ignore[id]) return cb(null, emptyModulePath);
+    if (this._fake[id]) return cb(null, this._fake[id]);
     var r = path.resolve(path.dirname(parent.filename), id);
     if (this._ignore[r]) return cb(null, emptyModulePath);
     
