@@ -51,6 +51,8 @@ test('util.inherits without Object.create', function (t) {
         var EE = c.require('events').EventEmitter;
         
         function Beep () {}
+        Beep.prototype = {};
+        
         c.require('util').inherits(Beep, EE);
         var beep = new Beep;
         
