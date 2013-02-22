@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 var browserify = require('../');
-var argv = require('optimist').argv;
+var argv = require('optimist').boolean(['deps','pack']).argv;
 var JSONStream = require('JSONStream');
 var fs = require('fs');
 
@@ -9,6 +9,9 @@ if (argv.h || argv.help || process.argv.length <= 2) {
         .pipe(process.stdout)
         .on('close', function () { process.exit(1) })
     ;
+}
+if (argv.v || argv.verbose) {
+    return console.log(require('../package.json').version);
 }
 
 var entries = argv._.concat(argv.e).filter(Boolean);
