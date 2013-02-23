@@ -23,6 +23,7 @@ function Browserify (files) {
     this._pending = 0;
     this._entries = [];
     this._ignore = {};
+    this._link = {};
     
     [].concat(files).filter(Boolean).forEach(this.add.bind(this));
 }
@@ -59,6 +60,10 @@ Browserify.prototype.ignore = function (file) {
     this._ignore[file] = true;
 };
 
+Browserify.prototype.link = function (src, dest) {
+    this._link[src] = dest;
+};
+
 Browserify.prototype.bundle = function (opts, cb) {
     var self = this;
     if (typeof opts === 'function') {
@@ -87,8 +92,9 @@ Browserify.prototype.bundle = function (opts, cb) {
         })
         : through()
     ;
+    var l = self.insertLinks();
     var p = self.pack();
-    d.pipe(g).pipe(p);
+    d.pipe(g).pipe(l).pipe(p);
     
     if (cb) {
         var data = '';
@@ -105,6 +111,36 @@ Browserify.prototype.bundle = function (opts, cb) {
     
     return p;
 };
+
+Browserify.prototype.insertLinks = function () {
+    var self = this;
+    var first = true;
+    return through(insert);
+    
+    function insert (row) {
+        if (first) {
+            Object.keys(self._link).forEach(function(src) {
+                var dest = self._link[src];
+                this.queue({
+                    id: src,
+                    source: 'module.exports = ' + dest,
+                    entry: false,
+                    deps: {}
+                });
+            }.bind(this));
+            
+            first = false;
+        }
+        
+        row.deps = Object.keys(row.deps).reduce(function(memo, key) {
+            memo[key] = self._link[key] ? key : row.deps[key];
+            return memo;
+        }, {});
+        row.order += Object.keys(self._link).length;
+        
+        this.queue(row);
+    }
+}
 
 Browserify.prototype.deps = function (params) {
     var self = this;
@@ -204,7 +240,7 @@ var packageFilter = function (info) {
 
 var emptyModulePath = require.resolve('./_empty');
 Browserify.prototype._resolve = function (id, parent, cb) {
-    if (this._ignore[id]) return cb(null, emptyModulePath);
+    if (this._ignore[id] || this._link[id]) return cb(null, emptyModulePath);
     var r = path.resolve(path.dirname(parent.filename), id);
     if (this._ignore[r]) return cb(null, emptyModulePath);
     

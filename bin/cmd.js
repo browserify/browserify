@@ -33,6 +33,11 @@ b.on('error', function (err) {
     process.exit(1);
 });
 
+[].concat(argv.link).forEach(function (i) {
+  var s = i.split(':');
+  b.link(s[0], s[1]);
+});
+
 [].concat(argv.i).concat(argv.ignore).filter(Boolean)
     .forEach(function (i) { b.ignore(i) })
 ;
