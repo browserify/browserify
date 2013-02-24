@@ -73,20 +73,20 @@ bundled modules.
 
 In this way you can use browserify to split up bundles among multiple pages to
 get the benefit of caching for shared, infrequently-changing modules, while
-still being able to use `require()`. Just use a combination of `--ignore` and
+still being able to use `require()`. Just use a combination of `--external` and
 `--require` to factor out common dependencies.
 
 For example, if a website with 2 pages, `beep.js`:
 
 ``` js
-var robot = require('./robot.js');
+var robot = require('./robot');
 console.log(robot('beep'));
 ```
 
 and `boop.js`:
 
 ``` js
-var robot = require('./robot.js');
+var robot = require('./robot');
 console.log(robot('boop'));
 ```
 
@@ -97,9 +97,9 @@ module.exports = function (s) { return s.toUpperCase() + '!' };
 ```
 
 ```
-$ browserify -r ./robot.js > static/common.js
-$ browserify -i ./robot.js beep.js > static/beep.js
-$ browserify -i ./robot.js boop.js > static/boop.js
+$ browserify -r ./robot > static/common.js
+$ browserify -x ./robot.js beep.js > static/beep.js
+$ browserify -x ./robot.js boop.js > static/boop.js
 ```
 
 Then on the beep page you can have:
@@ -115,10 +115,6 @@ while the boop page can have:
 <script src="common.js"></script>
 <script src="boop.js"></script>
 ```
-
-Note that because browserify compiles static lookups at build-time, you'll need
-to use the exact same string in the `-r` as in the `require()` statements inside
-the sub-bundles.
 
 # usage
 
@@ -136,6 +132,8 @@ Standard Options:
   --entry, -e    An entry point of your app
   
   --ignore, -i   Omit a file from the output bundle.
+
+  --external, -x Reference a file from another bundle.
 
   --help, -h     Show this message
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var browserify = require('../');
 var fs = require('fs');
+var path = require('path');
 var JSONStream = require('JSONStream');
 
 var argv = require('optimist')
@@ -25,7 +26,9 @@ if (argv.v || argv.verbose) {
     return console.log(require('../package.json').version);
 }
 
-var entries = argv._.concat(argv.e).filter(Boolean);
+var entries = argv._.concat(argv.e).filter(Boolean).map(function(entry) {
+    return path.resolve(process.cwd(), entry);
+});
 var b = browserify(entries);
 
 b.on('error', function (err) {
@@ -36,8 +39,14 @@ b.on('error', function (err) {
 [].concat(argv.i).concat(argv.ignore).filter(Boolean)
     .forEach(function (i) { b.ignore(i) })
 ;
+
 [].concat(argv.r).concat(argv.require).filter(Boolean)
-    .forEach(function (r) { b.require(r) })
+    .forEach(function (r) { b.require(r, { expose: r }) });
+;
+
+// resolve any external files and add them to the bundle as externals
+[].concat(argv.x).concat(argv.require).filter(Boolean)
+    .forEach(function (x) { b.external(path.resolve(process.cwd(), x)) })
 ;
 
 if (argv.pack) {

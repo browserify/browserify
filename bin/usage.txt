@@ -12,6 +12,8 @@ Standard Options:
   
   --ignore, -i   Omit a file from the output bundle.
 
+  --external, -x Reference a file from another bundle.
+
   --help, -h     Show this message
 
 Advanced Options:

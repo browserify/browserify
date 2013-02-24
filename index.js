@@ -1,3 +1,5 @@
+var crypto = require('crypto');
+
 var through = require('through');
 var duplexer = require('duplexer');
 var checkSyntax = require('syntax-error');
@@ -15,6 +17,10 @@ module.exports = function (files) {
     return new Browserify(files);
 };
 
+function hash(what) {
+    return crypto.createHash('md5').update(what).digest('base64').slice(0, 6);
+};
+
 inherits(Browserify, EventEmitter);
 
 function Browserify (files) {
@@ -23,36 +29,70 @@ function Browserify (files) {
     this._pending = 0;
     this._entries = [];
     this._ignore = {};
-    
+    this._external = {};
+    this._expose = {};
+
     [].concat(files).filter(Boolean).forEach(this.add.bind(this));
 }
 
 Browserify.prototype.add = function (file) {
-    var r = path.resolve(file);
-    this.files.push(r);
-    this._entries.push(r);
+    this.require(file, { entry: true });
 };
 
-Browserify.prototype.require = function (name, fromFile) {
+Browserify.prototype.require = function(id, opt) {
     var self = this;
-    if (!fromFile) {
-        fromFile = path.join(process.cwd(), '_fake');
-    }
+    var haveOpt = !!opt;
+    opt = opt || {};
     self._pending ++;
-    
-    var opts = { filename: fromFile, packageFilter: packageFilter };
-    browserResolve(name, opts, function (err, file) {
+
+    // backwards compat with .require('foo')
+    // which should cause foo to be exposed
+    if (!haveOpt) {
+        opt.expose = id;
+    }
+
+    // we need to make a synthetic file because resolve wants a parent
+    // this is an issue with resolve
+    var fromfile = process.cwd() + '/_fake.js';
+
+    // if user wants this require exposed as a nice name
+    var expose = opt.expose;
+
+    // TODO (shtlyman) need way to resolve without a starting point
+
+    var opts = { filename: fromfile, packageFilter: packageFilter };
+    browserResolve(id, opts, function (err, file) {
         if (err) return self.emit('error', err);
-        self.expose(name, file);
+
+        if (expose) {
+            // files are exported as their short hash
+            self.exports[file] = hash(file);
+
+            if (typeof expose === 'string') {
+                self._expose[file] = expose;
+            }
+        }
+
+        self.files.push(file);
+
+        if (opt.entry) {
+            self._entries.push(file);
+        }
+
         if (--self._pending === 0) self.emit('_ready');
     });
-    
+
     return self;
 };
 
+// DEPRECATED
 Browserify.prototype.expose = function (name, file) {
     this.exports[file] = name;
     this.files.push(file);
+};
+
+Browserify.prototype.external = function (file) {
+    this._external[file] = true;
 };
 
 Browserify.prototype.ignore = function (file) {
@@ -118,7 +158,31 @@ Browserify.prototype.deps = function (params) {
     return d.pipe(through(write));
     
     function write (row) {
-        if (row.id === emptyModulePath) return;
+        if (row.id === emptyModulePath) {
+            row.source = '';
+        }
+
+        // if we are exposing this file under a different name
+        // inject a dependency which will load the hashed filepath
+        if (self._expose[row.id]) {
+            this.queue({
+                exposed: self._expose[row.id],
+                deps: {},
+                source: 'module.exports = require(\'' + hash(row.id) + '\');'
+            });
+        }
+
+        // exported files have id of the hashname
+        if (self.exports[row.id]) {
+            row.exposed = self.exports[row.id];
+        }
+
+        // make the source load the referenced version for external files
+        // referenced versions are based on full path hash id
+        if (self._external[row.id]) {
+            row.source = 'module.exports = require(\'' + hash(row.id) + '\');';
+        }
+
         if (/\.json$/.test(row.id)) {
             row.source = 'module.exports=' + row.source;
         }
@@ -134,12 +198,13 @@ Browserify.prototype.pack = function () {
     var self = this;
     var packer = browserPack({ raw: true });
     var ids = {};
-    var idIndex = 0;
+    var idIndex = 1;
     
     var input = through(function (row) {
         var ix;
-        if (self.exports[row.id] !== undefined) {
-            ix = self.exports[row.id];
+
+        if (row.exposed) {
+            ix = row.exposed
         }
         else {
             ix = ids[row.id] !== undefined ? ids[row.id] : idIndex++;
@@ -166,16 +231,9 @@ Browserify.prototype.pack = function () {
     function writePrelude () {
         if (!first) return;
         if (!hasExports) return output.queue(';');
-        output.queue([
-            'require=(function(o,r){',
-                'return function(n){',
-                    'var x=r(n);',
-                    'if(x!==undefined)return x;',
-                    'if(o)return o(n);',
-                    'throw new Error("Cannot find module \'"+n+"\'")',
-                '}',
-            '})(typeof require!=="undefined"&&require,',
-        ].join(''));
+
+        // exposes require
+        output.queue('require=');
     }
     
     input.pipe(packer);
@@ -190,7 +248,7 @@ Browserify.prototype.pack = function () {
     
     function end () {
         if (first) writePrelude();
-        this.queue(hasExports ? ');' : ';');
+        this.queue(';');
         this.queue(null);
     }
 };
@@ -204,10 +262,24 @@ var packageFilter = function (info) {
 
 var emptyModulePath = require.resolve('./_empty');
 Browserify.prototype._resolve = function (id, parent, cb) {
-    if (this._ignore[id]) return cb(null, emptyModulePath);
-    var r = path.resolve(path.dirname(parent.filename), id);
-    if (this._ignore[r]) return cb(null, emptyModulePath);
-    
+    var self = this;
     parent.packageFilter = packageFilter;
-    return browserResolve(id, parent, cb);
+    return browserResolve(id, parent, function(err, pth) {
+        if (err) {
+            return cb(err);
+        }
+
+        // serve up empty module file
+        if (self._ignore[pth]) {
+            return cb(null, emptyModulePath);
+        }
+
+        // instruct required not to load the deps for this path
+        // we are ignoring it
+        if (self._external[pth]) {
+            return cb(null, pth, true);
+        }
+
+        cb(err, pth);
+    })
 };
