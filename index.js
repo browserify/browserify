@@ -46,7 +46,8 @@ Browserify.prototype.require = function (id, opts) {
     if (opts === undefined) opts = { expose: id };
     self._pending ++;
     
-    var fromfile = process.cwd() + '/_fake.js';
+    var basedir = opts.basedir || process.cwd();
+    var fromfile = basedir + '/_fake.js';
     
     var params = { filename: fromfile, packageFilter: packageFilter };
     browserResolve(id, params, function (err, file) {
