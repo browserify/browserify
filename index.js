@@ -39,46 +39,28 @@ Browserify.prototype.add = function (file) {
     this.require(file, { entry: true });
 };
 
-Browserify.prototype.require = function(id, opt) {
+Browserify.prototype.require = function (id, opts) {
     var self = this;
-    var haveOpt = !!opt;
-    opt = opt || {};
+    if (opts === undefined) opts = { expose: id };
     self._pending ++;
-
-    // backwards compat with .require('foo')
-    // which should cause foo to be exposed
-    if (!haveOpt) {
-        opt.expose = id;
-    }
-
-    // we need to make a synthetic file because resolve wants a parent
-    // this is an issue with resolve
+    
     var fromfile = process.cwd() + '/_fake.js';
-
-    // if user wants this require exposed as a nice name
-    var expose = opt.expose;
-
-    // TODO (shtlyman) need way to resolve without a starting point
-
-    var opts = { filename: fromfile, packageFilter: packageFilter };
-    browserResolve(id, opts, function (err, file) {
+    
+    var params = { filename: fromfile, packageFilter: packageFilter };
+    browserResolve(id, params, function (err, file) {
         if (err) return self.emit('error', err);
-
-        if (expose) {
-            // files are exported as their short hash
+        
+        if (opts.expose) {
             self.exports[file] = hash(file);
-
-            if (typeof expose === 'string') {
-                self._expose[file] = expose;
+            
+            if (typeof opts.expose === 'string') {
+                self._expose[file] = opts.expose;
             }
         }
-
+        
         self.files.push(file);
-
-        if (opt.entry) {
-            self._entries.push(file);
-        }
-
+        if (opts.entry) self._entries.push(file);
+        
         if (--self._pending === 0) self.emit('_ready');
     });
 
