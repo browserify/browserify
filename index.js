@@ -143,9 +143,7 @@ Browserify.prototype.deps = function (params) {
         if (row.id === emptyModulePath) {
             row.source = '';
         }
-
-        // if we are exposing this file under a different name
-        // inject a dependency which will load the hashed filepath
+        
         if (self._expose[row.id]) {
             this.queue({
                 exposed: self._expose[row.id],
@@ -153,18 +151,13 @@ Browserify.prototype.deps = function (params) {
                 source: 'module.exports = require(\'' + hash(row.id) + '\');'
             });
         }
-
-        // exported files have id of the hashname
-        if (self.exports[row.id]) {
-            row.exposed = self.exports[row.id];
-        }
-
-        // make the source load the referenced version for external files
-        // referenced versions are based on full path hash id
+        
+        if (self.exports[row.id]) row.exposed = self.exports[row.id];
+        
         if (self._external[row.id]) {
             row.source = 'module.exports = require(\'' + hash(row.id) + '\');';
         }
-
+        
         if (/\.json$/.test(row.id)) {
             row.source = 'module.exports=' + row.source;
         }
@@ -213,8 +206,7 @@ Browserify.prototype.pack = function () {
     function writePrelude () {
         if (!first) return;
         if (!hasExports) return output.queue(';');
-
-        // exposes require
+        
         output.queue('require=');
     }
     
@@ -250,18 +242,10 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         if (err) {
             return cb(err);
         }
-
-        // serve up empty module file
-        if (self._ignore[pth]) {
-            return cb(null, emptyModulePath);
-        }
-
-        // instruct required not to load the deps for this path
-        // we are ignoring it
-        if (self._external[pth]) {
-            return cb(null, pth, true);
-        }
-
+        
+        if (self._ignore[pth]) return cb(null, emptyModulePath);
+        if (self._external[pth]) return cb(null, pth, true);
+        
         cb(err, pth);
     })
 };
