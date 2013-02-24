@@ -45,7 +45,7 @@ b.on('error', function (err) {
 ;
 
 // resolve any external files and add them to the bundle as externals
-[].concat(argv.x).concat(argv.require).filter(Boolean)
+[].concat(argv.x).concat(argv.external).filter(Boolean)
     .forEach(function (x) { b.external(path.resolve(process.cwd(), x)) })
 ;
 
