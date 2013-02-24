@@ -217,10 +217,6 @@ Make `name` available from outside the bundle with `require(name)`.
 
 The package `name` is anything that can be resolved by `require.resolve()`.
 
-## b.expose(name, file)
-
-Expose the filename at `file` to outside the bundle at `require(name)`.
-
 ## b.bundle(opts, cb)
 
 Bundle the files and their dependencies into a single javascript file.
@@ -236,9 +232,14 @@ When `opts.detectGlobals` is true, scan all files for `process`, `global`,
 `__filename`, and `__dirname`, defining as necessary. With this option npm
 modules are more likely to work but bundling takes longer. Default true.
 
-## b.ignore(name)
+## b.external(file)
 
-Prevent the module or file at `name` from showing up in the output bundle.
+Prevent `file` from being loaded into the current bundle, instead referencing
+from another bundle.
+
+## b.ignore(file)
+
+Prevent the module name or file at `file` from showing up in the output bundle.
 
 # package.json
 
