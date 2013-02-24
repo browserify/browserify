@@ -61,6 +61,10 @@ Browserify.prototype.require = function (id, opts) {
                 self._mapped[opts.expose] = file;
             }
         }
+
+        if (opts.external) {
+            self._external[file] = true;
+        }
         
         self.files.push(file);
         if (opts.entry) self._entries.push(file);
@@ -77,9 +81,10 @@ Browserify.prototype.expose = function (name, file) {
     this.files.push(file);
 };
 
-Browserify.prototype.external = function (file) {
-    this._external[file] = true;
-    return this;
+Browserify.prototype.external = function (id, opts) {
+    opts = opts || {};
+    opts.external = true;
+    return this.require(id, opts);
 };
 
 Browserify.prototype.ignore = function (file) {
