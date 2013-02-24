@@ -37,6 +37,7 @@ function Browserify (files) {
 
 Browserify.prototype.add = function (file) {
     this.require(file, { entry: true });
+    return this;
 };
 
 Browserify.prototype.require = function (id, opts) {
@@ -75,10 +76,12 @@ Browserify.prototype.expose = function (name, file) {
 
 Browserify.prototype.external = function (file) {
     this._external[file] = true;
+    return this;
 };
 
 Browserify.prototype.ignore = function (file) {
     this._ignore[file] = true;
+    return this;
 };
 
 Browserify.prototype.bundle = function (opts, cb) {
