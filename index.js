@@ -31,6 +31,7 @@ function Browserify (files) {
     this._ignore = {};
     this._external = {};
     this._expose = {};
+    this._mapped = {};
 
     [].concat(files).filter(Boolean).forEach(this.add.bind(this));
 }
@@ -56,6 +57,7 @@ Browserify.prototype.require = function (id, opts) {
             
             if (typeof opts.expose === 'string') {
                 self._expose[file] = opts.expose;
+                self._mapped[opts.expose] = file;
             }
         }
         
@@ -241,14 +243,13 @@ var emptyModulePath = require.resolve('./_empty');
 Browserify.prototype._resolve = function (id, parent, cb) {
     var self = this;
     parent.packageFilter = packageFilter;
-    return browserResolve(id, parent, function(err, pth) {
-        if (err) {
-            return cb(err);
-        }
+    return browserResolve(id, parent, function(err, file) {
+        if (err) return cb(err);
         
-        if (self._ignore[pth]) return cb(null, emptyModulePath);
-        if (self._external[pth]) return cb(null, pth, true);
+        if (self._mapped[id]) return cb(null, self._mapped[id]);
+        if (self._ignore[file]) return cb(null, emptyModulePath);
+        if (self._external[file]) return cb(null, file, true);
         
-        cb(err, pth);
+        cb(err, file);
     })
 };
