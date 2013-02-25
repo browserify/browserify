@@ -99,7 +99,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     
     if (self._pending) {
         var tr = through();
-
+        
         self.on('_ready', function () {
             self.bundle(opts, cb).pipe(tr);
         });
