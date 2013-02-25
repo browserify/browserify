@@ -101,7 +101,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         var tr = through();
         
         self.on('_ready', function () {
-            self.bundle(cb).pipe(tr);
+            self.bundle(opts, cb).pipe(tr);
         });
         return tr;
     }
