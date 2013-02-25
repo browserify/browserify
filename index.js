@@ -46,7 +46,8 @@ Browserify.prototype.require = function (id, opts) {
     if (opts === undefined) opts = { expose: id };
     self._pending ++;
     
-    var fromfile = process.cwd() + '/_fake.js';
+    var basedir = opts.basedir || process.cwd();
+    var fromfile = basedir + '/_fake.js';
     
     var params = { filename: fromfile, packageFilter: packageFilter };
     browserResolve(id, params, function (err, file) {
@@ -59,6 +60,10 @@ Browserify.prototype.require = function (id, opts) {
                 self._expose[file] = opts.expose;
                 self._mapped[opts.expose] = file;
             }
+        }
+
+        if (opts.external) {
+            self._external[file] = true;
         }
         
         self.files.push(file);
@@ -76,9 +81,10 @@ Browserify.prototype.expose = function (name, file) {
     this.files.push(file);
 };
 
-Browserify.prototype.external = function (file) {
-    this._external[file] = true;
-    return this;
+Browserify.prototype.external = function (id, opts) {
+    opts = opts || {};
+    opts.external = true;
+    return this.require(id, opts);
 };
 
 Browserify.prototype.ignore = function (file) {
