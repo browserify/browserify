@@ -65,8 +65,10 @@ Browserify.prototype.require = function (id, opts) {
         if (opts.external) {
             self._external[file] = true;
         }
+        else {
+            self.files.push(file);
+        }
         
-        self.files.push(file);
         if (opts.entry) self._entries.push(file);
         
         if (--self._pending === 0) self.emit('_ready');
