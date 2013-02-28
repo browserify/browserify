@@ -147,6 +147,9 @@ Browserify.prototype.bundle = function (opts, cb) {
 };
 
 Browserify.prototype.transform = function (t) {
+    if (typeof t === 'string' && /^\./.test(t)) {
+        t = path.resolve(t);
+    }
     this._transforms.push(t);
 };
 
