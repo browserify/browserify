@@ -247,11 +247,14 @@ Prevent the module name or file at `file` from showing up in the output bundle.
 
 ## b.transform(tr)
 
-Transform source code before parsing it from `require()` calls with `tr`.
+Transform source code before parsing it for `require()` calls with the transform
+function or module name `tr`.
 
-`tr` should be a function `tr(file)` that returns a
+If `tr` is a function, it will be called with `tr(file)` and it should return a
 [through-stream](https://github.com/substack/stream-handbook#through)
-that transforms the source code or `tr` can be a string that names a
+that takes the raw file contents and produces the transformed source.
+
+If `tr` is a string, it should be a module name or file path of a
 [transform module](https://github.com/substack/module-deps#transforms)
 with a signature of:
 
