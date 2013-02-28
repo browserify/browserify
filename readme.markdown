@@ -123,19 +123,23 @@ Usage: browserify [entry files] {OPTIONS}
 
 Standard Options:
 
-  --outfile, -o  Write the browserify bundle to this file.
-                 If unspecified, browserify prints to stdout.
+  --outfile, -o    Write the browserify bundle to this file.
+                   If unspecified, browserify prints to stdout.
 
-  --require, -r  A module name or file to bundle.require()
-                 Optionally use a colon separator to set the target.
+  --require, -r    A module name or file to bundle.require()
+                   Optionally use a colon separator to set the target.
 
-  --entry, -e    An entry point of your app
+  --entry, -e      An entry point of your app
   
-  --ignore, -i   Omit a file from the output bundle.
+  --ignore, -i     Omit a file from the output bundle.
 
-  --external, -x Reference a file from another bundle.
+  --external, -x   Reference a file from another bundle.
+  
+  --transform, -t  Use a transform module on top-level files.
+ 
+  --command, -c    Use a transform command on top-level files.
 
-  --help, -h     Show this message
+  --help, -h       Show this message
 
 Advanced Options:
 
