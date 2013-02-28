@@ -245,12 +245,58 @@ from another bundle.
 
 Prevent the module name or file at `file` from showing up in the output bundle.
 
+## b.transform(tr)
+
+Transform source code before parsing it from `require()` calls with `tr`.
+
+`tr` should be a function `tr(file)` that returns a
+[through-stream](https://github.com/substack/stream-handbook#through)
+that transforms the source code or `tr` can be a string that names a
+[transform module](https://github.com/substack/module-deps#transforms)
+with a signature of:
+
+``` js
+var through = require('through');
+module.exports = function (file) { return through() };
+```
+
+You don't need to necessarily use the
+[through](https://npmjs.org/package/through) module, this is just a simple
+example.
+
+Here's how you might compile coffee script on the fly using `.transform()`:
+
+```
+var coffee = require('coffee-script');
+b.transform(function (file) {
+    var data = '';
+    return through(write, end);
+    
+    function write (buf) { data += buf }
+    function end () {
+        this.queue(coffee.compile(data));
+        this.queue(null);
+    }
+})
+```
+
+Note that on the command-line with the `-c` flag you can just do:
+
+```
+$ browserify -c 'coffee -sc' main.coffee > bundle.js
+```
+
 # package.json
 
 browserify uses the `package.json` in its module resolution algorithm just like
 node, but there is a special
 "[browsers](https://gist.github.com/4339901)" field you can set to override file
 resolution for browser-specific versions.
+
+You can specify source transforms in the package.json in the
+browserify.transforms field. There is more information about how source
+transforms work in package.json on the
+[module-deps readme](https://github.com/substack/module-deps#transforms).
 
 # install
 
