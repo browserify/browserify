@@ -137,7 +137,6 @@ Browserify.prototype.bundle = function (opts, cb) {
         d.on('error', self.emit.bind(self, 'error'));
         p.on('error', self.emit.bind(self, 'error'));
     }
-    p.pause = function () {};
     
     return p;
 };
