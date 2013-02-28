@@ -44,6 +44,7 @@ Browserify.prototype.add = function (file) {
 Browserify.prototype.require = function (id, opts) {
     var self = this;
     if (opts === undefined) opts = { expose: id };
+    
     self._pending ++;
     
     var basedir = opts.basedir || process.cwd();
@@ -161,14 +162,14 @@ Browserify.prototype.deps = function (params) {
             this.queue({
                 exposed: self._expose[row.id],
                 deps: {},
-                source: 'module.exports = require(\'' + hash(row.id) + '\');'
+                source: 'module.exports=require(\'' + hash(row.id) + '\');'
             });
         }
         
         if (self.exports[row.id]) row.exposed = self.exports[row.id];
         
         if (self._external[row.id]) {
-            row.source = 'module.exports = require(\'' + hash(row.id) + '\');';
+            row.source = 'module.exports=require(\'' + hash(row.id) + '\');';
         }
         
         if (/\.json$/.test(row.id)) {
@@ -192,7 +193,7 @@ Browserify.prototype.pack = function () {
         var ix;
 
         if (row.exposed) {
-            ix = row.exposed
+            ix = row.exposed;
         }
         else {
             ix = ids[row.id] !== undefined ? ids[row.id] : idIndex++;
@@ -205,6 +206,10 @@ Browserify.prototype.pack = function () {
         row.id = ix;
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
             var file = row.deps[key];
+            if (self._expose[file]) {
+                acc[key] = self._expose[file];
+                return acc;
+            }
             if (ids[file] === undefined) ids[file] = idIndex++;
             acc[key] = ids[file];
             return acc;
@@ -241,7 +246,7 @@ Browserify.prototype.pack = function () {
 };
 
 var packageFilter = function (info) {
-    if (info.browserify && !info.browser) {
+    if (typeof info.browserify === 'string' && !info.browser) {
         info.browser = info.browserify;
     }
     return info;
@@ -250,14 +255,14 @@ var packageFilter = function (info) {
 var emptyModulePath = require.resolve('./_empty');
 Browserify.prototype._resolve = function (id, parent, cb) {
     var self = this;
+    if (self._mapped[id]) return cb(null, self._mapped[id]);
+    
     parent.packageFilter = packageFilter;
     return browserResolve(id, parent, function(err, file) {
         if (err) return cb(err);
-        
-        if (self._mapped[id]) return cb(null, self._mapped[id]);
         if (self._ignore[file]) return cb(null, emptyModulePath);
         if (self._external[file]) return cb(null, file, true);
         
         cb(err, file);
-    })
+    });
 };
