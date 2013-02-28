@@ -3,6 +3,9 @@ var browserify = require('../');
 var fs = require('fs');
 var path = require('path');
 var JSONStream = require('JSONStream');
+var spawn = require('child_process').spawn;
+var parseShell = require('shell-quote').parse;
+var duplexer = require('duplexer');
 
 var argv = require('optimist')
     .boolean(['deps','pack','ig','dg', 'im'])
@@ -47,6 +50,37 @@ b.on('error', function (err) {
 // resolve any external files and add them to the bundle as externals
 [].concat(argv.x).concat(argv.external).filter(Boolean)
     .forEach(function (x) { b.external(path.resolve(process.cwd(), x)) })
+;
+
+[].concat(argv.t).concat(argv.transform).filter(Boolean)
+    .forEach(function (t) { b.transform(t) })
+;
+
+[].concat(argv.c).concat(argv.command).filter(Boolean)
+    .forEach(function (c) {
+        var cmd = parseShell(c);
+        b.transform(function (file) {
+            var env = Object.keys(process.env).reduce(function (acc, key) {
+                acc[key] = process.env[key];
+                return acc;
+            }, {});
+            env.FILENAME = file;
+            var ps = spawn(cmd[0], cmd.slice(1), { env: env });
+            var error = '';
+            ps.stderr.on('data', function (buf) { error += buf });
+            
+            ps.on('exit', function (code) {
+                if (code === 0) return;
+                console.error([
+                    'error running source transform command: ' + c,
+                    error.split('\n').join('\n  '),
+                    ''
+                ].join('\n'));
+                process.exit(1);
+            });
+            return duplexer(ps.stdin, ps.stdout);
+        });
+    })
 ;
 
 if (argv.pack) {
