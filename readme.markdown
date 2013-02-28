@@ -28,7 +28,7 @@ var gamma = require('gamma');
 var elem = document.getElementById('result');
 var x = foo(100) + bar('baz');
 elem.textContent = gamma(x);
-````
+```
 
 Now just use the `browserify` command to build a bundle starting at `main.js`:
 
