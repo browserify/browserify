@@ -1,5 +1,4 @@
 var crypto = require('crypto');
-
 var through = require('through');
 var duplexer = require('duplexer');
 var checkSyntax = require('syntax-error');
@@ -115,6 +114,11 @@ Browserify.prototype.bundle = function (opts, cb) {
         });
         return tr;
     }
+    var parentFilter = opts.packageFilter;
+    opts.packageFilter = function (pkg) {
+        if (parentFilter) pkg = parentFilter(pkg);
+        return packageFilter(pkg);
+    };
     
     var d = self.deps(opts);
     var g = opts.detectGlobals || opts.insertGlobals
@@ -151,7 +155,8 @@ Browserify.prototype.deps = function (params) {
     if (!params) params = {};
     var opts = {
         resolve: self._resolve.bind(self),
-        transform: self._transforms
+        transform: self._transforms,
+        packageFilter: params.packageFilter
     };
     if (params.transformKey === undefined) {
         opts.transformKey = [ 'browserify', 'transform' ];
@@ -159,6 +164,7 @@ Browserify.prototype.deps = function (params) {
     if (params.ignoreMissing === undefined) {
         opts.ignoreMissing = true;
     }
+    
     var d = mdeps(self.files, opts);
     return d.pipe(through(write));
     
@@ -266,11 +272,6 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     var self = this;
     if (self._mapped[id]) return cb(null, self._mapped[id]);
     
-    var parentFilter = parent.packageFilter;
-    parent.packageFilter = function (pkg) {
-        if (parentFilter) pkg = parentFilter(pkg);
-        return packageFilter(pkg);
-    };
     return browserResolve(id, parent, function(err, file) {
         if (err) return cb(err);
         if (self._ignore[file]) return cb(null, emptyModulePath);
