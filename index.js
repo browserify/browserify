@@ -32,7 +32,8 @@ function Browserify (files) {
     this._external = {};
     this._expose = {};
     this._mapped = {};
-
+    this._transforms = [];
+    
     [].concat(files).filter(Boolean).forEach(this.add.bind(this));
 }
 
@@ -141,12 +142,21 @@ Browserify.prototype.bundle = function (opts, cb) {
     return p;
 };
 
+Browserify.prototype.transform = function (t) {
+    this._transforms.push(t);
+};
+
 Browserify.prototype.deps = function (params) {
     var self = this;
+    if (!params) params = {};
     var opts = {
-        resolve: self._resolve.bind(self)
+        resolve: self._resolve.bind(self),
+        transform: self._transforms
     };
-    if (params && params.ignoreMissing) {
+    if (params.transformKey === undefined) {
+        opts.transformKey = [ 'browserify', 'transform' ];
+    }
+    if (params.ignoreMissing === undefined) {
         opts.ignoreMissing = true;
     }
     var d = mdeps(self.files, opts);
@@ -256,7 +266,11 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     var self = this;
     if (self._mapped[id]) return cb(null, self._mapped[id]);
     
-    parent.packageFilter = packageFilter;
+    var parentFilter = parent.packageFilter;
+    parent.packageFilter = function (pkg) {
+        if (parentFilter) pkg = parentFilter(pkg);
+        return packageFilter(pkg);
+    };
     return browserResolve(id, parent, function(err, file) {
         if (err) return cb(err);
         if (self._ignore[file]) return cb(null, emptyModulePath);
