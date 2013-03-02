@@ -185,11 +185,12 @@ Browserify.prototype.deps = function (params) {
         }
         
         if (self.exports[row.id]) row.exposed = self.exports[row.id];
-        
+
+        // skip adding this file if it is external
         if (self._external[row.id]) {
-            row.source = 'module.exports=require(\'' + hash(row.id) + '\');';
+            return;
         }
-        
+       
         if (/\.json$/.test(row.id)) {
             row.source = 'module.exports=' + row.source;
         }
@@ -224,6 +225,13 @@ Browserify.prototype.pack = function () {
         row.id = ix;
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
             var file = row.deps[key];
+
+            // reference external files directly by hash
+            if (self._external[file]) {
+                acc[key] = hash(file);
+                return acc;
+            }
+
             if (self._expose[file]) {
                 acc[key] = self._expose[file];
                 return acc;
