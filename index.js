@@ -43,6 +43,22 @@ Browserify.prototype.add = function (file) {
 
 Browserify.prototype.require = function (id, opts) {
     var self = this;
+
+    if (id instanceof Browserify) {
+        self._pending ++;
+
+        // need to capture all deps so we know what is already avail
+        id.once('_ready', function() {
+            var d = mdeps(id.files);
+            d.pipe(through(function(row) {
+                self._external[row.id] = true;
+            })).once('end', function() {
+                if (--self._pending === 0) self.emit('_ready');
+            });
+        });
+        return;
+    }
+
     if (opts === undefined) opts = { expose: id };
     
     self._pending ++;
@@ -178,6 +194,10 @@ Browserify.prototype.deps = function (opts) {
         
         if (self.exports[row.id]) row.exposed = self.exports[row.id];
 
+        if (self.expose_all) {
+            row.exposed = hash(row.id);
+        }
+
         // skip adding this file if it is external
         if (self._external[row.id]) {
             return;
@@ -226,6 +246,12 @@ Browserify.prototype.pack = function (debug) {
 
             // reference external files directly by hash
             if (self._external[file]) {
+                acc[key] = hash(file);
+                return acc;
+            }
+
+            // if we expose all, just have all hashes available
+            if (self.expose_all) {
                 acc[key] = hash(file);
                 return acc;
             }
