@@ -106,6 +106,16 @@ Browserify.prototype.bundle = function (opts, cb) {
     if (opts.detectGlobals === undefined) opts.detectGlobals = true;
     if (opts.ignoreMissing === undefined) opts.ignoreMissing = false;
     
+    opts.resolve = self._resolve.bind(self);
+    opts.transform = self._transforms;
+    opts.transformKey = [ 'browserify', 'transform' ];
+    
+    var parentFilter = opts.packageFilter;
+    opts.packageFilter = function (pkg) {
+        if (parentFilter) pkg = parentFilter(pkg);
+        return packageFilter(pkg);
+    };
+    
     if (self._pending) {
         var tr = through();
         
@@ -114,11 +124,6 @@ Browserify.prototype.bundle = function (opts, cb) {
         });
         return tr;
     }
-    var parentFilter = opts.packageFilter;
-    opts.packageFilter = function (pkg) {
-        if (parentFilter) pkg = parentFilter(pkg);
-        return packageFilter(pkg);
-    };
     
     var d = self.deps(opts);
     var g = opts.detectGlobals || opts.insertGlobals
@@ -153,21 +158,8 @@ Browserify.prototype.transform = function (t) {
     this._transforms.push(t);
 };
 
-Browserify.prototype.deps = function (params) {
+Browserify.prototype.deps = function (opts) {
     var self = this;
-    if (!params) params = {};
-    var opts = {
-        resolve: self._resolve.bind(self),
-        transform: self._transforms,
-        packageFilter: params.packageFilter
-    };
-    if (params.transformKey === undefined) {
-        opts.transformKey = [ 'browserify', 'transform' ];
-    }
-    if (params.ignoreMissing === undefined) {
-        opts.ignoreMissing = true;
-    }
-    
     var d = mdeps(self.files, opts);
     return d.pipe(through(write));
     
