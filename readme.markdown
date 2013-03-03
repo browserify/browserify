@@ -315,10 +315,10 @@ transforms work in package.json on the
 
 Here is a list of known source transforms:
 
-* [brfs](https://github.com/substack/node-browserify/brfs) - inline
+* [brfs](https://github.com/substack/brfs) - inline
 `fs.readFileSync()` calls with file contents
 
-* [coffeeify](https://github.com/substack/node-browserify/brfs) - compile
+* [coffeeify](https://github.com/substack/coffeeify) - compile
 `.coffee` files to javascript automatically
 
 # install
