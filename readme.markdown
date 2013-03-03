@@ -271,6 +271,8 @@ Here's how you might compile coffee script on the fly using `.transform()`:
 
 ```
 var coffee = require('coffee-script');
+var through = require('through');
+
 b.transform(function (file) {
     var data = '';
     return through(write, end);
@@ -280,13 +282,21 @@ b.transform(function (file) {
         this.queue(coffee.compile(data));
         this.queue(null);
     }
-})
+});
 ```
 
 Note that on the command-line with the `-c` flag you can just do:
 
 ```
 $ browserify -c 'coffee -sc' main.coffee > bundle.js
+```
+
+Or better still, use the [coffeeify](https://github.com/substack/coffeeify)
+module:
+
+```
+$ npm install coffeeify
+$ browserify -t coffeeify main.coffee > bundle.js
 ```
 
 # package.json
