@@ -210,6 +210,7 @@ Browserify.prototype.pack = function () {
         }
         if (ids[row.id] === undefined) ids[row.id] = ix;
         
+        if (/^#!/.test(row.source)) row.source = '//' + row.source;
         var err = checkSyntax(row.source, row.id);
         if (err) self.emit('error', err);
         
