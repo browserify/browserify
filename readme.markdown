@@ -311,6 +311,16 @@ browserify.transforms field. There is more information about how source
 transforms work in package.json on the
 [module-deps readme](https://github.com/substack/module-deps#transforms).
 
+# list of source transforms
+
+Here is a list of known source transforms:
+
+* [brfs](https://github.com/substack/node-browserify/brfs) - inline
+`fs.readFileSync()` calls with file contents
+
+* [coffeeify](https://github.com/substack/node-browserify/brfs) - compile
+`.coffee` files to javascript automatically
+
 # install
 
 With [npm](http://npmjs.org) do:
