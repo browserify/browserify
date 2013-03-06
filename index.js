@@ -118,9 +118,10 @@ Browserify.prototype.bundle = function (opts, cb) {
     
     if (self._pending) {
         var tr = through();
-        
         self.on('_ready', function () {
-            self.bundle(opts, cb).pipe(tr);
+            var b = self.bundle(opts, cb);
+            if (!cb) b.on('error', tr.emit.bind(tr, 'error'));
+            b.pipe(tr);
         });
         return tr;
     }
@@ -134,19 +135,16 @@ Browserify.prototype.bundle = function (opts, cb) {
         : through()
     ;
     var p = self.pack();
-    d.pipe(g).pipe(p);
-    
     if (cb) {
         var data = '';
         p.on('data', function (buf) { data += buf });
         p.on('end', function () { cb(null, data) });
-        d.on('error', cb);
         p.on('error', cb);
     }
-    else {
-        d.on('error', self.emit.bind(self, 'error'));
-        p.on('error', self.emit.bind(self, 'error'));
-    }
+    
+    d.on('error', p.emit.bind(p, 'error'));
+    g.on('error', p.emit.bind(p, 'error'));
+    d.pipe(g).pipe(p);
     
     return p;
 };
