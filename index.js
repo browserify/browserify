@@ -161,7 +161,9 @@ Browserify.prototype.transform = function (t) {
 Browserify.prototype.deps = function (opts) {
     var self = this;
     var d = mdeps(self.files, opts);
-    return d.pipe(through(write));
+    var tr = d.pipe(through(write));
+    d.on('error', tr.emit.bind(tr, 'error'));
+    return tr;
     
     function write (row) {
         if (row.id === emptyModulePath) {
