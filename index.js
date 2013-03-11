@@ -32,6 +32,13 @@ function Browserify (files) {
     this._expose = {};
     this._mapped = {};
     this._transforms = [];
+
+    var self = this;
+    this._ready = false;
+
+    this.once('_ready', function() {
+        self._ready = true;
+    });
     
     [].concat(files).filter(Boolean).forEach(this.add.bind(this));
 }
@@ -47,16 +54,21 @@ Browserify.prototype.require = function (id, opts) {
     if (id instanceof Browserify) {
         self._pending ++;
 
-        // need to capture all deps so we know what is already avail
-        id.once('_ready', function() {
+        var go = function() {
             var d = mdeps(id.files);
             d.pipe(through(function(row) {
                 self._external[row.id] = true;
             })).once('end', function() {
                 if (--self._pending === 0) self.emit('_ready');
             });
-        });
-        return;
+        };
+
+        // need to capture all deps so we know what is already avail
+        if (!id._ready) {
+            return id.once('_ready', go);
+        }
+
+        return go();
     }
 
     if (opts === undefined) opts = { expose: id };
@@ -230,6 +242,9 @@ Browserify.prototype.pack = function (debug) {
 
         if (row.exposed) {
             ix = row.exposed;
+        }
+        else if (self.expose_all) {
+            ix = hash(row.id);
         }
         else {
             ix = ids[row.id] !== undefined ? ids[row.id] : idIndex++;
