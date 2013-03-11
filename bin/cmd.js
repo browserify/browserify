@@ -44,7 +44,10 @@ b.on('error', function (err) {
 ;
 
 [].concat(argv.r).concat(argv.require).filter(Boolean)
-    .forEach(function (r) { b.require(r, { expose: r }) });
+    .forEach(function (r) { 
+        var p = r.split(':')
+        b.require(p[0], { expose: p[1] || p[0] })
+    });
 ;
 
 // resolve any external files and add them to the bundle as externals
