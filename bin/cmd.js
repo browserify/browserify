@@ -8,7 +8,7 @@ var parseShell = require('shell-quote').parse;
 var duplexer = require('duplexer');
 
 var argv = require('optimist')
-    .boolean(['deps','pack','ig','dg', 'im'])
+    .boolean(['deps','pack','ig','dg', 'im', 'debug'])
     .alias('insert-globals', 'ig')
     .alias('detect-globals', 'dg')
     .alias('ignore-missing', 'im')
@@ -38,6 +38,8 @@ b.on('error', function (err) {
     console.error(err);
     process.exit(1);
 });
+
+b.debug = argv.debug;
 
 [].concat(argv.i).concat(argv.ignore).filter(Boolean)
     .forEach(function (i) { b.ignore(i) })
