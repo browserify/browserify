@@ -201,6 +201,11 @@ Browserify.prototype.pack = function () {
     var idIndex = 1;
     
     var input = through(function (row) {
+        if (self.debug) {
+            row.source += "\n//@ sourceURL=" + row.id
+            row.source = "eval(" + JSON.stringify(row.source) + ")"
+        }
+
         var ix;
 
         if (row.exposed) {
