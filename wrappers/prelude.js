@@ -1,11 +1,11 @@
-var require = function (file, cwd) {
+var require = function (file, cwd, parent) {
     var resolved = require.resolve(file, cwd || '/');
     var mod = require.modules[resolved];
     if (!mod) throw new Error(
         'Failed to resolve module ' + file + ', tried ' + resolved
     );
     var cached = require.cache[resolved];
-    var res = cached? cached.exports : mod();
+    var res = cached? cached.exports : mod(parent || null);
     return res;
 };
 
@@ -154,7 +154,7 @@ require.alias = function (from, to) {
         ;
         
         var require_ = function (file) {
-            var requiredModule = require(file, dirname);
+            var requiredModule = require(file, dirname, module_);
             var cached = require.cache[require.resolve(file, dirname)];
 
             if (cached && cached.parent === null) {
@@ -177,7 +177,8 @@ require.alias = function (from, to) {
             parent: null
         };
         
-        require.modules[filename] = function () {
+        require.modules[filename] = function (parent) {
+            module_.parent = parent;
             require.cache[filename] = module_;
             fn.call(
                 module_.exports,
