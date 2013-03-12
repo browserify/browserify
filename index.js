@@ -199,7 +199,6 @@ Browserify.prototype.pack = function (debug) {
     var packer = browserPack({ raw: true });
     var ids = {};
     var idIndex = 1;
-    var root = process.cwd();
     
     var input = through(function (row) {
         var ix;
