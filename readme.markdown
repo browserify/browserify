@@ -162,6 +162,10 @@ Advanced Options:
   --ignore-missing, --im            [default: false]
 
     Ignore `require()` statements that don't resolve to anything.
+
+  --debug -s                        [default: false]
+    
+    Enable source maps that allow you to debug your files separately.
  
 Specify a parameter.
 ```
