@@ -163,7 +163,7 @@ Advanced Options:
 
     Ignore `require()` statements that don't resolve to anything.
 
-  --debug -s                        [default: false]
+  --debug -d                        [default: false]
     
     Enable source maps that allow you to debug your files separately.
  
