@@ -281,6 +281,7 @@ var emptyModulePath = require.resolve('./_empty');
 Browserify.prototype._resolve = function (id, parent, cb) {
     var self = this;
     if (self._mapped[id]) return cb(null, self._mapped[id]);
+    parent.paths.push(process.cwd());
     
     return browserResolve(id, parent, function(err, file) {
         if (err) return cb(err);
