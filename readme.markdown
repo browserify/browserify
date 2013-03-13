@@ -162,6 +162,10 @@ Advanced Options:
   --ignore-missing, --im            [default: false]
 
     Ignore `require()` statements that don't resolve to anything.
+
+  --debug -d                        [default: false]
+    
+    Enable source maps that allow you to debug your files separately.
  
 Specify a parameter.
 ```
@@ -235,6 +239,10 @@ larger output bundles. Default false.
 When `opts.detectGlobals` is true, scan all files for `process`, `global`,
 `__filename`, and `__dirname`, defining as necessary. With this option npm
 modules are more likely to work but bundling takes longer. Default true.
+
+When `opts.debug` is true, add a source map inline to the end of the bundle.
+This makes debugging easier because you can see all the original files if
+you are in a modern enough browser.
 
 ## b.external(file)
 

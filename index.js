@@ -134,7 +134,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         })
         : through()
     ;
-    var p = self.pack();
+    var p = self.pack(opts.debug);
     if (cb) {
         var data = '';
         p.on('data', function (buf) { data += buf });
@@ -194,7 +194,7 @@ Browserify.prototype.deps = function (opts) {
     }
 };
 
-Browserify.prototype.pack = function () {
+Browserify.prototype.pack = function (debug) {
     var self = this;
     var packer = browserPack({ raw: true });
     var ids = {};
@@ -202,6 +202,11 @@ Browserify.prototype.pack = function () {
     
     var input = through(function (row) {
         var ix;
+
+        if (debug) { 
+            row.sourceRoot = 'file://localhost'; 
+            row.sourceFile = row.id;
+        }
 
         if (row.exposed) {
             ix = row.exposed;
@@ -233,6 +238,7 @@ Browserify.prototype.pack = function () {
             acc[key] = ids[file];
             return acc;
         }, {});
+        
         this.queue(row);
     });
     
@@ -259,7 +265,7 @@ Browserify.prototype.pack = function () {
     
     function end () {
         if (first) writePrelude();
-        this.queue(';');
+        this.queue('\n;');
         this.queue(null);
     }
 };

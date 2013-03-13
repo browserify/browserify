@@ -8,14 +8,16 @@ var parseShell = require('shell-quote').parse;
 var duplexer = require('duplexer');
 
 var argv = require('optimist')
-    .boolean(['deps','pack','ig','dg', 'im'])
+    .boolean(['deps','pack','ig','dg', 'im', 'd'])
     .alias('insert-globals', 'ig')
     .alias('detect-globals', 'dg')
     .alias('ignore-missing', 'im')
+    .alias('debug', 'd')
     .alias('ig', 'fast')
     .default('ig', false)
     .default('im', false)
-    .default('dg', true)
+    .default('dg', true) 
+    .default('d', false) 
     .argv
 ;
 
@@ -101,7 +103,8 @@ if (argv.deps) {
 var bundle = b.bundle({
     detectGlobals: argv['detect-globals'] !== false && argv.dg !== false,
     insertGlobals: argv['insert-globals'] || argv.ig,
-    ignoreMissing: argv['ignore-missing'] || argv.im
+    ignoreMissing: argv['ignore-missing'] || argv.im,
+    debug:         argv['debug']          || argv.d
 });
 
 var outfile = argv.o || argv.outfile;
