@@ -329,6 +329,9 @@ Here is a list of known source transforms:
 * [coffeeify](https://github.com/substack/coffeeify) - compile
 `.coffee` files to javascript automatically
 
+* [browserify-ejs](https://github.com/unfold/browserify-ejs) - compile
+EJS templates to javascript automatically
+
 # install
 
 With [npm](http://npmjs.org) do:
