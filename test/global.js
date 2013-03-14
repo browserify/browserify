@@ -41,3 +41,14 @@ test('process.nextTick', function (t) {
         vm.runInNewContext(src, c);
     });
 });
+
+test('Buffer', function (t) {
+    t.plan(2);
+    
+    var b = browserify();
+    b.add(__dirname + '/global/buffer.js');
+    b.bundle(function (err, src) {
+        var c = { t: t };
+        vm.runInNewContext(src, c);
+    });
+});
