@@ -1,6 +1,6 @@
 {
     "name": "browserify",
-    "version": "2.6.0",
+    "version": "2.6.0-dz0",
     "description": "browser-side require() the node way",
     "main": "index.js",
     "bin": {
@@ -35,7 +35,6 @@
     "devDependencies": {
         "tap": "~0.4.0",
         "mkdirp": "~0.3.3",
-        
         "backbone": "~0.9.2",
         "dnode": "~1.0.3",
         "seq": "0.3.3",
