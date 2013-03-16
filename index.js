@@ -1,6 +1,7 @@
 var crypto = require('crypto');
 var through = require('through');
 var duplexer = require('duplexer');
+var concatStream = require('concat-stream');
 var checkSyntax = require('syntax-error');
 
 var mdeps = require('module-deps');
@@ -136,10 +137,8 @@ Browserify.prototype.bundle = function (opts, cb) {
     ;
     var p = self.pack(opts.debug);
     if (cb) {
-        var data = '';
-        p.on('data', function (buf) { data += buf });
-        p.on('end', function () { cb(null, data) });
         p.on('error', cb);
+        p.pipe(concatStream(cb));
     }
     
     d.on('error', p.emit.bind(p, 'error'));
