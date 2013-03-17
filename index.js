@@ -153,6 +153,7 @@ Browserify.prototype.transform = function (t) {
         t = path.resolve(t);
     }
     this._transforms.push(t);
+    return this;
 };
 
 Browserify.prototype.deps = function (opts) {
