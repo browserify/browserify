@@ -224,16 +224,12 @@ Browserify.prototype.pack = function (debug) {
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
             var file = row.deps[key];
 
-            // reference external files directly by hash
-            if (self._external[file]) {
+            // reference external and exposed files directly by hash
+            if (self._external[file] || self._expose[file]) {
                 acc[key] = hash(file);
                 return acc;
             }
 
-            if (self._expose[file]) {
-                acc[key] = self._expose[file];
-                return acc;
-            }
             if (ids[file] === undefined) ids[file] = idIndex++;
             acc[key] = ids[file];
             return acc;
