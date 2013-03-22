@@ -46,6 +46,7 @@ function Browserify (opts) {
     self._expose = {};
     self._mapped = {};
     self._transforms = [];
+    self._extensions = ['.js'];
     self._noParse =[];
     self._pkgcache = {};
 
@@ -65,6 +66,10 @@ Browserify.prototype.noParse = function(file) {
     });
 };
 
+Browserify.prototype.extension = function(extension) {
+  this._extensions.push(extension);
+};
+
 Browserify.prototype.add = function (file) {
     this.require(file, { entry: true });
     return this;
@@ -82,7 +87,8 @@ Browserify.prototype.require = function (id, opts) {
     var params = {
         filename: fromfile,
         modules: browserBuiltins,
-        packageFilter: packageFilter
+        packageFilter: packageFilter,
+        extensions: self._extensions
     };
     browserResolve(id, params, function (err, file) {
         if (err) return self.emit('error', err);
@@ -223,6 +229,7 @@ Browserify.prototype.deps = function (opts) {
     }
     
     opts.modules = browserBuiltins;
+    opts.extensions = self._extensions;
     var d = mdeps(self.files, opts);
     
     var tr = d.pipe(through(write));
@@ -383,6 +390,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     if (self._mapped[id]) return result(self._mapped[id]);
     
     parent.modules = browserBuiltins;
+    parent.extensions = self._extensions;
     
     return browserResolve(id, parent, function(err, file, pkg) {
         if (err) return cb(err);
