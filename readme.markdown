@@ -333,6 +333,9 @@ Here is a list of known source transforms:
 * [hbsfy](https://github.com/epeli/node-hbsfy) - precompile handlebars
 templates to javascript functions automatically
 
+* [rfileify](https://github.com/ForbesLindesay/rfileify) - inline `rfile(path)`
+calls with file contents (also supports `ruglify` and any other `rfile` derivatives)
+
 # install
 
 With [npm](http://npmjs.org) do:
