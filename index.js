@@ -68,6 +68,7 @@ Browserify.prototype.noParse = function(file) {
 
 Browserify.prototype.extension = function(extension) {
   this._extensions.push(extension);
+  return this;
 };
 
 Browserify.prototype.add = function (file) {
