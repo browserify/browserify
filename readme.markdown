@@ -330,6 +330,9 @@ Here is a list of known source transforms:
 * [coffeeify](https://github.com/substack/coffeeify) - compile
 `.coffee` files to javascript automatically
 
+* [hbsfy](https://github.com/epeli/node-hbsfy) - precompile handlebars
+templates to javascript functions automatically
+
 # install
 
 With [npm](http://npmjs.org) do:
