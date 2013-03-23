@@ -246,6 +246,7 @@ Browserify.prototype.deps = function (opts) {
         
         if (self._expose[row.id]) {
             this.queue({
+                id: row.id,
                 exposed: self._expose[row.id],
                 deps: {},
                 source: 'module.exports=require(\'' + hash(row.id) + '\');'
