@@ -336,6 +336,8 @@ templates to javascript functions automatically
 * [rfileify](https://github.com/ForbesLindesay/rfileify) - inline `rfile(path)`
 calls with file contents (also supports `ruglify` and any other `rfile` derivatives)
 
+* [liveify](https://github.com/quarterto/liveify) - compile livescript files to javascript automatically
+
 # install
 
 With [npm](http://npmjs.org) do:
