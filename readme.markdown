@@ -170,13 +170,6 @@ Advanced Options:
 Specify a parameter.
 ```
 
-# Usage with Express
-
-If you are using the express or connect web servers, you can use middleware to simplify
-development using browserify:
-
- - [browserify-middleware](https://github.com/ForbesLindesay/browserify-middleware) - by ForbesLindesay
-
 # compatibility
 
 Many [npm](http://npmjs.org) modules that don't do IO will just work after being
@@ -344,6 +337,15 @@ templates to javascript functions automatically
 calls with file contents (also supports `ruglify` and any other `rfile` derivatives)
 
 * [liveify](https://github.com/quarterto/liveify) - compile livescript files to javascript automatically
+
+# third-party tools
+
+If you are using express or connect, you can use
+[browserify-middleware](https://github.com/ForbesLindesay/browserify-middleware)
+to host your bundles as middleware.
+
+If you want a standalone web server for development that will create bundles on
+demand, check out [browservefy](https://github.com/chrisdickinson/browservefy).
 
 # install
 
