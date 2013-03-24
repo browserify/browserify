@@ -170,6 +170,13 @@ Advanced Options:
 Specify a parameter.
 ```
 
+# Usage with Express
+
+If you are using the express or connect web servers, you can use middleware to simplify
+development using browserify:
+
+ - [browserify-middleware](https://github.com/ForbesLindesay/browserify-middleware) - by ForbesLindesay
+
 # compatibility
 
 Many [npm](http://npmjs.org) modules that don't do IO will just work after being
