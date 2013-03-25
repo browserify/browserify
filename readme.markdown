@@ -220,11 +220,14 @@ Create a browserify instance `b` from the entry main `files`.
 
 Add an entry file from `file` that will be executed when the bundle loads.
 
-## b.require(name)
+## b.require(file[, opts])
 
-Make `name` available from outside the bundle with `require(name)`.
+Make `file` available from outside the bundle with `require(file)`.
 
-The package `name` is anything that can be resolved by `require.resolve()`.
+The `file` param is anything that can be resolved by `require.resolve()`.
+
+Use the `expose` property of opts to specify a custom dependency name. 
+`require('./vendor/angular/angular.js', {expose: 'angular'})` enables `require('angular')`
 
 ## b.bundle(opts, cb)
 
