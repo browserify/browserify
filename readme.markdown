@@ -344,6 +344,9 @@ calls with file contents (also supports `ruglify` and any other `rfile` derivati
 
 * [liveify](https://github.com/quarterto/liveify) - compile livescript files to javascript automatically
 
+* [es6ify](https://github.com/thlorenz/es6ify) - compile ES6 files to 
+ES5 javascript automatically
+
 # third-party tools
 
 If you are using express or connect, you can use
