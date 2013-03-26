@@ -283,7 +283,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     
     return browserResolve(id, parent, function(err, file) {
         if (err) return cb(err);
-        if (!file) return self.emit('error', new Error('module '
+        if (!file) return cb(new Error('module '
             + JSON.stringify(id) + ' not found from '
             + JSON.stringify(parent.filename)
         ));
