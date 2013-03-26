@@ -9,10 +9,12 @@ var duplexer = require('duplexer');
 
 var argv = require('optimist')
     .boolean(['deps','pack','ig','dg', 'im', 'd'])
+    .string(['s'])
     .alias('insert-globals', 'ig')
     .alias('detect-globals', 'dg')
     .alias('ignore-missing', 'im')
     .alias('debug', 'd')
+    .alias('standalone', 's')
     .alias('ig', 'fast')
     .default('ig', false)
     .default('im', false)
@@ -101,7 +103,8 @@ var bundle = b.bundle({
     detectGlobals: argv['detect-globals'] !== false && argv.dg !== false,
     insertGlobals: argv['insert-globals'] || argv.ig,
     ignoreMissing: argv['ignore-missing'] || argv.im,
-    debug:         argv['debug']          || argv.d
+    debug:         argv['debug']          || argv.d,
+    standalone:    argv['standalone']     || argv.s
 });
 
 bundle.on('error', function (err) {
