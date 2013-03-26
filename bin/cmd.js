@@ -104,6 +104,11 @@ var bundle = b.bundle({
     debug:         argv['debug']          || argv.d
 });
 
+bundle.on('error', function (err) {
+    console.error(err.message);
+    process.exit(1);
+});
+
 var outfile = argv.o || argv.outfile;
 if (outfile) {
     bundle.pipe(fs.createWriteStream(outfile));
