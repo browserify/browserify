@@ -36,7 +36,7 @@ Now just use the `browserify` command to build a bundle starting at `main.js`:
 $ browserify main.js > bundle.js
 ```
 
-All of the modules that `entry.js` needs are included in the `bundle.js` from a
+All of the modules that `main.js` needs are included in the `bundle.js` from a
 recursive walk of the `require()` graph using
 [required](https://github.com/shtylman/node-required).
 
