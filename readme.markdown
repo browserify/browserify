@@ -163,13 +163,14 @@ Advanced Options:
 
     Ignore `require()` statements that don't resolve to anything.
 
-  --debug -d                        [default: false]
+  --debug, -d                       [default: false]
     
     Enable source maps that allow you to debug your files separately.
 
-  --standalone -s
+  --standalone, -s
 
-    Generate a standalone module that works outside of the browserify environment and is compatible with other module systems.
+    Generate a standalone module that works outside of the browserify
+    environment and is compatible with other module systems.
  
 Specify a parameter.
 ```
