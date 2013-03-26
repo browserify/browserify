@@ -344,7 +344,7 @@ calls with file contents (also supports `ruglify` and any other `rfile` derivati
 # third-party tools
 
 If you are using express or connect, you can use
-[browserify-middleware](https://github.com/ForbesLindesay/browserify-middleware)
+[enchilada](https://github.com/shtylman/node-enchilada) or [browserify-middleware](https://github.com/ForbesLindesay/browserify-middleware)
 to host your bundles as middleware.
 
 If you want a standalone web server for development that will create bundles on
