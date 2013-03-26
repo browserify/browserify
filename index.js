@@ -54,6 +54,9 @@ Browserify.prototype.require = function (id, opts) {
     var params = { filename: fromfile, packageFilter: packageFilter };
     browserResolve(id, params, function (err, file) {
         if (err) return self.emit('error', err);
+        if (!file) return self.emit('error',
+            'module ' + JSON.stringify(id) + ' not found in require()'
+        );
         
         if (opts.expose) {
             self.exports[file] = hash(file);
@@ -280,6 +283,11 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     
     return browserResolve(id, parent, function(err, file) {
         if (err) return cb(err);
+        if (!file) return self.emit('error', 'module '
+            + JSON.stringify(id) + ' not found from '
+            + JSON.stringify(parent.filename)
+        );
+        
         if (self._ignore[file]) return cb(null, emptyModulePath);
         if (self._external[file]) return cb(null, file, true);
         
