@@ -37,7 +37,7 @@ var entries = argv._.concat(argv.e).filter(Boolean).map(function(entry) {
 var b = browserify(entries);
 
 b.on('error', function (err) {
-    console.error(err);
+    console.error(err.message);
     process.exit(1);
 });
 
