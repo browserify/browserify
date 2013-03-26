@@ -333,6 +333,9 @@ Here is a list of known source transforms:
 * [coffeeify](https://github.com/substack/coffeeify) - compile
 `.coffee` files to javascript automatically
 
+* [caching-coffeeify](https://github.com/thlorenz/caching-coffeeify) - coffeeify
+version that caches previously compiled files to optimize the compilation step
+
 * [hbsfy](https://github.com/epeli/node-hbsfy) - precompile handlebars
 templates to javascript functions automatically
 
@@ -340,6 +343,9 @@ templates to javascript functions automatically
 calls with file contents (also supports `ruglify` and any other `rfile` derivatives)
 
 * [liveify](https://github.com/quarterto/liveify) - compile livescript files to javascript automatically
+
+* [es6ify](https://github.com/thlorenz/es6ify) - compile ES6 files to 
+ES5 javascript automatically
 
 # third-party tools
 
