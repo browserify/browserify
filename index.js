@@ -8,6 +8,7 @@ var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
 var browserResolve = require('browser-resolve');
 var insertGlobals = require('insert-module-globals');
+var umd = require('umd');
 
 var path = require('path');
 var inherits = require('inherits');
@@ -109,6 +110,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     if (opts.insertGlobals === undefined) opts.insertGlobals = false;
     if (opts.detectGlobals === undefined) opts.detectGlobals = true;
     if (opts.ignoreMissing === undefined) opts.ignoreMissing = false;
+    if (opts.standalone === undefined) opts.standalone = false;
     
     opts.resolve = self._resolve.bind(self);
     opts.transform = self._transforms;
@@ -138,7 +140,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         })
         : through()
     ;
-    var p = self.pack(opts.debug);
+    var p = self.pack(opts.debug, opts.standalone);
     if (cb) {
         p.on('error', cb);
         p.pipe(concatStream(cb));
@@ -197,12 +199,14 @@ Browserify.prototype.deps = function (opts) {
     }
 };
 
-Browserify.prototype.pack = function (debug) {
+Browserify.prototype.pack = function (debug, standalone) {
     var self = this;
     var packer = browserPack({ raw: true });
     var ids = {};
     var idIndex = 1;
-    
+
+    var mainModule;
+
     var input = through(function (row) {
         var ix;
 
@@ -224,6 +228,7 @@ Browserify.prototype.pack = function (debug) {
         if (err) self.emit('error', err);
         
         row.id = ix;
+        if (row.entry) mainModule = mainModule || ix;
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
             var file = row.deps[key];
 
@@ -247,8 +252,8 @@ Browserify.prototype.pack = function (debug) {
     
     function writePrelude () {
         if (!first) return;
+        if (standalone) return output.queue(umd.prelude(standalone) + 'return ');
         if (!hasExports) return output.queue(';');
-        
         output.queue('require=');
     }
     
@@ -264,6 +269,7 @@ Browserify.prototype.pack = function (debug) {
     
     function end () {
         if (first) writePrelude();
+        if (standalone) output.queue('(' + mainModule + ')' + umd.postlude(standalone));
         this.queue('\n;');
         this.queue(null);
     }

@@ -46,4 +46,8 @@ Advanced Options:
     
     Enable source maps that allow you to debug your files separately.
 
+  --standalone -s
+
+    Generate a standalone module that works outside of the browserify environment and is compatible with other module systems.
+
 Specify a parameter.
