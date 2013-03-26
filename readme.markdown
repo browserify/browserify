@@ -166,6 +166,10 @@ Advanced Options:
   --debug -d                        [default: false]
     
     Enable source maps that allow you to debug your files separately.
+
+  --standalone -s
+
+    Generate a standalone module that works outside of the browserify environment and is compatible with other module systems.
  
 Specify a parameter.
 ```
@@ -247,6 +251,9 @@ modules are more likely to work but bundling takes longer. Default true.
 When `opts.debug` is true, add a source map inline to the end of the bundle.
 This makes debugging easier because you can see all the original files if
 you are in a modern enough browser.
+
+When `opts.standalone` is a non-empty string, a standalone module is created
+with that name and a [umd](https://github.com/forbeslindesay/umd) wrapper.
 
 ## b.external(file)
 
