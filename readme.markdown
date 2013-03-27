@@ -323,7 +323,7 @@ $ browserify -t coffeeify main.coffee > bundle.js
 
 browserify uses the `package.json` in its module resolution algorithm just like
 node, but there is a special
-"[browsers](https://gist.github.com/4339901)" field you can set to override file
+"[browser](https://gist.github.com/4339901)" field you can set to override file
 resolution for browser-specific versions.
 
 You can specify source transforms in the package.json in the
