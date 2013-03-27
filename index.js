@@ -286,7 +286,7 @@ var emptyModulePath = require.resolve('./_empty');
 Browserify.prototype._resolve = function (id, parent, cb) {
     var self = this;
     var result = function (file, x) {
-        self.emit('file', file);
+        self.emit('file', file, id, parent);
         cb(null, file, x);
     };
     if (self._mapped[id]) return result(self._mapped[id]);

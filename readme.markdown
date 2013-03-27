@@ -331,6 +331,15 @@ browserify.transforms field. There is more information about how source
 transforms work in package.json on the
 [module-deps readme](https://github.com/substack/module-deps#transforms).
 
+# events
+
+## b.on('file', function (file, id, parent) {})
+
+When a file is resolved for the bundle, the bundle emits a `'file'` event with
+the full `file` path, the `id` string passed to `require()`, and the `parent`
+object used by
+[browser-resolve](https://github.com/shtylman/node-browser-resolve).
+
 # list of source transforms
 
 Here is a list of known source transforms:
