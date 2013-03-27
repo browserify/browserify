@@ -9,7 +9,7 @@ test('file event', function (t) {
     var files = [ 'main.js', 'one.js', 'two.js' ];
     
     b.on('file', function (file) {
-        t.equal(flie, __dirname + '/' + files.shift());
+        t.equal(file, __dirname + '/entry/' + files.shift());
     });
     
     b.bundle(function (err, src) {

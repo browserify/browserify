@@ -225,7 +225,7 @@ Browserify.prototype.pack = function (debug, standalone) {
         
         if (/^#!/.test(row.source)) row.source = '//' + row.source;
         var err = checkSyntax(row.source, row.id);
-        if (err) self.emit('error', err);
+        if (err) return self.emit('error', err);
         
         row.id = ix;
         if (row.entry) mainModule = mainModule || ix;
@@ -285,7 +285,11 @@ var packageFilter = function (info) {
 var emptyModulePath = require.resolve('./_empty');
 Browserify.prototype._resolve = function (id, parent, cb) {
     var self = this;
-    if (self._mapped[id]) return cb(null, self._mapped[id]);
+    var result = function (file, x) {
+        self.emit('file', file);
+        cb(null, file, x);
+    };
+    if (self._mapped[id]) return result(self._mapped[id]);
     
     return browserResolve(id, parent, function(err, file) {
         if (err) return cb(err);
@@ -295,8 +299,8 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         ));
         
         if (self._ignore[file]) return cb(null, emptyModulePath);
-        if (self._external[file]) return cb(null, file, true);
+        if (self._external[file]) return result(file, true);
         
-        cb(err, file);
+        result(file);
     });
 };
