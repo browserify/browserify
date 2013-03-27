@@ -21,7 +21,7 @@
     ],
     "dependencies": {
         "module-deps": "~0.5.0",
-        "browser-pack": "~0.6.0",
+        "browser-pack": "~0.7.0",
         "shell-quote": "~0.0.1",
         "through": "~2.2.0",
         "duplexer": "~0.0.2",
