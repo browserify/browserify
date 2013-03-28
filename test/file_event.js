@@ -1,17 +1,23 @@
 var browserify = require('../');
 var vm = require('vm');
 var test = require('tap').test;
+var path = require('path');
 
 test('file event', function (t) {
     t.plan(8);
     
     var b = browserify(__dirname + '/entry/main.js');
-    var files = [ 'main.js', 'one.js', 'two.js' ];
-    var ids = [ __dirname + '/entry/main.js', './one', './two' ];
+    var files = {
+        'main.js': __dirname + '/entry/main.js',
+        'one.js': './one',
+        'two.js': './two'
+    };
     
     b.on('file', function (file, id) {
-        t.equal(file, __dirname + '/entry/' + files.shift());
-        t.equal(id, ids.shift());
+        var key = path.basename(file);
+        t.equal(file, __dirname + '/entry/' + key);
+        t.equal(id, files[key]);
+        delete files[key];
     });
     
     b.bundle(function (err, src) {
