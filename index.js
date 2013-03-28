@@ -233,7 +233,7 @@ Browserify.prototype.pack = function (debug, standalone) {
             var file = row.deps[key];
 
             // reference external and exposed files directly by hash
-            if (self._external[file] || self._expose[file]) {
+            if (self._external[file] || self.exports[file]) {
                 acc[key] = hash(file);
                 return acc;
             }
