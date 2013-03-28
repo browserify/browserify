@@ -367,6 +367,8 @@ calls with file contents (also supports `ruglify` and any other `rfile` derivati
 * [es6ify](https://github.com/thlorenz/es6ify) - compile ES6 files to 
 ES5 javascript automatically
 
+* [turn](https://github.com/juliangruber/turn) - minimal modules for a hypothetical es6 with lua's return
+
 # third-party tools
 
 If you are using express or connect, you can use
