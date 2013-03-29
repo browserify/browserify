@@ -252,7 +252,9 @@ Browserify.prototype.pack = function (debug, standalone) {
     
     function writePrelude () {
         if (!first) return;
-        if (standalone) return output.queue(umd.prelude(standalone) + 'return ');
+        if (standalone) {
+            return output.queue(umd.prelude(standalone) + 'return ');
+        }
         if (!hasExports) return output.queue(';');
         output.queue('require=');
     }
@@ -269,7 +271,9 @@ Browserify.prototype.pack = function (debug, standalone) {
     
     function end () {
         if (first) writePrelude();
-        if (standalone) output.queue('(' + mainModule + ')' + umd.postlude(standalone));
+        if (standalone) {
+            output.queue('(' + mainModule + ')' + umd.postlude(standalone));
+        }
         this.queue('\n;');
         this.queue(null);
     }
