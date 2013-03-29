@@ -1,0 +1,22 @@
+Advanced Options:
+
+  --insert-globals, --ig, --fast    [default: false]
+
+    Skip detection and always insert definitions for process, global,
+    __filename, and __dirname.
+                  
+    benefit: faster builds
+    cost: extra bytes
+ 
+  --detect-globals, --dg            [default: true]
+
+    Detect the presence of process, global, __filename, and __dirname and define
+    these values when present.
+
+    benefit: npm modules more likely to work
+    cost: slower builds
+
+  --ignore-missing, --im            [default: false]
+
+    Ignore `require()` statements that don't resolve to anything.
+

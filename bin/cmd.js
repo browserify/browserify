@@ -23,7 +23,14 @@ var argv = require('optimist')
     .argv
 ;
 
-if (argv.h || argv.help || process.argv.length <= 2) {
+if ((argv._[0] === 'help' && argv._[1]) === 'advanced'
+|| (argv.h || argv.help) === 'advanced') {
+    return fs.createReadStream(__dirname + '/advanced.txt')
+        .pipe(process.stdout)
+        .on('close', function () { process.exit(1) })
+    ;
+}
+if (argv._[0] === 'help' || argv.h || argv.help || process.argv.length <= 2) {
     return fs.createReadStream(__dirname + '/usage.txt')
         .pipe(process.stdout)
         .on('close', function () { process.exit(1) })
