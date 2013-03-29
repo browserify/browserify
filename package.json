@@ -28,7 +28,7 @@
         "concat-stream": "~0.1.1",
         "insert-module-globals": "~0.2.0",
         "syntax-error": "~0.0.0",
-        "browser-resolve": "~0.1.0",
+        "browser-resolve": "~0.1.1",
         "inherits": "~1.0.0",
         "optimist": "~0.3.5",
         "JSONStream": "~0.4.3",
