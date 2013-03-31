@@ -32,7 +32,7 @@
         "inherits": "~1.0.0",
         "optimist": "~0.3.5",
         "JSONStream": "~0.4.3",
-        "umd": "~1.0.0"
+        "umd": "~1.1.0"
     },
     "devDependencies": {
         "tap": "~0.4.0",
