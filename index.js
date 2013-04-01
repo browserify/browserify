@@ -282,6 +282,7 @@ Browserify.prototype.pack = function (debug, standalone) {
 var packageFilter = function (info) {
     if (typeof info.browserify === 'string' && !info.browser) {
         info.browser = info.browserify;
+        delete info.browserify;
     }
     return info;
 };
