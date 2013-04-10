@@ -225,7 +225,7 @@ Browserify.prototype.pack = function (debug, standalone) {
         
         if (/^#!/.test(row.source)) row.source = '//' + row.source;
         var err = checkSyntax(row.source, row.id);
-        if (err) return self.emit('error', err);
+        if (err) return this.emit('error', err);
         
         row.id = ix;
         if (row.entry) mainModule = mainModule || ix;
