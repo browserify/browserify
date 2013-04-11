@@ -51,7 +51,7 @@ b.on('error', function (err) {
 });
 
 [].concat(argv.i).concat(argv.ignore).filter(Boolean)
-    .forEach(function (i) { b.ignore(i) })
+    .forEach(function (i) { b.ignore(path.resolve(process.cwd(), i)) })
 ;
 
 [].concat(argv.r).concat(argv.require).filter(Boolean)
