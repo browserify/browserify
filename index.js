@@ -131,12 +131,22 @@ Browserify.prototype.bundle = function (opts, cb) {
         });
         return tr;
     }
-    
+
+    opts.globals = opts.globals || {};
+    var globals = {};
+    for(var key in opts.globals) {
+        globals[key] = {
+            id: opts.globals[key],
+            file: self._mapped[key]
+        }
+    }
+
     var d = self.deps(opts);
     var g = opts.detectGlobals || opts.insertGlobals
         ? insertGlobals(self.files, {
             resolve: self._resolve.bind(self),
-            always: opts.insertGlobals
+            always: opts.insertGlobals,
+            globals: globals
         })
         : through()
     ;
