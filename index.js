@@ -163,6 +163,14 @@ Browserify.prototype.transform = function (t) {
 
 Browserify.prototype.deps = function (opts) {
     var self = this;
+    if (self._pending) {
+        var tr = through();
+        self.on('_ready', function () {
+            self.deps(opts).pipe(tr);
+        });
+        return tr;
+    }
+    
     var d = mdeps(self.files, opts);
     var tr = d.pipe(through(write));
     d.on('error', tr.emit.bind(tr, 'error'));
