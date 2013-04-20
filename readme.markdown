@@ -116,6 +116,17 @@ while the boop page can have:
 <script src="boop.js"></script>
 ```
 
+## api example
+
+You can use the API directly too:
+
+``` js
+var browserify = require('browserify');
+var b = browserify();
+b.add('./browser/main.js');
+b.bundle().pipe(process.stdout);
+```
+
 # usage
 
 ```
