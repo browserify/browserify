@@ -132,6 +132,12 @@ Browserify.prototype.bundle = function (opts, cb) {
         return tr;
     }
     
+    if (opts.standalone && self._entries.length !== 1) {
+        process.nextTick(function () {
+            p.emit('error', 'standalone only works with a single entry point');
+        });
+    }
+    
     var d = self.deps(opts);
     var g = opts.detectGlobals || opts.insertGlobals
         ? insertGlobals(self.files, {
