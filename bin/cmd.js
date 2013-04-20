@@ -40,7 +40,8 @@ if (argv.v || argv.verbose) {
     return console.log(require('../package.json').version);
 }
 
-var entries = argv._.concat(argv.e).filter(Boolean).map(function(entry) {
+var entries = argv._.concat(argv.e).concat(argv.entry)
+.filter(Boolean).map(function(entry) {
     return path.resolve(process.cwd(), entry);
 });
 var b = browserify(entries);
