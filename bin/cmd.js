@@ -36,7 +36,7 @@ if (argv._[0] === 'help' || argv.h || argv.help || process.argv.length <= 2) {
         .on('close', function () { process.exit(1) })
     ;
 }
-if (argv.v || argv.verbose) {
+if (argv.v || argv.version) {
     return console.log(require('../package.json').version);
 }
 
