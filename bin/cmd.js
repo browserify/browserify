@@ -6,9 +6,10 @@ var JSONStream = require('JSONStream');
 var spawn = require('child_process').spawn;
 var parseShell = require('shell-quote').parse;
 var duplexer = require('duplexer');
+var through = require('through');
 
 var argv = require('optimist')
-    .boolean(['deps','pack','ig','dg', 'im', 'd'])
+    .boolean(['deps','pack','ig','dg', 'im', 'd','list'])
     .string(['s'])
     .alias('insert-globals', 'ig')
     .alias('detect-globals', 'dg')
@@ -107,6 +108,13 @@ if (argv.pack) {
 if (argv.deps) {
     var stringify = JSONStream.stringify();
     b.deps().pipe(stringify).pipe(process.stdout);
+    return;
+}
+
+if (argv.list) {
+    b.deps().pipe(through(function (dep) {
+        this.queue(dep.id + '\n');
+    })).pipe(process.stdout);
     return;
 }
 
