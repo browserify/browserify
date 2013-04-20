@@ -11,7 +11,7 @@ tag.
 
 [![build status](https://secure.travis-ci.org/substack/node-browserify.png)](http://travis-ci.org/substack/node-browserify)
 
-![browserify!](http://substack.net/images/browserify/browserify.png)
+![browserify!](http://substack.net/images/browserify_logo.png)
 
 # example
 
@@ -391,3 +391,5 @@ npm install -g browserify
 # license
 
 MIT
+
+![browserify!](http://substack.net/images/browserify/browserify.png)
