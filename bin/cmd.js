@@ -118,6 +118,11 @@ if (argv.list) {
     return;
 }
 
+if (argv.standalone === true) {
+    console.error('--standalone requires an export name argument');
+    process.exit(1);
+}
+
 var bundle = b.bundle({
     detectGlobals: argv['detect-globals'] !== false && argv.dg !== false,
     insertGlobals: argv['insert-globals'] || argv.ig,
