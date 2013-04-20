@@ -18,8 +18,9 @@ Standard Options:
  
     --command, -c  Use a transform command on top-level files.
    
-  --standalone -s  Generate a UMD bundle that works with other module systems
-                   and falls back to exporting on a window global.
+  --standalone -s  Generate a UMD bundle for the supplied export name.
+                   This bundle works with other module systems and sets the name
+                   given as a window global if no module system is found.
   
        --debug -d  Enable source maps that allow you to debug your files
                    separately.
