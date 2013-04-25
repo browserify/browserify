@@ -240,7 +240,7 @@ Browserify.prototype.pack = function (debug, standalone) {
         if (/^#!/.test(row.source)) row.source = '//' + row.source;
         var err = checkSyntax(row.source, row.id);
         if (err) {
-            console.error("Error in " + row.id);
+            console.error("Error in " + row.id + " at line " + err.line + ", column " + err.column );
             return self.emit('error', err );
         }
         
