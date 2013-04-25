@@ -239,7 +239,10 @@ Browserify.prototype.pack = function (debug, standalone) {
         
         if (/^#!/.test(row.source)) row.source = '//' + row.source;
         var err = checkSyntax(row.source, row.id);
-        if (err) return this.emit('error', err);
+        if (err) {
+            console.error("Error in " + row.id + " at line " + err.line + ", column " + err.column );
+            return self.emit('error', err );
+        }
         
         row.id = ix;
         if (row.entry) mainModule = mainModule || ix;
