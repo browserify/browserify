@@ -46,7 +46,7 @@ function Browserify (opts) {
     self._expose = {};
     self._mapped = {};
     self._transforms = [];
-    self._extensions = ['.js'].concat(opts.extensions || []);
+    self._extensions = ['.js'];
     self._noParse =[];
     self._pkgcache = {};
 
@@ -74,6 +74,10 @@ Browserify.prototype.extension = function(extension) {
 Browserify.prototype.add = function (file) {
     this.require(file, { entry: true });
     return this;
+};
+
+Browserify.prototype.extension = function (extension) {
+	this._extensions.push(extension);
 };
 
 Browserify.prototype.require = function (id, opts) {
