@@ -220,6 +220,8 @@ Browserify.prototype.pack = function (debug, standalone) {
     var idIndex = 1;
 
     var mainModule;
+    
+    this.packer = packer;
 
     var input = through(function (row) {
         var ix;
