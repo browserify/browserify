@@ -383,6 +383,8 @@ ES5 javascript automatically
 
 * [turn](https://github.com/juliangruber/turn) - minimal modules for a hypothetical es6 with lua's return
 
+* [rfolderify](https://github.com/quarterto/rfolderify) - turn calls to rfolder into a map of requires of the files in the thing
+
 # third-party tools
 
 If you are using express or connect, you can use
