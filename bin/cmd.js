@@ -9,10 +9,11 @@ var duplexer = require('duplexer');
 var through = require('through');
 
 var argv = require('optimist')
-    .boolean(['deps','pack','ig','dg', 'im', 'd','list'])
+    .boolean(['deps','pack','ig','dg','if', 'im', 'd','list'])
     .string(['s'])
     .alias('insert-globals', 'ig')
     .alias('detect-globals', 'dg')
+    .alias('include-filenames', 'if')
     .alias('ignore-missing', 'im')
     .alias('debug', 'd')
     .alias('standalone', 's')
@@ -20,6 +21,7 @@ var argv = require('optimist')
     .default('ig', false)
     .default('im', false)
     .default('dg', true) 
+    .default('if', true) 
     .default('d', false) 
     .argv
 ;
@@ -126,6 +128,7 @@ if (argv.standalone === true) {
 var bundle = b.bundle({
     detectGlobals: argv['detect-globals'] !== false && argv.dg !== false,
     insertGlobals: argv['insert-globals'] || argv.ig,
+    filenames: argv['include-filenames'] || argv.if,
     ignoreMissing: argv['ignore-missing'] || argv.im,
     debug: argv['debug'] || argv.d,
     standalone: argv['standalone'] || argv.s

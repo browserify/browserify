@@ -111,6 +111,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     if (opts.detectGlobals === undefined) opts.detectGlobals = true;
     if (opts.ignoreMissing === undefined) opts.ignoreMissing = false;
     if (opts.standalone === undefined) opts.standalone = false;
+    if (opts.filenames === undefined) opts.filenames = true;
     
     opts.resolve = self._resolve.bind(self);
     opts.transform = self._transforms;
@@ -146,7 +147,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         })
         : through()
     ;
-    var p = self.pack(opts.debug, opts.standalone);
+    var p = self.pack(opts.debug, opts.standalone, opts.filenames);
     if (cb) {
         p.on('error', cb);
         p.pipe(concatStream(cb));
@@ -213,9 +214,9 @@ Browserify.prototype.deps = function (opts) {
     }
 };
 
-Browserify.prototype.pack = function (debug, standalone) {
+Browserify.prototype.pack = function (debug, standalone, filenames) {
     var self = this;
-    var packer = browserPack({ raw: true });
+    var packer = browserPack({ raw: true, filenames: filenames });
     var ids = {};
     var idIndex = 1;
 
@@ -224,6 +225,8 @@ Browserify.prototype.pack = function (debug, standalone) {
     var input = through(function (row) {
         var ix;
 
+        if (filenames)
+            row.filename = row.id;
         if (debug) { 
             row.sourceRoot = 'file://localhost'; 
             row.sourceFile = row.id;

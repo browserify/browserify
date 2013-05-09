@@ -15,6 +15,13 @@ Advanced Options:
 
     benefit: npm modules more likely to work
     cost: slower builds
+ 
+  --include-filenames, --if         [default: true]
+
+    Set module.filename on all client-side module objects, based on source filename.  (strips common paths)
+
+    benefit: some npm modules more likely to work
+    cost: extra bytes
 
   --ignore-missing, --im            [default: false]
 
