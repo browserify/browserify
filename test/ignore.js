@@ -14,3 +14,20 @@ test('ignore', function (t) {
         vm.runInNewContext(src, { t: t });
     });
 });
+
+test('ignore by package or id', function (t) {
+    t.plan(4);
+  
+    var b = browserify();
+    b.add(__dirname + '/ignore/by-id.js');
+    b.ignore('events');
+    b.ignore('beep');
+    b.ignore('bad id');
+    b.ignore('./skip.js');
+  
+    b.bundle(function (err, src) {
+        if (err) t.fail(err);
+        console.error(err,src);
+        vm.runInNewContext(src, { t: t });
+    });
+});

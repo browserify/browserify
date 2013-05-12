@@ -303,6 +303,7 @@ var packageFilter = function (info) {
 
 var emptyModulePath = require.resolve('./_empty');
 Browserify.prototype._resolve = function (id, parent, cb) {
+    if (this._ignore[id]) return cb(null, emptyModulePath);
     var self = this;
     var result = function (file, x) {
         self.emit('file', file, id, parent);
