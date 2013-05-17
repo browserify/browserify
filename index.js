@@ -16,9 +16,11 @@ var EventEmitter = require('events').EventEmitter;
 
 module.exports = function (opts) {
     if (opts === undefined) opts = {};
+    if (typeof opts === 'string') opts = { entries: [ opts ] };
     if (Array.isArray(opts)) opts = { entries: opts };
+    
     var b = new Browserify(opts);
-    [].concat(opts.files).filter(Boolean).forEach(b.add.bind(b));
+    [].concat(opts.entries).filter(Boolean).forEach(b.add.bind(b));
     return b;
 };
 
@@ -164,7 +166,6 @@ Browserify.prototype.bundle = function (opts, cb) {
     d.on('error', p.emit.bind(p, 'error'));
     g.on('error', p.emit.bind(p, 'error'));
     d.pipe(through(function (dep) {
-console.error([ dep.id, self._noParse ]);
         if (self._noParse.indexOf(dep.id) >= 0) {
             p.write(dep);
         }
