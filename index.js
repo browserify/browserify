@@ -14,17 +14,21 @@ var path = require('path');
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 
-module.exports = function (files) {
-    return new Browserify(files);
+module.exports = function (opts) {
+    if (opts === undefined) opts = {};
+    if (Array.isArray(opts)) opts = { entries: opts };
+    var b = new Browserify(opts);
+    [].concat(opts.files).filter(Boolean).forEach(b.add.bind(b));
+    return b;
 };
 
 function hash(what) {
     return crypto.createHash('md5').update(what).digest('base64').slice(0, 6);
-};
+}
 
 inherits(Browserify, EventEmitter);
 
-function Browserify (files) {
+function Browserify (opts) {
     this.files = [];
     this.exports = {};
     this._pending = 0;
@@ -34,8 +38,12 @@ function Browserify (files) {
     this._expose = {};
     this._mapped = {};
     this._transforms = [];
-    
-    [].concat(files).filter(Boolean).forEach(this.add.bind(this));
+    this._noParse = [].concat(opts.noParse)
+        .filter(Boolean)
+        .reduce(function (acc, file) {
+            return acc.concat(file, path.resolve(file));
+        }, [])
+    ;
 }
 
 Browserify.prototype.add = function (file) {
@@ -114,6 +122,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     
     opts.resolve = self._resolve.bind(self);
     opts.transform = self._transforms;
+    opts.noParse = self._noParse;
     opts.transformKey = [ 'browserify', 'transform' ];
     
     var parentFilter = opts.packageFilter;
@@ -154,7 +163,13 @@ Browserify.prototype.bundle = function (opts, cb) {
     
     d.on('error', p.emit.bind(p, 'error'));
     g.on('error', p.emit.bind(p, 'error'));
-    d.pipe(g).pipe(p);
+    d.pipe(through(function (dep) {
+console.error([ dep.id, self._noParse ]);
+        if (self._noParse.indexOf(dep.id) >= 0) {
+            p.write(dep);
+        }
+        else this.queue(dep)
+    })).pipe(g).pipe(p);
     
     return p;
 };

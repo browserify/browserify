@@ -17,6 +17,7 @@ var argv = require('optimist')
     .alias('debug', 'd')
     .alias('standalone', 's')
     .alias('ig', 'fast')
+    .alias('noparse', 'noParse')
     .default('ig', false)
     .default('im', false)
     .default('dg', true) 
@@ -45,7 +46,11 @@ var entries = argv._.concat(argv.e).concat(argv.entry)
 .filter(Boolean).map(function(entry) {
     return path.resolve(process.cwd(), entry);
 });
-var b = browserify(entries);
+
+var b = browserify({
+    noParse: [].concat(argv.noparse).filter(Boolean),
+    entries: entries
+});
 
 b.on('error', function (err) {
     console.error(String(err));
