@@ -31,21 +31,30 @@ function hash(what) {
 inherits(Browserify, EventEmitter);
 
 function Browserify (opts) {
-    this.files = [];
-    this.exports = {};
-    this._pending = 0;
-    this._entries = [];
-    this._ignore = {};
-    this._external = {};
-    this._expose = {};
-    this._mapped = {};
-    this._transforms = [];
-    this._noParse = [].concat(opts.noParse)
-        .filter(Boolean)
-        .reduce(function (acc, file) {
-            return acc.concat(file, path.resolve(file));
-        }, [])
-    ;
+    var self = this;
+    
+    self.files = [];
+    self.exports = {};
+    self._pending = 0;
+    self._entries = [];
+    self._ignore = {};
+    self._external = {};
+    self._expose = {};
+    self._mapped = {};
+    self._transforms = [];
+    
+    self._noParse =[];
+    var noParse = [].concat(opts.noParse).filter(Boolean);
+    var cwd = process.cwd();
+    var top = { id: cwd, filename: cwd + '/_fake.js', paths: [] };
+    noParse.forEach(function (file) {
+        self._noParse.push(file, path.resolve(file));
+        self._pending ++;
+        self._resolve(file, top, function (err, r) {
+            if (r) self._noParse.push(r);
+            if (--self._pending === 0) self.emit('_ready');
+        });
+    });
 }
 
 Browserify.prototype.add = function (file) {
@@ -321,7 +330,9 @@ var emptyModulePath = require.resolve('./_empty');
 Browserify.prototype._resolve = function (id, parent, cb) {
     var self = this;
     var result = function (file, x) {
-        self.emit('file', file, id, parent);
+        if (self._pending === 0) {
+            self.emit('file', file, id, parent);
+        }
         cb(null, file, x);
     };
     if (self._mapped[id]) return result(self._mapped[id]);
