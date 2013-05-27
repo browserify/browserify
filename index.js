@@ -141,6 +141,8 @@ Browserify.prototype.bundle = function (opts, cb) {
         if (parentFilter) pkg = parentFilter(pkg);
         return packageFilter(pkg);
     };
+
+    self.opts = opts;
     
     if (self._pending) {
         var tr = through();
@@ -340,10 +342,18 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     
     return browserResolve(id, parent, function(err, file) {
         if (err) return cb(err);
-        if (!file) return cb(new Error('module '
-            + JSON.stringify(id) + ' not found from '
-            + JSON.stringify(parent.filename)
-        ));
+        if (!file) {
+            if (self.opts.ignoreMissing) {
+                self.emit('missing', id, parent);
+                return cb(null, emptyModulePath);
+            }
+            else {
+                return cb(new Error('module '
+                        + JSON.stringify(id) + ' not found from '
+                        + JSON.stringify(parent.filename)
+                        ));
+            }
+        }
         
         if (self._ignore[file]) return cb(null, emptyModulePath);
         if (self._external[file]) return result(file, true);
