@@ -246,17 +246,18 @@ Browserify.prototype.pack = function (debug, standalone) {
     var packer = browserPack({ raw: true });
     var ids = {};
     var idIndex = 1;
-
+    
     var mainModule;
-
-    var input = through(function (row) {
+    
+    var input = through(function (row_) {
+        var row = copy(row_);
         var ix;
-
+        
         if (debug) { 
             row.sourceRoot = 'file://localhost'; 
             row.sourceFile = row.id;
         }
-
+        
         if (row.exposed) {
             ix = row.exposed;
         }
@@ -273,13 +274,13 @@ Browserify.prototype.pack = function (debug, standalone) {
         if (row.entry) mainModule = mainModule || ix;
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
             var file = row.deps[key];
-
+            
             // reference external and exposed files directly by hash
             if (self._external[file] || self.exports[file]) {
                 acc[key] = hash(file);
                 return acc;
             }
-
+            
             if (ids[file] === undefined) ids[file] = idIndex++;
             acc[key] = ids[file];
             return acc;
@@ -354,3 +355,10 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         result(file);
     });
 };
+
+function copy (obj) {
+    return Object.keys(obj).reduce(function (acc, key) {
+        acc[key] = obj[key];
+        return acc;
+    }, {});
+}
