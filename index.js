@@ -42,8 +42,8 @@ function Browserify (opts) {
     self._expose = {};
     self._mapped = {};
     self._transforms = [];
-    
     self._noParse =[];
+     
     var noParse = [].concat(opts.noParse).filter(Boolean);
     var cwd = process.cwd();
     var top = { id: cwd, filename: cwd + '/_fake.js', paths: [] };
@@ -203,11 +203,14 @@ Browserify.prototype.deps = function (opts) {
     }
     
     var d = mdeps(self.files, opts);
+    
     var tr = d.pipe(through(write));
     d.on('error', tr.emit.bind(tr, 'error'));
     return tr;
     
     function write (row) {
+        self.emit('dep', row);
+        
         if (row.id === emptyModulePath) {
             row.source = '';
         }
