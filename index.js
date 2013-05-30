@@ -175,7 +175,8 @@ Browserify.prototype.bundle = function (opts, cb) {
     d.on('error', p.emit.bind(p, 'error'));
     g.on('error', p.emit.bind(p, 'error'));
     d.pipe(through(function (dep) {
-        if (self._noParse.indexOf(dep.id) >= 0) {
+        if (self._noParse.indexOf(dep.id) >= 0
+        || (opts.cache && opts.cache[dep.id])) {
             p.write(dep);
         }
         else this.queue(dep)
