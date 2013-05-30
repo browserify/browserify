@@ -12,7 +12,7 @@ test('dependency events', function (t) {
     });
     
     b.bundle(function (err, src) {
-        t.deepEqual(deps, [
+        t.deepEqual(deps.sort(cmp), [
             {
                 id: __dirname + '/entry/main.js',
                 deps: {
@@ -24,4 +24,8 @@ test('dependency events', function (t) {
             { id: __dirname + '/entry/two.js', deps: {} }
         ]);
     });
+    
+    function cmp (a, b) {
+        return a.id < b.id ? -1 : 1;
+    }
 });
