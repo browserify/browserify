@@ -406,6 +406,9 @@ ES5 javascript automatically
 
 # third-party tools
 
+If you want to efficiently re-compile the bundle automatically when you edit
+files, you can use [watchify](https://github.com/substack/watchify).
+
 If you are using express or connect, you can use
 [enchilada](https://github.com/shtylman/node-enchilada) or [browserify-middleware](https://github.com/ForbesLindesay/browserify-middleware)
 to host your bundles as middleware.
