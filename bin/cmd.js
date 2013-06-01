@@ -36,22 +36,14 @@ if (b.argv.pack) {
 
 if (b.argv.deps) {
     var stringify = JSONStream.stringify();
-    b.deps().pipe(stringify).pipe(process.stdout);
+    var d = b.deps({ packageFilter: packageFilter });
+    d.pipe(stringify).pipe(process.stdout);
     return;
 }
 
-var packageFilter = function (info) {
-    if (typeof info.browserify === 'string' && !info.browser) {
-        info.browser = info.browserify;
-        delete info.browserify;
-    }
-    return info;
-};
-
 if (b.argv.list) {
-    b.deps({ 
-        packageFilter: packageFilter    
-    }).pipe(through(function (dep) {
+    var d = b.deps({ packageFilter: packageFilter });
+    d.pipe(through(function (dep) {
         this.queue(dep.id + '\n');
     })).pipe(process.stdout);
     return;
@@ -69,4 +61,12 @@ if (outfile) {
 }
 else {
     bundle.pipe(process.stdout);
+}
+
+function packageFilter (info) {
+    if (typeof info.browserify === 'string' && !info.browser) {
+        info.browser = info.browserify;
+        delete info.browserify;
+    }
+    return info;
 }
