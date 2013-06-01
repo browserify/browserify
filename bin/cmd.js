@@ -40,8 +40,18 @@ if (b.argv.deps) {
     return;
 }
 
+var packageFilter = function (info) {
+    if (typeof info.browserify === 'string' && !info.browser) {
+        info.browser = info.browserify;
+        delete info.browserify;
+    }
+    return info;
+};
+
 if (b.argv.list) {
-    b.deps().pipe(through(function (dep) {
+    b.deps({ 
+        packageFilter: packageFilter    
+    }).pipe(through(function (dep) {
         this.queue(dep.id + '\n');
     })).pipe(process.stdout);
     return;
