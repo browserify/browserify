@@ -7,6 +7,7 @@ var checkSyntax = require('syntax-error');
 var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
 var browserResolve = require('browser-resolve');
+var browserBuiltins = require('browser-builtins');
 var insertGlobals = require('insert-module-globals');
 var umd = require('umd');
 
@@ -43,7 +44,7 @@ function Browserify (opts) {
     self._mapped = {};
     self._transforms = [];
     self._noParse =[];
-     
+    
     var noParse = [].concat(opts.noParse).filter(Boolean);
     var cwd = process.cwd();
     var top = { id: cwd, filename: cwd + '/_fake.js', paths: [] };
@@ -71,7 +72,7 @@ Browserify.prototype.require = function (id, opts) {
     var basedir = opts.basedir || process.cwd();
     var fromfile = basedir + '/_fake.js';
     
-    var params = { filename: fromfile, packageFilter: packageFilter };
+    var params = { filename: fromfile, packageFilter: packageFilter, modules: browserBuiltins };
     browserResolve(id, params, function (err, file) {
         if (err) return self.emit('error', err);
         if (!file) return self.emit('error', new Error(
@@ -343,6 +344,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     };
     if (self._mapped[id]) return result(self._mapped[id]);
     
+    parent.modules = browserBuiltins;
     return browserResolve(id, parent, function(err, file) {
         if (err) return cb(err);
         if (!file) return cb(new Error('module '
