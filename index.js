@@ -336,16 +336,16 @@ var emptyModulePath = require.resolve('./_empty');
 Browserify.prototype._resolve = function (id, parent, cb) {
     if (this._ignore[id]) return cb(null, emptyModulePath);
     var self = this;
-    var result = function (file, x) {
+    var result = function (file, pkg, x) {
         if (self._pending === 0) {
             self.emit('file', file, id, parent);
         }
-        cb(null, file, x);
+        cb(null, file, pkg, x);
     };
     if (self._mapped[id]) return result(self._mapped[id]);
     
     parent.modules = browserBuiltins;
-    return browserResolve(id, parent, function(err, file) {
+    return browserResolve(id, parent, function(err, file, pkg) {
         if (err) return cb(err);
         if (!file) return cb(new Error('module '
             + JSON.stringify(id) + ' not found from '
@@ -353,9 +353,9 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         ));
         
         if (self._ignore[file]) return cb(null, emptyModulePath);
-        if (self._external[file]) return result(file, true);
+        if (self._external[file]) return result(file, undefined, true);
         
-        result(file);
+        result(file, pkg);
     });
 };
 
