@@ -1,6 +1,6 @@
 {
     "name": "browserify",
-    "version": "2.18.0",
+    "version": "2.18.1",
     "description": "browser-side require() the node way",
     "main": "index.js",
     "bin": {
@@ -20,19 +20,19 @@
         "javascript"
     ],
     "dependencies": {
-        "module-deps": "~0.10.0",
-        "browser-pack": "~0.9.1",
+        "module-deps": "~0.10.3",
+        "browser-pack": "~0.9.2",
         "shell-quote": "~0.0.1",
-        "through": "~2.2.0",
+        "through": "~2.3.4",
         "duplexer": "~0.0.2",
         "concat-stream": "~0.1.1",
         "insert-module-globals": "~0.2.0",
         "syntax-error": "~0.0.0",
-        "browser-resolve": "~1.0.1",
+        "browser-resolve": "git://github.com/substack/node-browser-resolve.git#dir-replace",
         "browser-builtins": "~1.0.1",
         "inherits": "~1.0.0",
         "optimist": "~0.5.1",
-        "JSONStream": "~0.4.3",
+        "JSONStream": "~0.6.4",
         "umd": "~1.1.0"
     },
     "devDependencies": {
