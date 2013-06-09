@@ -72,7 +72,11 @@ Browserify.prototype.require = function (id, opts) {
     var basedir = opts.basedir || process.cwd();
     var fromfile = basedir + '/_fake.js';
     
-    var params = { filename: fromfile, packageFilter: packageFilter, modules: browserBuiltins };
+    var params = {
+        filename: fromfile,
+        modules: browserBuiltins,
+        packageFilter: packageFilter
+    };
     browserResolve(id, params, function (err, file) {
         if (err) return self.emit('error', err);
         if (!file) return self.emit('error', new Error(

@@ -20,7 +20,7 @@
         "javascript"
     ],
     "dependencies": {
-        "module-deps": "~0.10.2",
+        "module-deps": "~0.10.3",
         "browser-pack": "~0.9.2",
         "shell-quote": "~0.0.1",
         "through": "~2.3.4",
