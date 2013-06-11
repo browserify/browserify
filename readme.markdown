@@ -390,6 +390,9 @@ Here is a list of known source transforms:
 * [coffeeify](https://github.com/substack/coffeeify) - compile
 `.coffee` files to javascript automatically
 
+* [icsify](https://github.com/maxtaco/icsify) - compile
+`.iced` IcedCoffeeSCript files to javascript automatically
+
 * [caching-coffeeify](https://github.com/thlorenz/caching-coffeeify) - coffeeify
 version that caches previously compiled files to optimize the compilation step
 
