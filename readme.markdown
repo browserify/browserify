@@ -393,6 +393,13 @@ Here is a list of known source transforms:
 * [caching-coffeeify](https://github.com/thlorenz/caching-coffeeify) - coffeeify
 version that caches previously compiled files to optimize the compilation step
 
+* [decomponentify](https://github.com/eugeneware/decomponentify) - use
+[component](https://github.com/component/component) client packages seamlessly
+with browserify.
+
+* [debowerify](https://github.com/eugeneware/debowerify) - use
+[bower](http://bower.io) client packages more easily with browserify.
+
 * [hbsfy](https://github.com/epeli/node-hbsfy) - precompile handlebars
 templates to javascript functions automatically
 
@@ -401,7 +408,7 @@ calls with file contents (also supports `ruglify` and any other `rfile` derivati
 
 * [liveify](https://github.com/quarterto/liveify) - compile livescript files to javascript automatically
 
-* [es6ify](https://github.com/thlorenz/es6ify) - compile ES6 files to 
+* [es6ify](https://github.com/thlorenz/es6ify) - compile ES6 files to
 ES5 javascript automatically
 
 * [turn](https://github.com/juliangruber/turn) - minimal modules for a hypothetical es6 with lua's return
