@@ -28,7 +28,7 @@
         "concat-stream": "~0.1.1",
         "insert-module-globals": "~0.2.0",
         "syntax-error": "~0.0.0",
-        "browser-resolve": "git://github.com/substack/node-browser-resolve.git#dir-replace",
+        "browser-resolve": "~1.1.0",
         "browser-builtins": "~1.0.1",
         "inherits": "~1.0.0",
         "optimist": "~0.5.1",
