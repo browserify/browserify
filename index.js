@@ -175,7 +175,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     var p = self.pack(opts.debug, opts.standalone);
     if (cb) {
         p.on('error', cb);
-        p.pipe(concatStream(cb));
+        p.pipe(concatStream(function (src) { cb(null, src) }));
     }
     
     d.on('error', p.emit.bind(p, 'error'));
