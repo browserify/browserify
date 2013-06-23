@@ -403,6 +403,9 @@ with browserify.
 * [debowerify](https://github.com/eugeneware/debowerify) - use
 [bower](http://bower.io) client packages more easily with browserify.
 
+* [deAMDify](https://github.com/jaredhanson/deamdify) - translate AMD modules
+to Node-style modules automatically
+
 * [hbsfy](https://github.com/epeli/node-hbsfy) - precompile handlebars
 templates to javascript functions automatically
 
