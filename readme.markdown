@@ -404,16 +404,20 @@ with browserify.
 templates to javascript functions automatically
 
 * [rfileify](https://github.com/ForbesLindesay/rfileify) - inline `rfile(path)`
-calls with file contents (also supports `ruglify` and any other `rfile` derivatives)
+calls with file contents
+(also supports `ruglify` and any other `rfile` derivatives)
 
-* [liveify](https://github.com/quarterto/liveify) - compile livescript files to javascript automatically
+* [liveify](https://github.com/quarterto/liveify) - compile livescript files to
+javascript automatically
 
 * [es6ify](https://github.com/thlorenz/es6ify) - compile ES6 files to
 ES5 javascript automatically
 
-* [turn](https://github.com/juliangruber/turn) - minimal modules for a hypothetical es6 with lua's return
+* [turn](https://github.com/juliangruber/turn) - minimal modules for a
+hypothetical es6 with lua's return
 
-* [rfolderify](https://github.com/quarterto/rfolderify) - turn calls to rfolder into a map of requires of the files in the thing
+* [rfolderify](https://github.com/quarterto/rfolderify) - turn calls to rfolder
+into a map of requires of the files in the thing
 
 # third-party tools
 
@@ -421,7 +425,8 @@ If you want to efficiently re-compile the bundle automatically when you edit
 files, you can use [watchify](https://github.com/substack/watchify).
 
 If you are using express or connect, you can use
-[enchilada](https://github.com/shtylman/node-enchilada) or [browserify-middleware](https://github.com/ForbesLindesay/browserify-middleware)
+[enchilada](https://github.com/shtylman/node-enchilada) or
+[browserify-middleware](https://github.com/ForbesLindesay/browserify-middleware)
 to host your bundles as middleware.
 
 If you want a standalone web server for development that will create bundles on
