@@ -167,7 +167,8 @@ Browserify.prototype.bundle = function (opts, cb) {
     var g = opts.detectGlobals || opts.insertGlobals
         ? insertGlobals(self.files, {
             resolve: self._resolve.bind(self),
-            always: opts.insertGlobals
+            always: opts.insertGlobals,
+            vars: opts.insertGlobalVars
         })
         : through()
     ;

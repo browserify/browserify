@@ -289,6 +289,10 @@ you are in a modern enough browser.
 When `opts.standalone` is a non-empty string, a standalone module is created
 with that name and a [umd](https://github.com/forbeslindesay/umd) wrapper.
 
+`opts.insertGlobalVars` will be passed to
+[insert-module-globals](http://npmjs.org/package/insert-module-globals)
+as the `opts.vars` parameter.
+
 ## b.external(file)
 
 Prevent `file` from being loaded into the current bundle, instead referencing
