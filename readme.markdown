@@ -393,6 +393,9 @@ Here is a list of known source transforms:
 * [caching-coffeeify](https://github.com/thlorenz/caching-coffeeify) - coffeeify
 version that caches previously compiled files to optimize the compilation step
 
+* [deAMDify](https://github.com/jaredhanson/deamdify) - translate AMD modules
+to Node-style modules automatically
+
 * [hbsfy](https://github.com/epeli/node-hbsfy) - precompile handlebars
 templates to javascript functions automatically
 
