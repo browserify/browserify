@@ -246,7 +246,7 @@ var browserify = require('browserify')
 
 ## var b = browserify(files=[] or opts={})
 
-Create a browserify instance `b` from the entry main `files` or `opts.files`.
+Create a browserify instance `b` from the entry main `files` or `opts.entries`.
 `files` can be an array of files or a single file.
 
 You can also specify an `opts.noParse` array which will skip all require() and

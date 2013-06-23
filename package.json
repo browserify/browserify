@@ -26,7 +26,7 @@
         "through": "~2.3.4",
         "duplexer": "~0.0.2",
         "concat-stream": "~0.1.1",
-        "insert-module-globals": "~0.2.0",
+        "insert-module-globals": "~1.1.0",
         "syntax-error": "~0.0.0",
         "browser-resolve": "git://github.com/substack/node-browser-resolve.git#dir-replace",
         "browser-builtins": "~1.0.1",
