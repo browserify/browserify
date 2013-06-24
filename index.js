@@ -209,6 +209,7 @@ Browserify.prototype.deps = function (opts) {
         return tr;
     }
     
+    opts.modules = browserBuiltins;
     var d = mdeps(self.files, opts);
     
     var tr = d.pipe(through(write));
@@ -350,6 +351,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     if (self._mapped[id]) return result(self._mapped[id]);
     
     parent.modules = browserBuiltins;
+    
     return browserResolve(id, parent, function(err, file, pkg) {
         if (err) return cb(err);
         if (!file) return cb(new Error('module '
