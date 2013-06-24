@@ -32,7 +32,7 @@ test('fieldObject', function (t) {
         vm.runInNewContext(src, c);
         t.equal(
             c.require('./object.js'),
-            'browser'
+            '!browser'
         );
     });
 });
