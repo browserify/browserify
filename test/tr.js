@@ -4,7 +4,7 @@ var test = require('tap').test;
 var through = require('through');
 
 test('function transform', function (t) {
-    t.plan(3);
+    t.plan(6);
     
     var b = browserify(__dirname + '/tr/main.js');
     b.transform(function (file) {

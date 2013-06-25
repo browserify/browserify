@@ -355,6 +355,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
             pkg = self._pkgcache[pkgfile];
         }
         
+        return cb(null, file, pkg, x);
         if (pkg) return cb(null, file, pkg, x);
         
         fs.readFile(pkgfile, function (err, src) {
