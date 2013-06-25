@@ -14,6 +14,7 @@ var umd = require('umd');
 var path = require('path');
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
+var fs = require('fs');
 
 module.exports = function (opts) {
     if (opts === undefined) opts = {};
@@ -44,6 +45,7 @@ function Browserify (opts) {
     self._mapped = {};
     self._transforms = [];
     self._noParse =[];
+    self._pkgcache = {};
     
     var noParse = [].concat(opts.noParse).filter(Boolean);
     var cwd = process.cwd();
@@ -347,7 +349,26 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         if (self._pending === 0) {
             self.emit('file', file, id, parent);
         }
-        cb(null, file, pkg, x);
+        
+        var pkgfile = path.join(path.dirname(file), 'package.json');
+        if (!pkg && self._pkgcache[pkgfile] === undefined) {
+            pkg = self._pkgcache[pkgfile];
+        }
+        
+        if (pkg) return cb(null, file, pkg, x);
+        
+        fs.readFile(pkgfile, function (err, src) {
+            if (err) {
+                pkg = false
+            }
+            else {
+                try { pkg = JSON.parse(src) }
+                catch (e) {}
+            }
+            self._pkgcache[pkgfile] = pkg;
+            
+            cb(null, file, pkg, x);
+        });
     };
     if (self._mapped[id]) return result(self._mapped[id]);
     
@@ -361,7 +382,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         ));
         
         if (self._ignore[file]) return cb(null, emptyModulePath);
-        if (self._external[file]) return result(file, undefined, true);
+        if (self._external[file]) return result(file, pkg, true);
         
         result(file, pkg);
     });
