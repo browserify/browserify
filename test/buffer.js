@@ -7,7 +7,7 @@ test('utf8 buffer to base64', function (t) {
     var b = browserify();
     b.require('buffer');
     b.bundle(function (err, src) {
-        if (err) t.fail(err);
+        if (err) return t.fail(err);
         var c = {};
         vm.runInNewContext(src, c);
         t.equal(

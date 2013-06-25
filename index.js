@@ -359,11 +359,21 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         
         fs.readFile(pkgfile, function (err, src) {
             if (err) {
-                pkg = false
+                pkg = false;
             }
             else {
                 try { pkg = JSON.parse(src) }
                 catch (e) {}
+                if (pkg && typeof pkg === 'object') {
+                    var pkg_ = pkg;
+                    pkg = {};
+                    if (typeof pkg_.browserify === 'string' && !pkg_.browser) {
+                        pkg.browser = pkg_.browserify;
+                    }
+                    if (typeof pkg_.browserify === 'object') {
+                        pkg.browserify = pkg_.browserify;
+                    }
+                }
             }
             self._pkgcache[pkgfile] = pkg;
             
