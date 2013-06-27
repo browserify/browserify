@@ -20,7 +20,7 @@ module.exports = function (opts) {
     if (opts === undefined) opts = {};
     if (typeof opts === 'string') opts = { entries: [ opts ] };
     if (Array.isArray(opts)) opts = { entries: opts };
-    
+
     var b = new Browserify(opts);
     [].concat(opts.entries).filter(Boolean).forEach(b.add.bind(b));
     return b;
@@ -34,7 +34,7 @@ inherits(Browserify, EventEmitter);
 
 function Browserify (opts) {
     var self = this;
-    
+
     self.files = [];
     self.exports = {};
     self._pending = 0;
@@ -46,7 +46,7 @@ function Browserify (opts) {
     self._transforms = [];
     self._noParse =[];
     self._pkgcache = {};
-    
+
     var noParse = [].concat(opts.noParse).filter(Boolean);
     var cwd = process.cwd();
     var top = { id: cwd, filename: cwd + '/_fake.js', paths: [] };
@@ -68,12 +68,12 @@ Browserify.prototype.add = function (file) {
 Browserify.prototype.require = function (id, opts) {
     var self = this;
     if (opts === undefined) opts = { expose: id };
-    
+
     self._pending ++;
-    
+
     var basedir = opts.basedir || process.cwd();
     var fromfile = basedir + '/_fake.js';
-    
+
     var params = {
         filename: fromfile,
         modules: browserBuiltins,
@@ -84,10 +84,10 @@ Browserify.prototype.require = function (id, opts) {
         if (!file) return self.emit('error', new Error(
             'module ' + JSON.stringify(id) + ' not found in require()'
         ));
-        
+
         if (opts.expose) {
             self.exports[file] = hash(file);
-            
+
             if (typeof opts.expose === 'string') {
                 self._expose[file] = opts.expose;
                 self._mapped[opts.expose] = file;
@@ -100,9 +100,9 @@ Browserify.prototype.require = function (id, opts) {
         else {
             self.files.push(file);
         }
-        
+
         if (opts.entry) self._entries.push(file);
-        
+
         if (--self._pending === 0) self.emit('_ready');
     });
 
@@ -137,18 +137,18 @@ Browserify.prototype.bundle = function (opts, cb) {
     if (opts.detectGlobals === undefined) opts.detectGlobals = true;
     if (opts.ignoreMissing === undefined) opts.ignoreMissing = false;
     if (opts.standalone === undefined) opts.standalone = false;
-    
+
     opts.resolve = self._resolve.bind(self);
     opts.transform = self._transforms;
     opts.noParse = self._noParse;
     opts.transformKey = [ 'browserify', 'transform' ];
-    
+
     var parentFilter = opts.packageFilter;
     opts.packageFilter = function (pkg) {
         if (parentFilter) pkg = parentFilter(pkg);
         return packageFilter(pkg);
     };
-    
+
     if (self._pending) {
         var tr = through();
         self.on('_ready', function () {
@@ -158,13 +158,13 @@ Browserify.prototype.bundle = function (opts, cb) {
         });
         return tr;
     }
-    
+
     if (opts.standalone && self._entries.length !== 1) {
         process.nextTick(function () {
             p.emit('error', 'standalone only works with a single entry point');
         });
     }
-    
+
     var d = (opts.deps || self.deps.bind(self))(opts);
     var g = opts.detectGlobals || opts.insertGlobals
         ? insertGlobals(self.files, {
@@ -180,7 +180,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         p.pipe(concatStream(function (src) { cb(null, src) }));
     }
     g.on('dep', function (dep) { self.emit('dep', dep) });
-    
+
     d.on('error', p.emit.bind(p, 'error'));
     g.on('error', p.emit.bind(p, 'error'));
     d.pipe(through(function (dep) {
@@ -190,7 +190,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         }
         else this.queue(dep)
     })).pipe(g).pipe(p);
-    
+
     return p;
 };
 
@@ -211,21 +211,21 @@ Browserify.prototype.deps = function (opts) {
         });
         return tr;
     }
-    
+
     opts.modules = browserBuiltins;
     var d = mdeps(self.files, opts);
-    
+
     var tr = d.pipe(through(write));
     d.on('error', tr.emit.bind(tr, 'error'));
     return tr;
-    
+
     function write (row) {
         self.emit('dep', row);
-        
+
         if (row.id === emptyModulePath) {
             row.source = '';
         }
-        
+
         if (self._expose[row.id]) {
             this.queue({
                 exposed: self._expose[row.id],
@@ -233,18 +233,18 @@ Browserify.prototype.deps = function (opts) {
                 source: 'module.exports=require(\'' + hash(row.id) + '\');'
             });
         }
-        
+
         if (self.exports[row.id]) row.exposed = self.exports[row.id];
 
         // skip adding this file if it is external
         if (self._external[row.id]) {
             return;
         }
-       
+
         if (/\.json$/.test(row.id)) {
             row.source = 'module.exports=' + row.source;
         }
-        
+
         var ix = self._entries.indexOf(row.id);
         row.entry = ix >= 0;
         if (ix >= 0) row.order = ix;
@@ -257,18 +257,18 @@ Browserify.prototype.pack = function (debug, standalone) {
     var packer = browserPack({ raw: true });
     var ids = {};
     var idIndex = 1;
-    
+
     var mainModule;
-    
+
     var input = through(function (row_) {
         var row = copy(row_);
         var ix;
-        
-        if (debug) { 
-            row.sourceRoot = 'file://localhost'; 
+
+        if (debug) {
+            row.sourceRoot = 'file://localhost';
             row.sourceFile = row.id;
         }
-        
+
         if (row.exposed) {
             ix = row.exposed;
         }
@@ -276,34 +276,34 @@ Browserify.prototype.pack = function (debug, standalone) {
             ix = ids[row.id] !== undefined ? ids[row.id] : idIndex++;
         }
         if (ids[row.id] === undefined) ids[row.id] = ix;
-        
+
         if (/^#!/.test(row.source)) row.source = '//' + row.source;
         var err = checkSyntax(row.source, row.id);
         if (err) return this.emit('error', err);
-        
+
         row.id = ix;
         if (row.entry) mainModule = mainModule || ix;
         row.deps = Object.keys(row.deps).sort().reduce(function (acc, key) {
             var file = row.deps[key];
-            
+
             // reference external and exposed files directly by hash
             if (self._external[file] || self.exports[file]) {
                 acc[key] = hash(file);
                 return acc;
             }
-            
+
             if (ids[file] === undefined) ids[file] = idIndex++;
             acc[key] = ids[file];
             return acc;
         }, {});
-        
+
         this.queue(row);
     });
-    
+
     var first = true;
     var hasExports = Object.keys(self.exports).length;
     var output = through(write, end);
-    
+
     function writePrelude () {
         if (!first) return;
         if (standalone) {
@@ -312,17 +312,17 @@ Browserify.prototype.pack = function (debug, standalone) {
         if (!hasExports) return output.queue(';');
         output.queue('require=');
     }
-    
+
     input.pipe(packer);
     packer.pipe(output);
     return duplexer(input, output);
-    
+
     function write (buf) {
         if (first) writePrelude();
         first = false;
         this.queue(buf);
     }
-    
+
     function end () {
         if (first) writePrelude();
         if (standalone) {
@@ -349,14 +349,14 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         if (self._pending === 0) {
             self.emit('file', file, id, parent);
         }
-        
+
         var pkgfile = path.join(path.dirname(file), 'package.json');
         if (!pkg && self._pkgcache[pkgfile] === undefined) {
             pkg = self._pkgcache[pkgfile];
         }
-        
+
         if (pkg) return cb(null, file, pkg, x);
-        
+
         fs.readFile(pkgfile, function (err, src) {
             if (err) {
                 pkg = false;
@@ -376,24 +376,24 @@ Browserify.prototype._resolve = function (id, parent, cb) {
                 }
             }
             self._pkgcache[pkgfile] = pkg;
-            
+
             cb(null, file, pkg, x);
         });
     };
     if (self._mapped[id]) return result(self._mapped[id]);
-    
+
     parent.modules = browserBuiltins;
-    
+
     return browserResolve(id, parent, function(err, file, pkg) {
         if (err) return cb(err);
         if (!file) return cb(new Error('module '
             + JSON.stringify(id) + ' not found from '
             + JSON.stringify(parent.filename)
         ));
-        
+
         if (self._ignore[file]) return cb(null, emptyModulePath);
         if (self._external[file]) return result(file, pkg, true);
-        
+
         result(file, pkg);
     });
 };
