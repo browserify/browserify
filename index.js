@@ -283,7 +283,7 @@ Browserify.prototype.pack = function (debug, standalone) {
         
         row.id = ix;
         if (row.entry) mainModule = mainModule || ix;
-        row.deps = Object.keys(row.deps).reduce(function (acc, key) {
+        row.deps = Object.keys(row.deps).sort().reduce(function (acc, key) {
             var file = row.deps[key];
             
             // reference external and exposed files directly by hash
@@ -399,7 +399,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
 };
 
 function copy (obj) {
-    return Object.keys(obj).reduce(function (acc, key) {
+    return Object.keys(obj).sort().reduce(function (acc, key) {
         acc[key] = obj[key];
         return acc;
     }, {});
