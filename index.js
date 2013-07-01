@@ -254,11 +254,9 @@ Browserify.prototype.deps = function (opts) {
 
 Browserify.prototype.pack = function (debug, standalone) {
     var self = this;
-    var packer = browserPack({ raw: true });
+    var packer = browserPack({ raw: true, standalone: standalone });
     var ids = {};
     var idIndex = 1;
-    
-    var mainModule;
     
     var input = through(function (row_) {
         var row = copy(row_);
@@ -282,7 +280,6 @@ Browserify.prototype.pack = function (debug, standalone) {
         if (err) return this.emit('error', err);
         
         row.id = ix;
-        if (row.entry) mainModule = mainModule || ix;
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
             var file = row.deps[key];
             
@@ -326,7 +323,7 @@ Browserify.prototype.pack = function (debug, standalone) {
     function end () {
         if (first) writePrelude();
         if (standalone) {
-            output.queue('(' + mainModule + ')' + umd.postlude(standalone));
+            output.queue(umd.postlude(standalone));
         }
         this.queue('\n;');
         this.queue(null);
