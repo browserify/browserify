@@ -16,13 +16,13 @@ tag.
 # example
 
 Whip up a file, `main.js` with some `require()s` in it. You can use relative
-paths like `'./foo'` and `'../lib/bar'` or module paths like `'gamma'` that will
-search `node_modules/` using
+paths like `'./foo.js'` and `'../lib/bar.js'` or module paths like `'gamma'`
+that will search `node_modules/` using
 [node's module lookup algorithm](https://github.com/substack/node-resolve).
 
 ``` js
-var foo = require('./foo');
-var bar = require('../lib/bar');
+var foo = require('./foo.js');
+var bar = require('../lib/bar.js');
 var gamma = require('gamma');
 
 var elem = document.getElementById('result');
@@ -79,14 +79,14 @@ still being able to use `require()`. Just use a combination of `--external` and
 For example, if a website with 2 pages, `beep.js`:
 
 ``` js
-var robot = require('./robot');
+var robot = require('./robot.js');
 console.log(robot('beep'));
 ```
 
 and `boop.js`:
 
 ``` js
-var robot = require('./robot');
+var robot = require('./robot.js');
 console.log(robot('boop'));
 ```
 
