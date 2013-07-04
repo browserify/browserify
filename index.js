@@ -165,6 +165,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         });
     }
     
+    var prevCache = opts.cache && copy(opts.cache);
     var d = (opts.deps || self.deps.bind(self))(opts);
     var g = opts.detectGlobals || opts.insertGlobals
         ? insertGlobals(self.files, {
@@ -185,7 +186,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     g.on('error', p.emit.bind(p, 'error'));
     d.pipe(through(function (dep) {
         if (self._noParse.indexOf(dep.id) >= 0
-        || (opts.cache && opts.cache[dep.id])) {
+        || (prevCache && prevCache[dep.id])) {
             p.write(dep);
         }
         else this.queue(dep)
