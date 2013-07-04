@@ -3,6 +3,7 @@ var through = require('through');
 var duplexer = require('duplexer');
 var concatStream = require('concat-stream');
 var checkSyntax = require('syntax-error');
+var parents = require('parents');
 
 var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
@@ -350,36 +351,23 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         if (self._pending === 0) {
             self.emit('file', file, id, parent);
         }
-        
-        var pkgfile = path.join(path.dirname(file), 'package.json');
-        if (!pkg && self._pkgcache[pkgfile] === undefined) {
-            pkg = self._pkgcache[pkgfile];
-        }
-        
-        if (pkg) return cb(null, file, pkg, x);
-        
-        fs.readFile(pkgfile, function (err, src) {
-            if (err) {
-                pkg = false;
-            }
-            else {
-                try { pkg = JSON.parse(src) }
-                catch (e) {}
-                if (pkg && typeof pkg === 'object') {
-                    var pkg_ = pkg;
-                    pkg = {};
-                    if (typeof pkg_.browserify === 'string' && !pkg_.browser) {
-                        pkg.browser = pkg_.browserify;
-                    }
-                    if (typeof pkg_.browserify === 'object') {
-                        pkg.browserify = pkg_.browserify;
-                    }
+        if (pkg) cb(null, file, pkg, x);
+        else findPackage(path.dirname(file), function (err, pkgfile, pkg) {
+            if (err) return cb(err)
+            self.emit('package', pkgfile, pkg);
+            
+            if (pkg && typeof pkg === 'object') {
+                var pkg_ = pkg;
+                pkg = {};
+                if (typeof pkg_.browserify === 'string' && !pkg_.browser) {
+                    pkg.browser = pkg_.browserify;
+                }
+                if (typeof pkg_.browserify === 'object') {
+                    pkg.browserify = pkg_.browserify;
                 }
             }
-            self._pkgcache[pkgfile] = pkg;
-            
             cb(null, file, pkg, x);
-        });
+        })
     };
     if (self._mapped[id]) return result(self._mapped[id]);
     
@@ -397,6 +385,35 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         
         result(file, pkg);
     });
+     
+    function findPackage (basedir, cb) {
+        var dirs = parents(basedir);
+        (function next () {
+            var dir = dirs.shift();
+            if (dir === 'node_modules' || dir === undefined) {
+                return cb(null, null, null);
+            }
+            
+            var pkgfile = path.join(dir, 'package.json');
+            if (self._pkgcache[pkgfile]) {
+                cb(null, pkgfile, self._pkgcache[pkgfile]);
+            }
+            else readPackage(pkgfile, function (err, pkg) {
+                self._pkgcache[pkgfile] = pkg;
+                if (err) return next()
+                else cb(null, pkgfile, pkg)
+            });
+        })();
+    }
+    
+    function readPackage (pkgfile, cb) {
+        fs.readFile(pkgfile, function (err, src) {
+            if (err) return cb(err);
+            try { var pkg = JSON.parse(src) }
+            catch (e) {}
+            cb(null, pkg);
+        });
+    }
 };
 
 function copy (obj) {
