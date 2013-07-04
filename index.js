@@ -351,10 +351,12 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         if (self._pending === 0) {
             self.emit('file', file, id, parent);
         }
-        if (pkg) cb(null, file, pkg, x);
+        if (pkg) {
+            cb(null, file, pkg, x);
+            self.emit('package', file, pkg);
+        }
         else findPackage(path.dirname(file), function (err, pkgfile, pkg) {
             if (err) return cb(err)
-            self.emit('package', pkgfile, pkg);
             
             if (pkg && typeof pkg === 'object') {
                 var pkg_ = pkg;
@@ -367,6 +369,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
                 }
             }
             cb(null, file, pkg, x);
+            self.emit('package', file, pkg);
         })
     };
     if (self._mapped[id]) return result(self._mapped[id]);
