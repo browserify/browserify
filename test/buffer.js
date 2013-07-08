@@ -116,3 +116,19 @@ test('hex buffer to ascii', function (t) {
         );
     });
 });
+
+test('indexing a buffer', function (t) {
+    t.plan(5);
+    var b = browserify();
+    b.require('buffer');
+    b.bundle(function (err, src) {
+        var c = {};
+        vm.runInNewContext(src, c);
+        var buf = c.require('buffer').Buffer('abc');
+        t.equal(buf[0], 97);
+        t.equal(buf[1], 98);
+        t.equal(buf[2], 99);
+        t.equal(buf[3], undefined);
+        t.equal(buf.toString('utf8'), 'abc');
+    });
+});
