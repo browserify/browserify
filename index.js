@@ -290,6 +290,9 @@ Browserify.prototype.pack = function (debug, standalone) {
             if (self._external[file] || self.exports[file]) {
                 acc[key] = hash(file);
             }
+            else if (self._expose[file]) {
+                acc[key] = file;
+            }
             else if (!row.indexDeps || row.indexDeps[key] === undefined) {
                 acc[key] = hash(file);
             }
