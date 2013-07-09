@@ -280,10 +280,8 @@ Browserify.prototype.pack = function (debug, standalone) {
         var deps = {};
         Object.keys(row.deps || {}).forEach(function (key) {
             var file = row.deps[key];
-            deps[key] = getId({
-                id: file,
-                index: row.indexDeps && row.indexDeps[key]
-            });
+            var index = row.indexDeps && row.indexDeps[key];
+            deps[key] = getId({ id: file, index: index });
         });
         row.deps = deps;
         
@@ -314,13 +312,13 @@ Browserify.prototype.pack = function (debug, standalone) {
     return pipeline(sort, input, packer, output);
     
     function write (buf) {
-        if (first) writePrelude();
+        if (first) writePrelude.call(this);
         first = false;
         this.queue(buf);
     }
     
     function end () {
-        if (first) writePrelude();
+        if (first) writePrelude.call(this);
         if (standalone) {
             this.queue('(' + mainModule + ')' + umd.postlude(standalone));
         }

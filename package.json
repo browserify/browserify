@@ -20,9 +20,9 @@
         "javascript"
     ],
     "dependencies": {
-        "module-deps": "~1.0.0",
+        "module-deps": "~1.0.1",
         "browser-pack": "~0.9.4",
-        "deps-sort": "~0.1.0",
+        "deps-sort": "~0.1.1",
         "shell-quote": "~0.0.1",
         "through": "~2.3.4",
         "event-stream": "~3.0.15",
