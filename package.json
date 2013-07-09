@@ -1,6 +1,6 @@
 {
     "name": "browserify",
-    "version": "2.24.1",
+    "version": "2.24.2",
     "description": "browser-side require() the node way",
     "main": "index.js",
     "bin": {
@@ -25,6 +25,7 @@
         "deps-sort": "~0.1.1",
         "shell-quote": "~0.0.1",
         "through": "~2.3.4",
+        "duplexer": "~0.1.1",
         "event-stream": "~3.0.15",
         "concat-stream": "~1.0.0",
         "insert-module-globals": "~1.2.0",
