@@ -4,6 +4,7 @@ var JSONStream = require('JSONStream');
 var through = require('through');
 
 var b = require('./args')(process.argv.slice(2));
+process.stdout.on('error', process.exit);
 
 if ((b.argv._[0] === 'help' && b.argv._[1]) === 'advanced'
 || (b.argv.h || b.argv.help) === 'advanced') {
