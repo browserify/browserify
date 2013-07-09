@@ -21,10 +21,10 @@
     ],
     "dependencies": {
         "module-deps": "~0.15.0",
-        "browser-pack": "~0.9.3",
+        "browser-pack": "~0.9.4",
         "shell-quote": "~0.0.1",
         "through": "~2.3.4",
-        "duplexer": "~0.0.2",
+        "duplexer": "~0.1.1",
         "concat-stream": "~1.0.0",
         "insert-module-globals": "~1.2.0",
         "syntax-error": "~0.0.0",

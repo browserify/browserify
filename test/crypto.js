@@ -30,6 +30,5 @@ test('*-browserify libs from node_modules/', function (t) {
             }
         };
         vm.runInNewContext(src.toString('utf8'), c);
-        t.end();
     }));
 });
