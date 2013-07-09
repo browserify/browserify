@@ -7,7 +7,7 @@ var parents = require('parents');
 
 var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
-var depsSort = require('deps-sort');
+var depSorter = require('deps-sort');
 var browserResolve = require('browser-resolve');
 var browserBuiltins = require('browser-builtins');
 var insertGlobals = require('insert-module-globals');
@@ -233,7 +233,6 @@ Browserify.prototype.deps = function (opts) {
             this.queue({
                 exposed: self._expose[row.id],
                 deps: {},
-                indexDeps: {},
                 source: 'module.exports=require(\'' + hash(row.id) + '\');'
             });
         }
@@ -283,7 +282,7 @@ Browserify.prototype.pack = function (debug, standalone) {
             var file = row.deps[key];
             deps[key] = getId({
                 id: file,
-                index: row.indexDeps && row.indexDeps[file]
+                index: row.indexDeps && row.indexDeps[key]
             });
         });
         row.deps = deps;
@@ -320,7 +319,7 @@ Browserify.prototype.pack = function (debug, standalone) {
         output.queue('require=');
     }
     
-    var sort = depsSort();
+    var sort = depSorter({ index: true });
     sort.pipe(input).pipe(packer).pipe(output);
     return duplexer(sort, output);
     
