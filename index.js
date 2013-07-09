@@ -7,6 +7,7 @@ var parents = require('parents');
 
 var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
+var depsSort = require('deps-sort');
 var browserResolve = require('browser-resolve');
 var browserBuiltins = require('browser-builtins');
 var insertGlobals = require('insert-module-globals');
@@ -215,7 +216,6 @@ Browserify.prototype.deps = function (opts) {
     }
     
     opts.modules = browserBuiltins;
-    opts.includeIndex = true;
     var d = mdeps(self.files, opts);
     
     var tr = d.pipe(through(write));
@@ -274,35 +274,38 @@ Browserify.prototype.pack = function (debug, standalone) {
         var err = checkSyntax(row.source, row.id);
         if (err) return this.emit('error', err);
         
-        if (row.exposed) {
-            row.id = row.exposed;
-        }
-        else {
-            var ix = row.index === undefined ? hash(row.id) : row.index;
-            row.id = ix;
-        }
+        row.id = getId(row);
         
         if (row.entry) mainModule = mainModule || row.id;
-        row.deps = Object.keys(row.deps || {}).reduce(function (acc, key) {
+        
+        var deps = {};
+        Object.keys(row.deps || {}).forEach(function (key) {
             var file = row.deps[key];
-            
-            // reference external and exposed files directly by hash
-            if (self._external[file] || self.exports[file]) {
-                acc[key] = hash(file);
-            }
-            else if (self._expose[file]) {
-                acc[key] = file;
-            }
-            else if (!row.indexDeps || row.indexDeps[key] === undefined) {
-                acc[key] = hash(file);
-            }
-            else acc[key] = row.indexDeps[key];
-            
-            return acc;
-        }, {});
+            deps[key] = getId({
+                id: file,
+                index: row.indexDeps && row.indexDeps[file]
+            });
+        });
+        row.deps = deps;
         
         this.queue(row);
     });
+    
+    function getId (row) {
+        if (row.exposed) {
+            return row.exposed;
+        }
+        else if (self._external[row.id] || self.exports[row.id]) {
+            return hash(row.id);
+        }
+        else if (self._expose[row.id]) {
+            return row.id;
+        }
+        else if (row.index === undefined) {
+            return row.id;
+        }
+        else return row.index;
+    }
     
     var first = true;
     var hasExports = Object.keys(self.exports).length;
@@ -317,9 +320,9 @@ Browserify.prototype.pack = function (debug, standalone) {
         output.queue('require=');
     }
     
-    input.pipe(packer);
-    packer.pipe(output);
-    return duplexer(input, output);
+    var sort = depsSort();
+    sort.pipe(input).pipe(packer).pipe(output);
+    return duplexer(sort, output);
     
     function write (buf) {
         if (first) writePrelude();
