@@ -48,19 +48,22 @@ function Browserify (opts) {
     self._transforms = [];
     self._noParse =[];
     self._pkgcache = {};
-    
+
     var noParse = [].concat(opts.noParse).filter(Boolean);
+    noParse.forEach(this.noParse.bind(this));
+}
+
+Browserify.prototype.noParse = function(file) {
+    var self = this;
     var cwd = process.cwd();
     var top = { id: cwd, filename: cwd + '/_fake.js', paths: [] };
-    noParse.forEach(function (file) {
-        self._noParse.push(file, path.resolve(file));
-        self._pending ++;
-        self._resolve(file, top, function (err, r) {
-            if (r) self._noParse.push(r);
-            if (--self._pending === 0) self.emit('_ready');
-        });
+    self._noParse.push(file, path.resolve(file));
+    self._pending ++;
+    self._resolve(file, top, function (err, r) {
+        if (r) self._noParse.push(r);
+        if (--self._pending === 0) self.emit('_ready');
     });
-}
+};
 
 Browserify.prototype.add = function (file) {
     this.require(file, { entry: true });
@@ -120,6 +123,12 @@ Browserify.prototype.expose = function (name, file) {
 Browserify.prototype.external = function (id, opts) {
     opts = opts || {};
     opts.external = true;
+    if (!opts.parse) {
+      this.noParse(id);
+      if (opts.expose) {
+        this.noParse(opts.expose);
+      }
+    }
     return this.require(id, opts);
 };
 
