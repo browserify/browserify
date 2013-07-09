@@ -1,6 +1,6 @@
 var crypto = require('crypto');
 var through = require('through');
-var duplexer = require('duplexer');
+var pipeline = require('event-stream').pipeline;
 var concatStream = require('concat-stream');
 var checkSyntax = require('syntax-error');
 var parents = require('parents');
@@ -310,18 +310,8 @@ Browserify.prototype.pack = function (debug, standalone) {
     var hasExports = Object.keys(self.exports).length;
     var output = through(write, end);
     
-    function writePrelude () {
-        if (!first) return;
-        if (standalone) {
-            return output.queue(umd.prelude(standalone) + 'return ');
-        }
-        if (!hasExports) return output.queue(';');
-        output.queue('require=');
-    }
-    
     var sort = depSorter({ index: true });
-    sort.pipe(input).pipe(packer).pipe(output);
-    return duplexer(sort, output);
+    return pipeline(sort, input, packer, output);
     
     function write (buf) {
         if (first) writePrelude();
@@ -332,10 +322,19 @@ Browserify.prototype.pack = function (debug, standalone) {
     function end () {
         if (first) writePrelude();
         if (standalone) {
-            output.queue('(' + mainModule + ')' + umd.postlude(standalone));
+            this.queue('(' + mainModule + ')' + umd.postlude(standalone));
         }
         this.queue('\n;');
         this.queue(null);
+    }
+    
+    function writePrelude () {
+        if (!first) return;
+        if (standalone) {
+            return this.queue(umd.prelude(standalone) + 'return ');
+        }
+        if (!hasExports) return this.queue(';');
+        this.queue('require=');
     }
 };
 
