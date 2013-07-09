@@ -215,6 +215,7 @@ Browserify.prototype.deps = function (opts) {
     }
     
     opts.modules = browserBuiltins;
+    opts.includeIndex = true;
     var d = mdeps(self.files, opts);
     
     var tr = d.pipe(through(write));
@@ -232,6 +233,7 @@ Browserify.prototype.deps = function (opts) {
             this.queue({
                 exposed: self._expose[row.id],
                 deps: {},
+                indexDeps: {},
                 source: 'module.exports=require(\'' + hash(row.id) + '\');'
             });
         }
@@ -257,45 +259,42 @@ Browserify.prototype.deps = function (opts) {
 Browserify.prototype.pack = function (debug, standalone) {
     var self = this;
     var packer = browserPack({ raw: true });
-    var ids = {};
-    var idIndex = 1;
     
     var mainModule;
     
     var input = through(function (row_) {
         var row = copy(row_);
-        var ix;
         
         if (debug) { 
             row.sourceRoot = 'file://localhost'; 
             row.sourceFile = row.id;
         }
         
-        if (row.exposed) {
-            ix = row.exposed;
-        }
-        else {
-            ix = ids[row.id] !== undefined ? ids[row.id] : idIndex++;
-        }
-        if (ids[row.id] === undefined) ids[row.id] = ix;
-        
         if (/^#!/.test(row.source)) row.source = '//' + row.source;
         var err = checkSyntax(row.source, row.id);
         if (err) return this.emit('error', err);
         
-        row.id = ix;
-        if (row.entry) mainModule = mainModule || ix;
-        row.deps = Object.keys(row.deps).reduce(function (acc, key) {
+        if (row.exposed) {
+            row.id = row.exposed;
+        }
+        else {
+            var ix = row.index === undefined ? hash(row.id) : row.index;
+            row.id = ix;
+        }
+        
+        if (row.entry) mainModule = mainModule || row.id;
+        row.deps = Object.keys(row.deps || {}).reduce(function (acc, key) {
             var file = row.deps[key];
             
             // reference external and exposed files directly by hash
             if (self._external[file] || self.exports[file]) {
                 acc[key] = hash(file);
-                return acc;
             }
+            else if (!row.indexDeps || row.indexDeps[key] === undefined) {
+                acc[key] = hash(file);
+            }
+            else acc[key] = row.indexDeps[key];
             
-            if (ids[file] === undefined) ids[file] = idIndex++;
-            acc[key] = ids[file];
             return acc;
         }, {});
         
