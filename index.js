@@ -124,10 +124,8 @@ Browserify.prototype.external = function (id, opts) {
     opts = opts || {};
     opts.external = true;
     if (!opts.parse) {
-      this.noParse(id);
-      if (opts.expose) {
-        this.noParse(opts.expose);
-      }
+        this.noParse(id);
+        if (opts.expose) this.noParse(opts.expose);
     }
     return this.require(id, opts);
 };
