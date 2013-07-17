@@ -364,7 +364,7 @@ node, but there is a special
 resolution for browser-specific versions.
 
 You can specify source transforms in the package.json in the
-browserify.transforms field. There is more information about how source
+`browserify.transform` field. There is more information about how source
 transforms work in package.json on the
 [module-deps readme](https://github.com/substack/module-deps#transforms).
 
