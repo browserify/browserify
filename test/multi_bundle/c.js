@@ -1,3 +1,4 @@
 var b = require('./b');
+var a = require('./a');
 t.equal(b, 'foo');
-module.exports = 'bar';
+t.equal(a, 'bar');

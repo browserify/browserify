@@ -48,6 +48,7 @@ function Browserify (opts) {
     self._transforms = [];
     self._noParse =[];
     self._pkgcache = {};
+    self._expose_all = opts.expose_all;
 
     var noParse = [].concat(opts.noParse).filter(Boolean);
     noParse.forEach(this.noParse.bind(this));
@@ -121,6 +122,28 @@ Browserify.prototype.expose = function (name, file) {
 };
 
 Browserify.prototype.external = function (id, opts) {
+    var self = this;
+
+    if (id instanceof Browserify) {
+        self._pending++;
+
+        // need to capture all deps so we know what is already avail
+        function proc_deps() {
+            var d = mdeps(id.files);
+            d.pipe(through(function(row) {
+                self.external(row.id);
+            })).once('end', function() {
+                if (--self._pending === 0) self.emit('_ready');
+            });
+        }
+
+        if (id._pending === 0) {
+            return proc_deps();
+        }
+
+        return id.once('_ready', proc_deps);
+    }
+
     opts = opts || {};
     opts.external = true;
     if (!opts.parse) {
@@ -246,6 +269,10 @@ Browserify.prototype.deps = function (opts) {
         
         if (self.exports[row.id]) row.exposed = self.exports[row.id];
 
+        if (self._expose_all) {
+            row.exposed = hash(row.id);
+        }
+
         // skip adding this file if it is external
         if (self._external[row.id]) {
             return;
@@ -288,10 +315,13 @@ Browserify.prototype.pack = function (debug, standalone) {
         Object.keys(row.deps || {}).forEach(function (key) {
             var file = row.deps[key];
             var index = row.indexDeps && row.indexDeps[key];
+            if (self._expose_all) {
+                index = hash(file);
+            }
             deps[key] = getId({ id: file, index: index });
         });
         row.deps = deps;
-        
+
         this.queue(row);
     });
     
