@@ -34,3 +34,8 @@ Advanced Options:
  
     Print each file in the dependency graph. Useful for makefiles.
 
+  --extension=EXTENSION
+
+    Consider files with specified EXTENSION as modules, this option can used
+    multiple times.
+
