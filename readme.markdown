@@ -206,7 +206,7 @@ you can `require()` modules from another script tag. Here we'll create a
 and [duplexer](https://npmjs.org/package/duplexer) modules.
 
 ```
-$ browserify -r through -r duplexer > bundle.js
+$ browserify -r through -r duplexer -r ./my-file.js:my-module > bundle.js
 ```
 
 Then in your page you can do:
@@ -216,6 +216,7 @@ Then in your page you can do:
 <script>
   var through = require('through');
   var duplexer = require('duplexer');
+  var myModule = require('my-module');
   /* ... */
 </script>
 ```
