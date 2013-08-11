@@ -384,46 +384,50 @@ when files change.
 
 Here is a list of known source transforms:
 
+* [blissify](https://github.com/agilemd/blissify) - compile `.html` 
+files written using [bliss](https://github.com/cstivers78/bliss)
+
 * [brfs](https://github.com/substack/brfs) - inline
 `fs.readFileSync()` calls with file contents
+
+* [caching-coffeeify](https://github.com/thlorenz/caching-coffeeify) - coffeeify
+version that caches previously compiled files to optimize the compilation step
 
 * [coffeeify](https://github.com/substack/coffeeify) - compile
 `.coffee` files to javascript automatically
 
-* [icsify](https://github.com/maxtaco/icsify) - compile
-`.iced` IcedCoffeeScript files to javascript automatically
+* [deAMDify](https://github.com/jaredhanson/deamdify) - translate AMD modules
+to Node-style modules automatically
 
-* [caching-coffeeify](https://github.com/thlorenz/caching-coffeeify) - coffeeify
-version that caches previously compiled files to optimize the compilation step
+* [debowerify](https://github.com/eugeneware/debowerify) - use
+[bower](http://bower.io) client packages more easily with browserify.
 
 * [decomponentify](https://github.com/eugeneware/decomponentify) - use
 [component](https://github.com/component/component) client packages seamlessly
 with browserify.
 
-* [debowerify](https://github.com/eugeneware/debowerify) - use
-[bower](http://bower.io) client packages more easily with browserify.
-
-* [deAMDify](https://github.com/jaredhanson/deamdify) - translate AMD modules
-to Node-style modules automatically
+* [es6ify](https://github.com/thlorenz/es6ify) - compile ES6 files to
+ES5 javascript automatically
 
 * [hbsfy](https://github.com/epeli/node-hbsfy) - precompile handlebars
 templates to javascript functions automatically
+
+* [icsify](https://github.com/maxtaco/icsify) - compile
+`.iced` IcedCoffeeScript files to javascript automatically
+
+* [liveify](https://github.com/quarterto/liveify) - compile livescript files to
+javascript automatically
 
 * [rfileify](https://github.com/ForbesLindesay/rfileify) - inline `rfile(path)`
 calls with file contents
 (also supports `ruglify` and any other `rfile` derivatives)
 
-* [liveify](https://github.com/quarterto/liveify) - compile livescript files to
-javascript automatically
-
-* [es6ify](https://github.com/thlorenz/es6ify) - compile ES6 files to
-ES5 javascript automatically
+* [rfolderify](https://github.com/quarterto/rfolderify) - turn calls to rfolder
+into a map of requires of the files in the thing
 
 * [turn](https://github.com/juliangruber/turn) - minimal modules for a
 hypothetical es6 with lua's return
 
-* [rfolderify](https://github.com/quarterto/rfolderify) - turn calls to rfolder
-into a map of requires of the files in the thing
 
 # third-party tools
 
