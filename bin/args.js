@@ -46,7 +46,10 @@ module.exports = function (args) {
     
     // resolve any external files and add them to the bundle as externals
     [].concat(argv.x).concat(argv.external).filter(Boolean)
-        .forEach(function (x) { b.external(path.resolve(process.cwd(), x)) })
+        .forEach(function (x) {
+            if (/^[\/.]/.test(x)) b.external(path.resolve(process.cwd(), x))
+            else b.external(x)
+        })
     ;
     
     [].concat(argv.t).concat(argv.transform).filter(Boolean)

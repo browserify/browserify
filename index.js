@@ -91,7 +91,7 @@ Browserify.prototype.require = function (id, opts) {
                 'module ' + JSON.stringify(id) + ' not found in require()'
             ));
         }
-
+        
         if (opts.expose) {
             self.exports[file] = hash(file);
             
@@ -100,7 +100,7 @@ Browserify.prototype.require = function (id, opts) {
                 self._mapped[opts.expose] = file;
             }
         }
-
+        
         if (opts.external) {
             if (file) self._external[file] = true;
             else self._external[id] = true;
@@ -389,10 +389,15 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     
     return browserResolve(id, parent, function(err, file, pkg) {
         if (err) return cb(err);
-        if (!file) return cb(new Error('module '
-            + JSON.stringify(id) + ' not found from '
-            + JSON.stringify(parent.filename)
-        ));
+        if (!file && (self._external[id] || self._external[file])) {
+            return cb(null, emptyModulePath);
+        }
+        else if (!file) {
+            return cb(new Error('module '
+                + JSON.stringify(id) + ' not found from '
+                + JSON.stringify(parent.filename)
+            ));
+        }
         
         if (self._ignore[file]) return cb(null, emptyModulePath);
         if (self._external[file]) return result(file, pkg, true);
