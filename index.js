@@ -387,6 +387,8 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     
     parent.modules = browserBuiltins;
     
+    if (self._external[id]) return cb(null, emptyModulePath);
+    
     return browserResolve(id, parent, function(err, file, pkg) {
         if (err) return cb(err);
         if (!file && (self._external[id] || self._external[file])) {
