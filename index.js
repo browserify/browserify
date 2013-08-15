@@ -85,11 +85,13 @@ Browserify.prototype.require = function (id, opts) {
         packageFilter: packageFilter
     };
     browserResolve(id, params, function (err, file) {
-        if (err) return self.emit('error', err);
-        if (!file) return self.emit('error', new Error(
-            'module ' + JSON.stringify(id) + ' not found in require()'
-        ));
-        
+        if ((err || !file) && !opts.external) {
+            if (err) return self.emit('error', err);
+            if (!file) return self.emit('error', new Error(
+                'module ' + JSON.stringify(id) + ' not found in require()'
+            ));
+        }
+
         if (opts.expose) {
             self.exports[file] = hash(file);
             
@@ -100,7 +102,8 @@ Browserify.prototype.require = function (id, opts) {
         }
 
         if (opts.external) {
-            self._external[file] = true;
+            if (file) self._external[file] = true;
+            else self._external[id] = true;
         }
         else {
             self.files.push(file);
