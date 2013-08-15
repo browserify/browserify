@@ -18,6 +18,8 @@ var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 var fs = require('fs');
 
+var emptyModulePath = path.join(__dirname, '_empty.js');
+
 module.exports = function (opts) {
     if (opts === undefined) opts = {};
     if (typeof opts === 'string') opts = { entries: [ opts ] };
@@ -238,6 +240,12 @@ Browserify.prototype.deps = function (opts) {
         if (row.id === emptyModulePath) {
             row.source = '';
         }
+        row.deps = Object.keys(row.deps).reduce(function (acc, key) {
+            if (!self._external[key] && !self._external[row.id]) {
+                acc[key] = row.deps[key];
+            }
+            return acc;
+        }, {});
         
         if (self._expose[row.id]) {
             this.queue({
@@ -354,7 +362,6 @@ var packageFilter = function (info) {
     return info;
 };
 
-var emptyModulePath = require.resolve('./_empty');
 Browserify.prototype._resolve = function (id, parent, cb) {
     if (this._ignore[id]) return cb(null, emptyModulePath);
     var self = this;
