@@ -27,6 +27,12 @@ module.exports = function (args) {
         return path.resolve(process.cwd(), entry);
     });
     
+    if (argv.s && entries.length === 0
+    && [].concat(argv.r, argv.require).filter(Boolean).length === 1) {
+        entries.push([].concat(argv.r, argv.require).filter(Boolean)[0]);
+        argv.r = argv.require = [];
+    }
+    
     var b = browserify({
         noParse: [].concat(argv.noparse).filter(Boolean),
         entries: entries
