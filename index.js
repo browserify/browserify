@@ -278,7 +278,7 @@ Browserify.prototype.pack = function (debug, standalone) {
     var packer = browserPack({ raw: true });
     
     var mainModule;
-    var hashes = {};
+    var hashes = {}, depList = {}, depHash = {};
     
     var input = through(function (row_) {
         var row = copy(row_);
@@ -288,21 +288,20 @@ Browserify.prototype.pack = function (debug, standalone) {
             row.sourceFile = row.id;
         }
         
-        var srcHash = hash(row.source);
-        var dup = hashes[srcHash];
-        if (dup && sameDeps(dup.deps, row.deps, hashes)) {
+        var dup = hashes[row.hash];
+        if (dup && sameDeps(depList[dup._id], row.deps)) {
             row.source = 'module.exports=require('
-                + JSON.stringify(getId(dup))
+                + JSON.stringify(dup.id)
                 + ')'
             ;
         }
         else if (dup) {
             row.source = 'arguments[4]['
-                + JSON.stringify(getId(dup))
+                + JSON.stringify(dup.id)
                 + '][0].apply(exports,arguments)'
             ;
         }
-        else hashes[srcHash] = row;
+        else hashes[row.hash] = { _id: row.id, id: getId(row) };
         
         if (/^#!/.test(row.source)) row.source = '//' + row.source;
         var err = checkSyntax(row.source, row.id);
@@ -344,7 +343,7 @@ Browserify.prototype.pack = function (debug, standalone) {
     var output = through(write, end);
     
     var sort = depSorter({ index: true });
-    return pipeline(sort, input, packer, output);
+    return pipeline(through(hasher), sort, input, packer, output);
     
     function write (buf) {
         if (first) writePrelude.call(this);
@@ -368,6 +367,29 @@ Browserify.prototype.pack = function (debug, standalone) {
         }
         if (!hasExports) return this.queue(';');
         this.queue('require=');
+    }
+    
+    function hasher (row) {
+        row.hash = hash(row.source);
+        depList[row.id] = row.deps;
+        depHash[row.id] = row.hash;
+        this.queue(row);
+    }
+    
+    function sameDeps (a, b) {
+        var keys = Object.keys(a);
+        if (keys.length !== Object.keys(b).length) return false;
+        
+        for (var i = 0; i < keys.length; i++) {
+            var k = keys[i], ka = a[k], kb = b[k];
+            var ha = depHash[ka];
+            var hb = depHash[kb];
+            var da = depList[ka];
+            var db = depList[kb];
+            
+            if (ha !== hb || !sameDeps(da, db)) return false;
+        }
+        return true;
     }
 };
 
@@ -466,15 +488,4 @@ function copy (obj) {
         acc[key] = obj[key];
         return acc;
     }, {});
-}
-
-function sameDeps (a, b, hashes) {
-    var keys = Object.keys(a);
-    if (keys.length !== Object.keys(b).length) return false;
-    
-    for (var i = 0; i < keys.length; i++) {
-        var key = keys[i];
-        if (a[key] !== b[key]) return false;
-    }
-    return true;
 }
