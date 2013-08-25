@@ -1,6 +1,6 @@
 var crypto = require('crypto');
 var through = require('through');
-var pipeline = require('event-stream').pipeline;
+var pipeline = require('stream-combiner');
 var concatStream = require('concat-stream');
 var checkSyntax = require('syntax-error');
 var parents = require('parents');
