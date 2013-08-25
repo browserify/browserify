@@ -290,7 +290,13 @@ Browserify.prototype.pack = function (debug, standalone) {
         
         var srcHash = hash(row.source);
         var dup = hashes[srcHash];
-        if (dup) {
+        if (dup && sameDeps(dup.deps, row.deps, hashes)) {
+            row.source = 'module.exports=require('
+                + JSON.stringify(getId(dup))
+                + ')'
+            ;
+        }
+        else if (dup) {
             row.source = 'arguments[4]['
                 + JSON.stringify(getId(dup))
                 + '][0].apply(exports,arguments)'
@@ -460,4 +466,15 @@ function copy (obj) {
         acc[key] = obj[key];
         return acc;
     }, {});
+}
+
+function sameDeps (a, b, hashes) {
+    var keys = Object.keys(a);
+    if (keys.length !== Object.keys(b).length) return false;
+    
+    for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        if (a[key] !== b[key]) return false;
+    }
+    return true;
 }
