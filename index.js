@@ -278,6 +278,7 @@ Browserify.prototype.pack = function (debug, standalone) {
     var packer = browserPack({ raw: true });
     
     var mainModule;
+    var hashes = {};
     
     var input = through(function (row_) {
         var row = copy(row_);
@@ -286,6 +287,16 @@ Browserify.prototype.pack = function (debug, standalone) {
             row.sourceRoot = 'file://localhost'; 
             row.sourceFile = row.id;
         }
+        
+        var srcHash = hash(row.source);
+        var dup = hashes[srcHash];
+        if (dup) {
+            row.source = 'arguments[4]['
+                + JSON.stringify(getId(dup))
+                + '][0].apply(exports,arguments)'
+            ;
+        }
+        else hashes[srcHash] = row;
         
         if (/^#!/.test(row.source)) row.source = '//' + row.source;
         var err = checkSyntax(row.source, row.id);
