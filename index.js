@@ -231,6 +231,9 @@ Browserify.prototype.deps = function (opts) {
     }
     
     opts.modules = browserBuiltins;
+    
+    opts.transform = self._transforms;
+    
     var d = mdeps(self.files, opts);
     
     var tr = d.pipe(through(write));
