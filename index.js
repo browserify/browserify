@@ -354,7 +354,7 @@ Browserify.prototype.pack = function (debug, standalone) {
     function end () {
         if (first) writePrelude.call(this);
         if (standalone) {
-            this.queue('(' + mainModule + ')' + umd.postlude(standalone));
+            this.queue('\n(' + mainModule + ')' + umd.postlude(standalone));
         }
         this.queue('\n;');
         this.queue(null);
