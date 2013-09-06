@@ -129,9 +129,9 @@ Browserify.prototype.expose = function (name, file) {
 Browserify.prototype.external = function (id, opts) {
     var self = this;
 
-    if (id instanceof Browserify) {
+    if (isBrowserify(id)) {
         self._pending++;
-
+        
         // need to capture all deps so we know what is already avail
         function proc_deps() {
             var d = mdeps(id.files);
@@ -518,4 +518,8 @@ function copy (obj) {
         acc[key] = obj[key];
         return acc;
     }, {});
+}
+
+function isBrowserify (x) {
+    return x && typeof x === 'object' && typeof x.bundle === 'function';
 }
