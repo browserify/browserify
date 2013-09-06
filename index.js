@@ -50,7 +50,7 @@ function Browserify (opts) {
     self._transforms = [];
     self._noParse =[];
     self._pkgcache = {};
-    self._expose_all = opts.expose_all;
+    self._exposeAll = opts.exposeAll;
 
     var noParse = [].concat(opts.noParse).filter(Boolean);
     noParse.forEach(this.noParse.bind(this));
@@ -280,7 +280,7 @@ Browserify.prototype.deps = function (opts) {
         
         if (self.exports[row.id]) row.exposed = self.exports[row.id];
 
-        if (self._expose_all) {
+        if (self._exposeAll) {
             row.exposed = hash(row.id);
         }
 
@@ -342,7 +342,7 @@ Browserify.prototype.pack = function (debug, standalone) {
         Object.keys(row.deps || {}).forEach(function (key) {
             var file = row.deps[key];
             var index = row.indexDeps && row.indexDeps[key];
-            if (self._expose_all) {
+            if (self._exposeAll) {
                 index = hash(file);
             }
             deps[key] = getId({ id: file, index: index });

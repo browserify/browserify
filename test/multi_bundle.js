@@ -46,7 +46,7 @@ test('multi bundle', function (t) {
 test('multi bundle', function (t) {
     t.plan(8);
 
-    var core = browserify({ expose_all: true });
+    var core = browserify({ exposeAll: true });
     core.require(__dirname + '/multi_bundle/a.js', { expose: true });
 
     var app = browserify([__dirname + '/multi_bundle/c.js']);
