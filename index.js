@@ -128,25 +128,20 @@ Browserify.prototype.expose = function (name, file) {
 
 Browserify.prototype.external = function (id, opts) {
     var self = this;
-
     if (isBrowserify(id)) {
         self._pending++;
         
-        // need to capture all deps so we know what is already avail
-        function proc_deps() {
+        function captureDeps() {
             var d = mdeps(id.files);
-            d.pipe(through(function(row) {
-                self.external(row.id);
-            })).once('end', function() {
+            d.pipe(through(write, end));
+            
+            function write (row) { self.external(row.id) }
+            function end () {
                 if (--self._pending === 0) self.emit('_ready');
-            });
+            }
         }
-
-        if (id._pending === 0) {
-            return proc_deps();
-        }
-
-        return id.once('_ready', proc_deps);
+        if (id._pending === 0) return captureDeps();
+        return id.once('_ready', captureDeps);
     }
 
     opts = opts || {};
