@@ -27,6 +27,12 @@ module.exports = function (args) {
         return path.resolve(process.cwd(), entry);
     });
     
+    if (argv.s && entries.length === 0
+    && [].concat(argv.r, argv.require).filter(Boolean).length === 1) {
+        entries.push([].concat(argv.r, argv.require).filter(Boolean)[0]);
+        argv.r = argv.require = [];
+    }
+    
     var b = browserify({
         noParse: [].concat(argv.noparse).filter(Boolean),
         entries: entries
@@ -50,7 +56,10 @@ module.exports = function (args) {
     
     // resolve any external files and add them to the bundle as externals
     [].concat(argv.x).concat(argv.external).filter(Boolean)
-        .forEach(function (x) { b.external(path.resolve(process.cwd(), x)) })
+        .forEach(function (x) {
+            if (/^[\/.]/.test(x)) b.external(path.resolve(process.cwd(), x))
+            else b.external(x)
+        })
     ;
     
     [].concat(argv.t).concat(argv.transform).filter(Boolean)
