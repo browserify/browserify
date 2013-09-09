@@ -37,13 +37,15 @@ if (b.argv.pack) {
 
 if (b.argv.deps) {
     var stringify = JSONStream.stringify();
-    var d = b.deps({ packageFilter: packageFilter });
+    var t = [].concat(b.argv.t).concat(b.argv.transform);
+    var d = b.deps({ packageFilter: packageFilter, transform: t });
     d.pipe(stringify).pipe(process.stdout);
     return;
 }
 
 if (b.argv.list) {
-    var d = b.deps({ packageFilter: packageFilter });
+    var t = [].concat(b.argv.t).concat(b.argv.transform);
+    var d = b.deps({ packageFilter: packageFilter, transform: t });
     d.pipe(through(function (dep) {
         this.queue(dep.id + '\n');
     })).pipe(process.stdout);
