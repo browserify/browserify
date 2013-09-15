@@ -219,6 +219,9 @@ Browserify.prototype.transform = function (t) {
 
 Browserify.prototype.deps = function (opts) {
     var self = this;
+    
+    opts = opts || {};
+    
     if (self._pending) {
         var tr = through();
         self.on('_ready', function () {
@@ -228,6 +231,9 @@ Browserify.prototype.deps = function (opts) {
     }
     
     opts.modules = browserBuiltins;
+    
+    opts.transform = self._transforms;
+    
     var d = mdeps(self.files, opts);
     
     var tr = d.pipe(through(write));
