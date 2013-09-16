@@ -78,10 +78,6 @@ Browserify.prototype.add = function (file) {
     return this;
 };
 
-Browserify.prototype.extension = function (extension) {
-	this._extensions.push(extension);
-};
-
 Browserify.prototype.require = function (id, opts) {
     var self = this;
     if (opts === undefined) opts = { expose: id };
