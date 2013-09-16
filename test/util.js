@@ -46,7 +46,7 @@ test('util.inherits without Object.create', function (t) {
     b.require('events');
     
     b.bundle(function (err, src) {
-        var c = { Object : {} };
+        var c = { Object : { prototype: Object.prototype } };
         vm.runInNewContext(src, c);
         var EE = c.require('events').EventEmitter;
         
