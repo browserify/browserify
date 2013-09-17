@@ -48,7 +48,7 @@ function Browserify (opts) {
     self._expose = {};
     self._mapped = {};
     self._transforms = [];
-    self._extensions = ['.js'];
+    self._extensions = ['.js'].concat(opts.extensions).filter(Boolean);
     self._noParse =[];
     self._pkgcache = {};
     self._exposeAll = opts.exposeAll;
@@ -67,11 +67,6 @@ Browserify.prototype.noParse = function(file) {
         if (r) self._noParse.push(r);
         if (--self._pending === 0) self.emit('_ready');
     });
-};
-
-Browserify.prototype.extension = function(extension) {
-  this._extensions.push(extension);
-  return this;
 };
 
 Browserify.prototype.add = function (file) {
