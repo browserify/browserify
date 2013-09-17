@@ -39,6 +39,10 @@ module.exports = function (args) {
     });
     b.argv = argv;
     
+    [].concat(argv.extension).filter(Boolean)
+      .forEach(function (e) { b.extension(e); })
+    ;
+    
     [].concat(argv.i).concat(argv.ignore).filter(Boolean)
         .forEach(function (i) { b.ignore(i) })
     ;
