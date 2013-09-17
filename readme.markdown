@@ -256,6 +256,13 @@ global parsing for each file in the array. Use this for giant libs like jquery
 or threejs that don't have any requires or node-style globals but take forever
 to parse.
 
+`opts.extensions` is an array of optional extra extensions for the module lookup
+machinery to use when the extension has not been specified.
+By default browserify considers only `.js` and `.json` files in such cases.
+
+Note that if files do not contain javascript source code then you also need to
+specify a corresponding transform for them.
+
 ## b.add(file)
 
 Add an entry file from `file` that will be executed when the bundle loads.
@@ -357,17 +364,6 @@ module:
 $ npm install coffeeify
 $ browserify -t coffeeify main.coffee > bundle.js
 ```
-
-## b.extension(extension)
-
-Instructs browserify to consider files with specified `extension` as source code
-for modules even if those modules' names were passed to `require()` calls
-without an extension.
-
-By default browserify considers only `\*.js` files in such cases.
-
-Note, that if files do not contain javascript source code then you also need to
-specify a corresponding transform for them.
 
 # package.json
 
