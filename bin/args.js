@@ -35,13 +35,10 @@ module.exports = function (args) {
     
     var b = browserify({
         noParse: [].concat(argv.noparse).filter(Boolean),
+        extensions: [].concat(argv.extension).filter(Boolean),
         entries: entries
     });
     b.argv = argv;
-    
-    [].concat(argv.extension).filter(Boolean)
-      .forEach(function (e) { b.extension(e); })
-    ;
     
     [].concat(argv.i).concat(argv.ignore).filter(Boolean)
         .forEach(function (i) { b.ignore(i) })
