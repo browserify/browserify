@@ -35,6 +35,7 @@ module.exports = function (args) {
     
     var b = browserify({
         noParse: [].concat(argv.noparse).filter(Boolean),
+        extensions: [].concat(argv.extension).filter(Boolean),
         entries: entries
     });
     b.argv = argv;
