@@ -17,6 +17,21 @@ test('global', function (t) {
     });
 });
 
+test('__filename and __dirname with insertGlobals: true', function (t) {
+    t.plan(2);
+
+    var b = browserify();
+    b.require(__dirname + '/global/filename.js', {expose: 'x'});
+    b.bundle({insertGlobals: true}, function (err, src) {
+        var c = {};
+        c.self = c;
+        vm.runInNewContext(src, c);
+        var x = c.require('x');
+        t.equal(x.filename, '/filename.js');
+        t.equal(x.dirname, '/');
+    });
+});
+
 test('__filename and __dirname', function (t) {
     t.plan(2);
     
