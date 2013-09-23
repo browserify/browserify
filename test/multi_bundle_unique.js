@@ -3,7 +3,8 @@ var vm = require('vm');
 var fs = require('fs');
 var path = require('path');
 var test = require('tap').test;
-var prelude = fs.readFileSync(path.join(__dirname, 'multi_bundle', '_prelude.js'), 'utf8');
+var prelude = fs.readFileSync(path.join(__dirname, '..', 'node_modules', 'browser-pack', '_prelude.js'), 'utf8')
+  .replace(/require/g, 'unique_require')
 
 test('unique require', function (t) {
     t.plan(5);
@@ -35,13 +36,10 @@ test('unique require', function (t) {
             // b required for the first time
             t.equal(c.baton.times, 1);
 
-            // running the file again
-            // because it is using the same b, no reloading
-            vm.runInNewContext(src, c);
-
-            // b should not have been required again
-            // because it was part of the core bundle
-            t.equal(c.baton.times, 1);
+            // Make sure require is not a global function,
+            // and unique_require is.
+            t.equal(typeof c.require, 'undefined');
+            t.equal(typeof c.unique_require, 'function');
         });
     });
 });
