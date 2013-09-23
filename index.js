@@ -416,6 +416,7 @@ Browserify.prototype.pack = function (debug, standalone) {
             var da = depList[ka];
             var db = depList[kb];
             
+            if (ka === kb) continue;
             if (ha !== hb || !sameDeps(da, db)) return false;
         }
         return true;
