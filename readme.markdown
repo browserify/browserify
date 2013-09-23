@@ -30,6 +30,12 @@ var x = foo(100) + bar('baz');
 elem.textContent = gamma(x);
 ```
 
+Export functionality by assigning onto `module.exports` or `exports`:
+
+``` js
+module.exports = function (n) { return n * 111 }
+```
+
 Now just use the `browserify` command to build a bundle starting at `main.js`:
 
 ```
