@@ -1,6 +1,6 @@
 {
     "name": "browserify",
-    "version": "2.32.4",
+    "version": "2.33.0",
     "description": "browser-side require() the node way",
     "main": "index.js",
     "bin": {
@@ -21,7 +21,7 @@
     ],
     "dependencies": {
         "module-deps": "~1.0.2",
-        "browser-pack": "~0.10.0",
+        "browser-pack": "~0.11.0",
         "deps-sort": "~0.1.1",
         "shell-quote": "~0.0.1",
         "through": "~2.3.4",
