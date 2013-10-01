@@ -52,6 +52,7 @@ function Browserify (opts) {
     self._noParse =[];
     self._pkgcache = {};
     self._exposeAll = opts.exposeAll;
+    self._ignoreMissing = opts.ignoreMissing;
 
     var noParse = [].concat(opts.noParse).filter(Boolean);
     noParse.forEach(this.noParse.bind(this));
@@ -469,6 +470,10 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     return browserResolve(id, parent, function(err, file, pkg) {
         if (err) return cb(err);
         if (!file && (self._external[id] || self._external[file])) {
+            return cb(null, emptyModulePath);
+        }
+        else if (!file && self._ignoreMissing) {
+            self.emit('missing', id, parent);
             return cb(null, emptyModulePath);
         }
         else if (!file) {
