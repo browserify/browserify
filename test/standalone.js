@@ -3,7 +3,7 @@ var vm = require('vm');
 var test = require('tap').test;
 
 test('standalone', function (t) {
-    t.plan(5);
+    t.plan(3);
     
     var b = browserify(__dirname + '/standalone/main.js');
     b.bundle({standalone: 'stand-test'}, function (err, src) {
@@ -34,32 +34,6 @@ test('standalone', function (t) {
             };
             c.define.amd = true;
             vm.runInNewContext(src, c);
-        });
-        t.test('MontageRequire', function (t) {
-            t.plan(3);
-            var c = {
-                bootstrap: function (name, fn) {
-                    t.equal(name, 'stand-test');
-                    fn()(done(t));
-                }
-            };
-            vm.runInNewContext(src, c);
-        });
-        t.test('SES (Secure Ecma Script)', function (t) {
-            t.plan(3);
-            var cOK = {
-                ses: {
-                    ok: function () { return true; }
-                },
-                done: done(t)
-            };
-            var cNotOK = {
-                ses: {
-                    ok: function () { return false; }
-                }
-            };
-            t.equal(typeof vm.runInNewContext(src + 'ses.makeStandTest', cNotOK), 'undefined');
-            vm.runInNewContext(src + 'ses.makeStandTest()(done)', cOK);
         });
     });
 });
