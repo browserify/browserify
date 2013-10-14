@@ -312,7 +312,7 @@ Browserify.prototype.pack = function (debug, standalone) {
         
         if (debug) { 
             row.sourceRoot = 'file://localhost'; 
-            row.sourceFile = row.id;
+            row.sourceFile = row.id.replace(/\\/g, '/');
         }
         
         var dup = hashes[row.hash];
