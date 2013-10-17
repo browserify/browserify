@@ -36,7 +36,8 @@
         "optimist": "~0.5.1",
         "JSONStream": "~0.6.4",
         "umd": "~1.3.0",
-        "parents": "~0.0.1"
+        "parents": "~0.0.1",
+        "deep-equal": "~0.1.0"
     },
     "devDependencies": {
         "tap": "~0.4.0",

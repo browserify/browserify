@@ -4,6 +4,7 @@ var pipeline = require('stream-combiner');
 var concatStream = require('concat-stream');
 var checkSyntax = require('syntax-error');
 var parents = require('parents');
+var deepEqual = require('deep-equal');
 
 var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
@@ -306,6 +307,7 @@ Browserify.prototype.pack = function (debug, standalone) {
     
     var mainModule;
     var hashes = {}, depList = {}, depHash = {};
+    var visited = {};
     
     var input = through(function (row_) {
         var row = copy(row_);
@@ -418,7 +420,15 @@ Browserify.prototype.pack = function (debug, standalone) {
             var db = depList[kb];
             
             if (ka === kb) continue;
-            if (ha !== hb || !sameDeps(da, db)) return false;
+            if (ha !== hb) return false;
+            if (visited[da] && visited[db]) {
+                if (!deepEqual(da, db)) return false;
+            }
+            else {
+                visited[da] = true;
+                visited[db] = true;
+                if (!sameDeps(da, db)) return false;
+            }
         }
         return true;
     }
