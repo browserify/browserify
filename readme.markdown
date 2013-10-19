@@ -444,6 +444,10 @@ into a map of requires of the files in the thing
 hypothetical es6 with lua's return
 
 
+* [reactify](https://github.com/andreypopp/reactify) - compile JSX (superset of
+  javascript used in [react](http://facebook.github.io/react/) UI library) files
+  to javascript
+
 # third-party tools
 
 If you want to efficiently re-compile the bundle automatically when you edit
