@@ -408,7 +408,7 @@ files written using [bliss](https://github.com/cstivers78/bliss)
 * [caching-coffeeify](https://github.com/thlorenz/caching-coffeeify) - coffeeify
 version that caches previously compiled files to optimize the compilation step
 
-* [coffeeify](https://github.com/substack/coffeeify) - compile
+* [coffeeify](https://github.com/jnordberg/coffeeify) - compile
 `.coffee` files to javascript automatically
 
 * [deAMDify](https://github.com/jaredhanson/deamdify) - translate AMD modules
