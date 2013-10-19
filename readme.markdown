@@ -455,7 +455,7 @@ If you are using express or connect, you can use
 to host your bundles as middleware.
 
 If you want a standalone web server for development that will create bundles on
-demand, check out [browservefy](https://github.com/chrisdickinson/browservefy).
+demand, check out [beefy](https://github.com/chrisdickinson/beefy).
 
 # install
 
