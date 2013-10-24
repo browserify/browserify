@@ -257,6 +257,10 @@ var browserify = require('browserify')
 Create a browserify instance `b` from the entry main `files` or `opts.entries`.
 `files` can be an array of files or a single file.
 
+For each `file` in `files`, if `file` is a stream, its contents will be used.
+You should use `opts.basedir` when using streaming files so that relative
+requires will know where to resolve from.
+
 You can also specify an `opts.noParse` array which will skip all require() and
 global parsing for each file in the array. Use this for giant libs like jquery
 or threejs that don't have any requires or node-style globals but take forever
@@ -278,6 +282,9 @@ Add an entry file from `file` that will be executed when the bundle loads.
 Make `file` available from outside the bundle with `require(file)`.
 
 The `file` param is anything that can be resolved by `require.resolve()`.
+
+`file` can also be a stream, but you should also use `opts.basedir` so that
+relative requires will be resolvable.
 
 Use the `expose` property of opts to specify a custom dependency name. 
 `require('./vendor/angular/angular.js', {expose: 'angular'})` enables `require('angular')`
