@@ -415,7 +415,7 @@ files written using [bliss](https://github.com/cstivers78/bliss)
 * [caching-coffeeify](https://github.com/thlorenz/caching-coffeeify) - coffeeify
 version that caches previously compiled files to optimize the compilation step
 
-* [coffeeify](https://github.com/substack/coffeeify) - compile
+* [coffeeify](https://github.com/jnordberg/coffeeify) - compile
 `.coffee` files to javascript automatically
 
 * [deAMDify](https://github.com/jaredhanson/deamdify) - translate AMD modules
@@ -451,6 +451,10 @@ into a map of requires of the files in the thing
 hypothetical es6 with lua's return
 
 
+* [reactify](https://github.com/andreypopp/reactify) - compile JSX (superset of
+  javascript used in [react](http://facebook.github.io/react/) UI library) files
+  to javascript
+
 # third-party tools
 
 If you want to efficiently re-compile the bundle automatically when you edit
@@ -462,7 +466,7 @@ If you are using express or connect, you can use
 to host your bundles as middleware.
 
 If you want a standalone web server for development that will create bundles on
-demand, check out [browservefy](https://github.com/chrisdickinson/browservefy).
+demand, check out [beefy](https://github.com/chrisdickinson/beefy).
 
 # install
 
