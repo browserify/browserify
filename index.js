@@ -12,7 +12,6 @@ var depSorter = require('deps-sort');
 var browserResolve = require('browser-resolve');
 var browserBuiltins = require('browser-builtins');
 var insertGlobals = require('insert-module-globals');
-var umd = require('umd');
 
 var path = require('path');
 var inherits = require('inherits');
@@ -321,9 +320,8 @@ Browserify.prototype.deps = function (opts) {
 
 Browserify.prototype.pack = function (debug, standalone) {
     var self = this;
-    var packer = browserPack({ raw: true });
-    
-    var mainModule;
+    var packer = browserPack({ raw: true, standalone: standalone });
+
     var hashes = {}, depList = {}, depHash = {};
     var visited = {};
     
@@ -356,9 +354,7 @@ Browserify.prototype.pack = function (debug, standalone) {
         if (err) return this.emit('error', err);
         
         row.id = getId(row);
-        
-        if (row.entry) mainModule = mainModule || row.id;
-        
+
         var deps = {};
         Object.keys(row.deps || {}).forEach(function (key) {
             var file = row.deps[key];
@@ -406,18 +402,12 @@ Browserify.prototype.pack = function (debug, standalone) {
     
     function end () {
         if (first) writePrelude.call(this);
-        if (standalone) {
-            this.queue('\n(' + mainModule + ')' + umd.postlude(standalone));
-        }
         this.queue('\n;');
         this.queue(null);
     }
     
     function writePrelude () {
         if (!first) return;
-        if (standalone) {
-            return this.queue(umd.prelude(standalone) + 'return ');
-        }
         if (!hasExports) return this.queue(';');
         this.queue('require=');
     }
