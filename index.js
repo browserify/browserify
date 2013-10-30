@@ -290,7 +290,8 @@ Browserify.prototype.deps = function (opts) {
                 id: row.id,
                 exposed: self._expose[row.id],
                 deps: {},
-                source: 'module.exports=require(\'' + hash(row.id) + '\');'
+                source: 'module.exports=require(\'' + hash(row.id) + '\');',
+                nomap: true
             });
         }
         
@@ -340,6 +341,7 @@ Browserify.prototype.pack = function (debug, standalone) {
                 + JSON.stringify(dup.id)
                 + ')'
             ;
+            row.nomap = true;
         }
         else if (dup) {
             row.source = 'arguments[4]['
@@ -392,6 +394,8 @@ Browserify.prototype.pack = function (debug, standalone) {
     var output = through(write, end);
     
     var sort = depSorter({ index: true });
+
+    input.on('data', function (row) { self.emit('row', row) });
     return pipeline(through(hasher), sort, input, packer, output);
     
     function write (buf) {
