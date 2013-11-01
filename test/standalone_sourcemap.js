@@ -2,8 +2,18 @@ var browserify = require('../');
 var vm = require('vm');
 var test = require('tap').test;
 
+function decode(base64) {
+    return new Buffer(base64, 'base64').toString();
+}
+
+function grabSourceMap(src) {
+    var comment = src.match(/\/\/@ sourceMappingURL.*/g, src)[0];
+    var base64 = comment.split(',').pop();
+    return JSON.parse(decode(base64));
+}
+
 test('standalone in debug mode', function (t) {
-    t.plan(3);
+    t.plan(4);
 
     var b = browserify(__dirname + '/standalone/main.js');
     b.bundle({standalone: 'stand-test', debug: true}, function (err, src) {
@@ -34,6 +44,13 @@ test('standalone in debug mode', function (t) {
             };
             c.define.amd = true;
             vm.runInNewContext(src, c);
+        });
+
+        t.test('Correct mappings', function (t) {
+            t.plan(1);
+            t.equal(grabSourceMap(src).mappings,
+                ';;AAAA;AACA;AACA;;ACFA;AACA;;ACDA;AACA'
+            );
         });
     });
 });
