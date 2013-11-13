@@ -1,9 +1,12 @@
 var browserify = require('../');
+var fs = require('fs');
 var vm = require('vm');
 var test = require('tap').test;
 
 test('standalone in debug mode', function (t) {
-    t.plan(3);
+    t.plan(4);
+
+    var main = fs.readFileSync(__dirname + '/standalone/main.js');
 
     var b = browserify(__dirname + '/standalone/main.js');
     b.bundle({standalone: 'stand-test', debug: true}, function (err, src) {
@@ -35,6 +38,8 @@ test('standalone in debug mode', function (t) {
             c.define.amd = true;
             vm.runInNewContext(src, c);
         });
+        t.equal(0, src.split('\n').slice(1).join('\n').indexOf(main),
+                'preserves preamble line count');
     });
 });
 
