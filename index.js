@@ -392,7 +392,8 @@ Browserify.prototype.pack = function (debug, standalone) {
     var first = true;
     var hasExports = Object.keys(self.exports).length;
     var output = through(write, end);
-    
+    var sourceMap = '';
+
     var sort = depSorter({ index: true });
 
     input.on('data', function (row) { self.emit('row', row) });
@@ -401,6 +402,7 @@ Browserify.prototype.pack = function (debug, standalone) {
     function write (buf) {
         if (first) writePrelude.call(this);
         first = false;
+        if (buf.match(/^\/\/[#@] sourceMappingURL=/m)) return sourceMap = buf;
         this.queue(buf);
     }
     
@@ -410,6 +412,7 @@ Browserify.prototype.pack = function (debug, standalone) {
             this.queue('\n(' + mainModule + ')' + umd.postlude(standalone));
         }
         this.queue('\n;');
+        if (debug) this.queue(sourceMap + '\n');
         this.queue(null);
     }
     
