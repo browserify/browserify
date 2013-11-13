@@ -416,7 +416,7 @@ Browserify.prototype.pack = function (debug, standalone) {
     function writePrelude () {
         if (!first) return;
         if (standalone) {
-            return this.queue(umd.prelude(standalone) + 'return ');
+            return this.queue(umd.prelude(standalone).trim() + 'return ');
         }
         if (!hasExports) return this.queue(';');
         this.queue('require=');
