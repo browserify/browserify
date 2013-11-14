@@ -44,7 +44,7 @@ $ browserify main.js > bundle.js
 
 All of the modules that `main.js` needs are included in the `bundle.js` from a
 recursive walk of the `require()` graph using
-[required](https://github.com/shtylman/node-required).
+[required](https://github.com/defunctzombie/node-required).
 
 To use this bundle, just toss a `<script src="bundle.js"></script>` into your
 html!
@@ -240,7 +240,7 @@ Additionally if you use any of these variables, they
 [will be defined](https://github.com/substack/insert-module-globals)
 in the bundled output in a browser-appropriate way:
 
-* [process](https://github.com/shtylman/node-process)
+* [process](https://github.com/defunctzombie/node-process)
 * [Buffer](https://github.com/toots/buffer-browserify)
 * global - top-level scope object (window)
 * __filename - file path of the currently executing file
@@ -397,7 +397,7 @@ transforms work in package.json on the
 When a file is resolved for the bundle, the bundle emits a `'file'` event with
 the full `file` path, the `id` string passed to `require()`, and the `parent`
 object used by
-[browser-resolve](https://github.com/shtylman/node-browser-resolve).
+[browser-resolve](https://github.com/defunctzombie/node-browser-resolve).
 
 You could use the `file` event to implement a file watcher to regenerate bundles
 when files change.
@@ -461,7 +461,7 @@ If you want to efficiently re-compile the bundle automatically when you edit
 files, you can use [watchify](https://github.com/substack/watchify).
 
 If you are using express or connect, you can use
-[enchilada](https://github.com/shtylman/node-enchilada) or
+[enchilada](https://github.com/defunctzombie/node-enchilada) or
 [browserify-middleware](https://github.com/ForbesLindesay/browserify-middleware)
 to host your bundles as middleware.
 
