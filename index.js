@@ -321,7 +321,7 @@ Browserify.prototype.deps = function (opts) {
 
 Browserify.prototype.pack = function (debug, standalone) {
     var self = this;
-    var packer = browserPack({ raw: true });
+    var packer = browserPack({ raw: true, sourceMapPrefix: '//@' });
     
     var mainModule;
     var hashes = {}, depList = {}, depHash = {};
