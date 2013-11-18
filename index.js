@@ -207,6 +207,12 @@ Browserify.prototype.bundle = function (opts, cb) {
         });
         return tr;
     }
+    if (cb) cb = (function (f) {
+        return function () {
+            if (f) f.apply(this, arguments);
+            f = null;
+        };
+    })(cb);
     
     if (opts.standalone && self._entries.length !== 1) {
         process.nextTick(function () {
