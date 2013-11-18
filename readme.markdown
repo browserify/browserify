@@ -167,7 +167,7 @@ Standard Options:
 
        --help, -h  Show this message
 
-For advanced options, type `browserify help advanced`.
+For advanced options, type `browserify --help advanced`.
 
 Specify a parameter.
 ```
