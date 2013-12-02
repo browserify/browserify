@@ -197,7 +197,14 @@ Browserify.prototype.bundle = function (opts, cb) {
         if (parentFilter) pkg = parentFilter(pkg);
         return packageFilter(pkg);
     };
-    
+
+    if (cb) cb = (function (f) {
+        return function () {
+            if (f) f.apply(this, arguments);
+            f = null;
+        };
+    })(cb);
+
     if (self._pending) {
         var tr = through();
         self.on('_ready', function () {
@@ -207,13 +214,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         });
         return tr;
     }
-    if (cb) cb = (function (f) {
-        return function () {
-            if (f) f.apply(this, arguments);
-            f = null;
-        };
-    })(cb);
-    
+
     if (opts.standalone && self._entries.length !== 1) {
         process.nextTick(function () {
             p.emit('error', 'standalone only works with a single entry point');
