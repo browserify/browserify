@@ -5,12 +5,12 @@ var concatStream = require('concat-stream');
 var checkSyntax = require('syntax-error');
 var parents = require('parents');
 var deepEqual = require('deep-equal');
+var builtins = require('./lib/builtins.js');
 
 var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
 var depSorter = require('deps-sort');
 var browserResolve = require('browser-resolve');
-var browserBuiltins = require('browser-builtins');
 var insertGlobals = require('insert-module-globals');
 var umd = require('umd');
 
@@ -98,7 +98,7 @@ Browserify.prototype.require = function (id, opts) {
     
     var params = {
         filename: fromfile,
-        modules: browserBuiltins,
+        modules: builtins,
         packageFilter: packageFilter,
         extensions: self._extensions
     };
@@ -268,7 +268,7 @@ Browserify.prototype.deps = function (opts) {
         return tr;
     }
     
-    opts.modules = browserBuiltins;
+    opts.modules = builtins;
     opts.extensions = self._extensions;
     if (!opts.basedir) opts.basedir = self._basedir;
     var d = mdeps(self.files, opts);
@@ -499,7 +499,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     };
     if (self._mapped[id]) return result(self._mapped[id]);
     
-    parent.modules = browserBuiltins;
+    parent.modules = builtins;
     parent.extensions = self._extensions;
     
     if (self._external[id]) return cb(null, emptyModulePath);
