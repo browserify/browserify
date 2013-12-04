@@ -47,7 +47,16 @@
     "assert": "~1.0.0",
     "http-browserify": "~1.0.0",
     "crypto-browserify": "~1.0.9",
-    "util": "~0.10.0"
+    "util": "~0.10.0",
+    "events-browserify": "0.0.1",
+    "native-buffer-browserify": "~1.0.1",
+    "url": "~0.7.9",
+    "https-browserify": "0.0.0",
+    "path-browserify": "0.0.0",
+    "querystring": "~0.2.0",
+    "stream-browserify": "0.0.0",
+    "string_decoder": "0.0.0",
+    "tty-browserify": "0.0.0"
   },
   "devDependencies": {
     "tap": "~0.4.0",
