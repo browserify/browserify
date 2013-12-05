@@ -8,7 +8,10 @@ test('utf8 buffer to base64', function (t) {
     b.require('buffer');
     b.bundle(function (err, src) {
         if (err) return t.fail(err);
-        var c = {};
+        var c = {
+          Uint8Array: Uint8Array,
+          DataView: DataView
+        };
         vm.runInNewContext(src, c);
         t.equal(
             new c.require('buffer').Buffer("Ձאab", "utf8").toString("base64"),
@@ -22,7 +25,10 @@ test('utf8 buffer to hex', function (t) {
     var b = browserify();
     b.require('buffer');
     b.bundle(function (err, src) {
-        var c = {};
+        var c = {
+          Uint8Array: Uint8Array,
+          DataView: DataView
+        };
         vm.runInNewContext(src, c);
         t.equal(
             new c.require('buffer').Buffer("Ձאab", "utf8").toString("hex"),
@@ -37,7 +43,10 @@ test('ascii buffer to base64', function (t) {
     b.require('buffer');
     
     b.bundle(function (err, src) {
-        var c = {};
+        var c = {
+          Uint8Array: Uint8Array,
+          DataView: DataView
+        };
         vm.runInNewContext(src, c);
         t.equal(
             new c.require('buffer').Buffer("123456!@#$%^", "ascii").toString("base64"),
@@ -51,7 +60,10 @@ test('ascii buffer to hex', function (t) {
     var b = browserify();
     b.require('buffer');
     b.bundle(function (err, src) {
-        var c = {};
+        var c = {
+          Uint8Array: Uint8Array,
+          DataView: DataView
+        };
         vm.runInNewContext(src, c);
         t.equal(
             new c.require('buffer').Buffer("123456!@#$%^", "ascii").toString("hex"),
@@ -65,7 +77,10 @@ test('base64 buffer to utf8', function (t) {
     var b = browserify();
     b.require('buffer');
     b.bundle(function (err, src) {
-        var c = {};
+        var c = {
+          Uint8Array: Uint8Array,
+          DataView: DataView
+        };
         vm.runInNewContext(src, c);
         t.equal(
             new c.require('buffer').Buffer("1YHXkGFi", "base64").toString("utf8"),
@@ -79,7 +94,10 @@ test('hex buffer to utf8', function (t) {
     var b = browserify();
     b.require('buffer');
     b.bundle(function (err, src) {
-        var c = {};
+        var c = {
+          Uint8Array: Uint8Array,
+          DataView: DataView
+        };
         vm.runInNewContext(src, c);
         var B = c.require('buffer');
         t.equal(
@@ -94,7 +112,10 @@ test('base64 buffer to ascii', function (t) {
     var b = browserify();
     b.require('buffer');
     b.bundle(function (err, src) {
-        var c = {};
+        var c = {
+          Uint8Array: Uint8Array,
+          DataView: DataView
+        };
         vm.runInNewContext(src, c);
         t.equal(
             new c.require('buffer').Buffer("MTIzNDU2IUAjJCVe", "base64").toString("ascii"),
@@ -108,7 +129,10 @@ test('hex buffer to ascii', function (t) {
     var b = browserify();
     b.require('buffer');
     b.bundle(function (err, src) {
-        var c = {};
+        var c = {
+          Uint8Array: Uint8Array,
+          DataView: DataView
+        };
         vm.runInNewContext(src, c);
         t.equal(
             new c.require('buffer').Buffer("31323334353621402324255e", "hex").toString("ascii"),
@@ -122,7 +146,10 @@ test('indexing a buffer', function (t) {
     var b = browserify();
     b.require('buffer');
     b.bundle(function (err, src) {
-        var c = {};
+        var c = {
+          Uint8Array: Uint8Array,
+          DataView: DataView
+        };
         vm.runInNewContext(src, c);
         var buf = c.require('buffer').Buffer('abc');
         t.equal(buf[0], 97);
