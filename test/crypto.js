@@ -27,7 +27,9 @@ test('*-browserify libs from node_modules/', function (t) {
         var c = {
             beep : function (c) {
                 t.equal(typeof c.createHash, 'function');
-            }
+            },
+            Uint8Array : Uint8Array,
+            DataView : DataView
         };
         vm.runInNewContext(src.toString('utf8'), c);
     }));
