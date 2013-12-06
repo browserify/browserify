@@ -457,6 +457,12 @@ hypothetical es6 with lua's return
 
 * [browserify-shim](https://github.com/thlorenz/browserify-shim) - make commonJS-incompatible libraries/files browserifyable
 
+* [folderify](https://github.com/parroit/folderify) - include whole static content of a directory imported using 
+[import-folder][] via [brfs](https://github.com/parroit/import-folder)
+
+
+
+
 # third-party tools
 
 If you want to efficiently re-compile the bundle automatically when you edit
