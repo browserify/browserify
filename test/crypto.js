@@ -25,6 +25,9 @@ test('*-browserify libs from node_modules/', function (t) {
     
     ps.stdout.pipe(concat(function (src) {
         var c = {
+            ArrayBuffer: ArrayBuffer,
+            Uint8Array: Uint8Array,
+            DataView: DataView,
             beep : function (c) {
                 t.equal(typeof c.createHash, 'function');
             }
