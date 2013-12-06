@@ -508,8 +508,8 @@ hypothetical es6 with lua's return
 
 * [browserify-shim](https://github.com/thlorenz/browserify-shim) - make commonJS-incompatible libraries/files browserifyable
 
-* [folderify](https://github.com/parroit/folderify) - include whole static content of a directory imported using 
-[import-folder](https://github.com/parroit/import-folder) via [brfs](https://github.com/substack/brfs)
+* [folderify](https://github.com/parroit/folderify) - inline content of a directory imported using 
+[include-folder](https://github.com/parroit/include-folder). Files content is inlined using [brfs](https://github.com/substack/brfs)
 
 
 
