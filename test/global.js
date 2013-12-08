@@ -63,7 +63,11 @@ test('Buffer', function (t) {
     var b = browserify();
     b.add(__dirname + '/global/buffer.js');
     b.bundle(function (err, src) {
-        var c = { t: t };
+        var c = {
+            t: t,
+            Uint8Array: Uint8Array,
+            DataView: DataView
+        };
         vm.runInNewContext(src, c);
     });
 });
