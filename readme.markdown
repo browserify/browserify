@@ -49,88 +49,12 @@ recursive walk of the `require()` graph using
 To use this bundle, just toss a `<script src="bundle.js"></script>` into your
 html!
 
-## external requires
+# install
 
-You can just as easily create bundle that will export a `require()` function so
-you can `require()` modules from another script tag. Here we'll create a
-`bundle.js` with the [through](https://npmjs.org/package/through)
-and [duplexer](https://npmjs.org/package/duplexer) modules.
+With [npm](http://npmjs.org) do:
 
 ```
-$ browserify -r through -r duplexer > bundle.js
-```
-
-Then in your page you can do:
-
-``` js
-<script src="bundle.js"></script>
-<script>
-  var through = require('through');
-  var duplexer = require('duplexer');
-  /* ... */
-</script>
-```
-
-## multiple bundles
-
-If browserify finds a `require` function already defined in the page scope, it
-will fall back to that function if it didn't find any matches in its own set of
-bundled modules.
-
-In this way you can use browserify to split up bundles among multiple pages to
-get the benefit of caching for shared, infrequently-changing modules, while
-still being able to use `require()`. Just use a combination of `--external` and
-`--require` to factor out common dependencies.
-
-For example, if a website with 2 pages, `beep.js`:
-
-``` js
-var robot = require('./robot.js');
-console.log(robot('beep'));
-```
-
-and `boop.js`:
-
-``` js
-var robot = require('./robot.js');
-console.log(robot('boop'));
-```
-
-both depend on `robot.js`:
-
-``` js
-module.exports = function (s) { return s.toUpperCase() + '!' };
-```
-
-```
-$ browserify -r ./robot > static/common.js
-$ browserify -x ./robot.js beep.js > static/beep.js
-$ browserify -x ./robot.js boop.js > static/boop.js
-```
-
-Then on the beep page you can have:
-
-``` html
-<script src="common.js"></script>
-<script src="beep.js"></script>
-```
-
-while the boop page can have:
-
-``` html
-<script src="common.js"></script>
-<script src="boop.js"></script>
-```
-
-## api example
-
-You can use the API directly too:
-
-``` js
-var browserify = require('browserify');
-var b = browserify();
-b.add('./browser/main.js');
-b.bundle().pipe(process.stdout);
+npm install -g browserify
 ```
 
 # usage
@@ -221,30 +145,122 @@ when you explicitly `require()` or use their functionality.
 
 When you `require()` any of these modules, you will get a browser-specific shim:
 
-* events
-* stream
-* path
-* assert
-* url
-* util
-* querystring
-* buffer
-* buffer_ieee754
-* console
-* [vm](https://github.com/substack/vm-browserify)
-* [http](https://github.com/substack/http-browserify)
-* [crypto](https://github.com/dominictarr/crypto-browserify)
-* [zlib](https://github.com/brianloveswords/zlib-browserify)
+* [assert](https://npmjs.org/package/assert)
+* [buffer](https://npmjs.org/package/native-buffer-browserify)
+* [console](https://npmjs.org/package/console-browserify)
+* [constants](https://npmjs.org/package/constants-browserify)
+* [crypto](https://npmjs.org/package/crypto-browserify)
+* [events](https://npmjs.org/package/events-browserify)
+* [http](https://npmjs.org/package/http-browserify)
+* [https](https://npmjs.org/package/https-browserify)
+* [os](https://npmjs.org/package/os-browserify)
+* [path](https://npmjs.org/package/path-browserify)
+* [punycode](https://npmjs.org/package/punycode)
+* [querystring](https://npmjs.org/package/querystring)
+* [stream](https://npmjs.org/package/stream-browserify)
+* [string_decoder](https://npmjs.org/package/string_decoder)
+* [timers](https://npmjs.org/package/timers-browserify)
+* [tty](https://npmjs.org/package/tty-browserify)
+* [url](https://npmjs.org/package/url)
+* [util](https://npmjs.org/package/util)
+* [vm](https://npmjs.org/package/vm-browserify)
+* [zlib](https://npmjs.org/package/zlib-browserify)
 
 Additionally if you use any of these variables, they
 [will be defined](https://github.com/substack/insert-module-globals)
 in the bundled output in a browser-appropriate way:
 
-* [process](https://github.com/defunctzombie/node-process)
-* [Buffer](https://github.com/toots/buffer-browserify)
+* [process](https://npmjs.org/package/process)
+* [Buffer](https://npmjs.org/package/native-buffer-browserify)
 * global - top-level scope object (window)
 * __filename - file path of the currently executing file
 * __dirname - directory path of the currently executing file
+
+# more examples
+
+## external requires
+
+You can just as easily create bundle that will export a `require()` function so
+you can `require()` modules from another script tag. Here we'll create a
+`bundle.js` with the [through](https://npmjs.org/package/through)
+and [duplexer](https://npmjs.org/package/duplexer) modules.
+
+```
+$ browserify -r through -r duplexer > bundle.js
+```
+
+Then in your page you can do:
+
+``` js
+<script src="bundle.js"></script>
+<script>
+  var through = require('through');
+  var duplexer = require('duplexer');
+  /* ... */
+</script>
+```
+
+## multiple bundles
+
+If browserify finds a `require` function already defined in the page scope, it
+will fall back to that function if it didn't find any matches in its own set of
+bundled modules.
+
+In this way you can use browserify to split up bundles among multiple pages to
+get the benefit of caching for shared, infrequently-changing modules, while
+still being able to use `require()`. Just use a combination of `--external` and
+`--require` to factor out common dependencies.
+
+For example, if a website with 2 pages, `beep.js`:
+
+``` js
+var robot = require('./robot.js');
+console.log(robot('beep'));
+```
+
+and `boop.js`:
+
+``` js
+var robot = require('./robot.js');
+console.log(robot('boop'));
+```
+
+both depend on `robot.js`:
+
+``` js
+module.exports = function (s) { return s.toUpperCase() + '!' };
+```
+
+```
+$ browserify -r ./robot > static/common.js
+$ browserify -x ./robot.js beep.js > static/beep.js
+$ browserify -x ./robot.js boop.js > static/boop.js
+```
+
+Then on the beep page you can have:
+
+``` html
+<script src="common.js"></script>
+<script src="beep.js"></script>
+```
+
+while the boop page can have:
+
+``` html
+<script src="common.js"></script>
+<script src="boop.js"></script>
+```
+
+## api example
+
+You can use the API directly too:
+
+``` js
+var browserify = require('browserify');
+var b = browserify();
+b.add('./browser/main.js');
+b.bundle().pipe(process.stdout);
+```
 
 # methods
 
@@ -467,14 +483,6 @@ to host your bundles as middleware.
 
 If you want a standalone web server for development that will create bundles on
 demand, check out [beefy](https://github.com/chrisdickinson/beefy).
-
-# install
-
-With [npm](http://npmjs.org) do:
-
-```
-npm install -g browserify
-```
 
 # license
 
