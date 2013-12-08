@@ -471,6 +471,8 @@ hypothetical es6 with lua's return
   javascript used in [react](http://facebook.github.io/react/) UI library) files
   to javascript
 
+* [browserify-shim](https://github.com/thlorenz/browserify-shim) - make commonJS-incompatible libraries/files browserifyable
+
 # third-party tools
 
 If you want to efficiently re-compile the bundle automatically when you edit
