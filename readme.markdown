@@ -461,6 +461,8 @@ files written using [bliss](https://github.com/cstivers78/bliss)
 * [brfs](https://github.com/substack/brfs) - inline
 `fs.readFileSync()` calls with file contents
 
+* [cacheify](https://github.com/bockit/cacheify) - wraps around other transforms, caching their results to speed up bundling.
+
 * [caching-coffeeify](https://github.com/thlorenz/caching-coffeeify) - coffeeify
 version that caches previously compiled files to optimize the compilation step
 
