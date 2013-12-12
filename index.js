@@ -55,11 +55,12 @@ function Browserify (opts) {
     self._mapped = {};
     self._transforms = [];
     self._extensions = ['.js'].concat(opts.extensions).filter(Boolean);
-    self._noParse =[];
+    self._noParse = [];
     self._pkgcache = {};
     self._exposeAll = opts.exposeAll;
     self._ignoreMissing = opts.ignoreMissing;
     self._basedir = opts.basedir;
+    self._delegateResolve = opts.resolve || browserResolve;
     
     var noParse = [].concat(opts.noParse).filter(Boolean);
     noParse.forEach(this.noParse.bind(this));
@@ -102,7 +103,7 @@ Browserify.prototype.require = function (id, opts) {
         packageFilter: packageFilter,
         extensions: self._extensions
     };
-    browserResolve(id, params, function (err, file) {
+    self._delegateResolve(id, params, function (err, file) {
         if ((err || !file) && !opts.external) {
             if (err) return self.emit('error', err);
             if (!file) return self.emit('error', new Error(
@@ -505,7 +506,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     
     if (self._external[id]) return cb(null, emptyModulePath);
     
-    return browserResolve(id, parent, function(err, file, pkg) {
+    return self._delegateResolve(id, parent, function(err, file, pkg) {
         if (err) return cb(err);
         if (!file && (self._external[id] || self._external[file])) {
             return cb(null, emptyModulePath);
