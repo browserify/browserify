@@ -474,33 +474,33 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     if (this._ignore[id]) return cb(null, emptyModulePath);
     var self = this;
     var result = function (file, pkg, x) {
-        fs.realpath(file, function (err, realfile) {
-            if (err) return cb(err);
-            
-            if (self._pending === 0) {
-                self.emit('file', realfile, id, parent);
-            }
-            if (pkg) {
-                cb(null, realfile, pkg, x);
-                self.emit('package', realfile, pkg);
-            }
-            else findPackage(path.dirname(realfile), function (err, pkgfile, pkg) {
-                if (err) return cb(err);
-                
-                if (pkg && typeof pkg === 'object') {
-                    var pkg_ = pkg;
-                    pkg = {};
-                    if (typeof pkg_.browserify === 'string' && !pkg_.browser) {
-                        pkg.browser = pkg_.browserify;
-                    }
-                    if (typeof pkg_.browserify === 'object') {
-                        pkg.browserify = pkg_.browserify;
-                    }
-                }
-                cb(null, realfile, pkg, x);
-                self.emit('package', realfile, pkg);
-            });
-        });
+		fs.realpath(file, function(err, realfile){
+			if(err) return cb(err);
+
+			if (self._pending === 0) {
+				self.emit('file', realfile, id, parent);
+			}
+			if (pkg) {
+				cb(null, realfile, pkg, x);
+				self.emit('package', realfile, pkg);
+			}
+			else findPackage(path.dirname(realfile), function (err, pkgfile, pkg) {
+				if (err) return cb(err);
+
+				if (pkg && typeof pkg === 'object') {
+					var pkg_ = pkg;
+					pkg = {};
+					if (typeof pkg_.browserify === 'string' && !pkg_.browser) {
+						pkg.browser = pkg_.browserify;
+					}
+					if (typeof pkg_.browserify === 'object') {
+						pkg.browserify = pkg_.browserify;
+					}
+				}
+				cb(null, realfile, pkg, x);
+				self.emit('package', realfile, pkg);
+			});
+		});
     };
     if (self._mapped[id]) return result(self._mapped[id]);
     
