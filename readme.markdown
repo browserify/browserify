@@ -286,6 +286,12 @@ to parse.
 machinery to use when the extension has not been specified.
 By default browserify considers only `.js` and `.json` files in such cases.
 
+`opts.basedir` is the directory that browserify starts bundling from for
+filenames that start with `.`.
+
+You can give browserify a custom `opts.resolve()` function or by default it uses
+[browser-resolve](https://npmjs.org/package/browser-resolve).
+
 Note that if files do not contain javascript source code then you also need to
 specify a corresponding transform for them.
 
