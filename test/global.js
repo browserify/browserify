@@ -46,6 +46,20 @@ test('__filename and __dirname', function (t) {
     });
 });
 
+test('__filename and __dirname with basedir', function (t) {
+    t.plan(2);
+    
+    var b = browserify();
+    b.expose('x', __dirname + '/global/filename.js');
+    b.bundle({ basedir: __dirname }, function (err, src) {
+        var c = {};
+        vm.runInNewContext(src, c);
+        var x = c.require('x');
+        t.equal(x.filename, '/global/filename.js');
+        t.equal(x.dirname, '/global');
+    });
+});
+
 test('process.nextTick', function (t) {
     t.plan(1);
     

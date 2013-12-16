@@ -228,7 +228,8 @@ Browserify.prototype.bundle = function (opts, cb) {
         ? insertGlobals(self.files, {
             resolve: self._resolve.bind(self),
             always: opts.insertGlobals,
-            vars: opts.insertGlobalVars
+            vars: opts.insertGlobalVars,
+            basedir: opts.basedir || self._basedir
         })
         : through()
     ;
