@@ -187,6 +187,8 @@ Browserify.prototype.bundle = function (opts, cb) {
     if (opts.detectGlobals === undefined) opts.detectGlobals = true;
     if (opts.ignoreMissing === undefined) opts.ignoreMissing = false;
     if (opts.standalone === undefined) opts.standalone = false;
+
+    self._ignoreMissing = opts.ignoreMissing;
     
     opts.resolve = self._resolve.bind(self);
     opts.transform = self._transforms;
@@ -508,7 +510,9 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     if (self._external[id]) return cb(null, emptyModulePath);
     
     return self._delegateResolve(id, parent, function(err, file, pkg) {
-        if (err) return cb(err);
+        if (err && !(err.message && err.message.indexOf("Cannot find module") >= 0 && self._ignoreMissing == true)) {
+            return cb(err);
+        }
         if (!file && (self._external[id] || self._external[file])) {
             return cb(null, emptyModulePath);
         }
