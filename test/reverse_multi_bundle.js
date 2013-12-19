@@ -35,7 +35,7 @@ test('reverse multi bundle', function (t) {
         },  function(err, lazySrc) {
                 if (err) throw err;
 
-                var src = appSrc  + lazySrc;
+                var src = appSrc + ';' + lazySrc;
                 var c = {
                     setTimeout: setTimeout,
                     t: t
