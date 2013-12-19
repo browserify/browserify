@@ -258,7 +258,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         })
         : through()
     ;
-    var p = self.pack(opts.debug, opts.standalone);
+    var p = self.pack(opts);
     if (cb) {
         p.on('error', cb);
         p.pipe(concatStream(function (src) { cb(null, src) }));
@@ -354,7 +354,9 @@ Browserify.prototype.deps = function (opts) {
     }
 };
 
-Browserify.prototype.pack = function (debug, standalone) {
+Browserify.prototype.pack = function (opts) {
+    if (!opts) opts = {};
+    
     var self = this;
     var packer = self._browserPack();
     
@@ -365,7 +367,7 @@ Browserify.prototype.pack = function (debug, standalone) {
     var input = through(function (row_) {
         var row = copy(row_);
         
-        if (debug) { 
+        if (opts.debug) { 
             row.sourceRoot = 'file://localhost'; 
             row.sourceFile = row.id.replace(/\\/g, '/');
         }
@@ -441,19 +443,27 @@ Browserify.prototype.pack = function (debug, standalone) {
     
     function end () {
         if (first) writePrelude.call(this);
-        if (standalone) {
-            this.queue('\n(' + mainModule + ')' + umd.postlude(standalone));
+        if (opts.standalone) {
+            this.queue(
+                '\n(' + mainModule + ')'
+                + umd.postlude(opts.standalone)
+            );
         }
-        if (debug) this.queue('\n');
+        if (opts.debug) this.queue('\n');
         this.queue(null);
     }
     
     function writePrelude () {
         if (!first) return;
-        if (standalone) {
-            return this.queue(umd.prelude(standalone).trim() + 'return ');
+        if (opts.standalone) {
+            return this.queue(umd.prelude(opts.standalone).trim() + 'return ');
         }
+//<<<<<<< HEAD
         if (hasExports) this.queue('require=');
+/*=======
+        if (!hasExports) return this.queue(';');
+        this.queue(opts.globalRequire + '=');
+>>>>>>> Pass name of globalRequire function and prelude*/
     }
     
     function hasher (row) {
