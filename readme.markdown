@@ -515,7 +515,7 @@ directory imported using
 Files content is inlined using [brfs](https://github.com/substack/brfs)
 
 * [phantomjsify](https://github.com/twolfson/phantomjsify) - shim out node.js
-  core for [PhantomJS](http://phantomjs.org/)
+core for [PhantomJS](http://phantomjs.org/)
 
 # third-party tools
 
