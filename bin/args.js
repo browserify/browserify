@@ -48,7 +48,7 @@ module.exports = function (args) {
         noParse: [].concat(argv.noparse).filter(Boolean),
         extensions: [].concat(argv.extension).filter(Boolean),
         entries: entries,
-        builtins: argv.builtins,
+        builtins: argv.builtins === false ? false : undefined,
         commondir: argv.commondir === false ? false : undefined
     });
     b.argv = argv;
