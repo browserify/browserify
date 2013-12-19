@@ -461,7 +461,8 @@ files written using [bliss](https://github.com/cstivers78/bliss)
 * [brfs](https://github.com/substack/brfs) - inline
 `fs.readFileSync()` calls with file contents
 
-* [cacheify](https://github.com/bockit/cacheify) - wraps around other transforms, caching their results to speed up bundling.
+* [cacheify](https://github.com/bockit/cacheify) - wraps around other
+transforms, caching their results to speed up bundling.
 
 * [caching-coffeeify](https://github.com/thlorenz/caching-coffeeify) - coffeeify
 version that caches previously compiled files to optimize the compilation step
@@ -501,18 +502,17 @@ into a map of requires of the files in the thing
 * [turn](https://github.com/juliangruber/turn) - minimal modules for a
 hypothetical es6 with lua's return
 
-
 * [reactify](https://github.com/andreypopp/reactify) - compile JSX (superset of
-  javascript used in [react](http://facebook.github.io/react/) UI library) files
-  to javascript
+javascript used in [react](http://facebook.github.io/react/) UI library) files
+to javascript
 
-* [browserify-shim](https://github.com/thlorenz/browserify-shim) - make commonJS-incompatible libraries/files browserifyable
+* [browserify-shim](https://github.com/thlorenz/browserify-shim) - make
+commonJS-incompatible libraries/files browserifyable
 
-* [folderify](https://github.com/parroit/folderify) - inline content of a directory imported using 
-[include-folder](https://github.com/parroit/include-folder). Files content is inlined using [brfs](https://github.com/substack/brfs)
-
-
-
+* [folderify](https://github.com/parroit/folderify) - inline content of a
+directory imported using
+[include-folder](https://github.com/parroit/include-folder).
+Files content is inlined using [brfs](https://github.com/substack/brfs)
 
 # third-party tools
 
