@@ -50,11 +50,10 @@ function Browserify (opts) {
     self._pending = 0;
     self._entries = [];
     self._ignore = {};
+    self._remove = {};
     self._external = {};
     self._expose = {};
     self._mapped = {};
-    
-    self._builtins = opts.builtins === false ? {} : opts.builtins || builtins;
     
     self._transforms = [];
     self._extensions = ['.js'].concat(opts.extensions).filter(Boolean);
@@ -64,6 +63,14 @@ function Browserify (opts) {
     self._ignoreMissing = opts.ignoreMissing;
     self._basedir = opts.basedir;
     self._delegateResolve = opts.resolve || browserResolve;
+    
+    self._builtins = opts.builtins === false ? {} : opts.builtins || builtins;
+    if (opts.builtins === false) {
+        Object.keys(builtins).forEach(function (key) {
+            self._ignore[key] = true;
+            self._remove[key] = true;
+        });
+    }
     
     var noParse = [].concat(opts.noParse).filter(Boolean);
     noParse.forEach(this.noParse.bind(this));
@@ -176,6 +183,12 @@ Browserify.prototype.external = function (id, opts) {
 
 Browserify.prototype.ignore = function (file) {
     this._ignore[file] = true;
+    return this;
+};
+
+Browserify.prototype.remove = function (file) {
+    this.ignore(file);
+    this._remove[file] = true;
     return this;
 };
 
@@ -293,7 +306,8 @@ Browserify.prototype.deps = function (opts) {
             row.source = '';
         }
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
-            if (!self._external[key] && !self._external[row.id]) {
+            if (!self._remove[key] && !self._external[key]
+            && !self._external[row.id]) {
                 acc[key] = row.deps[key];
             }
             return acc;
@@ -478,8 +492,9 @@ var packageFilter = function (info) {
 };
 
 Browserify.prototype._resolve = function (id, parent, cb) {
-    if (this._ignore[id]) return cb(null, emptyModulePath);
     var self = this;
+    if (self._ignore[id]) return cb(null, emptyModulePath);
+    
     var result = function (file, pkg, x) {
         if (self._pending === 0) {
             self.emit('file', file, id, parent);
