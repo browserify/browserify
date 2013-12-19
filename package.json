@@ -28,7 +28,7 @@
     "duplexer": "~0.1.1",
     "stream-combiner": "~0.0.2",
     "concat-stream": "~1.0.0",
-    "insert-module-globals": "~2.1.0",
+    "insert-module-globals": "~2.2.0",
     "syntax-error": "~0.0.0",
     "browser-resolve": "~1.2.1",
     "inherits": "~2.0.1",
@@ -56,7 +56,8 @@
     "string_decoder": "~0.0.0",
     "tty-browserify": "~0.0.0",
     "timers-browserify": "https://github.com/substack/timers-browserify/archive/1.0.0-setimmediate.tar.gz",
-    "punycode": "~1.2.3"
+    "punycode": "~1.2.3",
+    "defined": "0.0.0"
   },
   "devDependencies": {
     "tap": "~0.4.0",

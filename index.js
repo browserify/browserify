@@ -5,6 +5,7 @@ var concatStream = require('concat-stream');
 var checkSyntax = require('syntax-error');
 var parents = require('parents');
 var deepEqual = require('deep-equal');
+var defined = require('defined');
 var builtins = require('./lib/builtins.js');
 
 var mdeps = require('module-deps');
@@ -71,6 +72,7 @@ function Browserify (opts) {
             self._remove[key] = true;
         });
     }
+    self._commondir = opts.commondir;
     
     var noParse = [].concat(opts.noParse).filter(Boolean);
     noParse.forEach(this.noParse.bind(this));
@@ -247,7 +249,8 @@ Browserify.prototype.bundle = function (opts, cb) {
             resolve: self._resolve.bind(self),
             always: opts.insertGlobals,
             vars: opts.insertGlobalVars,
-            basedir: opts.basedir || self._basedir
+            basedir: opts.basedir || self._basedir,
+            commondir: defined(opts.commondir, self._commondir)
         })
         : through()
     ;

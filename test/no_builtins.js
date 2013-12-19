@@ -7,6 +7,7 @@ test(function (t) {
     
     var b = browserify({
         entries: [ __dirname + '/no_builtins/main.js' ],
+        commondir: false,
         builtins: false
     });
     b.bundle(function (err, src) {
