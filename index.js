@@ -57,7 +57,9 @@ function Browserify (opts) {
     self._mapped = {};
     
     self._transforms = [];
-    self._extensions = ['.js'].concat(opts.extensions).filter(Boolean);
+    self._extensions = [ '.js', '.json' ]
+        .concat(opts.extensions).filter(Boolean)
+    ;
     self._noParse = [];
     self._pkgcache = {};
     self._exposeAll = opts.exposeAll;
