@@ -15,7 +15,7 @@ test('unique require', function (t) {
     // inform this bundle that b exists in another bundle
     app.external(__dirname + '/multi_bundle/b.js');
 
-    core.bundle({ globalRequire: 'unique_require', prelude: prelude }, function (err, src) {
+    core.bundle({ externalRequireName: 'unique_require', prelude: prelude }, function (err, src) {
         var c = {
             console: console,
             t : t,

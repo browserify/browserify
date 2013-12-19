@@ -460,7 +460,9 @@ Browserify.prototype.pack = function (opts) {
         if (opts.standalone) {
             return this.queue(umd.prelude(opts.standalone).trim() + 'return ');
         }
-        if (hasExports) this.queue((opts.globalRequire || 'require') + '=');
+        if (hasExports) this.queue(
+            (opts.externalRequireName || 'require') + '='
+        );
     }
     
     function hasher (row) {
