@@ -334,6 +334,9 @@ By default, `opts.pack` uses
 require('browser-pack')({ raw: true, sourceMapPrefix: '//@' });
 ```
 
+`opts.externalRequireName` defaults to `'require'` in `expose` mode but you can
+use another name.
+
 You can give browserify a custom `opts.resolve()` function or by default it uses
 [browser-resolve](https://npmjs.org/package/browser-resolve).
 
