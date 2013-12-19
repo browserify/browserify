@@ -6,10 +6,10 @@ var test = require('tap').test;
 var prelude = fs.readFileSync(path.join(__dirname, 'multi_bundle', '_prelude.js'), 'utf8');
 
 test('unique require', function (t) {
-    t.plan(7);
+    t.plan(6);
 
     var core = browserify();
-    core.require(__dirname + '/multi_bundle/b.js', { expose: true });
+    core.require(__dirname + '/multi_bundle/b.js', { expose: 'b' });
 
     var app = browserify([__dirname + '/multi_bundle/a.js']);
     // inform this bundle that b exists in another bundle
@@ -43,7 +43,7 @@ test('unique require', function (t) {
             // because it was part of the core bundle
             t.equal(c.baton.times, 1);
             
-            t.equal(c.unique_require('a.js'), a.js, 'bar');
+            t.equal(c.unique_require('b'), 'foo');
         });
     });
 });

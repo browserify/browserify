@@ -65,8 +65,10 @@ function Browserify (opts) {
     self._basedir = opts.basedir;
     self._delegateResolve = opts.resolve || browserResolve;
     
-    self._browserPack = opts.pack || function () {
-        return browserPack({ raw: true, sourceMapPrefix: '//@' });
+    self._browserPack = opts.pack || function (params) {
+        params.raw = true;
+        params.sourceMapPrefix = '//@';
+        return browserPack(params);
     };
     
     self._builtins = opts.builtins === false ? {} : opts.builtins || builtins;
@@ -358,7 +360,7 @@ Browserify.prototype.pack = function (opts) {
     if (!opts) opts = {};
     
     var self = this;
-    var packer = self._browserPack();
+    var packer = self._browserPack(opts);
     
     var mainModule;
     var hashes = {}, depList = {}, depHash = {};
@@ -458,12 +460,7 @@ Browserify.prototype.pack = function (opts) {
         if (opts.standalone) {
             return this.queue(umd.prelude(opts.standalone).trim() + 'return ');
         }
-//<<<<<<< HEAD
-        if (hasExports) this.queue('require=');
-/*=======
-        if (!hasExports) return this.queue(';');
-        this.queue(opts.globalRequire + '=');
->>>>>>> Pass name of globalRequire function and prelude*/
+        if (hasExports) this.queue((opts.globalRequire || 'require') + '=');
     }
     
     function hasher (row) {
