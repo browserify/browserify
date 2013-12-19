@@ -8,7 +8,7 @@ module.exports = function (args) {
     var argv = require('optimist')(args)
         .boolean([
             'deps','pack','ig','dg', 'im', 'd','list',
-            'builtins','commondir'
+            'builtins','commondir', 'bare'
         ])
         .string(['s'])
         .alias('insert-globals', 'ig')
@@ -18,6 +18,7 @@ module.exports = function (args) {
         .alias('standalone', 's')
         .alias('ig', 'fast')
         .alias('noparse', 'noParse')
+        .alias('bare', 'bear')
         .default('ig', false)
         .default('im', false)
         .default('dg', true) 
@@ -36,6 +37,11 @@ module.exports = function (args) {
     && [].concat(argv.r, argv.require).filter(Boolean).length === 1) {
         entries.push([].concat(argv.r, argv.require).filter(Boolean)[0]);
         argv.r = argv.require = [];
+    }
+    
+    if (argv.bare) {
+        argv.builtins = false;
+        argv.commondir = false;
     }
     
     var b = browserify({
