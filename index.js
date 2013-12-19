@@ -53,6 +53,9 @@ function Browserify (opts) {
     self._external = {};
     self._expose = {};
     self._mapped = {};
+    
+    self._builtins = opts.builtins === false ? {} : opts.builtins || builtins;
+    
     self._transforms = [];
     self._extensions = ['.js'].concat(opts.extensions).filter(Boolean);
     self._noParse = [];
@@ -99,7 +102,7 @@ Browserify.prototype.require = function (id, opts) {
     
     var params = {
         filename: fromfile,
-        modules: builtins,
+        modules: self._builtins,
         packageFilter: packageFilter,
         extensions: self._extensions
     };
@@ -271,7 +274,7 @@ Browserify.prototype.deps = function (opts) {
         return tr;
     }
     
-    opts.modules = builtins;
+    opts.modules = self._builtins;
     opts.extensions = self._extensions;
     if (!opts.basedir) opts.basedir = self._basedir;
     var d = mdeps(self.files, opts);
@@ -502,7 +505,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     };
     if (self._mapped[id]) return result(self._mapped[id]);
     
-    parent.modules = builtins;
+    parent.modules = self._builtins;
     parent.extensions = self._extensions;
     
     if (self._external[id]) return cb(null, emptyModulePath);

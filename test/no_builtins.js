@@ -10,6 +10,7 @@ test(function (t) {
         builtins: false
     });
     b.bundle(function (err, src) {
+        console.log('err=', err);
         var c = {
             console: { log: function (msg) {
                 t.equal(msg, 'beep boop\n');
