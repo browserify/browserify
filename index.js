@@ -290,8 +290,7 @@ Browserify.prototype.transform = function (t) {
 
 Browserify.prototype.deps = function (opts) {
     var self = this;
-    
-    opts = opts || {};
+    if (!opts) opts = {};
     
     if (self._pending) {
         var tr = through();
