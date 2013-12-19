@@ -444,7 +444,6 @@ Browserify.prototype.pack = function (debug, standalone) {
         if (standalone) {
             this.queue('\n(' + mainModule + ')' + umd.postlude(standalone));
         }
-        this.queue('\n;');
         this.queue(null);
     }
     
@@ -453,8 +452,7 @@ Browserify.prototype.pack = function (debug, standalone) {
         if (standalone) {
             return this.queue(umd.prelude(standalone).trim() + 'return ');
         }
-        if (!hasExports) return this.queue(';');
-        this.queue('require=');
+        if (hasExports) this.queue('require=');
     }
     
     function hasher (row) {
