@@ -6,7 +6,10 @@ var duplexer = require('duplexer');
 
 module.exports = function (args) {
     var argv = require('optimist')(args)
-        .boolean(['deps','pack','ig','dg', 'im', 'd','list'])
+        .boolean([
+            'deps','pack','ig','dg', 'im', 'd','list',
+            'builtins','commondir'
+        ])
         .string(['s'])
         .alias('insert-globals', 'ig')
         .alias('detect-globals', 'dg')
@@ -19,6 +22,8 @@ module.exports = function (args) {
         .default('im', false)
         .default('dg', true) 
         .default('d', false) 
+        .default('builtins', true) 
+        .default('commondir', true) 
         .argv
     ;
     
@@ -36,7 +41,9 @@ module.exports = function (args) {
     var b = browserify({
         noParse: [].concat(argv.noparse).filter(Boolean),
         extensions: [].concat(argv.extension).filter(Boolean),
-        entries: entries
+        entries: entries,
+        builtins: argv.builtins,
+        commondir: argv.commondir === false ? false : undefined
     });
     b.argv = argv;
     
