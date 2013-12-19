@@ -3,7 +3,7 @@ var vm = require('vm');
 var test = require('tap').test;
 
 test('json', function (t) {
-    t.plan(1);
+    t.plan(2);
     var b = browserify();
     b.add(__dirname + '/json/main.js');
     b.bundle(function (err, src) {
