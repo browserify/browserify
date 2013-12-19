@@ -65,6 +65,10 @@ function Browserify (opts) {
     self._basedir = opts.basedir;
     self._delegateResolve = opts.resolve || browserResolve;
     
+    self._browserPack = opts.pack || function () {
+        return browserPack({ raw: true, sourceMapPrefix: '//@' });
+    };
+    
     self._builtins = opts.builtins === false ? {} : opts.builtins || builtins;
     if (opts.builtins === false) {
         Object.keys(builtins).forEach(function (key) {
@@ -352,7 +356,7 @@ Browserify.prototype.deps = function (opts) {
 
 Browserify.prototype.pack = function (debug, standalone) {
     var self = this;
-    var packer = browserPack({ raw: true, sourceMapPrefix: '//@' });
+    var packer = self._browserPack();
     
     var mainModule;
     var hashes = {}, depList = {}, depHash = {};

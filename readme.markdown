@@ -317,6 +317,23 @@ filenames that start with `.`.
 `opts.builtins` sets the list of builtins to use, which by default is set in
 `lib/builtins.js` in this distribution.
 
+`opts.pack` sets the browser-pack implementation to use. The `opts.pack()`
+should return a transform stream that accepts objects of the form that
+[module-deps](https://npmjs.org/package/module-deps) generates. Simplifed, this
+is roughly:
+
+```
+{"id":"1","source":"console.log('beep boop')","deps":{}}
+{"id":"2","source":"require('./boop.js')","deps":{"./boop.js":"1"}}
+```
+
+By default, `opts.pack` uses
+[browser-pack](https://npmjs.org/package/browser-pack):
+
+```
+require('browser-pack')({ raw: true, sourceMapPrefix: '//@' });
+```
+
 You can give browserify a custom `opts.resolve()` function or by default it uses
 [browser-resolve](https://npmjs.org/package/browser-resolve).
 
