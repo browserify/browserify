@@ -562,6 +562,9 @@ plugin
 
 * [csvify](https://npmjs.org/package/node-csvify) - CSV and TSV transformations
 
+* [cocoify](https://github.com/superjoe30/cocoify) - transform for
+[coco](https://github.com/satyr/coco), unfancy coffeescript
+
 # third-party tools
 
 If you want to efficiently re-compile the bundle automatically when you edit
