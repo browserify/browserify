@@ -495,6 +495,8 @@ when files change.
 
 Here is a list of known source transforms:
 
+* [aliasify](https://github.com/benbria/aliasify) - remap require calls at build time.
+
 * [blissify](https://github.com/agilemd/blissify) - compile `.html` 
 files written using [bliss](https://github.com/cstivers78/bliss)
 
@@ -583,6 +585,8 @@ to host your bundles as middleware.
 
 If you want a standalone web server for development that will create bundles on
 demand, check out [beefy](https://github.com/chrisdickinson/beefy).
+
+If you are writing your own source transforms, check out [browser-transform-tools](https://github.com/benbria/browserify-transform-tools/), a library of handy functions for loading configuration and generating transforms based around strings, [falafel](https://github.com/substack/node-falafel), and `require()` manipulation.
 
 # license
 
