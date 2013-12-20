@@ -3,7 +3,7 @@ var vm = require('vm');
 var test = require('tap').test;
 
 test('byte order marker', function (t) {
-    t.plan(1);
+    t.plan(2);
     
     var b = browserify(__dirname + '/bom/hello.js');
     b.bundle(function (err, src) {
@@ -14,5 +14,6 @@ test('byte order marker', function (t) {
             } }
         };
         vm.runInNewContext(src, c);
+        t.notOk(/\ufeff/.test(src.toString('utf8')));
     });
 });
