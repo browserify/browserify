@@ -505,6 +505,9 @@ to Node-style modules automatically
 [component](https://github.com/component/component) client packages seamlessly
 with browserify.
 
+* [envify](https://github.com/hughsk/envify) - Selectively replace Node-style
+environment variables (`process.env`) with plain strings.
+
 * [es6ify](https://github.com/thlorenz/es6ify) - compile ES6 files to
 ES5 javascript automatically
 
@@ -513,6 +516,9 @@ templates to javascript functions automatically
 
 * [icsify](https://github.com/maxtaco/icsify) - compile
 `.iced` IcedCoffeeScript files to javascript automatically
+
+* [installify](https://github.com/hughsk/installify) - automatically installs your
+missing dependencies for you.
 
 * [liveify](https://github.com/quarterto/liveify) - compile livescript files to
 javascript automatically
