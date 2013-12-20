@@ -394,6 +394,15 @@ from another bundle.
 
 Prevent the module name or file at `file` from showing up in the output bundle.
 
+Instead you will get a file with `module.exports = {}`.
+
+## b.exclude(file)
+
+Prevent the module name or file at `file` from showing up in the output bundle.
+
+If your code tries to `require()` that file it will throw unless you've provided
+another mechanism for loading it.
+
 ## b.transform(tr)
 
 Transform source code before parsing it for `require()` calls with the transform
