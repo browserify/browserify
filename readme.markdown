@@ -548,6 +548,11 @@ Files content is inlined using [brfs](https://github.com/substack/brfs)
 * [phantomjsify](https://github.com/twolfson/phantomjsify) - shim out node.js
 core for [PhantomJS](http://phantomjs.org/)
 
+* [lessify](https://npmjs.org/package/node-lessify) - LESS precompiler and CSS
+plugin
+
+* [csvify](https://npmjs.org/package/node-csvify) - CSV and TSV transformations
+
 # third-party tools
 
 If you want to efficiently re-compile the bundle automatically when you edit
