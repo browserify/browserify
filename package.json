@@ -57,7 +57,8 @@
     "tty-browserify": "~0.0.0",
     "timers-browserify": "https://github.com/substack/timers-browserify/archive/1.0.0-setimmediate.tar.gz",
     "punycode": "~1.2.3",
-    "defined": "0.0.0"
+    "defined": "0.0.0",
+    "domain-browser": "~1.1.0"
   },
   "devDependencies": {
     "tap": "~0.4.0",
