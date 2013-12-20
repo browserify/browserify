@@ -51,7 +51,7 @@ function Browserify (opts) {
     self._pending = 0;
     self._entries = [];
     self._ignore = {};
-    self._remove = {};
+    self._exclude = {};
     self._external = {};
     self._expose = {};
     self._mapped = {};
@@ -77,7 +77,7 @@ function Browserify (opts) {
     if (opts.builtins === false) {
         Object.keys(builtins).forEach(function (key) {
             self._ignore[key] = true;
-            self._remove[key] = true;
+            self._exclude[key] = true;
         });
     }
     self._commondir = opts.commondir;
@@ -196,9 +196,9 @@ Browserify.prototype.ignore = function (file) {
     return this;
 };
 
-Browserify.prototype.remove = function (file) {
+Browserify.prototype.exclude = function (file) {
     this.ignore(file);
-    this._remove[file] = true;
+    this._exclude[file] = true;
     return this;
 };
 
@@ -319,7 +319,7 @@ Browserify.prototype.deps = function (opts) {
             row.source = '';
         }
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
-            if (!self._remove[key] && !self._external[key]
+            if (!self._exclude[key] && !self._external[key]
             && !self._external[row.id]) {
                 acc[key] = row.deps[key];
             }
