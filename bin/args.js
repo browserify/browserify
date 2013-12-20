@@ -57,6 +57,10 @@ module.exports = function (args) {
         .forEach(function (i) { b.ignore(i) })
     ;
     
+    [].concat(argv.u).concat(argv.exclude).filter(Boolean)
+        .forEach(function (u) { b.exclude(u) })
+    ;
+    
     [].concat(argv.r).concat(argv.require).filter(Boolean)
         .forEach(function (r) {
             var xs = r.split(':');

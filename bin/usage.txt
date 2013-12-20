@@ -10,7 +10,9 @@ Standard Options:
 
       --entry, -e  An entry point of your app
   
-     --ignore, -i  Omit a file from the output bundle.
+     --ignore, -i  Replace a file with an empty stub.
+ 
+    --exclude, -u  Omit a file from the output bundle.
 
    --external, -x  Reference a file from another bundle.
   

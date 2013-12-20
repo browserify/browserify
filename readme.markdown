@@ -72,13 +72,13 @@ Standard Options:
 
       --entry, -e  An entry point of your app
   
-     --ignore, -i  Omit a file from the output bundle.
+     --ignore, -i  Replace a file with an empty stub.
+ 
+    --exclude, -u  Omit a file from the output bundle.
 
    --external, -x  Reference a file from another bundle.
   
   --transform, -t  Use a transform module on top-level files.
-
-  --extension      Consider files with specified extension as modules.
  
     --command, -c  Use a transform command on top-level files.
    
