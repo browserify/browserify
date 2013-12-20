@@ -318,6 +318,10 @@ Browserify.prototype.deps = function (opts) {
         if (row.id === emptyModulePath) {
             row.source = '';
         }
+        if (/^\ufeff/.test(row.source)) {
+            row.source = row.source.replace(/^\ufeff/, '');
+        }
+        
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
             if (!self._exclude[key] && !self._external[key]
             && !self._external[row.id]) {
