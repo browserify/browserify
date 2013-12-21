@@ -195,6 +195,16 @@ in the bundled output in a browser-appropriate way:
 * global - top-level scope object (window)
 * __filename - file path of the currently executing file
 * __dirname - directory path of the currently executing file
+ 
+## "browserify-ready" modules
+Developpers can claim a module as ready to be browserified by using the [browserify-ready](https://npmjs.org/browse/keyword/browserify-ready) keyword in their package.json file.
+
+In order to make your modules "browserify friendly", please consider the following guidelines:
+* make [pure modules](http://en.wikipedia.org/wiki/Pure_function) (it should always output the same result for the same input and should never cause side effects)
+* use only browserify compatible modules (supported core modules or third-party browserify ready modules)
+* avoid using frameworks/helpers to avoid module redondancy (VanillaJS is the best)
+* in general, try to keep a small amount of dependencies
+* remember the [Unix philosophy](http://en.wikipedia.org/wiki/Unix_philosophy): do one thing but do it well, use streams.
 
 # more examples
 
