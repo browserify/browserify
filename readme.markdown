@@ -107,6 +107,11 @@ Advanced Options:
     benefit: faster builds
     cost: extra bytes
  
+  --insert-global-vars, --igv
+
+    Comma-separated list of global variables to detect and define.
+    Default: __filename,__dirname,process,Buffer,global
+ 
   --detect-globals, --dg            [default: true]
 
     Detect the presence of process, global, __filename, and __dirname and define
@@ -136,8 +141,9 @@ Advanced Options:
  
   --bare 
 
-    Alias for both --no-builtins and --no-commondir. This is handy if you want
-    to run bundles in node.
+    Alias for both --no-builtins, --no-commondir, and sets --insert-global-vars
+    to just "__filename,__dirname". This is handy if you want to run bundles in
+    node.
 
   --deps
   
