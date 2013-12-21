@@ -14,6 +14,7 @@ module.exports = function (args) {
         .alias('insert-globals', 'ig')
         .alias('detect-globals', 'dg')
         .alias('ignore-missing', 'im')
+        .alias('insert-global-vars', 'igv')
         .alias('debug', 'd')
         .alias('standalone', 's')
         .alias('ig', 'fast')
@@ -42,6 +43,9 @@ module.exports = function (args) {
     if (argv.bare) {
         argv.builtins = false;
         argv.commondir = false;
+        if (argv.igv === undefined) {
+            argv.igv = '__filename,__dirname';
+        }
     }
     
     var b = browserify({
@@ -121,14 +125,10 @@ module.exports = function (args) {
         return b;
     }
     
-    var globalVars = argv['insert-global-vars'] || argv.igv;
     var bundleOpts = {
         detectGlobals: argv['detect-globals'] !== false && argv.dg !== false,
         insertGlobals: argv['insert-globals'] || argv.ig,
-        insertGlobalVars: globalVars
-            ? globalVars.split(',')
-            : undefined
-        ,
+        insertGlobalVars: argv.igv ? argv.igv.split(',') : undefined,
         ignoreMissing: argv['ignore-missing'] || argv.im,
         debug: argv['debug'] || argv.d,
         standalone: argv['standalone'] || argv.s
