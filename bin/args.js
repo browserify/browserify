@@ -121,9 +121,14 @@ module.exports = function (args) {
         return b;
     }
     
+    var globalVars = argv['insert-global-vars'] || argv.igv;
     var bundleOpts = {
         detectGlobals: argv['detect-globals'] !== false && argv.dg !== false,
         insertGlobals: argv['insert-globals'] || argv.ig,
+        insertGlobalVars: globalVars
+            ? globalVars.split(',')
+            : undefined
+        ,
         ignoreMissing: argv['ignore-missing'] || argv.im,
         debug: argv['debug'] || argv.d,
         standalone: argv['standalone'] || argv.s
