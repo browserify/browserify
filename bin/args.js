@@ -31,6 +31,7 @@ module.exports = function (args) {
     
     var entries = argv._.concat(argv.e).concat(argv.entry)
     .filter(Boolean).map(function(entry) {
+        if (entry === '-') return process.stdin;
         return path.resolve(process.cwd(), entry);
     });
     
