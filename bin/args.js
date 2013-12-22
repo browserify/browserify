@@ -3,31 +3,34 @@ var path = require('path');
 var spawn = require('child_process').spawn;
 var parseShell = require('shell-quote').parse;
 var duplexer = require('duplexer');
+var minimist = require('minimist');
 
 module.exports = function (args) {
-    var argv = require('optimist')(args)
-        .boolean([
+    var argv = minimist(args, {
+        'boolean': [
             'deps','pack','ig','dg', 'im', 'd','list',
             'builtins','commondir', 'bare'
-        ])
-        .string(['s'])
-        .alias('insert-globals', 'ig')
-        .alias('detect-globals', 'dg')
-        .alias('ignore-missing', 'im')
-        .alias('insert-global-vars', 'igv')
-        .alias('debug', 'd')
-        .alias('standalone', 's')
-        .alias('ig', 'fast')
-        .alias('noparse', 'noParse')
-        .alias('bare', 'bear')
-        .default('ig', false)
-        .default('im', false)
-        .default('dg', true) 
-        .default('d', false) 
-        .default('builtins', true) 
-        .default('commondir', true) 
-        .argv
-    ;
+        ],
+        string: [ 's' ],
+        alias: {
+            ig: [ 'insert-globals', 'fast' ],
+            dg: 'detect-globals',
+            im: 'ignore-missing',
+            igv: 'insert-global-vars',
+            d: 'debug',
+            s: 'standalone',
+            noparse: 'noParse',
+            bare: 'bear'
+        },
+        'default': {
+            ig: false,
+            im: false,
+            dg: true,
+            d: false,
+            builtins: true,
+            commondir: true
+        }
+    });
     
     var entries = argv._.concat(argv.e).concat(argv.entry)
     .filter(Boolean).map(function(entry) {
