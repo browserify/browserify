@@ -14,7 +14,7 @@ if ((b.argv._[0] === 'help' && b.argv._[1]) === 'advanced'
     ;
 }
 if (b.argv._[0] === 'help' || b.argv.h || b.argv.help
-|| process.argv.length <= 2) {
+|| (process.argv.length <= 2 && process.stdin.isTTY)) {
     return fs.createReadStream(__dirname + '/usage.txt')
         .pipe(process.stdout)
         .on('close', function () { process.exit(1) })
