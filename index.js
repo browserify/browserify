@@ -554,7 +554,10 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         if (err && !/Cannot find module/.test(err && err.message)
         && self._ignoreMissing == true) {
             return cb(err);
+        } else if (err && err.code === 'EMFILE') {
+            return cb(err);
         }
+
         if (!file && (self._external[id] || self._external[file])) {
             return cb(null, emptyModulePath);
         }
