@@ -551,10 +551,11 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     if (self._external[id]) return cb(null, emptyModulePath);
     
     return self._delegateResolve(id, parent, function(err, file, pkg) {
-        if (err && !/Cannot find module/.test(err && err.message)
-        && self._ignoreMissing == true) {
+        var cannotFind = /Cannot find module/.test(err && err.message);
+        if (err && !cannotFind && self._ignoreMissing == true) {
             return cb(err);
-        } else if (err && err.code === 'EMFILE') {
+        }
+        else if (err && !cannotFind) {
             return cb(err);
         }
 
