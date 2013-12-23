@@ -552,13 +552,8 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     
     return self._delegateResolve(id, parent, function(err, file, pkg) {
         var cannotFind = /Cannot find module/.test(err && err.message);
-        if (err && !cannotFind && self._ignoreMissing == true) {
-            return cb(err);
-        }
-        else if (err && !cannotFind) {
-            return cb(err);
-        }
-
+        if (err && !cannotFind) return cb(err);
+        
         if (!file && (self._external[id] || self._external[file])) {
             return cb(null, emptyModulePath);
         }
