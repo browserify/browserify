@@ -27,7 +27,6 @@ test('ignore by package or id', function (t) {
   
     b.bundle(function (err, src) {
         if (err) t.fail(err);
-        console.error(err,src);
         vm.runInNewContext(src, { t: t });
     });
 });

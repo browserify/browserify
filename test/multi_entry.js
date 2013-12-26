@@ -3,12 +3,6 @@ var vm = require('vm');
 var test = require('tap').test;
 
 test('multi entry', function (t) {
-    t.plan(1);
-    t.pass();
-    console.warn('DISABLED');
-    
-    return;
-    
     t.plan(3);
     
     var b = browserify([
