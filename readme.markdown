@@ -557,6 +557,10 @@ to javascript
 * [browserify-shim](https://github.com/thlorenz/browserify-shim) - make
 commonJS-incompatible libraries/files browserifyable
 
+* [browserify-swap](https://github.com/thlorenz/browserify-swap) - swaps 
+out modules according to a config in your package.json selected via an 
+environment variable
+
 * [folderify](https://github.com/parroit/folderify) - inline content of a
 directory imported using
 [include-folder](https://github.com/parroit/include-folder).
