@@ -54,7 +54,7 @@
     "stream-browserify": "~0.1.0",
     "string_decoder": "~0.0.0",
     "tty-browserify": "~0.0.0",
-    "timers-browserify": "https://github.com/substack/timers-browserify/archive/1.0.0-setimmediate.tar.gz",
+    "timers-browserify": "~1.0.1",
     "punycode": "~1.2.3",
     "defined": "~0.0.0",
     "domain-browser": "~1.1.0",
