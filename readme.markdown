@@ -229,7 +229,7 @@ Then in your page you can do:
 
 ## multiple bundles
 
-If browserify finds a `require` function already defined in the page scope, it
+If browserify finds a `require`d function already defined in the page scope, it
 will fall back to that function if it didn't find any matches in its own set of
 bundled modules.
 
