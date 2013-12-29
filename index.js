@@ -123,6 +123,13 @@ Browserify.prototype.require = function (id, opts) {
         packageFilter: packageFilter,
         extensions: self._extensions
     };
+    
+    var order;
+    if (opts.entry) {
+        order = self._entries.length;
+        self._entries.push(null);
+    }
+    
     self._delegateResolve(id, params, function (err, file) {
         if ((err || !file) && !opts.external) {
             if (err) return self.emit('error', err);
@@ -148,7 +155,7 @@ Browserify.prototype.require = function (id, opts) {
             self.files.push(file);
         }
         
-        if (opts.entry) self._entries.push(file);
+        if (opts.entry) self._entries[order] = file;
         
         if (--self._pending === 0) self.emit('_ready');
     });
@@ -416,7 +423,7 @@ Browserify.prototype.pack = function (opts) {
             deps[key] = getId({ id: file, index: index });
         });
         row.deps = deps;
-
+        
         this.queue(row);
     });
     
