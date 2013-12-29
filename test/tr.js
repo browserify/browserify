@@ -7,6 +7,11 @@ test('function transform', function (t) {
     t.plan(7);
     
     var b = browserify(__dirname + '/tr/main.js');
+    b.transform({ global: true }, function (file) {
+        return through(function (buf) {
+            this.queue(String(buf).replace(/ZZZ/g, '1'));
+        });
+    });
     b.transform(function (file) {
         return through(function (buf) {
             this.queue(String(buf)
