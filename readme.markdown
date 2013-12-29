@@ -391,6 +391,8 @@ you are in a modern enough browser.
 
 When `opts.standalone` is a non-empty string, a standalone module is created
 with that name and a [umd](https://github.com/forbeslindesay/umd) wrapper.
+You can use namespaces in the standalone global export using a `.` in the string
+name as a separator. For example: `'A.B.C'` 
 
 `opts.insertGlobalVars` will be passed to
 [insert-module-globals](http://npmjs.org/package/insert-module-globals)
