@@ -95,8 +95,14 @@ module.exports = function (args) {
         })
     ;
     
-    [].concat(argv.t).concat(argv.transform).filter(Boolean)
+    [].concat(argv.t).concat(argv.transform)
+        .filter(Boolean)
         .forEach(function (t) { b.transform(t) })
+    ;
+    
+    [].concat(argv.g).concat(argv['global-transform'])
+        .filter(Boolean)
+        .forEach(function (t) { b.transform({ global: true }, t) })
     ;
     
     [].concat(argv.c).concat(argv.command).filter(Boolean)
