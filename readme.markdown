@@ -409,7 +409,7 @@ Prevent the module name or file at `file` from showing up in the output bundle.
 If your code tries to `require()` that file it will throw unless you've provided
 another mechanism for loading it.
 
-## b.transform(tr)
+## b.transform(opts={}, tr)
 
 Transform source code before parsing it for `require()` calls with the transform
 function or module name `tr`.
@@ -462,6 +462,14 @@ module:
 $ npm install coffeeify
 $ browserify -t coffeeify main.coffee > bundle.js
 ```
+
+If `opts.global` is `true`, the transform will operate on ALL files, despite
+whether they exist up a level in a `node_modules/` directory. Use global
+transforms cautiously and sparingly, since most of the time an ordinary
+transform will suffice. You can also not configure global transforms in a
+`package.json` like you can with ordinary transforms.
+
+Global transforms always run after any ordinary transforms have run.
 
 ## b.deps(opts)
 
