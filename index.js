@@ -57,6 +57,7 @@ function Browserify (opts) {
     self._mapped = {};
     
     self._transforms = [];
+    self._globalTransforms = [];
     self._extensions = [ '.js', '.json' ]
         .concat(opts.extensions).filter(Boolean)
     ;
@@ -172,13 +173,14 @@ Browserify.prototype.expose = function (name, file) {
 Browserify.prototype.external = function (id, opts) {
     var self = this;
     if (!opts) opts = {};
+    if (!opts.basedir) opts.basedir = self._basedir;
+    if (!opts.globalTransform) opts.globalTransform = self._globalTransforms;
+    
     if (isBrowserify(id)) {
         self._pending++;
         
         function captureDeps() {
-            var d = mdeps(id.files, {
-                basedir: opts.basedir || self._basedir
-            });
+            var d = mdeps(id.files, opts);
             d.pipe(through(write, end));
             
             function write (row) { self.external(row.id) }
@@ -225,6 +227,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     
     opts.resolve = self._resolve.bind(self);
     opts.transform = self._transforms;
+    opts.globalTransform = self._globalTransforms;
     opts.noParse = self._noParse;
     opts.transformKey = [ 'browserify', 'transform' ];
     
@@ -292,11 +295,19 @@ Browserify.prototype.bundle = function (opts, cb) {
     return p;
 };
 
-Browserify.prototype.transform = function (t) {
+Browserify.prototype.transform = function (opts, t) {
+    if (t === undefined) {
+        t = opts;
+        opts = {};
+    }
+    if (!opts) opts = {};
     if (typeof t === 'string' && /^\./.test(t)) {
         t = path.resolve(t);
     }
-    this._transforms.push(t);
+    if (opts.global) {
+        this._globalTransforms.push(t);
+    }
+    else this._transforms.push(t);
     return this;
 };
 
@@ -314,6 +325,7 @@ Browserify.prototype.deps = function (opts) {
     
     opts.modules = self._builtins;
     opts.extensions = self._extensions;
+    
     if (!opts.basedir) opts.basedir = self._basedir;
     var d = mdeps(self.files, opts);
     
