@@ -159,6 +159,10 @@ Advanced Options:
     Consider files with specified EXTENSION as modules, this option can used
     multiple times.
 
+  --global-transform, --g
+
+    Use a transform module on all files after any ordinary transforms have run.
+
 ```
 
 # compatibility
