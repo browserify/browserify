@@ -41,7 +41,7 @@
     "console-browserify": "~1.0.1",
     "vm-browserify": "~0.0.1",
     "zlib-browserify": "~0.0.3",
-    "assert": "~1.0.2",
+    "assert": "~1.1.0",
     "http-browserify": "~1.0.0",
     "crypto-browserify": "~1.0.9",
     "util": "~0.10.1",
