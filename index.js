@@ -20,7 +20,7 @@ var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 var fs = require('fs');
 
-var emptyModulePath = path.join(__dirname, '_empty.js');
+var emptyModulePath = path.join(__dirname, 'lib/_empty.js');
 
 module.exports = function (opts, xopts) {
     if (opts === undefined) opts = {};
