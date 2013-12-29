@@ -180,6 +180,7 @@ When you `require()` any of these modules, you will get a browser-specific shim:
 * [console](https://npmjs.org/package/console-browserify)
 * [constants](https://npmjs.org/package/constants-browserify)
 * [crypto](https://npmjs.org/package/crypto-browserify)
+* [domain](https://npmjs.org/package/domain-browser)
 * [events](https://npmjs.org/package/events-browserify)
 * [http](https://npmjs.org/package/http-browserify)
 * [https](https://npmjs.org/package/https-browserify)
