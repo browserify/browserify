@@ -552,6 +552,9 @@ templates to javascript functions automatically
 * [installify](https://github.com/hughsk/installify) - automatically installs your
 missing dependencies for you.
 
+* [jedify](https://github.com/tellnes/jedify) - transform po files to
+[Jed](http://slexaxton.github.io/Jed/) instances.
+
 * [liveify](https://github.com/quarterto/liveify) - compile livescript files to
 javascript automatically
 
