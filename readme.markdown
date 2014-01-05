@@ -234,7 +234,7 @@ Then in your page you can do:
 
 ## multiple bundles
 
-If browserify finds a `require` function already defined in the page scope, it
+If browserify finds a `require`d function already defined in the page scope, it
 will fall back to that function if it didn't find any matches in its own set of
 bundled modules.
 
@@ -551,6 +551,9 @@ templates to javascript functions automatically
 
 * [installify](https://github.com/hughsk/installify) - automatically installs your
 missing dependencies for you.
+
+* [jedify](https://github.com/tellnes/jedify) - transform po files to
+[Jed](http://slexaxton.github.io/Jed/) instances.
 
 * [liveify](https://github.com/quarterto/liveify) - compile livescript files to
 javascript automatically
