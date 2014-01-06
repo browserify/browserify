@@ -73,7 +73,7 @@ function Browserify (opts) {
     
     self._browserPack = opts.pack || function (params) {
         params.raw = true;
-        params.sourceMapPrefix = '//@';
+        params.sourceMapPrefix = '//#';
         return browserPack(params);
     };
     
