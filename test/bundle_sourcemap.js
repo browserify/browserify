@@ -11,7 +11,7 @@ test('bundle in debug mode', function (t) {
 
         t.ok(typeof src === 'string');
         t.ok(src.length > 0);
-        t.ok(/^\/\/@ sourceMappingURL=/.test(secondtolastLine), 'includes sourcemap');
+        t.ok(/^\/\/# sourceMappingURL=/.test(secondtolastLine), 'includes sourcemap');
     });
 });
 
@@ -25,6 +25,6 @@ test('bundle in non debug mode', function (t) {
 
         t.ok(typeof src === 'string');
         t.ok(src.length > 0);
-        t.notOk(/^\/\/@ sourceMappingURL=/.test(secondtolastLine), 'includes no sourcemap');
+        t.notOk(/^\/\/# sourceMappingURL=/.test(secondtolastLine), 'includes no sourcemap');
     });
 });
