@@ -100,6 +100,7 @@ Browserify.prototype.noParse = function(file) {
         if (r) self._noParse.push(r);
         if (--self._pending === 0) self.emit('_ready');
     });
+    return this;
 };
 
 Browserify.prototype.add = function (file) {
