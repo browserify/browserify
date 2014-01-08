@@ -527,6 +527,8 @@ version that caches previously compiled files to optimize the compilation step
 * [coffeeify](https://github.com/jnordberg/coffeeify) - compile
 `.coffee` files to javascript automatically
 
+* [cssify](https://github.com/davidguttman/cssify) - require `.css` files to add styles to the page
+
 * [deAMDify](https://github.com/jaredhanson/deamdify) - translate AMD modules
 to Node-style modules automatically
 
