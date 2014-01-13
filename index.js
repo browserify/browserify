@@ -68,6 +68,9 @@ function Browserify (opts) {
     self._basedir = opts.basedir;
     self._delegateResolve = opts.resolve || browserResolve;
     
+    var sep = /^win/i.test(process.platform) ? ';' : ':';
+    self._paths = opts.paths || (process.env.NODE_PATH || '').split(sep);
+    
     self._browserPack = opts.pack || function (params) {
         params.raw = true;
         params.sourceMapPrefix = '//@';
@@ -122,7 +125,8 @@ Browserify.prototype.require = function (id, opts) {
         filename: fromfile,
         modules: self._builtins,
         packageFilter: packageFilter,
-        extensions: self._extensions
+        extensions: self._extensions,
+        paths: opts.paths || self._paths
     };
     
     var order;
@@ -569,6 +573,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
     
     parent.modules = self._builtins;
     parent.extensions = self._extensions;
+    parent.paths = self._paths;
     
     if (self._external[id]) return cb(null, emptyModulePath);
     

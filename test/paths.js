@@ -7,7 +7,7 @@ test('$NODE_PATHS', function (t) {
     var paths = [ __dirname + '/paths/x', __dirname + '/paths/y' ];
     var sep = /^win/i.test(process.platform) ? ';' : ':';
     
-    process.env.NODE_PATHS = (process.env.NODE_PATHS || '')
+    process.env.NODE_PATH = (process.env.NODE_PATHS || '')
         .split(sep).concat(paths).join(sep)
     ;
     
