@@ -555,6 +555,8 @@ missing dependencies for you.
 * [jedify](https://github.com/tellnes/jedify) - transform po files to
 [Jed](http://slexaxton.github.io/Jed/) instances.
 
+* [jisonify](https://github.com/schmich/jisonify) - include [Jison](https://github.com/zaach/jison) parsers in your project
+
 * [liveify](https://github.com/quarterto/liveify) - compile livescript files to
 javascript automatically
 
