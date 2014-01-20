@@ -14,6 +14,7 @@ var depSorter = require('deps-sort');
 var browserResolve = require('browser-resolve');
 var insertGlobals = require('insert-module-globals');
 var umd = require('umd');
+var derequire = require('derequire');
 
 var path = require('path');
 var inherits = require('inherits');
@@ -441,7 +442,9 @@ Browserify.prototype.pack = function (opts) {
             deps[key] = getId({ id: file, index: index });
         });
         row.deps = deps;
-        
+
+        if (opts.standalone) row.source = derequire(row.source);
+
         this.queue(row);
     });
     
