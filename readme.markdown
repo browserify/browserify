@@ -232,6 +232,17 @@ Then in your page you can do:
 </script>
 ```
 
+## external source maps
+
+If you prefer the source maps be saved to a separate `.js.map` source map file, you may use
+[exorcist](https://github.com/thlorenz/exorcist) in order to archieve that. It's as simple as:
+
+```
+$ browserify main.js --debug | exorcist bundle.js.map > bundle.js 
+```
+
+Learn about additional options [here](https://github.com/thlorenz/exorcist#usage).
+
 ## multiple bundles
 
 If browserify finds a `require`d function already defined in the page scope, it
