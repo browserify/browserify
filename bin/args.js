@@ -38,8 +38,8 @@ module.exports = function (args) {
         return path.resolve(process.cwd(), entry);
     });
     
-    if (args.length === 0) {
-        entries = [ process.stdin ];
+    if (entries.length === 0 && !process.stdin.isTTY) {
+        entries.push(process.stdin);
     }
     
     if (argv.s && entries.length === 0
