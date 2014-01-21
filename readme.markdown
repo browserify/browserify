@@ -508,96 +508,13 @@ when files change.
 
 # list of source transforms
 
-Here is a list of known source transforms:
+There is a [wiki page that lists the known browserify
+transforms](wiki/list-of-transforms).
 
-* [aliasify](https://github.com/benbria/aliasify) - remap require calls at build time.
-
-* [blissify](https://github.com/agilemd/blissify) - compile `.html` 
-files written using [bliss](https://github.com/cstivers78/bliss)
-
-* [brfs](https://github.com/substack/brfs) - inline
-`fs.readFileSync()` calls with file contents
-
-* [cacheify](https://github.com/bockit/cacheify) - wraps around other
-transforms, caching their results to speed up bundling.
-
-* [caching-coffeeify](https://github.com/thlorenz/caching-coffeeify) - coffeeify
-version that caches previously compiled files to optimize the compilation step
-
-* [coffeeify](https://github.com/jnordberg/coffeeify) - compile
-`.coffee` files to javascript automatically
-
-* [cssify](https://github.com/davidguttman/cssify) - require `.css` files to add styles to the page
-
-* [deAMDify](https://github.com/jaredhanson/deamdify) - translate AMD modules
-to Node-style modules automatically
-
-* [debowerify](https://github.com/eugeneware/debowerify) - use
-[bower](http://bower.io) client packages more easily with browserify.
-
-* [decomponentify](https://github.com/eugeneware/decomponentify) - use
-[component](https://github.com/component/component) client packages seamlessly
-with browserify.
-
-* [envify](https://github.com/hughsk/envify) - Selectively replace Node-style
-environment variables (`process.env`) with plain strings.
-
-* [es6ify](https://github.com/thlorenz/es6ify) - compile ES6 files to
-ES5 javascript automatically
-
-* [hbsfy](https://github.com/epeli/node-hbsfy) - precompile handlebars
-templates to javascript functions automatically
-
-* [icsify](https://github.com/maxtaco/icsify) - compile
-`.iced` IcedCoffeeScript files to javascript automatically
-
-* [installify](https://github.com/hughsk/installify) - automatically installs your
-missing dependencies for you.
-
-* [jedify](https://github.com/tellnes/jedify) - transform po files to
-[Jed](http://slexaxton.github.io/Jed/) instances.
-
-* [jisonify](https://github.com/schmich/jisonify) - include [Jison](https://github.com/zaach/jison) parsers in your project
-
-* [liveify](https://github.com/quarterto/liveify) - compile livescript files to
-javascript automatically
-
-* [rfileify](https://github.com/ForbesLindesay/rfileify) - inline `rfile(path)`
-calls with file contents
-(also supports `ruglify` and any other `rfile` derivatives)
-
-* [rfolderify](https://github.com/quarterto/rfolderify) - turn calls to rfolder
-into a map of requires of the files in the thing
-
-* [turn](https://github.com/juliangruber/turn) - minimal modules for a
-hypothetical es6 with lua's return
-
-* [reactify](https://github.com/andreypopp/reactify) - compile JSX (superset of
-javascript used in [react](http://facebook.github.io/react/) UI library) files
-to javascript
-
-* [browserify-shim](https://github.com/thlorenz/browserify-shim) - make
-commonJS-incompatible libraries/files browserifyable
-
-* [browserify-swap](https://github.com/thlorenz/browserify-swap) - swaps 
-out modules according to a config in your package.json selected via an 
-environment variable
-
-* [folderify](https://github.com/parroit/folderify) - inline content of a
-directory imported using
-[include-folder](https://github.com/parroit/include-folder).
-Files content is inlined using [brfs](https://github.com/substack/brfs)
-
-* [phantomjsify](https://github.com/twolfson/phantomjsify) - shim out node.js
-core for [PhantomJS](http://phantomjs.org/)
-
-* [lessify](https://npmjs.org/package/node-lessify) - LESS precompiler and CSS
-plugin
-
-* [csvify](https://npmjs.org/package/node-csvify) - CSV and TSV transformations
-
-* [cocoify](https://github.com/superjoe30/cocoify) - transform for
-[coco](https://github.com/satyr/coco), unfancy coffeescript
+If you write a transform, make sure to add your transform to that wiki page and
+add a package.json keyword of `browserify-transform` so that
+[people can browse for all the browserify
+transforms](https://npmjs.org/browse/keyword/browserify-transform) on npmjs.org.
 
 # third-party tools
 
