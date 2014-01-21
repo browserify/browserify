@@ -509,7 +509,7 @@ when files change.
 # list of source transforms
 
 There is a [wiki page that lists the known browserify
-transforms](wiki/list-of-transforms).
+transforms](https://github.com/substack/node-browserify/wiki/list-of-transforms).
 
 If you write a transform, make sure to add your transform to that wiki page and
 add a package.json keyword of `browserify-transform` so that
@@ -518,18 +518,13 @@ transforms](https://npmjs.org/browse/keyword/browserify-transform) on npmjs.org.
 
 # third-party tools
 
-If you want to efficiently re-compile the bundle automatically when you edit
-files, you can use [watchify](https://github.com/substack/watchify).
+There is a [wiki page that lists the known browserify
+tools](https://github.com/substack/node-browserify/wiki/browserify-tools).
 
-If you are using express or connect, you can use
-[enchilada](https://github.com/defunctzombie/node-enchilada) or
-[browserify-middleware](https://github.com/ForbesLindesay/browserify-middleware)
-to host your bundles as middleware.
-
-If you want a standalone web server for development that will create bundles on
-demand, check out [beefy](https://github.com/chrisdickinson/beefy).
-
-If you are writing your own source transforms, check out [browser-transform-tools](https://github.com/benbria/browserify-transform-tools/), a library of handy functions for loading configuration and generating transforms based around strings, [falafel](https://github.com/substack/node-falafel), and `require()` manipulation.
+If you write a tool, make sure to add it to that wiki page and
+add a package.json keyword of `browserify-tool` so that
+[people can browse for all the browserify
+tools](https://npmjs.org/browse/keyword/browserify-tool) on npmjs.org.
 
 # license
 
