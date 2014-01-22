@@ -14,6 +14,7 @@ var depSorter = require('deps-sort');
 var browserResolve = require('browser-resolve');
 var insertGlobals = require('insert-module-globals');
 var umd = require('umd');
+var derequire = require('derequire');
 
 var path = require('path');
 var inherits = require('inherits');
@@ -280,11 +281,17 @@ Browserify.prototype.bundle = function (opts, cb) {
         p.on('error', cb);
         p.pipe(concatStream(
             { encoding: 'string' },
-            function (src) { cb(null, src) })
+            function (src) { cb(null, opts.standalone?derequire(src):src) })
         );
     }
     g.on('dep', function (dep) { self.emit('dep', dep) });
-    
+    var tempData = "";
+    var q = through(function(data){
+        tempData += data;
+    }, function(){
+        this.queue(derequire(tempData));
+        this.queue(null);
+    });
     d.on('error', p.emit.bind(p, 'error'));
     g.on('error', p.emit.bind(p, 'error'));
     d.pipe(through(function (dep) {
@@ -294,8 +301,12 @@ Browserify.prototype.bundle = function (opts, cb) {
         }
         else this.queue(dep)
     })).pipe(g).pipe(p);
-    
-    return p;
+    if(opts.standalone){
+        p.pipe(q);
+        return q;
+    }else{
+        return p;
+    }
 };
 
 Browserify.prototype.transform = function (opts, t) {
@@ -441,7 +452,7 @@ Browserify.prototype.pack = function (opts) {
             deps[key] = getId({ id: file, index: index });
         });
         row.deps = deps;
-        
+
         this.queue(row);
     });
     
