@@ -2,6 +2,7 @@ var browserify = require('../');
 var fs = require('fs');
 var vm = require('vm');
 var test = require('tap').test;
+var derequire = require('derequire');
 
 test('standalone in debug mode', function (t) {
     t.plan(4);
@@ -38,7 +39,7 @@ test('standalone in debug mode', function (t) {
             c.define.amd = true;
             vm.runInNewContext(src, c);
         });
-        t.equal(0, src.split('\n').slice(1).join('\n').indexOf(main),
+        t.equal(0, src.split('\n').slice(1).join('\n').indexOf(derequire("!function(require){"+main+"}").slice(19,-1)),
                 'preserves preamble line count');
     });
 });
