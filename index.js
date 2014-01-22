@@ -286,13 +286,13 @@ Browserify.prototype.bundle = function (opts, cb) {
         );
     }
     g.on('dep', function (dep) { self.emit('dep', dep) });
-    var derequireData = "";
-    var det = through(function(data){
-        derequireData += data;
+    var tempData = "";
+    var q = through(function(data){
+        tempData += data;
     }, function(){
-        this.queue(derequire(derequireData));
+        this.queue(derequire(tempData));
         this.queue(null);
-    })
+    });
     d.on('error', p.emit.bind(p, 'error'));
     g.on('error', p.emit.bind(p, 'error'));
     d.pipe(through(function (dep) {
@@ -303,8 +303,8 @@ Browserify.prototype.bundle = function (opts, cb) {
         else this.queue(dep)
     })).pipe(g).pipe(p);
     if(opts.standalone){
-        p.pipe(det);
-        return det;
+        p.pipe(q);
+        return q;
     }else{
         return p;
     }
