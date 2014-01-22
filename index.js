@@ -281,11 +281,17 @@ Browserify.prototype.bundle = function (opts, cb) {
         p.on('error', cb);
         p.pipe(concatStream(
             { encoding: 'string' },
-            function (src) { cb(null, src) })
+            function (src) { cb(null, opts.standalone?derequire(src):src) })
         );
     }
     g.on('dep', function (dep) { self.emit('dep', dep) });
-    
+    var derequireData = "";
+    var det = through(function(data){
+        derequireData += data;
+    }, function(){
+        this.queue(derequire(derequireData));
+        this.queue(null);
+    })
     d.on('error', p.emit.bind(p, 'error'));
     g.on('error', p.emit.bind(p, 'error'));
     d.pipe(through(function (dep) {
@@ -295,8 +301,12 @@ Browserify.prototype.bundle = function (opts, cb) {
         }
         else this.queue(dep)
     })).pipe(g).pipe(p);
-    
-    return p;
+    if(opts.standalone){
+        p.pipe(det);
+        return det;
+    }else{
+        return p;
+    }
 };
 
 Browserify.prototype.transform = function (opts, t) {
@@ -442,8 +452,6 @@ Browserify.prototype.pack = function (opts) {
             deps[key] = getId({ id: file, index: index });
         });
         row.deps = deps;
-
-        if (opts.standalone) row.source = derequire(row.source);
 
         this.queue(row);
     });
