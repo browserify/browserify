@@ -487,7 +487,7 @@ Browserify.prototype.pack = function (opts) {
         if (first) writePrelude.call(this);
         if (opts.standalone) {
             this.queue(
-                '\n(' + mainModule + ')'
+                '\n(' + JSON.stringify(mainModule) + ')'
                 + umd.postlude(opts.standalone)
             );
         }
