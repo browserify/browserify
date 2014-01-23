@@ -285,13 +285,6 @@ Browserify.prototype.bundle = function (opts, cb) {
         );
     }
     g.on('dep', function (dep) { self.emit('dep', dep) });
-    var tempData = "";
-    var q = through(function(data){
-        tempData += data;
-    }, function(){
-        this.queue(derequire(tempData));
-        this.queue(null);
-    });
     d.on('error', p.emit.bind(p, 'error'));
     g.on('error', p.emit.bind(p, 'error'));
     d.pipe(through(function (dep) {
@@ -301,12 +294,16 @@ Browserify.prototype.bundle = function (opts, cb) {
         }
         else this.queue(dep)
     })).pipe(g).pipe(p);
-    if(opts.standalone){
-        p.pipe(q);
-        return q;
-    }else{
-        return p;
+    
+    if (opts.standalone) {
+        var output = through();
+        p.pipe(concatStream({ encoding: 'string' }, function (body) {
+            output.queue(derequire(body));
+            output.queue(null);
+        }));
+        return output;
     }
+    return p;
 };
 
 Browserify.prototype.transform = function (opts, t) {
