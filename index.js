@@ -279,10 +279,9 @@ Browserify.prototype.bundle = function (opts, cb) {
     var p = self.pack(opts);
     if (cb) {
         p.on('error', cb);
-        p.pipe(concatStream(
-            { encoding: 'string' },
-            function (src) { cb(null, opts.standalone?derequire(src):src) })
-        );
+        p.pipe(concatStream({ encoding: 'string' }, function (src) {
+            cb(null, opts.standalone ? derequire(src) : src);
+        }));
     }
     g.on('dep', function (dep) { self.emit('dep', dep) });
     d.on('error', p.emit.bind(p, 'error'));
