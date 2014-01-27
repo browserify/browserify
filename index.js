@@ -297,8 +297,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     if (opts.standalone) {
         var output = through();
         p.pipe(concatStream({ encoding: 'string' }, function (body) {
-            output.queue(derequire(body));
-            output.queue(null);
+            output.end(derequire(body));
         }));
         return output;
     }
