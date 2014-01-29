@@ -234,7 +234,10 @@ Browserify.prototype.bundle = function (opts, cb) {
     opts.transform = self._transforms;
     
     var basedir = opts.basedir || self._basedir;
-    if (!basedir && self.files.length === 1) {
+    if (!basedir && self._commondir === false) {
+        basedir = '/';
+    }
+    else if (!basedir && self.files.length === 1) {
         basedir = path.dirname(self.files[0]);
     }
     else if (!basedir && self.files.length === 0) {
