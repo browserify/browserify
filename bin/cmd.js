@@ -67,9 +67,9 @@ else {
 }
 
 function packageFilter (info) {
-    if (typeof info.browserify === 'string' && !info.browser) {
+    if (info && typeof info.browserify === 'string' && !info.browser) {
         info.browser = info.browserify;
         delete info.browserify;
     }
-    return info;
+    return info || {};
 }
