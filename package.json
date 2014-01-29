@@ -60,7 +60,8 @@
     "domain-browser": "~1.1.0",
     "minimist": "~0.0.5",
     "derequire": "~0.5.1",
-    "factor-bundle": "0.0.0"
+    "factor-bundle": "0.0.0",
+    "commondir": "0.0.1"
   },
   "devDependencies": {
     "tap": "~0.4.0",

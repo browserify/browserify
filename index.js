@@ -15,6 +15,7 @@ var browserResolve = require('browser-resolve');
 var insertGlobals = require('insert-module-globals');
 var umd = require('umd');
 var derequire = require('derequire');
+var commondir = require('commondir');
 
 var path = require('path');
 var inherits = require('inherits');
@@ -226,18 +227,27 @@ Browserify.prototype.bundle = function (opts, cb) {
     if (opts.detectGlobals === undefined) opts.detectGlobals = true;
     if (opts.ignoreMissing === undefined) opts.ignoreMissing = false;
     if (opts.standalone === undefined) opts.standalone = false;
-
+    
     self._ignoreMissing = opts.ignoreMissing;
     
     opts.resolve = self._resolve.bind(self);
     opts.transform = self._transforms;
+    
+    var basedir = opts.basedir || self._basedir;
+    if (!basedir && self.files.length === 1) {
+        basedir = path.dirname(self.files[0]);
+    }
+    else if (!basedir && self.files.length === 0) {
+        basedir = process.cwd();
+    }
+    else if (!basedir) basedir = commondir(self.files);
     
     if (opts.detectGlobals || opts.insertGlobals) {
         opts.globalTransform = [ function (file) {
             return insertGlobals(file, {
                 always: opts.insertGlobals,
                 vars: opts.insertGlobalVars,
-                basedir: opts.basedir || self._basedir
+                basedir: basedir
             });
         } ].concat(self._globalTransforms);
     }
