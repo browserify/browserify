@@ -231,7 +231,18 @@ Browserify.prototype.bundle = function (opts, cb) {
     
     opts.resolve = self._resolve.bind(self);
     opts.transform = self._transforms;
-    opts.globalTransform = self._globalTransforms;
+    
+    if (opts.detectGlobals || opts.insertGlobals) {
+        opts.globalTransform = [ function (file) {
+            return insertGlobals(file, {
+                always: opts.insertGlobals,
+                vars: opts.insertGlobalVars,
+                basedir: opts.basedir || self._basedir
+            });
+        } ].concat(self._globalTransforms);
+    }
+    else opts.globalTransform = self._globalTransforms;
+    
     opts.noParse = self._noParse;
     opts.transformKey = [ 'browserify', 'transform' ];
     
@@ -266,16 +277,6 @@ Browserify.prototype.bundle = function (opts, cb) {
     
     var prevCache = opts.cache && copy(opts.cache);
     var d = (opts.deps || self.deps.bind(self))(opts);
-    var g = opts.detectGlobals || opts.insertGlobals
-        ? insertGlobals(self.files, {
-            resolve: self._resolve.bind(self),
-            always: opts.insertGlobals,
-            vars: opts.insertGlobalVars,
-            basedir: opts.basedir || self._basedir,
-            commondir: defined(opts.commondir, self._commondir)
-        })
-        : through()
-    ;
     var p = self.pack(opts);
     if (cb) {
         p.on('error', cb);
@@ -283,16 +284,14 @@ Browserify.prototype.bundle = function (opts, cb) {
             cb(null, opts.standalone ? derequire(src) : src);
         }));
     }
-    g.on('dep', function (dep) { self.emit('dep', dep) });
     d.on('error', p.emit.bind(p, 'error'));
-    g.on('error', p.emit.bind(p, 'error'));
     d.pipe(through(function (dep) {
         if (self._noParse.indexOf(dep.id) >= 0
         || (prevCache && prevCache[dep.id])) {
             p.write(dep);
         }
         else this.queue(dep)
-    })).pipe(g).pipe(p);
+    })).pipe(p);
     
     if (opts.standalone) {
         var output = through();
