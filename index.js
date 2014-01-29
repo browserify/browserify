@@ -261,8 +261,8 @@ Browserify.prototype.bundle = function (opts, cb) {
     
     var parentFilter = opts.packageFilter;
     opts.packageFilter = function (pkg) {
-        if (parentFilter) pkg = parentFilter(pkg);
-        return packageFilter(pkg);
+        if (parentFilter) pkg = parentFilter(pkg || {});
+        return packageFilter(pkg || {});
     };
 
     if (cb) cb = (function (f) {
@@ -550,7 +550,7 @@ Browserify.prototype.pack = function (opts) {
 };
 
 var packageFilter = function (info) {
-    if (typeof info.browserify === 'string' && !info.browser) {
+    if (info && typeof info.browserify === 'string' && !info.browser) {
         info.browser = info.browserify;
         delete info.browserify;
     }
