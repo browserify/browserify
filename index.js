@@ -393,6 +393,7 @@ Browserify.prototype.deps = function (opts) {
         }
        
         if (/\.json$/.test(row.id)) {
+            row = copy(row);
             row.source = 'module.exports=' + row.source;
         }
         
