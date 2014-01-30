@@ -247,6 +247,9 @@ Browserify.prototype.bundle = function (opts, cb) {
     
     if (opts.detectGlobals || opts.insertGlobals) {
         opts.globalTransform = [ function (file) {
+            if (self._noParse.indexOf(file) >= 0) {
+                return through();
+            }
             return insertGlobals(file, {
                 always: opts.insertGlobals,
                 vars: opts.insertGlobalVars,
@@ -298,13 +301,6 @@ Browserify.prototype.bundle = function (opts, cb) {
         }));
     }
     d.on('error', p.emit.bind(p, 'error'));
-    d.pipe(through(function (dep) {
-        if (self._noParse.indexOf(dep.id) >= 0
-        || (prevCache && prevCache[dep.id])) {
-            p.write(dep);
-        }
-        else this.queue(dep)
-    })).pipe(p);
     
     if (opts.standalone) {
         var output = through();
@@ -313,7 +309,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         }));
         return output;
     }
-    return p;
+    return d.pipe(p);
 };
 
 Browserify.prototype.transform = function (opts, t) {
