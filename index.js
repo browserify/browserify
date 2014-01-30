@@ -301,6 +301,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         }));
     }
     d.on('error', p.emit.bind(p, 'error'));
+    d.pipe(p);
     
     if (opts.standalone) {
         var output = through();
@@ -309,7 +310,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         }));
         return output;
     }
-    return d.pipe(p);
+    return p;
 };
 
 Browserify.prototype.transform = function (opts, t) {
