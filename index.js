@@ -21,6 +21,7 @@ var path = require('path');
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 var fs = require('fs');
+var copy = require('shallow-copy');
 
 var emptyModulePath = path.join(__dirname, 'lib/_empty.js');
 
@@ -641,13 +642,6 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         });
     }
 };
-
-function copy (obj) {
-    return Object.keys(obj).reduce(function (acc, key) {
-        acc[key] = obj[key];
-        return acc;
-    }, {});
-}
 
 function isBrowserify (x) {
     return x && typeof x === 'object' && typeof x.bundle === 'function';
