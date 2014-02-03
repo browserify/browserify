@@ -59,7 +59,7 @@
     "defined": "~0.0.0",
     "domain-browser": "~1.1.0",
     "minimist": "~0.0.5",
-    "derequire": "~0.5.1",
+    "derequire": "~0.6.0",
     "commondir": "0.0.1",
     "shallow-copy": "0.0.1"
   },
