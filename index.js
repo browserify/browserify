@@ -142,7 +142,7 @@ Browserify.prototype.require = function (id, opts) {
     self._delegateResolve(id, params, function (err, file) {
         if ((err || !file) && !opts.external) {
             if (err) return self.emit('error', err);
-            if (!file) return self.emit('error', notFound(id, fromFile));
+            if (!file) return self.emit('error', notFound(id, fromfile));
         }
         
         if (opts.expose) {
