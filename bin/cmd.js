@@ -25,7 +25,7 @@ if (b.argv.v || b.argv.version) {
 }
 
 b.on('error', function (err) {
-    console.error(String(err));
+    console.error(err);
     process.exit(1);
 });
 
@@ -54,7 +54,7 @@ if (b.argv.list) {
 
 var bundle = b.bundle();
 bundle.on('error', function (err) {
-    console.error(String(err));
+    console.error(err);
     process.exit(1);
 });
 
