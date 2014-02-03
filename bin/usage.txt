@@ -15,6 +15,8 @@ Standard Options:
     --exclude, -u  Omit a file from the output bundle.
 
    --external, -x  Reference a file from another bundle.
+
+   --workflow, -w  Use a workflow module.
   
   --transform, -t  Use a transform module on top-level files.
  
