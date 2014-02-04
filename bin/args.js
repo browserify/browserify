@@ -20,7 +20,8 @@ module.exports = function (args) {
             d: 'debug',
             s: 'standalone',
             noparse: 'noParse',
-            bare: 'bear'
+            bare: 'bear',
+            rf: 'require-fallback'
         },
         'default': {
             ig: false,
@@ -64,6 +65,15 @@ module.exports = function (args) {
         commondir: argv.commondir === false ? false : undefined
     });
     b.argv = argv;
+
+    if (argv.rf) {
+      if (!argv.im) {
+        process.nextTick(function () {
+            b.emit('error', '--require-fallback requires --ignore-missing');
+        });
+        return b;
+      }
+    }
     
     [].concat(argv.i).concat(argv.ignore).filter(Boolean)
         .forEach(function (i) { b.ignore(i) })
@@ -144,6 +154,7 @@ module.exports = function (args) {
         insertGlobals: argv['insert-globals'] || argv.ig,
         insertGlobalVars: argv.igv ? argv.igv.split(',') : undefined,
         ignoreMissing: argv['ignore-missing'] || argv.im,
+        requireFallback: argv['require-fallback'] || argv.rf,
         debug: argv['debug'] || argv.d,
         standalone: argv['standalone'] || argv.s
     };
