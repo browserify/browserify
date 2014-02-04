@@ -25,6 +25,12 @@ Advanced Options:
 
     Ignore `require()` statements that don't resolve to anything.
 
+  --require-fallback                [default: require]
+
+    When `require()` does not find a module invoke a function by name to try and
+    find it. This is useful when placing browserify bundles in non-browser
+    environments like node-webkit.
+
   --noparse=FILE
 
     Don't parse FILE at all. This will make bundling much, much faster for giant

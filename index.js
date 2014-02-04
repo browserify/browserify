@@ -68,6 +68,7 @@ function Browserify (opts) {
     self._pkgcache = {};
     self._exposeAll = opts.exposeAll;
     self._ignoreMissing = opts.ignoreMissing;
+    self._requireFallback = opts.requireFallback;
     self._basedir = opts.basedir;
     self._delegateResolve = opts.resolve || browserResolve;
     
