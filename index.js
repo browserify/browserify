@@ -297,7 +297,7 @@ Browserify.prototype.bundle = function (opts, cb) {
 
     var apis = self._workflows.map(function(w) {
       var api = new Workflow();
-      w.configurator(api, w.opts, opts);
+      w.workflow(api, w.opts, opts);
       opts.transform = opts.transform.concat(api._transforms);
       opts.globalTransform = opts.globalTransform.concat(api._globalTransforms);
       return api;
@@ -337,7 +337,7 @@ Browserify.prototype.workflow = function (w, opts) {
         w = resolveSync(w, {basedir: this._basedir || process.cwd()});
         w = require(w);
     }
-    this._workflows.push({configurator: w, opts: opts});
+    this._workflows.push({workflow: w, opts: opts});
     return this;
 };
 
