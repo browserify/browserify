@@ -678,7 +678,7 @@ function Workflow() {
 inherits(Workflow, EventEmitter);
 
 Workflow.prototype.transform = function (opts, t) {
-    Browserify.prototype.transform.call(this, opts, t);
+    return Browserify.prototype.transform.call(this, opts, t);
 }
 
 function isBrowserify (x) {
