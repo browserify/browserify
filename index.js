@@ -308,6 +308,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     var p = self.pack(opts);
     
     apis.forEach(function(api) {
+      api.on('workflowError', p.emit.bind(p, 'error'));
       // TODO: more events
       p.on('error', api.emit.bind(api, 'error'));
       p.on('end', api.emit.bind(api, 'end'));
@@ -679,6 +680,10 @@ inherits(Workflow, EventEmitter);
 
 Workflow.prototype.transform = function (opts, t) {
     return Browserify.prototype.transform.call(this, opts, t);
+}
+
+Workflow.prototype.throw = function (err) {
+    this.emit('workflowError', err);
 }
 
 function isBrowserify (x) {
