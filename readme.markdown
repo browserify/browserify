@@ -222,7 +222,7 @@ $ browserify -r through -r duplexer -r ./my-file.js:my-module > bundle.js
 
 Then in your page you can do:
 
-``` js
+``` html
 <script src="bundle.js"></script>
 <script>
   var through = require('through');
