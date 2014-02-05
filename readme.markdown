@@ -334,7 +334,7 @@ filenames that start with `.`.
 
 `opts.commondir` sets the algorithm used to parse out the common paths. Use
 `false` to turn this off, otherwise it uses the
-[commondir](https://npmjs.or/package/commondir) module.
+[commondir](https://npmjs.org/package/commondir) module.
 
 `opts.builtins` sets the list of builtins to use, which by default is set in
 `lib/builtins.js` in this distribution.
