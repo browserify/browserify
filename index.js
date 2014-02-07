@@ -24,6 +24,7 @@ var fs = require('fs');
 var copy = require('shallow-copy');
 
 var emptyModulePath = path.join(__dirname, 'lib/_empty.js');
+var excludeModulePath = path.join(__dirname, 'lib/_exclude.js');
 
 module.exports = function (opts, xopts) {
     if (opts === undefined) opts = {};
@@ -83,7 +84,6 @@ function Browserify (opts) {
     self._builtins = opts.builtins === false ? {} : opts.builtins || builtins;
     if (opts.builtins === false) {
         Object.keys(builtins).forEach(function (key) {
-            self._ignore[key] = true;
             self._exclude[key] = true;
         });
     }
@@ -354,6 +354,9 @@ Browserify.prototype.deps = function (opts) {
     return tr;
     
     function write (row) {
+        if (row.id === excludeModulePath) return;
+        if (self._exclude[row.id]) return;
+        
         self.emit('dep', row);
         
         if (row.id === emptyModulePath) {
@@ -558,6 +561,7 @@ var packageFilter = function (info) {
 
 Browserify.prototype._resolve = function (id, parent, cb) {
     var self = this;
+    if (self._exclude[id]) return cb(null, excludeModulePath);
     if (self._ignore[id]) return cb(null, emptyModulePath);
     
     var result = function (file, pkg, x) {
@@ -608,6 +612,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
             return cb(notFound(id, parent.filename))
         }
         
+        if (self._exclude[file]) return cb(null, excludeModulePath);
         if (self._ignore[file]) return cb(null, emptyModulePath);
         if (self._external[file]) return result(file, pkg, true);
         
