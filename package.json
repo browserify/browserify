@@ -61,7 +61,8 @@
     "minimist": "~0.0.5",
     "derequire": "~0.6.0",
     "commondir": "0.0.1",
-    "shallow-copy": "0.0.1"
+    "shallow-copy": "0.0.1",
+    "resolve": "~0.6.1"
   },
   "devDependencies": {
     "tap": "~0.4.0",

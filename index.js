@@ -16,6 +16,7 @@ var insertGlobals = require('insert-module-globals');
 var umd = require('umd');
 var derequire = require('derequire');
 var commondir = require('commondir');
+var resolveSync = require('resolve/lib/sync');
 
 var path = require('path');
 var inherits = require('inherits');
@@ -59,6 +60,8 @@ function Browserify (opts) {
     self._external = {};
     self._expose = {};
     self._mapped = {};
+    
+    self._workflows = [];
     
     self._transforms = [];
     self._globalTransforms = [];
@@ -291,10 +294,26 @@ Browserify.prototype.bundle = function (opts, cb) {
             p.emit('error', 'standalone only works with a single entry point');
         });
     }
+
+    var apis = self._workflows.map(function(w) {
+      var api = new Workflow();
+      w.workflow(api, w.opts, opts);
+      opts.transform = opts.transform.concat(api._transforms);
+      opts.globalTransform = opts.globalTransform.concat(api._globalTransforms);
+      return api;
+    });
     
     var prevCache = opts.cache && copy(opts.cache);
     var d = (opts.deps || self.deps.bind(self))(opts);
     var p = self.pack(opts);
+    
+    apis.forEach(function(api) {
+      api.on('workflowError', p.emit.bind(p, 'error'));
+      // TODO: more events
+      p.on('error', api.emit.bind(api, 'error'));
+      p.on('end', api.emit.bind(api, 'end'));
+    });
+
     if (cb) {
         p.on('error', cb);
         p.pipe(concatStream({ encoding: 'string' }, function (src) {
@@ -312,6 +331,15 @@ Browserify.prototype.bundle = function (opts, cb) {
         return output;
     }
     return p;
+};
+
+Browserify.prototype.workflow = function (w, opts) {
+    if (typeof w === 'string') {
+        w = resolveSync(w, {basedir: this._basedir || process.cwd()});
+        w = require(w);
+    }
+    this._workflows.push({workflow: w, opts: opts});
+    return this;
 };
 
 Browserify.prototype.transform = function (opts, t) {
@@ -648,6 +676,20 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         });
     }
 };
+
+function Workflow() {
+  this._transforms = [];
+  this._globalTransforms = [];
+}
+inherits(Workflow, EventEmitter);
+
+Workflow.prototype.transform = function (opts, t) {
+    return Browserify.prototype.transform.call(this, opts, t);
+}
+
+Workflow.prototype.throw = function (err) {
+    this.emit('workflowError', err);
+}
 
 function isBrowserify (x) {
     return x && typeof x === 'object' && typeof x.bundle === 'function';
