@@ -557,6 +557,15 @@ object used by
 You could use the `file` event to implement a file watcher to regenerate bundles
 when files change.
 
+## b.on('bundle', function (bundle) {})
+
+When `.bundle()` is called, this event fires with the `bundle` output stream.
+
+## b.on('transform', function (tr, file) {})
+
+When a transform is applied to a file, the `'transform'` event fires with the
+transform stream `tr` and the `file` that the transform is being applied to.
+
 # list of source transforms
 
 There is a [wiki page that lists the known browserify
