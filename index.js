@@ -313,6 +313,8 @@ Browserify.prototype.bundle = function (opts, cb) {
         }));
         return output;
     }
+    
+    self.emit('bundle', p);
     return p;
 };
 
