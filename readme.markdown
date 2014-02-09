@@ -163,6 +163,17 @@ Advanced Options:
 
     Use a transform module on all files after any ordinary transforms have run.
 
+Passing arguments to transforms:
+
+  For -t and -g, you may use subarg syntax to pass options to transforms as the
+  second parameter after the filename. For example:
+
+    -t [ foo -x 3 --beep ]
+
+  will call the `foo` transform for each applicable file by calling:
+
+    foo(file, { x: 3, beep: true })
+
 ```
 
 # compatibility
