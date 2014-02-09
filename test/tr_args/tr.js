@@ -6,7 +6,7 @@ module.exports = function (file, opts) {
     
     function write (buf) { data += buf }
     function end () {
-        this.queue(data.replace(/X/g, opts.x);
+        this.queue(data.replace(/X/g, opts.x));
         this.queue(null);
     }
 };

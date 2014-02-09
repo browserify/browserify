@@ -3,10 +3,10 @@ var path = require('path');
 var spawn = require('child_process').spawn;
 var parseShell = require('shell-quote').parse;
 var duplexer = require('duplexer');
-var minimist = require('minimist');
+var subarg = require('subarg');
 
 module.exports = function (args) {
-    var argv = minimist(args, {
+    var argv = subarg(args, {
         'boolean': [
             'deps','pack','ig','dg', 'im', 'd','list',
             'builtins','commondir', 'bare'
@@ -63,6 +63,10 @@ module.exports = function (args) {
         builtins: argv.builtins === false ? false : undefined,
         commondir: argv.commondir === false ? false : undefined
     });
+    function error (msg) {
+        var e = new Error(msg);
+        process.nextTick(function () { b.emit('error', e) });
+    }
     b.argv = argv;
     
     [].concat(argv.i).concat(argv.ignore).filter(Boolean)
@@ -97,13 +101,33 @@ module.exports = function (args) {
     
     [].concat(argv.t).concat(argv.transform)
         .filter(Boolean)
-        .forEach(function (t) { b.transform(t) })
+        .forEach(addTransform)
     ;
     
     [].concat(argv.g).concat(argv['global-transform'])
         .filter(Boolean)
-        .forEach(function (t) { b.transform({ global: true }, t) })
+        .forEach(function (t) {
+            addTransform(t, { global: true });
+        })
     ;
+    
+    function addTransform (t, opts) {
+        if (typeof t === 'string' || typeof t === 'function') {
+            b.transform(t);
+        }
+        else if (t && typeof t === 'object') {
+            if (!t._[0] || typeof t._[0] !== 'string') {
+                return error(
+                    'expected first parameter to be a transform string'
+                );
+            }
+            if (opts) Object.keys(opts).forEach(function (key) {
+                t[key] = opts[key];
+            });
+            b.transform(t, t._.shift());
+        }
+        else error('unexpected transform of type ' + typeof t);
+    }
     
     [].concat(argv.c).concat(argv.command).filter(Boolean)
         .forEach(function (c) {
@@ -133,9 +157,7 @@ module.exports = function (args) {
     ;
     
     if (argv.standalone === true) {
-        process.nextTick(function () {
-            b.emit('error', '--standalone requires an export name argument');
-        });
+        error('--standalone requires an export name argument');
         return b;
     }
     

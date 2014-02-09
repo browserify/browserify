@@ -10,8 +10,7 @@ test('transform arguments', function (t) {
     var ps = spawn(process.execPath, [
         path.resolve(__dirname, '../bin/cmd.js'),
         __dirname + '/tr_args/main.js',
-        '-t', __dirname + '/tr_args/main.js',
-        '[', '-x', '1', ']'
+        '-t', '[', __dirname + '/tr_args/tr.js', '-x', '1', ']'
     ]);
     
     ps.stderr.pipe(process.stderr);

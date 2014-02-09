@@ -325,9 +325,16 @@ Browserify.prototype.transform = function (opts, t) {
         opts = {};
     }
     if (!opts) opts = {};
-    if (typeof t === 'string' && /^\./.test(t)) {
-        t = path.resolve(t);
+    if (typeof t === 'string') {
+        t = /^\./.test(t)
+            ? require(path.resolve(t))
+            : require(t)
+        ;
     }
+    t = (function (t) {
+        return function (file) { return t.call(this, file, opts) };
+    })(t);
+    
     if (opts.global) {
         this._globalTransforms.push(t);
     }
