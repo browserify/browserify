@@ -187,6 +187,7 @@ Browserify.prototype.external = function (id, opts) {
         
         function captureDeps() {
             var d = mdeps(id.files, opts);
+            d.on('error', self.emit.bind(self, 'error'));
             d.pipe(through(write, end));
             
             function write (row) { self.external(row.id) }
@@ -302,6 +303,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         }));
     }
     d.on('error', p.emit.bind(p, 'error'));
+    d.on('transform', p.emit.bind(p, 'transform'));
     d.pipe(p);
     
     if (opts.standalone) {
@@ -351,6 +353,7 @@ Browserify.prototype.deps = function (opts) {
     var index = 0;
     var tr = d.pipe(through(write));
     d.on('error', tr.emit.bind(tr, 'error'));
+    d.on('transform', tr.emit.bind(tr, 'transform'));
     return tr;
     
     function write (row) {
