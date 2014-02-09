@@ -561,10 +561,11 @@ when files change.
 
 When `.bundle()` is called, this event fires with the `bundle` output stream.
 
-## b.on('transform', function (tr, file) {})
+## bundle.on('transform', function (tr, file) {})
 
-When a transform is applied to a file, the `'transform'` event fires with the
-transform stream `tr` and the `file` that the transform is being applied to.
+When a transform is applied to a file, the `'transform'` event fires on the
+bundle stream with the transform stream `tr` and the `file` that the transform
+is being applied to.
 
 # list of source transforms
 
