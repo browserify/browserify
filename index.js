@@ -117,6 +117,7 @@ Browserify.prototype.require = function (id, opts) {
     var self = this;
     if (isStream(id)) {
         self.files.push(id);
+        if (opts.entry) self._entries.push(id.path);
         return self;
     }
     
