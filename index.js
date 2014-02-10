@@ -12,6 +12,7 @@ var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
 var depSorter = require('deps-sort');
 var browserResolve = require('browser-resolve');
+var nodeResolve = require('resolve');
 var insertGlobals = require('insert-module-globals');
 var umd = require('umd');
 var derequire = require('derequire');
@@ -326,10 +327,17 @@ Browserify.prototype.transform = function (opts, t) {
     }
     if (!opts) opts = {};
     if (typeof t === 'string') {
-        t = /^\./.test(t)
-            ? require(path.resolve(t))
-            : require(t)
-        ;
+        try {
+            t = /^\./.test(t)
+                ? require(path.resolve(t))
+                : require(t)
+            ;
+        }
+        catch (err) {
+            t = require(nodeResolve.sync(
+                t, { basedir: this._basedir || process.cwd() }
+            ));
+        }
     }
     t = (function (t) {
         return function (file) { return t.call(this, file, opts) };
