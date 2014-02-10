@@ -353,7 +353,8 @@ Browserify.prototype.transform = function (opts, t) {
 
 Browserify.prototype.plugin = function (plugin, opts) {
     if (typeof plugin === 'function') {
-        this._plugins.push(plugin(this, opts));
+        this._plugins.push({ plugin: plugin, opts: opts });
+        plugin(this, opts);
         return this;
     }
     
@@ -379,7 +380,8 @@ Browserify.prototype.plugin = function (plugin, opts) {
         ));
         return this;
     }
-    this._plugins.push(m(this, opts));
+    this._plugins.push({ plugin: m, opts: opts });
+    m(this, opts);
     return this;
 };
 
