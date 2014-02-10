@@ -589,7 +589,7 @@ is being applied to.
 
 # plugins
 
-For some use less common cases, a transform is not sufficiently extensible.
+For some more advanced use-cases, a transform is not sufficiently extensible.
 Plugins are modules that take the bundle instance as their first parameter and
 an option hash as their second.
 
