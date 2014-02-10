@@ -60,6 +60,7 @@ function Browserify (opts) {
     self._external = {};
     self._expose = {};
     self._mapped = {};
+    self._plugins = [];
     
     self._transforms = [];
     self._globalTransforms = [];
@@ -347,6 +348,38 @@ Browserify.prototype.transform = function (opts, t) {
         this._globalTransforms.push(t);
     }
     else this._transforms.push(t);
+    return this;
+};
+
+Browserify.prototype.plugin = function (plugin, opts) {
+    if (typeof plugin === 'function') {
+        this._plugins.push(plugin(this, opts));
+        return this;
+    }
+    
+    try {
+        var r = nodeResolve.sync(plugin, {
+            basedir: path.resolve(this._basedir || process.cwd())
+        });
+    }
+    catch (e) {
+        try {
+            r = nodeResolve.sync(plugin, {
+                basedir: commondir(this._entries)
+            });
+        }
+        catch (e) {
+            this.emit('error', new Error('failed to load plugin ' + plugin));
+        }
+    }
+    var m = require(r);
+    if (typeof m !== 'function') {
+        this.emit('error', new Error('plugin ' + plugin + ' exported a '
+            + (typeof m) + ', expected a function'
+        ));
+        return this;
+    }
+    this._plugins.push(m(this, opts));
     return this;
 };
 

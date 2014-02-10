@@ -4,8 +4,6 @@ var spawn = require('child_process').spawn;
 var parseShell = require('shell-quote').parse;
 var duplexer = require('duplexer');
 var subarg = require('subarg');
-var resolve = require('resolve');
-var commondir = require('commondir');
 
 module.exports = function (args) {
     var argv = subarg(args, {
@@ -76,26 +74,7 @@ module.exports = function (args) {
             if (typeof p === 'object') {
                 pf = p._.shift(), pOpts = p;
             }
-            try {
-                var r = resolve.sync(pf, {
-                    basedir: b._basedir || process.cwd()
-                });
-            }
-            catch (e) {
-                try {
-                    r = resolve.sync(pf, { basedir: commondir(b.files) });
-                }
-                catch (e) {
-                    error('failed to load plugin ' + pf);
-                }
-            }
-            var m = require(r);
-            if (typeof m !== 'function') {
-                error('plugin ' + pf + ' exported a '
-                    + (typeof m) + ', expected a function'
-                );
-            }
-            else m(b, pOpts);
+            b.plugin(pf, pOpts);
         })
     ;
     
