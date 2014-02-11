@@ -633,8 +633,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
             if (err) return cb(err)
             
             if (pkg && typeof pkg === 'object') {
-                var pkg_ = pkg;
-                pkg = {};
+                var pkg_ = copy(pkg);
                 if (typeof pkg_.browserify === 'string' && !pkg_.browser) {
                     pkg.browser = pkg_.browserify;
                 }
