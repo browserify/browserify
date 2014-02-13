@@ -9,7 +9,10 @@ test('coffeeify with an implicit global', function (t) {
     b.transform('coffeeify');
     b.bundle(function (err, src) {
         if (err) t.fail(err);
-        vm.runInNewContext(src, { console: { log: log } });
+        vm.runInNewContext(src, {
+            console: { log: log },
+            setTimeout: setTimeout
+        });
         function log (msg) { t.equal(msg, 'eyo') }
     });
 });
