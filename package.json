@@ -62,7 +62,8 @@
     "commondir": "0.0.1",
     "shallow-copy": "0.0.1",
     "subarg": "0.0.1",
-    "resolve": "~0.6.1"
+    "resolve": "~0.6.1",
+    "coffeeify": "~0.6.0"
   },
   "devDependencies": {
     "tap": "~0.4.0",
