@@ -212,12 +212,14 @@ Browserify.prototype.external = function (id, opts) {
 
 Browserify.prototype.ignore = function (file) {
     this._ignore[file] = true;
+    this._ignore[path.resolve(file)] = true;
     return this;
 };
 
 Browserify.prototype.exclude = function (file) {
     this.ignore(file);
     this._exclude[file] = true;
+    this._exclude[path.resolve(file)] = true;
     return this;
 };
 
@@ -504,6 +506,8 @@ Browserify.prototype.pack = function (opts) {
         var err = checkSyntax(row.source, row.id);
         if (err) return this.emit('error', err);
         
+        var newId = getId(row);
+        this.emit('id', newId, row.id);
         row.id = getId(row);
         
         if (row.entry) mainModule = mainModule || row.id;
