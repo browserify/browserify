@@ -439,7 +439,7 @@ Browserify.prototype.deps = function (opts) {
         
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
             if (!self._exclude[key] && !self._external[key]
-            && !self._external[row.id]) {
+            && !self._external[row.id] && row.deps[key] !== excludeModulePath) {
                 acc[key] = row.deps[key];
             }
             return acc;
