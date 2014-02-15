@@ -187,7 +187,7 @@ when you explicitly `require()` or use their functionality.
 When you `require()` any of these modules, you will get a browser-specific shim:
 
 * [assert](https://npmjs.org/package/assert)
-* [buffer](https://npmjs.org/package/native-buffer-browserify)
+* [buffer](https://npmjs.org/package/buffer)
 * [console](https://npmjs.org/package/console-browserify)
 * [constants](https://npmjs.org/package/constants-browserify)
 * [crypto](https://npmjs.org/package/crypto-browserify)
