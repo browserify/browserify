@@ -72,11 +72,11 @@ Standard Options:
 
       --entry, -e  An entry point of your app
   
-     --ignore, -i  Replace a file with an empty stub.
+     --ignore, -i  Replace a file with an empty stub. Files can be globs.
  
-    --exclude, -u  Omit a file from the output bundle.
+    --exclude, -u  Omit a file from the output bundle. Files can be globs.
 
-   --external, -x  Reference a file from another bundle.
+   --external, -x  Reference a file from another bundle. Files can be globs.
   
   --transform, -t  Use a transform module on top-level files.
  
