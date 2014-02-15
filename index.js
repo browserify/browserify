@@ -159,7 +159,13 @@ Browserify.prototype.require = function (id, opts) {
         
         if (opts.external) {
             if (file) self._external[file] = true;
-            else self._external[id] = true;
+            else {
+                self._external[id] = true;
+                if (self._basedir) {
+                    self._external[path.resolve(self._basedir, id)] = true;
+                }
+                else self._external[path.resolve(id)] = true;
+            }
         }
         else {
             self.files.push(file);
@@ -201,7 +207,7 @@ Browserify.prototype.external = function (id, opts) {
         if (id._pending === 0) return captureDeps();
         return id.once('_ready', captureDeps);
     }
-
+    
     opts.external = true;
     if (!opts.parse) {
         this.noParse(id);
@@ -212,14 +218,20 @@ Browserify.prototype.external = function (id, opts) {
 
 Browserify.prototype.ignore = function (file) {
     this._ignore[file] = true;
-    this._ignore[path.resolve(file)] = true;
+    if (this._basedir) {
+        this._ignore[path.resolve(this._basedir, file)] = true;
+    }
+    else this._ignore[path.resolve(file)] = true;
     return this;
 };
 
 Browserify.prototype.exclude = function (file) {
     this.ignore(file);
     this._exclude[file] = true;
-    this._exclude[path.resolve(file)] = true;
+    if (this._basedir) {
+        this._exclude[path.resolve(this._basedir, file)] = true;
+    }
+    else this._exclude[path.resolve(file)] = true;
     return this;
 };
 
