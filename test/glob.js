@@ -13,7 +13,7 @@ test('glob', function (t) {
     
     var ps = spawn(process.execPath, [
         path.resolve(__dirname, '../bin/cmd.js'),
-        '*.js',
+        'a.js', 'b.js',
         '-u', 'vendor/*.js'
     ], { cwd: __dirname + '/glob' });
     ps.stderr.pipe(process.stderr);

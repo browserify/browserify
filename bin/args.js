@@ -4,6 +4,7 @@ var spawn = require('child_process').spawn;
 var parseShell = require('shell-quote').parse;
 var duplexer = require('duplexer');
 var subarg = require('subarg');
+var glob = require('glob');
 
 module.exports = function (args) {
     var argv = subarg(args, {
@@ -79,11 +80,25 @@ module.exports = function (args) {
     ;
     
     [].concat(argv.i).concat(argv.ignore).filter(Boolean)
-        .forEach(function (i) { b.ignore(i) })
+        .forEach(function (i) {
+            b._pending ++;
+            glob(i, function (err, files) {
+                if (err) return b.emit('error', err);
+                files.forEach(function (file) { b.ignore(file) });
+                if (--b._pending === 0) b.emit('_ready');
+            });
+        })
     ;
     
     [].concat(argv.u).concat(argv.exclude).filter(Boolean)
-        .forEach(function (u) { b.exclude(u) })
+        .forEach(function (u) {
+            b._pending ++;
+            glob(u, function (err, files) {
+                if (err) return b.emit('error', err);
+                files.forEach(function (file) { b.exclude(file) });
+                if (--b._pending === 0) b.emit('_ready');
+            });
+        })
     ;
     
     [].concat(argv.r).concat(argv.require).filter(Boolean)
