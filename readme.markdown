@@ -176,7 +176,7 @@ when you explicitly `require()` or use their functionality.
 When you `require()` any of these modules, you will get a browser-specific shim:
 
 * [assert](https://npmjs.org/package/assert)
-* [buffer](https://npmjs.org/package/native-buffer-browserify)
+* [buffer](https://npmjs.org/package/buffer)
 * [console](https://npmjs.org/package/console-browserify)
 * [constants](https://npmjs.org/package/constants-browserify)
 * [crypto](https://npmjs.org/package/crypto-browserify)
@@ -202,7 +202,7 @@ Additionally if you use any of these variables, they
 in the bundled output in a browser-appropriate way:
 
 * [process](https://npmjs.org/package/process)
-* [Buffer](https://npmjs.org/package/native-buffer-browserify)
+* [Buffer](https://npmjs.org/package/buffer)
 * global - top-level scope object (window)
 * __filename - file path of the currently executing file
 * __dirname - directory path of the currently executing file
