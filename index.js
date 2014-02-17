@@ -43,7 +43,7 @@ module.exports = function (opts, xopts) {
 };
 
 function hash(what) {
-    return crypto.createHash('md5').update(what).digest('base64').slice(0, 6);
+    return crypto.createHash('md5').update(what.replace(process.cwd(), '')).digest('base64').slice(0, 6);
 }
 
 inherits(Browserify, EventEmitter);
