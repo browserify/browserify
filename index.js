@@ -43,7 +43,11 @@ module.exports = function (opts, xopts) {
 };
 
 function hash(what) {
-    return crypto.createHash('md5').update(what.replace(process.cwd(), '')).digest('base64').slice(0, 6);
+    return crypto.createHash('md5').update(what).digest('base64').slice(0, 6);
+}
+
+function idHash(id) {
+    return hash(id.replace(process.cwd(), ''));
 }
 
 inherits(Browserify, EventEmitter);
@@ -149,7 +153,7 @@ Browserify.prototype.require = function (id, opts) {
         }
         
         if (opts.expose) {
-            self.exports[file] = hash(file);
+            self.exports[file] = idHash(file);
             
             if (typeof opts.expose === 'string') {
                 self._expose[file] = opts.expose;
@@ -450,7 +454,7 @@ Browserify.prototype.deps = function (opts) {
                 id: row.id,
                 exposed: self._expose[row.id],
                 deps: {},
-                source: 'module.exports=require(\'' + hash(row.id) + '\');',
+                source: 'module.exports=require(\'' + idHash(row.id) + '\');',
                 nomap: true
             });
         }
@@ -458,7 +462,7 @@ Browserify.prototype.deps = function (opts) {
         if (self.exports[row.id]) row.exposed = self.exports[row.id];
 
         if (self._exposeAll) {
-            row.exposed = hash(row.id);
+            row.exposed = idHash(row.id);
         }
 
         // skip adding this file if it is external
@@ -529,7 +533,7 @@ Browserify.prototype.pack = function (opts) {
             var file = row.deps[key];
             var index = row.indexDeps && row.indexDeps[key];
             if (self._exposeAll) {
-                index = hash(file);
+                index = idHash(file);
             }
             deps[key] = getId({ id: file, index: index });
         });
@@ -543,7 +547,7 @@ Browserify.prototype.pack = function (opts) {
             return row.exposed;
         }
         else if (self._external[row.id] || self.exports[row.id]) {
-            return hash(row.id);
+            return idHash(row.id);
         }
         else if (self._expose[row.id]) {
             return row.id;
