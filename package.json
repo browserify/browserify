@@ -63,7 +63,8 @@
     "shallow-copy": "0.0.1",
     "subarg": "0.0.1",
     "resolve": "~0.6.1",
-    "glob": "~3.2.8"
+    "glob": "~3.2.8",
+    "builtins": "0.0.2"
   },
   "devDependencies": {
     "tap": "~0.4.0",

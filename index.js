@@ -85,7 +85,7 @@ function Browserify (opts) {
     
     self._builtins = opts.builtins === false ? {} : opts.builtins || builtins;
     if (opts.builtins === false) {
-        Object.keys(builtins).forEach(function (key) {
+        require('builtins').forEach(function (key) {
             self._exclude[key] = true;
         });
     }
