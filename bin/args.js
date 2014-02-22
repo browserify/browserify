@@ -11,7 +11,7 @@ module.exports = function (args) {
     var argv = subarg(args, {
         'boolean': [
             'deps','pack','ig','dg', 'im', 'd','list',
-            'builtins','commondir', 'bare'
+            'builtins','commondir', 'bare', 'full-paths'
         ],
         string: [ 's' ],
         alias: {
@@ -62,6 +62,7 @@ module.exports = function (args) {
         noParse: [].concat(argv.noparse).filter(Boolean),
         extensions: [].concat(argv.extension).filter(Boolean),
         entries: entries,
+        fullPaths: argv['full-paths'],
         builtins: argv.builtins === false ? false : undefined,
         commondir: argv.commondir === false ? false : undefined
     });

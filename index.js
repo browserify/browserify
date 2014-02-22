@@ -76,7 +76,8 @@ function Browserify (opts) {
     
     var sep = /^win/i.test(process.platform) ? ';' : ':';
     self._paths = opts.paths || (process.env.NODE_PATH || '').split(sep);
-    
+    self._fullPaths = !!opts.fullPaths;
+
     self._browserPack = opts.pack || function (params) {
         params.raw = true;
         params.sourceMapPrefix = '//#';
@@ -553,6 +554,9 @@ Browserify.prototype.pack = function (opts) {
             return self._hash(row.id);
         }
         else if (self._expose[row.id]) {
+            return row.id;
+        }
+        else if (self._fullPaths) {
             return row.id;
         }
         else if (row.index === undefined) {
