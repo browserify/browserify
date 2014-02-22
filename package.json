@@ -73,7 +73,8 @@
     "dnode": "~1.0.3",
     "seq": "0.3.3",
     "coffee-script": "~1.5.0",
-    "coffeeify": "~0.6.0"
+    "coffeeify": "~0.6.0",
+    "browser-unpack": "0.0.0"
   },
   "author": {
     "name": "James Halliday",
