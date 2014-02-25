@@ -2,6 +2,7 @@ var browserify = require('../');
 var path = require('path');
 var spawn = require('child_process').spawn;
 var parseShell = require('shell-quote').parse;
+var insertGlobals = require('insert-module-globals');
 var duplexer = require('duplexer');
 var subarg = require('subarg');
 var glob = require('glob');
@@ -193,10 +194,18 @@ module.exports = function (args) {
         return b;
     }
     
+    var insertGlobalVars;
+    if (argv.igv) {
+        insertGlobalVars = argv.igv.split(',').reduce(function (vars, x) {
+            vars[x] = insertGlobals.vars[x];
+            return vars;
+        }, {});
+    }
+
     var bundleOpts = {
         detectGlobals: argv['detect-globals'] !== false && argv.dg !== false,
         insertGlobals: argv['insert-globals'] || argv.ig,
-        insertGlobalVars: argv.igv ? argv.igv.split(',') : undefined,
+        insertGlobalVars: insertGlobalVars,
         ignoreMissing: argv['ignore-missing'] || argv.im,
         debug: argv['debug'] || argv.d,
         standalone: argv['standalone'] || argv.s
