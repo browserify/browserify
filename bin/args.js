@@ -121,9 +121,8 @@ module.exports = function (args) {
                         add(file, {});
                     });
                 });
-            } else {
-                add(x, {});
             }
+            else add(x, {});
             
             function add (x, opts) {
                 if (/^[\/.]/.test(x)) b.external(path.resolve(x), opts)

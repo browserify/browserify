@@ -15,10 +15,10 @@ test('bundle from an arguments array', function (t) {
 });
 
 test('external flag for node modules', function(t) {
-  t.plan(1);
-
-  var b = fromArgs([ __dirname + '/external_args/main.js', '-x', 'backbone' ]);
-  b.bundle(function (err, src) {
-      vm.runInNewContext(src, {t: t});
-  });
+    t.plan(1);
+    
+    var b = fromArgs([ __dirname + '/external_args/main.js', '-x', 'backbone' ]);
+    b.bundle(function (err, src) {
+        vm.runInNewContext(src, {t: t});
+    });
 });
