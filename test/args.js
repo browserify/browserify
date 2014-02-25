@@ -13,3 +13,12 @@ test('bundle from an arguments array', function (t) {
         t.equal(c.window.XYZ, 2);
     });
 });
+
+test('external flag for node modules', function(t) {
+  t.plan(1);
+
+  var b = fromArgs([ __dirname + '/external_args/main.js', '-x', 'backbone' ]);
+  b.bundle(function (err, src) {
+      vm.runInNewContext(src, {t: t});
+  });
+});
