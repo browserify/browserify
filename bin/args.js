@@ -115,12 +115,14 @@ module.exports = function (args) {
                 var xs = x.split(':');
                 add(xs[0], { expose: xs[1] });
             }
-            else {
+            else if (/\*/.test(x)) {
                 glob(x, function (err, files) {
                     files.forEach(function (file) {
                         add(file, {});
                     });
                 });
+            } else {
+                add(x, {});
             }
             
             function add (x, opts) {
