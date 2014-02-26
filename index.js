@@ -96,7 +96,11 @@ function Browserify (opts) {
 }
 
 Browserify.prototype._hash = function (id) {
-    var basedir = this._basedir || process.cwd();
+    var basedir = this._basedir;
+    if (!basedir && this.files.length) {
+        basedir = commondir(this.files.map(path.dirname));
+    }
+    else if (!basedir) basedir = path.dirname(id);
     return hash(path.relative(basedir, id));
 }
 
