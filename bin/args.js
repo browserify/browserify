@@ -134,7 +134,7 @@ module.exports = function (args) {
     
     [].concat(argv.t).concat(argv.transform)
         .filter(Boolean)
-        .forEach(addTransform)
+        .forEach(function (t) { addTransform(t) })
     ;
     
     [].concat(argv.g).concat(argv['global-transform'])
