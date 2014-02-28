@@ -50,7 +50,7 @@
     "url": "~0.7.9",
     "https-browserify": "~0.0.0",
     "path-browserify": "~0.0.0",
-    "querystring": "https://github.com/substack/querystring/archive/0.2.0-ie8.tar.gz",
+    "querystring-es3": "0.2.0",
     "stream-browserify": "~0.1.0",
     "string_decoder": "~0.0.0",
     "tty-browserify": "~0.0.0",
