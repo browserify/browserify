@@ -11,7 +11,7 @@ module.exports = function (args) {
     var argv = subarg(args, {
         'boolean': [
             'deps','pack','ig','dg', 'im', 'd','list',
-            'builtins','commondir', 'bare'
+            'builtins','commondir', 'bare', 'bundle-external'
         ],
         string: [ 's' ],
         alias: {
@@ -30,7 +30,8 @@ module.exports = function (args) {
             dg: true,
             d: false,
             builtins: true,
-            commondir: true
+            commondir: true,
+            'bundle-external': true
         }
     });
     
@@ -63,7 +64,8 @@ module.exports = function (args) {
         extensions: [].concat(argv.extension).filter(Boolean),
         entries: entries,
         builtins: argv.builtins === false ? false : undefined,
-        commondir: argv.commondir === false ? false : undefined
+        commondir: argv.commondir === false ? false : undefined,
+        bundleExternal: argv['bundle-external']
     });
     function error (msg) {
         var e = new Error(msg);
