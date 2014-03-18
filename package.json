@@ -67,14 +67,15 @@
     "builtins": "0.0.2"
   },
   "devDependencies": {
-    "tap": "~0.4.0",
-    "mkdirp": "~0.3.3",
     "backbone": "~0.9.2",
-    "dnode": "~1.0.3",
-    "seq": "0.3.3",
+    "browser-unpack": "~0.0.0",
     "coffee-script": "~1.5.0",
     "coffeeify": "~0.6.0",
-    "browser-unpack": "0.0.0"
+    "dnode": "~1.0.3",
+    "es6ify": "~0.4.8",
+    "mkdirp": "~0.3.3",
+    "seq": "0.3.3",
+    "tap": "~0.4.0"
   },
   "author": {
     "name": "James Halliday",
