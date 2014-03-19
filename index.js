@@ -700,6 +700,8 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         if (self._ignore[file]) return cb(null, emptyModulePath);
         if (self._external[file]) return result(file, pkg, true);
 
+        self._mapped[id] = file;
+
         result(file, pkg);
     });
      
