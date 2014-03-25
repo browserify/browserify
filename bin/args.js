@@ -147,7 +147,7 @@ module.exports = function (args) {
     
     function addTransform (t, opts) {
         if (typeof t === 'string' || typeof t === 'function') {
-            b.transform(t);
+            b.transform(opts, t);
         }
         else if (t && typeof t === 'object') {
             if (!t._[0] || typeof t._[0] !== 'string') {
