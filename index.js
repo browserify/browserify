@@ -421,6 +421,10 @@ Browserify.prototype.deps = function (opts) {
     
     opts.modules = self._builtins;
     opts.extensions = self._extensions;
+
+    opts.filter = function(id) {
+      return !self._exclude[id] && !self._external[id] && !self._ignore[id];
+    };
     
     if (!opts.basedir) opts.basedir = self._basedir;
     var d = mdeps(self.files, opts);
