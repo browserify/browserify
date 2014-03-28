@@ -25,7 +25,7 @@
     "browser-pack": "~2.0.0",
     "browser-resolve": "~1.2.1",
     "buffer": "~2.1.4",
-    "builtins": "0.0.2",
+    "builtins": "~0.0.3",
     "commondir": "0.0.1",
     "concat-stream": "~1.4.1",
     "console-browserify": "~1.0.1",
@@ -47,7 +47,7 @@
     "os-browserify": "~0.1.1",
     "parents": "~0.0.1",
     "path-browserify": "~0.0.0",
-    "process": "^0.6.0",
+    "process": "~0.6.0",
     "punycode": "~1.2.3",
     "querystring-es3": "0.2.0",
     "resolve": "~0.6.1",
@@ -58,7 +58,7 @@
     "string_decoder": "~0.0.0",
     "subarg": "0.0.1",
     "syntax-error": "~1.1.0",
-    "through": "~2.3.4",
+    "through2": "~0.4.1",
     "timers-browserify": "~1.0.1",
     "tty-browserify": "~0.0.0",
     "umd": "~2.0.0",
@@ -76,7 +76,8 @@
     "es6ify": "~0.4.8",
     "mkdirp": "~0.3.3",
     "seq": "0.3.3",
-    "tap": "~0.4.0"
+    "tap": "~0.4.0",
+    "through": "~2.3.4"
   },
   "author": {
     "name": "James Halliday",

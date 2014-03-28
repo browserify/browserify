@@ -1,5 +1,5 @@
 var crypto = require('crypto');
-var through = require('through');
+var through2 = require('through2');
 var pipeline = require('stream-combiner');
 var concatStream = require('concat-stream');
 var checkSyntax = require('syntax-error');
@@ -204,11 +204,15 @@ Browserify.prototype.external = function (id, opts) {
         function captureDeps() {
             var d = mdeps(id.files, opts);
             d.on('error', self.emit.bind(self, 'error'));
-            d.pipe(through(write, end));
+            d.pipe(through2.obj(write, end));
             
-            function write (row) { self.external(row.id) }
-            function end () {
+            function write (row, encoding, callback) {
+                self.external(row.id);
+                callback();
+            }
+            function end (callback) {
                 if (--self._pending === 0) self.emit('_ready');
+                callback();
             }
         }
         if (id._pending === 0) return captureDeps();
@@ -274,7 +278,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     if (opts.detectGlobals || opts.insertGlobals) {
         opts.globalTransform = [ function (file) {
             if (self._noParse.indexOf(file) >= 0) {
-                return through();
+                return through2();
             }
             return insertGlobals(file, {
                 always: opts.insertGlobals,
@@ -302,13 +306,14 @@ Browserify.prototype.bundle = function (opts, cb) {
     })(cb);
 
     if (self._pending) {
-        var tr = through();
+        var tr = through2();
         self.on('_ready', function () {
             var b = self.bundle(opts, cb);
             b.on('transform', tr.emit.bind(tr, 'transform'));
             if (!cb) b.on('error', tr.emit.bind(tr, 'error'));
             b.pipe(tr);
         });
+        if (cb) tr.resume();
         return tr;
     }
 
@@ -326,13 +331,14 @@ Browserify.prototype.bundle = function (opts, cb) {
         p.pipe(concatStream({ encoding: 'string' }, function (src) {
             cb(null, opts.standalone ? derequire(src) : src);
         }));
+        p.resume();
     }
     d.on('error', p.emit.bind(p, 'error'));
     d.on('transform', p.emit.bind(p, 'transform'));
     d.pipe(p);
     
     if (opts.standalone) {
-        var output = through();
+        var output = through2();
         p.pipe(concatStream({ encoding: 'string' }, function (body) {
             output.end(derequire(body));
         }));
@@ -412,7 +418,7 @@ Browserify.prototype.deps = function (opts) {
     if (!opts) opts = {};
     
     if (self._pending) {
-        var tr = through();
+        var tr = through2.obj();
         self.on('_ready', function () {
             self.deps(opts).pipe(tr);
         });
@@ -427,14 +433,14 @@ Browserify.prototype.deps = function (opts) {
     var d = mdeps(self.files, opts);
     
     var index = 0;
-    var tr = d.pipe(through(write));
+    var tr = d.pipe(through2.obj(write));
     d.on('error', tr.emit.bind(tr, 'error'));
     d.on('transform', tr.emit.bind(tr, 'transform'));
     return tr;
     
-    function write (row) {
-        if (row.id === excludeModulePath) return;
-        if (self._exclude[row.id]) return;
+    function write (row, encoding, callback) {
+        if (row.id === excludeModulePath) return callback();
+        if (self._exclude[row.id]) return callback();
         
         self.emit('dep', row);
         
@@ -454,7 +460,7 @@ Browserify.prototype.deps = function (opts) {
         }, {});
         
         if (self._expose[row.id]) {
-            this.queue({
+            this.push({
                 id: row.id,
                 exposed: self._expose[row.id],
                 deps: {},
@@ -472,7 +478,7 @@ Browserify.prototype.deps = function (opts) {
 
         // skip adding this file if it is external
         if (self._external[row.id]) {
-            return;
+            return callback();
         }
        
         if (/\.json$/.test(row.id)) {
@@ -485,7 +491,8 @@ Browserify.prototype.deps = function (opts) {
             row.entry = ix >= 0;
         }
         if (ix >= 0) row.order = ix;
-        this.queue(row);
+        this.push(row);
+        callback();
     }
 };
 
@@ -499,7 +506,7 @@ Browserify.prototype.pack = function (opts) {
     var hashes = {}, depList = {}, depHash = {};
     var visited = {};
     
-    var input = through(function (row_) {
+    var input = through2.obj(function (row_, encoding, callback) {
         var row = copy(row_);
         
         if (opts.debug) { 
@@ -525,7 +532,7 @@ Browserify.prototype.pack = function (opts) {
         
         if (/^#!/.test(row.source)) row.source = '//' + row.source;
         var err = checkSyntax(row.source, row.id);
-        if (err) return this.emit('error', err);
+        if (err) return callback(err);
         
         var newId = getId(row);
         this.emit('id', newId, row.id);
@@ -544,7 +551,8 @@ Browserify.prototype.pack = function (opts) {
         });
         row.deps = deps;
 
-        this.queue(row);
+        this.push(row);
+        callback();
     });
     
     function getId (row) {
@@ -568,46 +576,48 @@ Browserify.prototype.pack = function (opts) {
     
     var first = true;
     var hasExports = Object.keys(self.exports).length;
-    var output = through(write, end);
+    var output = through2(write, end);
     
     var sort = depSorter({ index: true });
 
     input.on('data', function (row) { self.emit('row', row) });
-    return pipeline(through(hasher), sort, input, packer, output);
+    return pipeline(through2.obj(hasher), sort, input, packer, output);
     
-    function write (buf) {
+    function write (buf, encoding, callback) {
         if (first) writePrelude.call(this);
         first = false;
-        this.queue(buf);
+        this.push(buf);
+        callback();
     }
     
-    function end () {
+    function end (callback) {
         if (first) writePrelude.call(this);
         if (opts.standalone) {
-            this.queue(
+            this.push(
                 '\n(' + JSON.stringify(mainModule) + ')'
                 + umd.postlude(opts.standalone)
             );
         }
-        if (opts.debug) this.queue('\n');
-        this.queue(null);
+        if (opts.debug) this.push('\n');
+        callback();
     }
     
     function writePrelude () {
         if (!first) return;
         if (opts.standalone) {
-            return this.queue(umd.prelude(opts.standalone).trim() + 'return ');
+            return this.push(umd.prelude(opts.standalone).trim() + 'return ');
         }
-        if (hasExports) this.queue(
+        if (hasExports) this.push(
             (opts.externalRequireName || 'require') + '='
         );
     }
     
-    function hasher (row) {
+    function hasher (row, encoding, callback) {
         row.hash = hash(row.source);
         depList[row.id] = row.deps;
         depHash[row.id] = row.hash;
-        this.queue(row);
+        this.push(row);
+        callback();
     }
     
     function sameDeps (a, b) {
