@@ -421,6 +421,7 @@ Browserify.prototype.deps = function (opts) {
     
     opts.modules = self._builtins;
     opts.extensions = self._extensions;
+    opts.transforms = self._transforms;
     
     if (!opts.basedir) opts.basedir = self._basedir;
     var d = mdeps(self.files, opts);
