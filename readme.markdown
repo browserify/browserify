@@ -350,7 +350,7 @@ filenames that start with `.`.
 
 `opts.commondir` sets the algorithm used to parse out the common paths. Use
 `false` to turn this off, otherwise it uses the
-[commondir](https://npmjs.or/package/commondir) module.
+[commondir](https://npmjs.org/package/commondir) module.
 
 `opts.fullPaths` disables converting module ids into numerical indexes. This is
 useful for preserving the original paths that a bundle was generated with.
