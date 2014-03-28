@@ -1,6 +1,6 @@
 {
   "name": "browserify",
-  "version": "3.36.1",
+  "version": "3.36.2",
   "description": "browser-side require() the node way",
   "main": "index.js",
   "bin": {
@@ -42,12 +42,11 @@
     "http-browserify": "~1.3.1",
     "https-browserify": "~0.0.0",
     "inherits": "~2.0.1",
-    "insert-module-globals": "~5.0.0",
+    "insert-module-globals": "~5.0.1",
     "module-deps": "~1.8.0",
     "os-browserify": "~0.1.1",
     "parents": "~0.0.1",
     "path-browserify": "~0.0.0",
-    "process": "~0.6.0",
     "punycode": "~1.2.3",
     "querystring-es3": "0.2.0",
     "resolve": "~0.6.1",
