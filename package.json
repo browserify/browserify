@@ -47,7 +47,7 @@
     "os-browserify": "~0.1.1",
     "parents": "~0.0.1",
     "path-browserify": "~0.0.0",
-    "process": "^0.6.0",
+    "process": "~0.6.0",
     "punycode": "~1.2.3",
     "querystring-es3": "0.2.0",
     "resolve": "~0.6.1",
