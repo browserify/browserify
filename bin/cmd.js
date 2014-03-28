@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var fs = require('fs');
 var JSONStream = require('JSONStream');
-var through = require('through');
+var through = require('through2');
 
 var b = require('./args')(process.argv.slice(2));
 process.stdout.on('error', process.exit);
@@ -46,8 +46,9 @@ if (b.argv.deps) {
 if (b.argv.list) {
     var t = [].concat(b.argv.t).concat(b.argv.transform);
     var d = b.deps({ packageFilter: packageFilter, transform: t });
-    d.pipe(through(function (dep) {
-        this.queue(dep.id + '\n');
+    d.pipe(through(function (dep, enc, next) {
+        this.push(dep.id + '\n');
+        next();
     })).pipe(process.stdout);
     return;
 }
