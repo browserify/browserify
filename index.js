@@ -346,6 +346,11 @@ Browserify.prototype.bundle = function (opts, cb) {
     }
     
     self.emit('bundle', p);
+    p.on('end', function () {
+        process.nextTick(function () {
+            p.emit('close');
+        });
+    });
     return p;
 };
 
