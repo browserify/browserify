@@ -509,7 +509,6 @@ Browserify.prototype.pack = function (opts) {
     
     var mainModule;
     var hashes = {}, depList = {}, depHash = {};
-    var visited = {};
     
     var input = through2.obj(function (row_, encoding, callback) {
         var row = copy(row_);
@@ -637,15 +636,7 @@ Browserify.prototype.pack = function (opts) {
             var db = depList[kb];
             
             if (ka === kb) continue;
-            if (ha !== hb) return false;
-            if (visited[da] && visited[db]) {
-                if (!deepEqual(da, db)) return false;
-            }
-            else {
-                visited[da] = true;
-                visited[db] = true;
-                if (!sameDeps(da, db)) return false;
-            }
+            if (ha !== hb || !sameDeps(da, db)) return false;
         }
         return true;
     }
