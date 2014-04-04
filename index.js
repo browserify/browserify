@@ -84,7 +84,6 @@ function Browserify (opts) {
         return browserPack(params);
     };
 
-    var builtinNames = require('builtins');
 
     if ( typeof opts.builtins === 'boolean' ) {
 
