@@ -3,7 +3,7 @@ var test = require('tap').test;
 var vm = require('vm');
 
 test(function (t) {
-    t.plan(1);
+    t.plan(2);
     
     var b = browserify({
         entries: [ __dirname + '/no_builtins/main.js' ],
@@ -19,4 +19,20 @@ test(function (t) {
         };
         vm.runInNewContext(src, c);
     });
+
+    b = browserify({
+      entries: [ __dirname + '/no_builtins/main.js' ],
+      commondir: false,
+      builtins: []
+    });
+    b.bundle(function (err, src) {
+      var c = {
+        console: { log: function (msg) {
+          t.equal(msg, 'beep boop\n');
+        } },
+        require: require
+      };
+      vm.runInNewContext(src, c);
+    });
+
 });
