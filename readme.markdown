@@ -238,7 +238,7 @@ $ browserify -r through -r duplexer -r ./my-file.js:my-module > bundle.js
 
 Then in your page you can do:
 
-``` js
+``` html
 <script src="bundle.js"></script>
 <script>
   var through = require('through');
@@ -251,7 +251,7 @@ Then in your page you can do:
 ## external source maps
 
 If you prefer the source maps be saved to a separate `.js.map` source map file, you may use
-[exorcist](https://github.com/thlorenz/exorcist) in order to archieve that. It's as simple as:
+[exorcist](https://github.com/thlorenz/exorcist) in order to achieve that. It's as simple as:
 
 ```
 $ browserify main.js --debug | exorcist bundle.js.map > bundle.js 
@@ -360,7 +360,7 @@ useful for preserving the original paths that a bundle was generated with.
 
 `opts.pack` sets the browser-pack implementation to use. The `opts.pack()`
 should return a transform stream that accepts objects of the form that
-[module-deps](https://npmjs.org/package/module-deps) generates. Simplifed, this
+[module-deps](https://npmjs.org/package/module-deps) generates. Simplified, this
 is roughly:
 
 ```
@@ -535,7 +535,7 @@ There is a special "[browser](https://gist.github.com/4339901)" field you can
 set in your package.json on a per-module basis to override file resolution for
 browser-specific versions of files.
 
-For example, if you want to have a browser-specific module entrypoint for your
+For example, if you want to have a browser-specific module entry point for your
 `"main"` field you can just set the `"browser"` field to a string:
 
 ``` json
@@ -612,7 +612,7 @@ browserify x.js y.js -p [ factor-bundle -o bundle/x.js -o bundle/y.js ] \
   > bundle/common.js
 ```
 
-For a list of plugins, consulte the
+For a list of plugins, consult the
 [browserify-plugin tag](https://npmjs.org/browse/keyword/browserify-plugin)
 on npm.
 
