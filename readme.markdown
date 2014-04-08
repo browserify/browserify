@@ -211,7 +211,7 @@ When you `require()` any of these modules, you will get a browser-specific shim:
 * [url](https://npmjs.org/package/url)
 * [util](https://npmjs.org/package/util)
 * [vm](https://npmjs.org/package/vm-browserify)
-* [zlib](https://npmjs.org/package/zlib-browserify)
+* [zlib](https://npmjs.org/package/browserify-zlib)
 
 Additionally if you use any of these variables, they
 [will be defined](https://github.com/substack/insert-module-globals)

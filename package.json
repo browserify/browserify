@@ -64,7 +64,7 @@
     "url": "~0.7.9",
     "util": "~0.10.1",
     "vm-browserify": "~0.0.1",
-    "zlib-browserify": "~0.0.3"
+    "browserify-zlib": "~0.1.1"
   },
   "devDependencies": {
     "backbone": "~0.9.2",
