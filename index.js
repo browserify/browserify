@@ -83,13 +83,34 @@ function Browserify (opts) {
         params.sourceMapPrefix = '//#';
         return browserPack(params);
     };
-    
-    self._builtins = opts.builtins === false ? {} : opts.builtins || builtins;
-    if (opts.builtins === false) {
-        require('builtins').forEach(function (key) {
-            self._exclude[key] = true;
-        });
+
+
+    if ( typeof opts.builtins === 'boolean' ) {
+
+      self._builtins = opts.builtins ? builtins : {};
+
+    } else if ( Array.isArray(opts.builtins) ) {
+
+      self._builtins = {};
+      
+      opts.builtins.forEach(function(name){
+        if ( builtins.hasOwnProperty(name) ){
+          self._builtins[name] = builtins[name];
+        }      
+      });
+
+    } else {
+
+      self._builtins = builtins;
+
     }
+
+    require('builtins').forEach(function (key) {
+      if ( ! self._builtins.hasOwnProperty(key) ) {
+        self._exclude[key] = true;
+      }
+    });
+
     self._commondir = opts.commondir;
     
     var noParse = [].concat(opts.noParse).filter(Boolean);
