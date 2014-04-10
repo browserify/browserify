@@ -21,18 +21,17 @@ test(function (t) {
     });
 
     b = browserify({
-      entries: [ __dirname + '/no_builtins/main.js' ],
-      commondir: false,
-      builtins: []
+        entries: [ __dirname + '/no_builtins/main.js' ],
+        commondir: false,
+        builtins: []
     });
     b.bundle(function (err, src) {
-      var c = {
-        console: { log: function (msg) {
-          t.equal(msg, 'beep boop\n');
-        } },
-        require: require
-      };
-      vm.runInNewContext(src, c);
+        var c = {
+            console: { log: function (msg) {
+                t.equal(msg, 'beep boop\n');
+            } },
+            require: require
+        };
+        vm.runInNewContext(src, c);
     });
-
 });

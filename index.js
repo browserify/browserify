@@ -7,6 +7,7 @@ var parents = require('parents');
 var deepEqual = require('deep-equal');
 var defined = require('defined');
 var builtins = require('./lib/builtins.js');
+var builtinsList = require('builtins');
 
 var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
@@ -83,34 +84,28 @@ function Browserify (opts) {
         params.sourceMapPrefix = '//#';
         return browserPack(params);
     };
-
-
-    if ( typeof opts.builtins === 'boolean' ) {
-
-      self._builtins = opts.builtins ? builtins : {};
-
-    } else if ( Array.isArray(opts.builtins) ) {
-
-      self._builtins = {};
-      
-      opts.builtins.forEach(function(name){
-        if ( builtins.hasOwnProperty(name) ){
-          self._builtins[name] = builtins[name];
-        }      
-      });
-
-    } else {
-
-      self._builtins = builtins;
-
+    
+    if (typeof opts.builtins === 'boolean') {
+        self._builtins = opts.builtins ? builtins : {};
     }
-
-    require('builtins').forEach(function (key) {
-      if ( ! self._builtins.hasOwnProperty(key) ) {
-        self._exclude[key] = true;
-      }
+    else if (Array.isArray(opts.builtins)) {
+        self._builtins = {};
+        opts.builtins.forEach(function (name) {
+            if (builtins.hasOwnProperty(name)) {
+                self._builtins[name] = builtins[name];
+            }      
+        });
+    }
+    else {
+        self._builtins = builtins;
+    }
+    
+    builtinsList.forEach(function (key) {
+        if (!self._builtins.hasOwnProperty(key)) {
+            self._exclude[key] = true;
+        }
     });
-
+    
     self._commondir = opts.commondir;
     
     var noParse = [].concat(opts.noParse).filter(Boolean);
