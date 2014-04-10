@@ -2,8 +2,8 @@ var browserify = require('../');
 var test = require('tap').test;
 var vm = require('vm');
 
-test(function (t) {
-    t.plan(2);
+test('builtins false', function (t) {
+    t.plan(1);
     
     var b = browserify({
         entries: [ __dirname + '/no_builtins/main.js' ],
@@ -19,8 +19,11 @@ test(function (t) {
         };
         vm.runInNewContext(src, c);
     });
+});
 
-    b = browserify({
+test('builtins []', function (t) {
+    t.plan(1);
+    var b = browserify({
         entries: [ __dirname + '/no_builtins/main.js' ],
         commondir: false,
         builtins: []
