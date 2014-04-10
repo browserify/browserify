@@ -96,6 +96,9 @@ function Browserify (opts) {
             }      
         });
     }
+    else if (typeof opts.builtins === 'object') {
+        self._builtins = opts.builtins;
+    }
     else {
         self._builtins = builtins;
     }
