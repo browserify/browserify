@@ -38,3 +38,26 @@ test('builtins []', function (t) {
         vm.runInNewContext(src, c);
     });
 });
+
+test('builtins object', function (t) {
+    t.plan(2);
+    var b = browserify({
+        entries: [ __dirname + '/no_builtins/main.js' ],
+        commondir: false,
+        builtins: {
+            fs: require.resolve('./no_builtins/extra/fs.js'),
+            tls: require.resolve('./no_builtins/extra/tls.js')
+        }
+    });
+    var expected = [
+        'WRITE CODE EVERY DAY',
+        'WHATEVER'
+    ];
+    b.bundle(function (err, src) {
+        var c = { console: { log: log }, require: require };
+        function log (msg) {
+            t.equal(msg, expected.shift());
+        }
+        vm.runInNewContext(src, c);
+    });
+});
