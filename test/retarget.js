@@ -20,4 +20,5 @@ test('retarget with -r', function (t) {
         vm.runInNewContext(src, c);
         t.equal(c.require('beep'), 'boop');
     });
+    ps.stdin.end();
 });

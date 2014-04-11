@@ -40,8 +40,8 @@ module.exports = function (args) {
         return path.resolve(process.cwd(), entry);
     });
     var requires = [].concat(argv.r, argv.require).filter(Boolean);
-    
-    if (entries.length + requires.length === 0 && !process.stdin.isTTY) {
+   
+    if (entries.length === 0 && !process.stdin.isTTY) {
         entries.push(process.stdin);
     }
     
