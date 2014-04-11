@@ -139,6 +139,11 @@ Advanced Options:
     Turn off setting a commondir. This is useful if you want to preserve the
     original paths that a bundle was generated with. 
  
+  --no-bundle-external
+
+    Turn off bundling of all external modules. This is useful if you only want
+    to bundle your local files.
+
   --bare 
 
     Alias for both --no-builtins, --no-commondir, and sets --insert-global-vars
@@ -357,6 +362,9 @@ useful for preserving the original paths that a bundle was generated with.
 
 `opts.builtins` sets the list of builtins to use, which by default is set in
 `lib/builtins.js` in this distribution.
+
+`opts.bundleExternal` boolean option to set if external modules should be
+bundled. Defaults to true.
 
 `opts.pack` sets the browser-pack implementation to use. The `opts.pack()`
 should return a transform stream that accepts objects of the form that

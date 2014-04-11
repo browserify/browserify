@@ -10,8 +10,8 @@ var glob = require('glob');
 module.exports = function (args) {
     var argv = subarg(args, {
         'boolean': [
-            'deps','pack','ig','dg', 'im', 'd','list',
-            'builtins','commondir', 'bare', 'full-paths'
+            'deps', 'pack', 'ig', 'dg', 'im', 'd', 'list', 'builtins',
+            'commondir', 'bare', 'full-paths', 'bundle-external'
         ],
         string: [ 's' ],
         alias: {
@@ -30,7 +30,8 @@ module.exports = function (args) {
             dg: true,
             d: false,
             builtins: true,
-            commondir: true
+            commondir: true,
+            'bundle-external': true
         }
     });
     
@@ -64,7 +65,8 @@ module.exports = function (args) {
         entries: entries,
         fullPaths: argv['full-paths'],
         builtins: argv.builtins === false ? false : undefined,
-        commondir: argv.commondir === false ? false : undefined
+        commondir: argv.commondir === false ? false : undefined,
+        bundleExternal: argv['bundle-external']
     });
     function error (msg) {
         var e = new Error(msg);

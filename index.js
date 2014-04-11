@@ -110,6 +110,7 @@ function Browserify (opts) {
     });
     
     self._commondir = opts.commondir;
+    self._bundleExternal = opts.bundleExternal !== false;
     
     var noParse = [].concat(opts.noParse).filter(Boolean);
     noParse.forEach(this.noParse.bind(this));
@@ -671,6 +672,9 @@ var packageFilter = function (info) {
 
 Browserify.prototype._resolve = function (id, parent, cb) {
     var self = this;
+
+    if (!self._bundleExternal && id[0] !== '/' && id[0] !== '.')
+        return cb(null, excludeModulePath);
     if (self._exclude[id]) return cb(null, excludeModulePath);
     if (self._ignore[id]) return cb(null, emptyModulePath);
     
