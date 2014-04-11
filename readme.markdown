@@ -169,14 +169,18 @@ Advanced Options:
     Consider files with specified EXTENSION as modules, this option can used
     multiple times.
 
-  --global-transform, --g
+  --global-transform=MODULE, --g MODULE
 
     Use a transform module on all files after any ordinary transforms have run.
 
-Passing arguments to transforms:
+  --plugin=MODULE, -p MODULE
 
-  For -t and -g, you may use subarg syntax to pass options to transforms as the
-  second parameter after the filename. For example:
+    Register MODULE as a plugin.
+
+Passing arguments to transforms and plugins:
+
+  For -t, -g, and -p, you may use subarg syntax to pass options to the
+  transforms or plugin function as the second parameter. For example:
 
     -t [ foo -x 3 --beep ]
 
