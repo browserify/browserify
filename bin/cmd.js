@@ -46,7 +46,7 @@ if (b.argv.deps) {
 if (b.argv.list) {
     var t = [].concat(b.argv.t).concat(b.argv.transform);
     var d = b.deps({ packageFilter: packageFilter, transform: t });
-    d.pipe(through(function (dep, enc, next) {
+    d.pipe(through.obj(function (dep, enc, next) {
         this.push(dep.id + '\n');
         next();
     })).pipe(process.stdout);
