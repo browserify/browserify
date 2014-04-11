@@ -289,7 +289,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     else if (!basedir && self.files.length === 1) {
         basedir = path.dirname(self.files[0]);
     }
-    else if (!basedir && self.files.length === 0) {
+    else if (!basedir && (self.files.length === 0 || isStream(self.files[0]))) {
         basedir = process.cwd();
     }
     else if (!basedir) basedir = commondir(self.files);
