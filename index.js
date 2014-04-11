@@ -672,9 +672,10 @@ var packageFilter = function (info) {
 
 Browserify.prototype._resolve = function (id, parent, cb) {
     var self = this;
-
-    if (!self._bundleExternal && id[0] !== '/' && id[0] !== '.')
+    
+    if (!self._bundleExternal && id[0] !== '/' && id[0] !== '.') {
         return cb(null, excludeModulePath);
+    }
     if (self._exclude[id]) return cb(null, excludeModulePath);
     if (self._ignore[id]) return cb(null, emptyModulePath);
     
