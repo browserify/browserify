@@ -24,6 +24,7 @@
     "assert": "~1.1.0",
     "browser-pack": "~2.0.0",
     "browser-resolve": "~1.2.1",
+    "browserify-zlib": "~0.1.2",
     "buffer": "~2.1.4",
     "builtins": "~0.0.3",
     "commondir": "0.0.1",
@@ -43,7 +44,7 @@
     "https-browserify": "~0.0.0",
     "inherits": "~2.0.1",
     "insert-module-globals": "~5.0.1",
-    "module-deps": "~1.8.0",
+    "module-deps": "~1.8.1",
     "os-browserify": "~0.1.1",
     "parents": "~0.0.1",
     "path-browserify": "~0.0.0",
@@ -63,8 +64,7 @@
     "umd": "~2.0.0",
     "url": "~0.7.9",
     "util": "~0.10.1",
-    "vm-browserify": "~0.0.1",
-    "browserify-zlib": "~0.1.2"
+    "vm-browserify": "~0.0.1"
   },
   "devDependencies": {
     "backbone": "~0.9.2",
