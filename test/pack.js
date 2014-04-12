@@ -30,6 +30,14 @@ test('custom packer', function (t) {
         }
     });
     b.bundle(function (err, src) {
-        t.equal(src, '1\n2\n3\n');
+        t.equal(src, '1\n2\n3\n;');
     });
+});
+
+test('end with semicolon', function (t) {
+  t.plan(1);
+  var b = browserify(__dirname + '/entry/main.js');
+  b.bundle(function (err, src) {
+    t.equal(src.charAt(src.length - 1), ';');
+  });
 });
