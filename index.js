@@ -313,9 +313,9 @@ Browserify.prototype.bundle = function (opts, cb) {
     opts.transformKey = [ 'browserify', 'transform' ];
     
     var parentFilter = opts.packageFilter;
-    opts.packageFilter = function (pkg) {
-        if (parentFilter) pkg = parentFilter(pkg || {});
-        return packageFilter(pkg || {});
+    opts.packageFilter = function (pkg, x) {
+        if (parentFilter) pkg = parentFilter(pkg || {}, x);
+        return packageFilter(pkg || {}, x);
     };
 
     if (cb) cb = (function (f) {
