@@ -192,7 +192,7 @@ module.exports = function (args) {
         })
     ;
     
-    if (argv.standalone === true) {
+    if (argv.standalone === '') {
         error('--standalone requires an export name argument');
         return b;
     }
