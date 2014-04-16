@@ -725,7 +725,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         }
         else if (!file && self._ignoreMissing) {
             self.emit('missing', id, parent);
-            return cb(null, emptyModulePath);
+            return cb(null, excludeModulePath);
         }
         else if (!file) {
             return cb(notFound(id, parent.filename))
