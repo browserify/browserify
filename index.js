@@ -379,6 +379,11 @@ Browserify.prototype.transform = function (opts, t) {
         t = opts;
         opts = {};
     }
+    if (typeof opts === 'string' || typeof opts === 'function') {
+        var t_ = t;
+        t = opts;
+        opts = t;
+    }
     if (!opts) opts = {};
     if (typeof t === 'string') {
         try {
