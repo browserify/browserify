@@ -649,7 +649,7 @@ Browserify.prototype.pack = function (opts) {
         callback();
     }
     
-    function sameDeps (a, b) {
+    function sameDeps (a, b, limit) {
         var keys = Object.keys(a);
         if (keys.length !== Object.keys(b).length) return false;
         
@@ -661,7 +661,9 @@ Browserify.prototype.pack = function (opts) {
             var db = depList[kb];
             
             if (ka === kb) continue;
-            if (ha !== hb || !sameDeps(da, db)) return false;
+            if (ha !== hb || (!limit && !sameDeps(da, db, 1))) {
+                return false;
+            }
         }
         return true;
     }
