@@ -627,6 +627,7 @@ Browserify.prototype.pack = function (opts) {
                 + umd.postlude(opts.standalone)
             );
         }
+        this.push(';');
         if (opts.debug) this.push('\n');
         callback();
     }
