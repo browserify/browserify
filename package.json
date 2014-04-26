@@ -26,7 +26,7 @@
     "browser-resolve": "~1.2.1",
     "browserify-zlib": "~0.1.2",
     "buffer": "~2.1.4",
-    "builtins": "~0.0.3",
+    "builtins": "~0.0.4",
     "commondir": "0.0.1",
     "concat-stream": "~1.4.1",
     "console-browserify": "~1.0.1",
