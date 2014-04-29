@@ -146,6 +146,9 @@ Browserify.prototype.require = function (id, opts) {
         self.files.push(id);
         if (opts.entry) self._entries.push(id.path);
         return self;
+    } else if (Array.isArray(id)) {
+        id.forEach(function(id) { self.require(id, opts); });
+        return self;
     }
     
     if (opts === undefined) opts = { expose: id };
@@ -237,6 +240,9 @@ Browserify.prototype.external = function (id, opts) {
         }
         if (id._pending === 0) return captureDeps();
         return id.once('_ready', captureDeps);
+    } else if (Array.isArray(id)) {
+        id.forEach(function(id) { self.external(id, opts); });
+        return self;
     }
     
     opts.external = true;
