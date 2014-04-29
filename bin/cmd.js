@@ -24,10 +24,7 @@ if (b.argv.v || b.argv.version) {
     return console.log(require('../package.json').version);
 }
 
-b.on('error', function (err) {
-    console.error(String(err));
-    process.exit(1);
-});
+b.on('error', errorExit);
 
 if (b.argv.pack) {
     process.stdin.pipe(b.pack()).pipe(process.stdout);
@@ -54,10 +51,7 @@ if (b.argv.list) {
 }
 
 var bundle = b.bundle();
-bundle.on('error', function (err) {
-    console.error(String(err));
-    process.exit(1);
-});
+bundle.on('error', errorExit);
 
 var outfile = b.argv.o || b.argv.outfile;
 if (outfile) {
@@ -73,4 +67,14 @@ function packageFilter (info) {
         delete info.browserify;
     }
     return info || {};
+}
+
+function errorExit(err) {
+    if (err.stack) {
+        console.error(err.stack);
+    }
+    else {
+        console.error(String(err));
+    }
+    process.exit(1);
 }
