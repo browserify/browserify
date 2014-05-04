@@ -14,7 +14,7 @@ var dir = path.join(
 var dirstring = dir.split(path.sep).slice(-2).join(path.sep);
 
 test('leaking information about system paths', function (t) {
-    t.plan(3);
+    t.plan(4);
     
     var b = browserify({ basedir: dir });
     var stream = through();
@@ -28,6 +28,7 @@ test('leaking information about system paths', function (t) {
     b.bundle(function (err, src) {
         t.equal(src.indexOf(dirstring), -1, 'temp directory visible');
         t.equal(src.indexOf(process.cwd()), -1, 'cwd directory visible');
+        t.equal(src.indexOf('/home'), -1, 'home directory visible');
         vm.runInNewContext(src, { t: t, setTimeout: setTimeout });
     });
 });
