@@ -6,12 +6,13 @@ var insertGlobals = require('insert-module-globals');
 var duplexer = require('duplexer');
 var subarg = require('subarg');
 var glob = require('glob');
+var fs = require('fs');
 
 module.exports = function (args) {
     var argv = subarg(args, {
         'boolean': [
             'deps', 'pack', 'ig', 'dg', 'im', 'd', 'list', 'builtins',
-            'commondir', 'bare', 'full-paths', 'bundle-external'
+            'commondir', 'bare', 'full-paths', 'bundle-external', 'prelude-path'
         ],
         string: [ 's' ],
         alias: {
@@ -213,6 +214,10 @@ module.exports = function (args) {
         debug: argv['debug'] || argv.d,
         standalone: argv['standalone'] || argv.s
     };
+    if (argv['prelude-path']) {
+      var prelude = fs.readFileSync(path.resolve(__dirname, '../', argv['prelude-path']), 'utf8');
+      bundleOpts.prelude = prelude;
+    }
     var bundle = b.bundle;
     b.bundle = function (opts, cb) {
         if (!opts) opts = {};
