@@ -212,12 +212,6 @@ Browserify.prototype.require = function (id, opts) {
     return self;
 };
 
-// DEPRECATED
-Browserify.prototype.expose = function (name, file) {
-    this.exports[file] = name;
-    this.files.push(file);
-};
-
 Browserify.prototype.external = function (id, opts) {
     var self = this;
     if (!opts) opts = {};

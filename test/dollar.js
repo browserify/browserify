@@ -5,7 +5,7 @@ var test = require('tap').test;
 test('dollar', function (t) {
     t.plan(3);
     var b = browserify();
-    b.expose('dollar', __dirname + '/dollar/dollar/index.js');
+    b.require(__dirname + '/dollar/dollar/index.js', { expose: 'dollar' });
     b.bundle(function (err, src) {
         t.ok(typeof src === 'string');
         t.ok(src.length > 0);

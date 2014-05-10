@@ -6,7 +6,7 @@ test('subdep', function (t) {
     t.plan(1);
     
     var b = browserify();
-    b.expose('subdep', __dirname + '/subdep/index.js');
+    b.require(__dirname + '/subdep/index.js', { expose: 'subdep' });
     
     b.bundle(function (err, src) {
         var c = {};
