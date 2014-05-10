@@ -53,7 +53,6 @@
     "resolve": "~0.6.1",
     "shallow-copy": "0.0.1",
     "shell-quote": "~0.0.1",
-    "stream-browserify": "~0.1.0",
     "stream-combiner": "~0.0.2",
     "string_decoder": "~0.0.0",
     "subarg": "0.0.1",
@@ -66,7 +65,8 @@
     "util": "~0.10.1",
     "vm-browserify": "~0.0.1",
     "xtend": "^3.0.0",
-    "process": "^0.7.0"
+    "process": "^0.7.0",
+    "readable-stream": "^1.0.27-1"
   },
   "devDependencies": {
     "backbone": "~0.9.2",
