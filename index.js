@@ -442,7 +442,7 @@ Browserify.prototype.deps = function (opts) {
     else if (!basedir) basedir = commondir(self.files);
     
     if (opts.detectGlobals || opts.insertGlobals) {
-        opts.globalTransform = [ function (file) {
+        opts.globalTransform = self._globalTransforms.concat(function (file) {
             if (self._noParse.indexOf(file) >= 0) {
                 return through2();
             }
@@ -462,7 +462,7 @@ Browserify.prototype.deps = function (opts) {
                 self._mapped[self._hash(processPath)] = processPath;
             });
             return inserter;
-        } ].concat(self._globalTransforms);
+        });
     }
     else opts.globalTransform = self._globalTransforms;
     
