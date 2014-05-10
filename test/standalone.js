@@ -28,7 +28,7 @@ test('standalone', function (t) {
         t.test('RequireJS', function (t) {
             t.plan(2);
             var c = {
-                define: function (fn) {
+                define: function (dependencies, fn) {
                     fn()(done(t));
                 }
             };
@@ -62,7 +62,7 @@ test('A.B.C standalone', function (t) {
         t.test('RequireJS', function (t) {
             t.plan(2);
             var c = {
-                define: function (fn) {
+                define: function (dependencies, fn) {
                     fn()(done(t));
                 }
             };

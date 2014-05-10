@@ -32,7 +32,7 @@ test('standalone in debug mode', function (t) {
         t.test('RequireJS', function (t) {
             t.plan(2);
             var c = {
-                define: function (fn) {
+                define: function (dependencies, fn) {
                     fn()(done(t));
                 }
             };
