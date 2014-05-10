@@ -277,62 +277,11 @@ Browserify.prototype.bundle = function (opts, cb) {
         opts = {};
     }
     if (!opts) opts = {};
-    if (opts.insertGlobals === undefined) opts.insertGlobals = false;
-    if (opts.detectGlobals === undefined) opts.detectGlobals = true;
     if (opts.ignoreMissing === undefined) opts.ignoreMissing = false;
     if (opts.standalone === undefined) opts.standalone = false;
     
     self._ignoreMissing = opts.ignoreMissing;
     
-    opts.resolve = self._resolve.bind(self);
-    opts.transform = self._transforms;
-    
-    var basedir = opts.basedir || self._basedir;
-    if (!basedir && self._commondir === false) {
-        basedir = '/';
-    }
-    else if (!basedir && self.files.length === 1) {
-        basedir = path.dirname(self.files[0]);
-    }
-    else if (!basedir && (self.files.length === 0 || isStream(self.files[0]))) {
-        basedir = process.cwd();
-    }
-    else if (!basedir) basedir = commondir(self.files);
-    
-    if (opts.detectGlobals || opts.insertGlobals) {
-        opts.globalTransform = [ function (file) {
-            if (self._noParse.indexOf(file) >= 0) {
-                return through2();
-            }
-            var inserter = insertGlobals(file, {
-                always: opts.insertGlobals,
-                vars: merge({
-                    process: function () {
-                        return 'require('
-                            + JSON.stringify(self._hash(processPath))
-                        + ')';
-                    }
-                }, opts.insertGlobalVars),
-                basedir: basedir
-            });
-            inserter.on('global', function (name) {
-                if (name !== 'process') return;
-                self._mapped[self._hash(processPath)] = processPath;
-            });
-            return inserter;
-        } ].concat(self._globalTransforms);
-    }
-    else opts.globalTransform = self._globalTransforms;
-    
-    opts.noParse = self._noParse;
-    opts.transformKey = [ 'browserify', 'transform' ];
-    
-    var parentFilter = opts.packageFilter;
-    opts.packageFilter = function (pkg, x) {
-        if (parentFilter) pkg = parentFilter(pkg || {}, x);
-        return packageFilter(pkg || {}, x);
-    };
-
     if (cb) cb = (function (f) {
         return function () {
             if (f) f.apply(this, arguments);
@@ -474,6 +423,58 @@ Browserify.prototype.deps = function (opts) {
     opts.extensions = self._extensions;
     opts.transforms = self._transforms;
     opts.packageCache = opts.packageCache || self._pkgcache;
+    
+    if (opts.insertGlobals === undefined) opts.insertGlobals = false;
+    if (opts.detectGlobals === undefined) opts.detectGlobals = true;
+    opts.resolve = self._resolve.bind(self);
+    opts.transform = self._transforms;
+    
+    var basedir = opts.basedir || self._basedir;
+    if (!basedir && self._commondir === false) {
+        basedir = '/';
+    }
+    else if (!basedir && self.files.length === 1) {
+        basedir = path.dirname(self.files[0]);
+    }
+    else if (!basedir && (self.files.length === 0 || isStream(self.files[0]))) {
+        basedir = process.cwd();
+    }
+    else if (!basedir) basedir = commondir(self.files);
+    
+    if (opts.detectGlobals || opts.insertGlobals) {
+        opts.globalTransform = [ function (file) {
+            if (self._noParse.indexOf(file) >= 0) {
+                return through2();
+            }
+            var inserter = insertGlobals(file, {
+                always: opts.insertGlobals,
+                vars: merge({
+                    process: function () {
+                        return 'require('
+                            + JSON.stringify(self._hash(processPath))
+                        + ')';
+                    }
+                }, opts.insertGlobalVars),
+                basedir: basedir
+            });
+            inserter.on('global', function (name) {
+                if (name !== 'process') return;
+                self._mapped[self._hash(processPath)] = processPath;
+            });
+            return inserter;
+        } ].concat(self._globalTransforms);
+    }
+    else opts.globalTransform = self._globalTransforms;
+    
+    opts.noParse = self._noParse;
+    opts.transformKey = [ 'browserify', 'transform' ];
+    
+    var parentFilter = opts.packageFilter;
+    opts.packageFilter = function (pkg, x) {
+        if (parentFilter) pkg = parentFilter(pkg || {}, x);
+        return packageFilter(pkg || {}, x);
+    };
+
     
     if (!opts.basedir) opts.basedir = self._basedir;
     var d = mdeps(self.files, opts);
