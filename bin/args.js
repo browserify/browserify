@@ -42,10 +42,6 @@ module.exports = function (args) {
     });
     var requires = [].concat(argv.r, argv.require).filter(Boolean);
    
-    if (entries.length === 0 && !process.stdin.isTTY) {
-        entries.push(process.stdin);
-    }
-    
     if (argv.s && entries.length === 0 && requires.length === 1) {
         entries.push(requires[0]);
         argv.r = argv.require = [];
