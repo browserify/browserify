@@ -6,6 +6,7 @@ var insertGlobals = require('insert-module-globals');
 var duplexer = require('duplexer');
 var subarg = require('subarg');
 var glob = require('glob');
+var Readable = require('readable-stream').Readable;
 
 module.exports = function (args) {
     var argv = subarg(args, {
@@ -36,8 +37,15 @@ module.exports = function (args) {
     });
     
     var entries = argv._.concat(argv.e).concat(argv.entry)
-    .filter(Boolean).map(function(entry) {
-        if (entry === '-') return process.stdin;
+    .filter(Boolean).map(function (entry) {
+        if (entry === '-') {
+            var s = process.stdin;
+            if (typeof s.read === 'function') return s;
+            // only needed for 0.8, remove at some point later:
+            var rs = Readable().wrap(s);
+            s.resume();
+            return rs;
+        }
         return path.resolve(process.cwd(), entry);
     });
     var requires = [].concat(argv.r, argv.require).filter(Boolean);
