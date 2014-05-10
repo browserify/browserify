@@ -473,6 +473,7 @@ Browserify.prototype.deps = function (opts) {
     opts.modules = self._builtins;
     opts.extensions = self._extensions;
     opts.transforms = self._transforms;
+    opts.packageCache = opts.packageCache || self._pkgcache;
     
     if (!opts.basedir) opts.basedir = self._basedir;
     var d = mdeps(self.files, opts);
@@ -780,6 +781,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
             if (err) return cb(err);
             try { var pkg = JSON.parse(src) }
             catch (e) {}
+            pkg.__dirname = path.dirname(pkgfile);
             cb(null, pkg);
         });
     }
