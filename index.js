@@ -18,6 +18,7 @@ var insertGlobals = require('insert-module-globals');
 var umd = require('umd');
 var derequire = require('derequire');
 var commondir = require('commondir');
+var merge = require('xtend');
 
 var path = require('path');
 var inherits = require('inherits');
@@ -27,6 +28,7 @@ var copy = require('shallow-copy');
 
 var emptyModulePath = path.join(__dirname, 'lib/_empty.js');
 var excludeModulePath = path.join(__dirname, 'lib/_exclude.js');
+var processPath = require.resolve('process/browser.js');
 
 module.exports = function (opts, xopts) {
     if (opts === undefined) opts = {};
@@ -120,7 +122,7 @@ Browserify.prototype._hash = function (id) {
     var basedir = this._basedir;
     if (!basedir) basedir = process.cwd();
     return hash(path.relative(basedir, id));
-}
+};
 
 Browserify.prototype.noParse = function(file) {
     var self = this;
@@ -308,11 +310,22 @@ Browserify.prototype.bundle = function (opts, cb) {
             if (self._noParse.indexOf(file) >= 0) {
                 return through2();
             }
-            return insertGlobals(file, {
+            var inserter = insertGlobals(file, {
                 always: opts.insertGlobals,
-                vars: opts.insertGlobalVars,
+                vars: merge({
+                    process: function () {
+                        return 'require('
+                            + JSON.stringify(self._hash(processPath))
+                        + ')';
+                    }
+                }, opts.insertGlobalVars),
                 basedir: basedir
             });
+            inserter.on('global', function (name) {
+                if (name !== 'process') return;
+                self._mapped[self._hash(processPath)] = processPath;
+            });
+            return inserter;
         } ].concat(self._globalTransforms);
     }
     else opts.globalTransform = self._globalTransforms;
@@ -747,7 +760,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         
         result(file, pkg);
     });
-     
+    
     function findPackage (basedir, cb) {
         var dirs = parents(basedir);
         (function next () {
