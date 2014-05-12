@@ -76,7 +76,7 @@ function Browserify (opts) {
     self._ignoreMissing = opts.ignoreMissing;
     self._basedir = opts.basedir;
     self._delegateResolve = opts.resolve || browserResolve;
-    
+
     var sep = /^win/i.test(process.platform) ? ';' : ':';
     self._paths = opts.paths || (process.env.NODE_PATH || '').split(sep);
     self._fullPaths = !!opts.fullPaths;
@@ -279,7 +279,8 @@ Browserify.prototype.bundle = function (opts, cb) {
     if (!opts) opts = {};
     if (opts.ignoreMissing === undefined) opts.ignoreMissing = false;
     if (opts.standalone === undefined) opts.standalone = false;
-    
+    if (opts.derequire === undefined) opts.derequire = true;
+
     self._ignoreMissing = opts.ignoreMissing;
     
     if (cb) cb = (function (f) {
@@ -313,7 +314,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     if (cb) {
         p.on('error', cb);
         p.pipe(concatStream({ encoding: 'string' }, function (src) {
-            cb(null, opts.standalone ? derequire(src) : src);
+            cb(null, opts.standalone && opts.derequire ? derequire(src) : src);
         }));
         p.resume();
     }
@@ -324,7 +325,7 @@ Browserify.prototype.bundle = function (opts, cb) {
     if (opts.standalone) {
         var output = through2();
         p.pipe(concatStream({ encoding: 'string' }, function (body) {
-            output.end(derequire(body));
+            output.end(opts.derequire ? derequire(body) : body);
         }));
         return output;
     }
@@ -727,7 +728,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
             self.emit('package', file, pkg);
         })
     };
-    if (self._mapped[id]) return result(self._mapped[id]);
+    if (self._mapped[id] && !self._exclude[id] && !self._ignore[id] && !self._external[id]) return result(self._mapped[id]);
     
     parent.modules = self._builtins;
     parent.extensions = self._extensions;
@@ -753,7 +754,9 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         if (self._exclude[file]) return cb(null, excludeModulePath);
         if (self._ignore[file]) return cb(null, emptyModulePath);
         if (self._external[file]) return result(file, pkg, true);
-        
+
+        self._mapped[id] = file;
+
         result(file, pkg);
     });
     
