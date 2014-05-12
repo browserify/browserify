@@ -1,5 +1,5 @@
 var crypto = require('crypto');
-var through = require('through');
+var through2 = require('through2');
 var pipeline = require('stream-combiner');
 var concatStream = require('concat-stream');
 var checkSyntax = require('syntax-error');
@@ -7,6 +7,7 @@ var parents = require('parents');
 var deepEqual = require('deep-equal');
 var defined = require('defined');
 var builtins = require('./lib/builtins.js');
+var builtinsList = require('builtins');
 
 var mdeps = require('module-deps');
 var browserPack = require('browser-pack');
@@ -17,6 +18,7 @@ var insertGlobals = require('insert-module-globals');
 var umd = require('umd');
 var derequire = require('derequire');
 var commondir = require('commondir');
+var merge = require('xtend');
 
 var path = require('path');
 var inherits = require('inherits');
@@ -26,6 +28,7 @@ var copy = require('shallow-copy');
 
 var emptyModulePath = path.join(__dirname, 'lib/_empty.js');
 var excludeModulePath = path.join(__dirname, 'lib/_exclude.js');
+var processPath = require.resolve('process/browser.js');
 
 module.exports = function (opts, xopts) {
     if (opts === undefined) opts = {};
@@ -84,13 +87,32 @@ function Browserify (opts) {
         return browserPack(params);
     };
     
-    self._builtins = opts.builtins === false ? {} : opts.builtins || builtins;
-    if (opts.builtins === false) {
-        require('builtins').forEach(function (key) {
-            self._exclude[key] = true;
+    if (typeof opts.builtins === 'boolean') {
+        self._builtins = opts.builtins ? builtins : {};
+    }
+    else if (Array.isArray(opts.builtins)) {
+        self._builtins = {};
+        opts.builtins.forEach(function (name) {
+            if (builtins.hasOwnProperty(name)) {
+                self._builtins[name] = builtins[name];
+            }      
         });
     }
+    else if (typeof opts.builtins === 'object') {
+        self._builtins = opts.builtins;
+    }
+    else {
+        self._builtins = builtins;
+    }
+    
+    builtinsList.forEach(function (key) {
+        if (!self._builtins.hasOwnProperty(key)) {
+            self._exclude[key] = true;
+        }
+    });
+    
     self._commondir = opts.commondir;
+    self._bundleExternal = opts.bundleExternal !== false;
     
     var noParse = [].concat(opts.noParse).filter(Boolean);
     noParse.forEach(this.noParse.bind(this));
@@ -100,7 +122,7 @@ Browserify.prototype._hash = function (id) {
     var basedir = this._basedir;
     if (!basedir) basedir = process.cwd();
     return hash(path.relative(basedir, id));
-}
+};
 
 Browserify.prototype.noParse = function(file) {
     var self = this;
@@ -125,6 +147,10 @@ Browserify.prototype.require = function (id, opts) {
     if (isStream(id)) {
         self.files.push(id);
         if (opts.entry) self._entries.push(id.path);
+        return self;
+    }
+    else if (Array.isArray(id)) {
+        id.forEach(function(id) { self.require(id, opts) });
         return self;
     }
     
@@ -186,12 +212,6 @@ Browserify.prototype.require = function (id, opts) {
     return self;
 };
 
-// DEPRECATED
-Browserify.prototype.expose = function (name, file) {
-    this.exports[file] = name;
-    this.files.push(file);
-};
-
 Browserify.prototype.external = function (id, opts) {
     var self = this;
     if (!opts) opts = {};
@@ -204,15 +224,23 @@ Browserify.prototype.external = function (id, opts) {
         function captureDeps() {
             var d = mdeps(id.files, opts);
             d.on('error', self.emit.bind(self, 'error'));
-            d.pipe(through(write, end));
+            d.pipe(through2.obj(write, end));
             
-            function write (row) { self.external(row.id) }
-            function end () {
+            function write (row, encoding, callback) {
+                self.external(row.id);
+                callback();
+            }
+            function end (callback) {
                 if (--self._pending === 0) self.emit('_ready');
+                callback();
             }
         }
         if (id._pending === 0) return captureDeps();
         return id.once('_ready', captureDeps);
+    }
+    else if (Array.isArray(id)) {
+        id.forEach(function(id) { self.external(id, opts) });
+        return self;
     }
     
     opts.external = true;
@@ -249,52 +277,12 @@ Browserify.prototype.bundle = function (opts, cb) {
         opts = {};
     }
     if (!opts) opts = {};
-    if (opts.insertGlobals === undefined) opts.insertGlobals = false;
-    if (opts.detectGlobals === undefined) opts.detectGlobals = true;
     if (opts.ignoreMissing === undefined) opts.ignoreMissing = false;
     if (opts.standalone === undefined) opts.standalone = false;
     if (opts.derequire === undefined) opts.derequire = true;
 
     self._ignoreMissing = opts.ignoreMissing;
     
-    opts.resolve = self._resolve.bind(self);
-    opts.transform = self._transforms;
-    
-    var basedir = opts.basedir || self._basedir;
-    if (!basedir && self._commondir === false) {
-        basedir = '/';
-    }
-    else if (!basedir && self.files.length === 1) {
-        basedir = path.dirname(self.files[0]);
-    }
-    else if (!basedir && self.files.length === 0) {
-        basedir = process.cwd();
-    }
-    else if (!basedir) basedir = commondir(self.files);
-    
-    if (opts.detectGlobals || opts.insertGlobals) {
-        opts.globalTransform = [ function (file) {
-            if (self._noParse.indexOf(file) >= 0) {
-                return through();
-            }
-            return insertGlobals(file, {
-                always: opts.insertGlobals,
-                vars: opts.insertGlobalVars,
-                basedir: basedir
-            });
-        } ].concat(self._globalTransforms);
-    }
-    else opts.globalTransform = self._globalTransforms;
-    
-    opts.noParse = self._noParse;
-    opts.transformKey = [ 'browserify', 'transform' ];
-    
-    var parentFilter = opts.packageFilter;
-    opts.packageFilter = function (pkg) {
-        if (parentFilter) pkg = parentFilter(pkg || {});
-        return packageFilter(pkg || {});
-    };
-
     if (cb) cb = (function (f) {
         return function () {
             if (f) f.apply(this, arguments);
@@ -303,13 +291,14 @@ Browserify.prototype.bundle = function (opts, cb) {
     })(cb);
 
     if (self._pending) {
-        var tr = through();
+        var tr = through2();
         self.on('_ready', function () {
             var b = self.bundle(opts, cb);
             b.on('transform', tr.emit.bind(tr, 'transform'));
             if (!cb) b.on('error', tr.emit.bind(tr, 'error'));
             b.pipe(tr);
         });
+        if (cb) tr.resume();
         return tr;
     }
 
@@ -327,13 +316,14 @@ Browserify.prototype.bundle = function (opts, cb) {
         p.pipe(concatStream({ encoding: 'string' }, function (src) {
             cb(null, opts.standalone && opts.derequire ? derequire(src) : src);
         }));
+        p.resume();
     }
     d.on('error', p.emit.bind(p, 'error'));
     d.on('transform', p.emit.bind(p, 'transform'));
     d.pipe(p);
     
     if (opts.standalone) {
-        var output = through();
+        var output = through2();
         p.pipe(concatStream({ encoding: 'string' }, function (body) {
             output.end(opts.derequire ? derequire(body) : body);
         }));
@@ -341,6 +331,11 @@ Browserify.prototype.bundle = function (opts, cb) {
     }
     
     self.emit('bundle', p);
+    p.on('end', function () {
+        process.nextTick(function () {
+            p.emit('close');
+        });
+    });
     return p;
 };
 
@@ -348,6 +343,11 @@ Browserify.prototype.transform = function (opts, t) {
     if (t === undefined) {
         t = opts;
         opts = {};
+    }
+    if (typeof opts === 'string' || typeof opts === 'function') {
+        var t_ = t;
+        t = opts;
+        opts = t;
     }
     if (!opts) opts = {};
     if (typeof t === 'string') {
@@ -413,7 +413,7 @@ Browserify.prototype.deps = function (opts) {
     if (!opts) opts = {};
     
     if (self._pending) {
-        var tr = through();
+        var tr = through2.obj();
         self.on('_ready', function () {
             self.deps(opts).pipe(tr);
         });
@@ -422,19 +422,73 @@ Browserify.prototype.deps = function (opts) {
     
     opts.modules = self._builtins;
     opts.extensions = self._extensions;
+    opts.transforms = self._transforms;
+    opts.packageCache = opts.packageCache || self._pkgcache;
+    
+    if (opts.insertGlobals === undefined) opts.insertGlobals = false;
+    if (opts.detectGlobals === undefined) opts.detectGlobals = true;
+    opts.resolve = self._resolve.bind(self);
+    opts.transform = self._transforms;
+    
+    var basedir = opts.basedir || self._basedir;
+    if (!basedir && self._commondir === false) {
+        basedir = '/';
+    }
+    else if (!basedir && self.files.length === 1) {
+        basedir = path.dirname(self.files[0]);
+    }
+    else if (!basedir && (self.files.length === 0 || isStream(self.files[0]))) {
+        basedir = process.cwd();
+    }
+    else if (!basedir) basedir = commondir(self.files);
+    
+    if (opts.detectGlobals || opts.insertGlobals) {
+        opts.globalTransform = self._globalTransforms.concat(function (file) {
+            if (self._noParse.indexOf(file) >= 0) {
+                return through2();
+            }
+            var inserter = insertGlobals(file, {
+                always: opts.insertGlobals,
+                vars: merge({
+                    process: function () {
+                        return 'require('
+                            + JSON.stringify(self._hash(processPath))
+                        + ')';
+                    }
+                }, opts.insertGlobalVars),
+                basedir: basedir
+            });
+            inserter.on('global', function (name) {
+                if (name !== 'process') return;
+                self._mapped[self._hash(processPath)] = processPath;
+            });
+            return inserter;
+        });
+    }
+    else opts.globalTransform = self._globalTransforms;
+    
+    opts.noParse = self._noParse;
+    opts.transformKey = [ 'browserify', 'transform' ];
+    
+    var parentFilter = opts.packageFilter;
+    opts.packageFilter = function (pkg, x) {
+        if (parentFilter) pkg = parentFilter(pkg || {}, x);
+        return packageFilter(pkg || {}, x);
+    };
+
     
     if (!opts.basedir) opts.basedir = self._basedir;
     var d = mdeps(self.files, opts);
     
     var index = 0;
-    var tr = d.pipe(through(write));
+    var tr = d.pipe(through2.obj(write));
     d.on('error', tr.emit.bind(tr, 'error'));
     d.on('transform', tr.emit.bind(tr, 'transform'));
     return tr;
     
-    function write (row) {
-        if (row.id === excludeModulePath) return;
-        if (self._exclude[row.id]) return;
+    function write (row, encoding, callback) {
+        if (row.id === excludeModulePath) return callback();
+        if (self._exclude[row.id]) return callback();
         
         self.emit('dep', row);
         
@@ -454,7 +508,7 @@ Browserify.prototype.deps = function (opts) {
         }, {});
         
         if (self._expose[row.id]) {
-            this.queue({
+            this.push({
                 id: row.id,
                 exposed: self._expose[row.id],
                 deps: {},
@@ -472,7 +526,7 @@ Browserify.prototype.deps = function (opts) {
 
         // skip adding this file if it is external
         if (self._external[row.id]) {
-            return;
+            return callback();
         }
        
         if (/\.json$/.test(row.id)) {
@@ -485,7 +539,8 @@ Browserify.prototype.deps = function (opts) {
             row.entry = ix >= 0;
         }
         if (ix >= 0) row.order = ix;
-        this.queue(row);
+        this.push(row);
+        callback();
     }
 };
 
@@ -497,9 +552,8 @@ Browserify.prototype.pack = function (opts) {
     
     var mainModule;
     var hashes = {}, depList = {}, depHash = {};
-    var visited = {};
     
-    var input = through(function (row_) {
+    var input = through2.obj(function (row_, encoding, callback) {
         var row = copy(row_);
         
         if (opts.debug) { 
@@ -525,7 +579,7 @@ Browserify.prototype.pack = function (opts) {
         
         if (/^#!/.test(row.source)) row.source = '//' + row.source;
         var err = checkSyntax(row.source, row.id);
-        if (err) return this.emit('error', err);
+        if (err) return callback(err);
         
         var newId = getId(row);
         this.emit('id', newId, row.id);
@@ -544,7 +598,8 @@ Browserify.prototype.pack = function (opts) {
         });
         row.deps = deps;
 
-        this.queue(row);
+        this.push(row);
+        callback();
     });
     
     function getId (row) {
@@ -568,49 +623,51 @@ Browserify.prototype.pack = function (opts) {
     
     var first = true;
     var hasExports = Object.keys(self.exports).length;
-    var output = through(write, end);
+    var output = through2(write, end);
     
     var sort = depSorter({ index: true });
 
     input.on('data', function (row) { self.emit('row', row) });
-    return pipeline(through(hasher), sort, input, packer, output);
+    return pipeline(through2.obj(hasher), sort, input, packer, output);
     
-    function write (buf) {
+    function write (buf, encoding, callback) {
         if (first) writePrelude.call(this);
         first = false;
-        this.queue(buf);
+        this.push(buf);
+        callback();
     }
     
-    function end () {
+    function end (callback) {
         if (first) writePrelude.call(this);
         if (opts.standalone) {
-            this.queue(
+            this.push(
                 '\n(' + JSON.stringify(mainModule) + ')'
                 + umd.postlude(opts.standalone)
             );
         }
-        if (opts.debug) this.queue('\n');
-        this.queue(null);
+        if (opts.debug) this.push('\n');
+        callback();
     }
     
     function writePrelude () {
         if (!first) return;
         if (opts.standalone) {
-            return this.queue(umd.prelude(opts.standalone).trim() + 'return ');
+            return this.push(umd.prelude(opts.standalone).trim() + 'return ');
         }
-        if (hasExports) this.queue(
+        if (hasExports) this.push(
             (opts.externalRequireName || 'require') + '='
         );
     }
     
-    function hasher (row) {
+    function hasher (row, encoding, callback) {
         row.hash = hash(row.source);
         depList[row.id] = row.deps;
         depHash[row.id] = row.hash;
-        this.queue(row);
+        this.push(row);
+        callback();
     }
     
-    function sameDeps (a, b) {
+    function sameDeps (a, b, limit) {
         var keys = Object.keys(a);
         if (keys.length !== Object.keys(b).length) return false;
         
@@ -622,14 +679,8 @@ Browserify.prototype.pack = function (opts) {
             var db = depList[kb];
             
             if (ka === kb) continue;
-            if (ha !== hb) return false;
-            if (visited[da] && visited[db]) {
-                if (!deepEqual(da, db)) return false;
-            }
-            else {
-                visited[da] = true;
-                visited[db] = true;
-                if (!sameDeps(da, db)) return false;
+            if (ha !== hb || (!limit && !sameDeps(da, db, 1))) {
+                return false;
             }
         }
         return true;
@@ -646,6 +697,10 @@ var packageFilter = function (info) {
 
 Browserify.prototype._resolve = function (id, parent, cb) {
     var self = this;
+    
+    if (!self._bundleExternal && id[0] !== '/' && id[0] !== '.') {
+        return cb(null, excludeModulePath);
+    }
     if (self._exclude[id]) return cb(null, excludeModulePath);
     if (self._ignore[id]) return cb(null, emptyModulePath);
     
@@ -704,7 +759,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
 
         result(file, pkg);
     });
-     
+    
     function findPackage (basedir, cb) {
         var dirs = parents(basedir);
         (function next () {
@@ -730,6 +785,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
             if (err) return cb(err);
             try { var pkg = JSON.parse(src) }
             catch (e) {}
+            pkg.__dirname = path.dirname(pkgfile);
             cb(null, pkg);
         });
     }

@@ -6,12 +6,13 @@ var insertGlobals = require('insert-module-globals');
 var duplexer = require('duplexer');
 var subarg = require('subarg');
 var glob = require('glob');
+var Readable = require('readable-stream').Readable;
 
 module.exports = function (args) {
     var argv = subarg(args, {
         'boolean': [
-            'deps','pack','ig','dg', 'im', 'd','list',
-            'builtins','commondir', 'bare', 'full-paths'
+            'deps', 'pack', 'ig', 'dg', 'im', 'd', 'list', 'builtins',
+            'commondir', 'bare', 'full-paths', 'bundle-external'
         ],
         string: [ 's' ],
         alias: {
@@ -30,21 +31,25 @@ module.exports = function (args) {
             dg: true,
             d: false,
             builtins: true,
-            commondir: true
+            commondir: true,
+            'bundle-external': true
         }
     });
     
     var entries = argv._.concat(argv.e).concat(argv.entry)
-    .filter(Boolean).map(function(entry) {
-        if (entry === '-') return process.stdin;
+    .filter(Boolean).map(function (entry) {
+        if (entry === '-') {
+            var s = process.stdin;
+            if (typeof s.read === 'function') return s;
+            // only needed for 0.8, remove at some point later:
+            var rs = Readable().wrap(s);
+            s.resume();
+            return rs;
+        }
         return path.resolve(process.cwd(), entry);
     });
     var requires = [].concat(argv.r, argv.require).filter(Boolean);
-    
-    if (entries.length + requires.length === 0 && !process.stdin.isTTY) {
-        entries.push(process.stdin);
-    }
-    
+   
     if (argv.s && entries.length === 0 && requires.length === 1) {
         entries.push(requires[0]);
         argv.r = argv.require = [];
@@ -64,7 +69,8 @@ module.exports = function (args) {
         entries: entries,
         fullPaths: argv['full-paths'],
         builtins: argv.builtins === false ? false : undefined,
-        commondir: argv.commondir === false ? false : undefined
+        commondir: argv.commondir === false ? false : undefined,
+        bundleExternal: argv['bundle-external']
     });
     function error (msg) {
         var e = new Error(msg);
@@ -147,7 +153,7 @@ module.exports = function (args) {
     
     function addTransform (t, opts) {
         if (typeof t === 'string' || typeof t === 'function') {
-            b.transform(t);
+            b.transform(opts, t);
         }
         else if (t && typeof t === 'object') {
             if (!t._[0] || typeof t._[0] !== 'string') {
@@ -190,7 +196,7 @@ module.exports = function (args) {
         })
     ;
     
-    if (argv.standalone === true) {
+    if (argv.standalone === '') {
         error('--standalone requires an export name argument');
         return b;
     }

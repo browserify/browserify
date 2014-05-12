@@ -40,6 +40,11 @@ Advanced Options:
     Turn off setting a commondir. This is useful if you want to preserve the
     original paths that a bundle was generated with. 
  
+  --no-bundle-external
+
+    Turn off bundling of all external modules. This is useful if you only want
+    to bundle your local files.
+
   --bare 
 
     Alias for both --no-builtins, --no-commondir, and sets --insert-global-vars

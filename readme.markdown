@@ -139,6 +139,11 @@ Advanced Options:
     Turn off setting a commondir. This is useful if you want to preserve the
     original paths that a bundle was generated with. 
  
+  --no-bundle-external
+
+    Turn off bundling of all external modules. This is useful if you only want
+    to bundle your local files.
+
   --bare 
 
     Alias for both --no-builtins, --no-commondir, and sets --insert-global-vars
@@ -164,14 +169,18 @@ Advanced Options:
     Consider files with specified EXTENSION as modules, this option can used
     multiple times.
 
-  --global-transform, --g
+  --global-transform=MODULE, --g MODULE
 
     Use a transform module on all files after any ordinary transforms have run.
 
-Passing arguments to transforms:
+  --plugin=MODULE, -p MODULE
 
-  For -t and -g, you may use subarg syntax to pass options to transforms as the
-  second parameter after the filename. For example:
+    Register MODULE as a plugin.
+
+Passing arguments to transforms and plugins:
+
+  For -t, -g, and -p, you may use subarg syntax to pass options to the
+  transforms or plugin function as the second parameter. For example:
 
     -t [ foo -x 3 --beep ]
 
@@ -211,7 +220,7 @@ When you `require()` any of these modules, you will get a browser-specific shim:
 * [url](https://npmjs.org/package/url)
 * [util](https://npmjs.org/package/util)
 * [vm](https://npmjs.org/package/vm-browserify)
-* [zlib](https://npmjs.org/package/zlib-browserify)
+* [zlib](https://npmjs.org/package/browserify-zlib)
 
 Additionally if you use any of these variables, they
 [will be defined](https://github.com/substack/insert-module-globals)
@@ -238,7 +247,7 @@ $ browserify -r through -r duplexer -r ./my-file.js:my-module > bundle.js
 
 Then in your page you can do:
 
-``` js
+``` html
 <script src="bundle.js"></script>
 <script>
   var through = require('through');
@@ -251,7 +260,7 @@ Then in your page you can do:
 ## external source maps
 
 If you prefer the source maps be saved to a separate `.js.map` source map file, you may use
-[exorcist](https://github.com/thlorenz/exorcist) in order to archieve that. It's as simple as:
+[exorcist](https://github.com/thlorenz/exorcist) in order to achieve that. It's as simple as:
 
 ```
 $ browserify main.js --debug | exorcist bundle.js.map > bundle.js 
@@ -350,7 +359,7 @@ filenames that start with `.`.
 
 `opts.commondir` sets the algorithm used to parse out the common paths. Use
 `false` to turn this off, otherwise it uses the
-[commondir](https://npmjs.or/package/commondir) module.
+[commondir](https://npmjs.org/package/commondir) module.
 
 `opts.fullPaths` disables converting module ids into numerical indexes. This is
 useful for preserving the original paths that a bundle was generated with.
@@ -358,9 +367,12 @@ useful for preserving the original paths that a bundle was generated with.
 `opts.builtins` sets the list of builtins to use, which by default is set in
 `lib/builtins.js` in this distribution.
 
+`opts.bundleExternal` boolean option to set if external modules should be
+bundled. Defaults to true.
+
 `opts.pack` sets the browser-pack implementation to use. The `opts.pack()`
 should return a transform stream that accepts objects of the form that
-[module-deps](https://npmjs.org/package/module-deps) generates. Simplifed, this
+[module-deps](https://npmjs.org/package/module-deps) generates. Simplified, this
 is roughly:
 
 ```
@@ -388,6 +400,8 @@ specify a corresponding transform for them.
 
 Add an entry file from `file` that will be executed when the bundle loads.
 
+If `file` is an array, each item in `file` will be added as an entry file.
+
 ## b.require(file[, opts])
 
 Make `file` available from outside the bundle with `require(file)`.
@@ -396,6 +410,8 @@ The `file` param is anything that can be resolved by `require.resolve()`.
 
 `file` can also be a stream, but you should also use `opts.basedir` so that
 relative requires will be resolvable.
+
+If `file` is an array, each item in `file` will be required.
 
 Use the `expose` property of opts to specify a custom dependency name. 
 `require('./vendor/angular/angular.js', {expose: 'angular'})` enables `require('angular')`
@@ -432,6 +448,8 @@ as the `opts.vars` parameter.
 
 Prevent `file` from being loaded into the current bundle, instead referencing
 from another bundle.
+
+If `file` is an array, each item in `file` will be externalized.
 
 ## b.ignore(file)
 
@@ -535,7 +553,7 @@ There is a special "[browser](https://gist.github.com/4339901)" field you can
 set in your package.json on a per-module basis to override file resolution for
 browser-specific versions of files.
 
-For example, if you want to have a browser-specific module entrypoint for your
+For example, if you want to have a browser-specific module entry point for your
 `"main"` field you can just set the `"browser"` field to a string:
 
 ``` json
@@ -612,7 +630,7 @@ browserify x.js y.js -p [ factor-bundle -o bundle/x.js -o bundle/y.js ] \
   > bundle/common.js
 ```
 
-For a list of plugins, consulte the
+For a list of plugins, consult the
 [browserify-plugin tag](https://npmjs.org/browse/keyword/browserify-plugin)
 on npm.
 

@@ -21,7 +21,7 @@ test('__filename and __dirname with insertGlobals: true', function (t) {
     t.plan(2);
 
     var b = browserify();
-    b.require(__dirname + '/global/filename.js', {expose: 'x'});
+    b.require(__dirname + '/global/filename.js', { expose: 'x' });
     b.bundle({insertGlobals: true}, function (err, src) {
         var c = {};
         c.self = c;
@@ -36,7 +36,7 @@ test('__filename and __dirname', function (t) {
     t.plan(2);
     
     var b = browserify();
-    b.expose('x', __dirname + '/global/filename.js');
+    b.require(__dirname + '/global/filename.js', { expose: 'x' });
     b.bundle(function (err, src) {
         var c = {};
         vm.runInNewContext(src, c);
@@ -50,7 +50,7 @@ test('__filename and __dirname with basedir', function (t) {
     t.plan(2);
     
     var b = browserify();
-    b.expose('x', __dirname + '/global/filename.js');
+    b.require(__dirname + '/global/filename.js', { expose: 'x' });
     b.bundle({ basedir: __dirname }, function (err, src) {
         var c = {};
         vm.runInNewContext(src, c);

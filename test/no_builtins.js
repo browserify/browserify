@@ -2,7 +2,7 @@ var browserify = require('../');
 var test = require('tap').test;
 var vm = require('vm');
 
-test(function (t) {
+test('builtins false', function (t) {
     t.plan(1);
     
     var b = browserify({
@@ -17,6 +17,47 @@ test(function (t) {
             } },
             require: require
         };
+        vm.runInNewContext(src, c);
+    });
+});
+
+test('builtins []', function (t) {
+    t.plan(1);
+    var b = browserify({
+        entries: [ __dirname + '/no_builtins/main.js' ],
+        commondir: false,
+        builtins: []
+    });
+    b.bundle(function (err, src) {
+        var c = {
+            console: { log: function (msg) {
+                t.equal(msg, 'beep boop\n');
+            } },
+            require: require
+        };
+        vm.runInNewContext(src, c);
+    });
+});
+
+test('builtins object', function (t) {
+    t.plan(2);
+    var b = browserify({
+        entries: [ __dirname + '/no_builtins/main.js' ],
+        commondir: false,
+        builtins: {
+            fs: require.resolve('./no_builtins/extra/fs.js'),
+            tls: require.resolve('./no_builtins/extra/tls.js')
+        }
+    });
+    var expected = [
+        'WRITE CODE EVERY DAY',
+        'WHATEVER'
+    ];
+    b.bundle(function (err, src) {
+        var c = { console: { log: log }, require: require };
+        function log (msg) {
+            t.equal(msg, expected.shift());
+        }
         vm.runInNewContext(src, c);
     });
 });

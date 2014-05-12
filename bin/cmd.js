@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var fs = require('fs');
 var JSONStream = require('JSONStream');
-var through = require('through');
+var through = require('through2');
 
 var b = require('./args')(process.argv.slice(2));
 process.stdout.on('error', process.exit);
@@ -24,10 +24,7 @@ if (b.argv.v || b.argv.version) {
     return console.log(require('../package.json').version);
 }
 
-b.on('error', function (err) {
-    console.error(String(err));
-    process.exit(1);
-});
+b.on('error', errorExit);
 
 if (b.argv.pack) {
     process.stdin.pipe(b.pack()).pipe(process.stdout);
@@ -46,17 +43,15 @@ if (b.argv.deps) {
 if (b.argv.list) {
     var t = [].concat(b.argv.t).concat(b.argv.transform);
     var d = b.deps({ packageFilter: packageFilter, transform: t });
-    d.pipe(through(function (dep) {
-        this.queue(dep.id + '\n');
+    d.pipe(through.obj(function (dep, enc, next) {
+        this.push(dep.id + '\n');
+        next();
     })).pipe(process.stdout);
     return;
 }
 
 var bundle = b.bundle();
-bundle.on('error', function (err) {
-    console.error(String(err));
-    process.exit(1);
-});
+bundle.on('error', errorExit);
 
 var outfile = b.argv.o || b.argv.outfile;
 if (outfile) {
@@ -72,4 +67,14 @@ function packageFilter (info) {
         delete info.browserify;
     }
     return info || {};
+}
+
+function errorExit(err) {
+    if (err.stack) {
+        console.error(err.stack);
+    }
+    else {
+        console.error(String(err));
+    }
+    process.exit(1);
 }
