@@ -673,7 +673,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
             self.emit('package', file, pkg);
         })
     };
-    if (self._mapped[id]) return result(self._mapped[id]);
+    if (self._mapped[id] && !self._exclude[id] && !self._ignore[id] && !self._external[id]) return result(self._mapped[id]);
     
     parent.modules = self._builtins;
     parent.extensions = self._extensions;
