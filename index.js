@@ -628,9 +628,12 @@ Browserify.prototype.pack = function (opts) {
     var output = through2(write, end);
     
     var sort = depSorter({ index: true });
-
-    input.on('data', function (row) { self.emit('row', row) });
-    return pipeline(through2.obj(hasher), sort, input, packer, output);
+    var emitRows = through2.obj(function (row, enc, next) {
+        self.emit('row', row);
+        this.push(row);
+        next();
+    });
+    return pipeline(through2.obj(hasher), sort, input, emitRows, packer, output);
     
     function write (buf, encoding, callback) {
         if (first) writePrelude.call(this);
