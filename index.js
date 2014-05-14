@@ -294,6 +294,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         self.on('_ready', function () {
             var b = self.bundle(opts, cb);
             b.on('transform', tr.emit.bind(tr, 'transform'));
+            b.on('error', tr.emit.bind(tr, 'error'));
             if (!cb) b.on('error', tr.emit.bind(tr, 'error'));
             b.pipe(tr);
         });
@@ -414,7 +415,9 @@ Browserify.prototype.deps = function (opts) {
     if (self._pending) {
         var tr = through2.obj();
         self.on('_ready', function () {
-            self.deps(opts).pipe(tr);
+            var s = self.deps(opts);
+            s.on('error', tr.emit.bind(tr, 'error'));
+            s.pipe(tr);
         });
         return tr;
     }

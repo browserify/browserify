@@ -3,6 +3,7 @@ var vm = require('vm');
 var test = require('tap').test;
 var through = require('through');
 
+/*
 test('transform errors errback', function (t) {
     t.plan(1);
     
@@ -17,6 +18,7 @@ test('transform errors errback', function (t) {
         t.equal(src, undefined);
     });
 });
+*/
 
 test('transform errors propagate', function (t) {
     t.plan(1);
@@ -25,9 +27,11 @@ test('transform errors propagate', function (t) {
     b.transform(function (file) {
         return through(function (buf) {
             this.emit('error', new Error('blah'));
-        })
+        });
     });
+console.log('onerror'); 
     b.on('error', function (err) {
+console.log('CAUGHT', err);    
         t.equal(err.message, 'blah');
     });
     b.bundle();
