@@ -44,7 +44,7 @@
     "https-browserify": "~0.0.0",
     "inherits": "~2.0.1",
     "insert-module-globals": "~6.0.0",
-    "module-deps": "~2.0.0",
+    "module-deps": "~2.0.6",
     "os-browserify": "~0.1.1",
     "parents": "~0.0.1",
     "path-browserify": "~0.0.0",

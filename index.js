@@ -294,49 +294,54 @@ Browserify.prototype.bundle = function (opts, cb) {
         self.on('_ready', function () {
             var b = self.bundle(opts, cb);
             b.on('transform', tr.emit.bind(tr, 'transform'));
-            b.on('error', tr.emit.bind(tr, 'error'));
-            if (!cb) b.on('error', tr.emit.bind(tr, 'error'));
+            if (!cb) b.on('error', tr.emit.bind(tr, 'error'))
             b.pipe(tr);
         });
         if (cb) tr.resume();
         return tr;
     }
-
+    
+    var output = through2();
     if (opts.standalone && self._entries.length !== 1) {
         process.nextTick(function () {
-            p.emit('error', 'standalone only works with a single entry point');
+            output.emit('error',
+                'standalone only works with a single entry point'
+            );
         });
+        return output;
     }
     
     var prevCache = opts.cache && copy(opts.cache);
     var d = (opts.deps || self.deps.bind(self))(opts);
     var p = self.pack(opts);
+    
     if (cb) {
-        p.on('error', cb);
-        p.pipe(concatStream({ encoding: 'string' }, function (src) {
+        output.on('error', cb);
+        output.pipe(concatStream({ encoding: 'string' }, function (src) {
             cb(null, opts.standalone ? derequire(src) : src);
         }));
         p.resume();
     }
-    d.on('error', p.emit.bind(p, 'error'));
-    d.on('transform', p.emit.bind(p, 'transform'));
+    d.on('error', output.emit.bind(output, 'error'));
+    d.on('transform', output.emit.bind(output, 'transform'));
+    p.on('error', output.emit.bind(output, 'error'));
     d.pipe(p);
     
+    self.emit('bundle', output);
+    
     if (opts.standalone) {
-        var output = through2();
         p.pipe(concatStream({ encoding: 'string' }, function (body) {
             output.end(derequire(body));
         }));
-        return output;
     }
+    else p.pipe(output);
     
-    self.emit('bundle', p);
-    p.on('end', function () {
+    output.on('end', function () {
         process.nextTick(function () {
-            p.emit('close');
+            output.emit('close');
         });
     });
-    return p;
+    return output;
 };
 
 Browserify.prototype.transform = function (opts, t) {
