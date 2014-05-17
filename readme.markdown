@@ -654,6 +654,15 @@ add a package.json keyword of `browserify-tool` so that
 [people can browse for all the browserify
 tools](https://npmjs.org/browse/keyword/browserify-tool) on npmjs.org.
 
+# changelog
+
+Writeups for major releases are available in
+[doc/changelog](doc/changelog).
+
+Minor and patch releases are documented in
+[changelog.markdown](changelog.markdown) and on the
+[browserify twitter feed](https://twitter.com/browserify).
+
 # license
 
 MIT
