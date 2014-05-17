@@ -12,7 +12,7 @@ upgrades umd to fix some issues with --standalone https://github.com/substack/no
 
 # 4.1.1
 
-makes deps() behave more like bundle() https://github.com/substack/node-browserify/issues/757 and fixes global transform prescedence https://github.com/substack/node-browserify/issues/759
+makes deps() behave more like bundle() https://github.com/substack/node-browserify/issues/757 and fixes global transform precedence https://github.com/substack/node-browserify/issues/759
 
 # 4.1.0
 
