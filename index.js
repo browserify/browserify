@@ -589,7 +589,7 @@ Browserify.prototype.pack = function (opts) {
         if (err) return callback(err);
         
         var newId = getId(row);
-        this.emit('id', newId, row.id);
+        self.emit('id', newId, row.id);
         row.id = getId(row);
         
         if (row.entry) mainModule = mainModule || row.id;
