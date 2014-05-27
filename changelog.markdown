@@ -1,3 +1,7 @@
+# 4.1.6
+
+emits the 'id' event on the correct instance https://github.com/substack/node-browserify/pull/780
+
 # 4.1.5
 
 added this document
