@@ -279,9 +279,9 @@ Browserify.prototype.bundle = function (opts, cb) {
     if (!opts) opts = {};
     if (opts.ignoreMissing === undefined) opts.ignoreMissing = false;
     if (opts.standalone === undefined) opts.standalone = false;
-    
-    self._ignoreMissing = opts.ignoreMissing;
-    
+
+    if (self._ignoreMissing === undefined) self._ignoreMissing = opts.ignoreMissing;
+
     if (cb) cb = (function (f) {
         return function () {
             if (f) f.apply(this, arguments);
