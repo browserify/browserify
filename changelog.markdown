@@ -1,3 +1,7 @@
+# 4.1.7
+
+fixes ignoreMissing when set in the constructor https://github.com/substack/node-browserify/pull/785
+
 # 4.1.6
 
 emits the 'id' event on the correct instance https://github.com/substack/node-browserify/pull/780
