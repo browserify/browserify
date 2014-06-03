@@ -638,7 +638,12 @@ Browserify.prototype.pack = function (opts) {
         this.push(row);
         next();
     });
-    return pipeline(through2.obj(hasher), sort, input, emitRows, packer, output);
+
+    var streams = [];
+    if (opts.sourceTransform) streams.push(opts.sourceTransform);
+    streams.push(through2.obj(hasher), sort, input, emitRows, packer, output);
+
+    return pipeline.apply(undefined, streams);
     
     function write (buf, encoding, callback) {
         if (first) writePrelude.call(this);
