@@ -1,3 +1,7 @@
+# 4.1.8
+
+bumps the module-deps version to get an ordering bugfix https://github.com/substack/module-deps/pull/39 https://github.com/substack/node-browserify/pull/774
+
 # 4.1.7
 
 fixes ignoreMissing when set in the constructor https://github.com/substack/node-browserify/pull/785
