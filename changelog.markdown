@@ -1,3 +1,7 @@
+# 4.1.9
+
+upgrades resolve to fix relative NODE_PATH paths https://github.com/substack/node-resolve/pull/46
+
 # 4.1.8
 
 bumps the module-deps version to get an ordering bugfix https://github.com/substack/module-deps/pull/39 https://github.com/substack/node-browserify/pull/774
