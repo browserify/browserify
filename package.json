@@ -51,7 +51,7 @@
     "punycode": "~1.2.3",
     "querystring-es3": "~0.2.0",
     "readable-stream": "^1.0.27-1",
-    "resolve": "~0.6.1",
+    "resolve": "~0.7.1",
     "shallow-copy": "0.0.1",
     "shell-quote": "~0.0.1",
     "stream-browserify": "^1.0.0",
