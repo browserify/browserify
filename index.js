@@ -19,6 +19,7 @@ var umd = require('umd');
 var derequire = require('derequire');
 var commondir = require('commondir');
 var merge = require('xtend');
+var splicer = require('labeled-stream-splicer');
 
 var path = require('path');
 var inherits = require('inherits');
