@@ -1,3 +1,7 @@
+# 4.1.10
+
+upgrades browser-resolve to get opts.path fixes https://github.com/defunctzombie/node-browser-resolve/pull/43
+
 # 4.1.9
 
 upgrades resolve to fix relative NODE_PATH paths https://github.com/substack/node-resolve/pull/46
