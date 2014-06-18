@@ -1,3 +1,7 @@
+# 4.1.11
+
+fixes a bug with transform argument handling https://github.com/substack/node-browserify/pull/795
+
 # 4.1.10
 
 upgrades browser-resolve to get opts.path fixes https://github.com/defunctzombie/node-browser-resolve/pull/43
