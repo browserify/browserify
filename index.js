@@ -349,8 +349,8 @@ Browserify.prototype.transform = function (opts, t) {
         t = opts;
         opts = {};
     }
-    if ((typeof opts === 'string' || typeof opts === 'function') &&
-        !(typeof t === 'string' || typeof t === 'function')) {
+    if ((typeof opts === 'string' || typeof opts === 'function')
+    && !(typeof t === 'string' || typeof t === 'function')) {
         var t_ = t;
         t = opts;
         opts = t_;
