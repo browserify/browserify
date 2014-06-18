@@ -67,7 +67,8 @@
     "util": "~0.10.1",
     "vm-browserify": "~0.0.1",
     "xtend": "^3.0.0",
-    "process": "^0.7.0"
+    "process": "^0.7.0",
+    "graceful-fs": "~2.0.3"
   },
   "devDependencies": {
     "backbone": "~0.9.2",

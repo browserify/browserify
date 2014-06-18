@@ -23,7 +23,7 @@ var merge = require('xtend');
 var path = require('path');
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
-var fs = require('fs');
+var fs = require('graceful-fs');
 var copy = require('shallow-copy');
 
 var emptyModulePath = path.join(__dirname, 'lib/_empty.js');
