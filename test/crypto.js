@@ -25,6 +25,7 @@ test('*-browserify libs from node_modules/', function (t) {
     
     ps.stdout.pipe(concat(function (src) {
         var c = {
+            Int32Array: Int32Array,
             ArrayBuffer: ArrayBuffer,
             Uint8Array: Uint8Array,
             DataView: DataView,
