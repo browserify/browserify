@@ -14,7 +14,7 @@ module.exports = function (args) {
             'deps', 'pack', 'ig', 'dg', 'im', 'd', 'list', 'builtins',
             'commondir', 'bare', 'full-paths', 'bundle-external'
         ],
-        string: [ 's' ],
+        string: [ 's', 'r', 'u', 'x', 't', 'i', 'o', 'e', 'c' ],
         alias: {
             ig: [ 'insert-globals', 'fast' ],
             dg: 'detect-globals',
@@ -22,6 +22,14 @@ module.exports = function (args) {
             igv: 'insert-global-vars',
             d: 'debug',
             s: 'standalone',
+            r: 'require',
+            u: 'exclude',
+            x: 'external',
+            t: 'transform',
+            i: 'ignore',
+            o: 'outfile',
+            e: 'entry',
+            c: 'command',
             noparse: 'noParse',
             bare: 'bear'
         },
@@ -36,7 +44,7 @@ module.exports = function (args) {
         }
     });
     
-    var entries = argv._.concat(argv.e).concat(argv.entry)
+    var entries = argv._.concat(argv.entry)
     .filter(Boolean).map(function (entry) {
         if (entry === '-') {
             var s = process.stdin;
@@ -48,7 +56,7 @@ module.exports = function (args) {
         }
         return path.resolve(process.cwd(), entry);
     });
-    var requires = [].concat(argv.r, argv.require).filter(Boolean);
+    var requires = [].concat(argv.require).filter(Boolean);
    
     if (argv.s && entries.length === 0 && requires.length === 1) {
         entries.push(requires[0]);
@@ -87,7 +95,7 @@ module.exports = function (args) {
         })
     ;
     
-    [].concat(argv.i).concat(argv.ignore).filter(Boolean)
+    [].concat(argv.ignore).filter(Boolean)
         .forEach(function (i) {
             b._pending ++;
             glob(i, function (err, files) {
@@ -98,7 +106,7 @@ module.exports = function (args) {
         })
     ;
     
-    [].concat(argv.u).concat(argv.exclude).filter(Boolean)
+    [].concat(argv.exclude).filter(Boolean)
         .forEach(function (u) {
             b._pending ++;
             glob(u, function (err, files) {
@@ -108,8 +116,8 @@ module.exports = function (args) {
             });
         })
     ;
-    
-    [].concat(argv.r).concat(argv.require).filter(Boolean)
+
+    [].concat(argv.require).filter(Boolean)
         .forEach(function (r) {
             var xs = r.split(':');
             b.require(xs[0], { expose: xs.length === 1 ? xs[0] : xs[1] })
@@ -117,7 +125,7 @@ module.exports = function (args) {
     ;
     
     // resolve any external files and add them to the bundle as externals
-    [].concat(argv.x).concat(argv.external).filter(Boolean)
+    [].concat(argv.external).filter(Boolean)
         .forEach(function (x) {
             if (/:/.test(x)) {
                 var xs = x.split(':');
@@ -139,7 +147,7 @@ module.exports = function (args) {
         })
     ;
     
-    [].concat(argv.t).concat(argv.transform)
+    [].concat(argv.transform)
         .filter(Boolean)
         .forEach(function (t) { addTransform(t) })
     ;
@@ -169,7 +177,7 @@ module.exports = function (args) {
         else error('unexpected transform of type ' + typeof t);
     }
     
-    [].concat(argv.c).concat(argv.command).filter(Boolean)
+    [].concat(argv.command).filter(Boolean)
         .forEach(function (c) {
             var cmd = parseShell(c);
             b.transform(function (file) {
