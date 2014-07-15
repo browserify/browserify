@@ -1,3 +1,33 @@
+# 4.2.1
+
+SECURITY NOTICE
+
+Make sure your installation of browserify is using syntax-error@1.1.1 or
+later. there was a security vulnerability where a malicious file could
+execute code when browserified.
+
+The vulnerability involves breaking out of `Function()`, which was used to
+check syntax for more informative errors. In node 0.10, `Function()` seems
+to be implemented in terms of `eval()`, so malicious code can execute even
+if the function returned by `Function()` was never called. node 0.11 does
+not appear to be vulnerable.
+
+Thanks to Cal Leeming [cal@iops.io]
+for discovering and disclosing this bug!
+
+# 4.2.0
+
+upgrades http-browserify, crypto-browserify, and sets more versions to float
+with ^ semvers
+
+# 4.1.11
+
+fixes a bug with transform argument handling https://github.com/substack/node-browserify/pull/795
+
+# 4.1.10
+
+upgrades browser-resolve to get opts.path fixes https://github.com/defunctzombie/node-browser-resolve/pull/43
+
 # 4.1.9
 
 upgrades resolve to fix relative NODE_PATH paths https://github.com/substack/node-resolve/pull/46
