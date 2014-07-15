@@ -280,16 +280,16 @@ Browserify.prototype.bundle = function (opts, cb) {
     if (!opts) opts = {};
     if (opts.ignoreMissing === undefined) opts.ignoreMissing = false;
     if (opts.standalone === undefined) opts.standalone = false;
-
+    
     if (self._ignoreMissing === undefined) self._ignoreMissing = opts.ignoreMissing;
-
+    
     if (cb) cb = (function (f) {
         return function () {
             if (f) f.apply(this, arguments);
             f = null;
         };
     })(cb);
-
+    
     if (self._pending) {
         var tr = through2();
         self.on('_ready', function () {
@@ -484,7 +484,6 @@ Browserify.prototype.deps = function (opts) {
         if (parentFilter) pkg = parentFilter(pkg || {}, x);
         return packageFilter(pkg || {}, x);
     };
-
     
     if (!opts.basedir) opts.basedir = self._basedir;
     var d = mdeps(self.files, opts);
@@ -606,7 +605,7 @@ Browserify.prototype.pack = function (opts) {
             deps[key] = getId({ id: file, index: index });
         });
         row.deps = deps;
-
+        
         this.push(row);
         callback();
     });
