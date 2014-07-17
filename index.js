@@ -35,11 +35,11 @@ module.exports = function (opts, xopts) {
     if (typeof opts === 'string') opts = { entries: [ opts ] };
     if (isStream(opts)) opts = { entries: [ opts ] };
     if (Array.isArray(opts)) opts = { entries: opts };
-    
+
     if (xopts) Object.keys(xopts).forEach(function (key) {
         opts[key] = xopts[key];
     });
-    
+
     var b = new Browserify(opts);
     [].concat(opts.entries).filter(Boolean).forEach(b.add.bind(b));
     return b;
@@ -53,7 +53,7 @@ inherits(Browserify, EventEmitter);
 
 function Browserify (opts) {
     var self = this;
-    
+
     self.files = [];
     self.exports = {};
     self._pending = 0;
@@ -64,7 +64,7 @@ function Browserify (opts) {
     self._expose = {};
     self._mapped = {};
     self._plugins = [];
-    
+
     self._transforms = [];
     self._globalTransforms = [];
     self._extensions = [ '.js', '.json' ]
@@ -76,7 +76,7 @@ function Browserify (opts) {
     self._ignoreMissing = opts.ignoreMissing;
     self._basedir = opts.basedir;
     self._delegateResolve = opts.resolve || browserResolve;
-    
+
     var sep = /^win/i.test(process.platform) ? ';' : ':';
     self._paths = opts.paths || (process.env.NODE_PATH || '').split(sep);
     self._fullPaths = !!opts.fullPaths;
@@ -86,7 +86,7 @@ function Browserify (opts) {
         params.sourceMapPrefix = '//#';
         return browserPack(params);
     };
-    
+
     if (typeof opts.builtins === 'boolean') {
         self._builtins = opts.builtins ? builtins : {};
     }
@@ -95,7 +95,7 @@ function Browserify (opts) {
         opts.builtins.forEach(function (name) {
             if (builtins.hasOwnProperty(name)) {
                 self._builtins[name] = builtins[name];
-            }      
+            }
         });
     }
     else if (typeof opts.builtins === 'object') {
@@ -104,16 +104,16 @@ function Browserify (opts) {
     else {
         self._builtins = builtins;
     }
-    
+
     builtinsList.forEach(function (key) {
         if (!self._builtins.hasOwnProperty(key)) {
             self._exclude[key] = true;
         }
     });
-    
+
     self._commondir = opts.commondir;
     self._bundleExternal = opts.bundleExternal !== false;
-    
+
     var noParse = [].concat(opts.noParse).filter(Boolean);
     noParse.forEach(this.noParse.bind(this));
 }
@@ -121,7 +121,7 @@ function Browserify (opts) {
 Browserify.prototype._hash = function (id) {
     var basedir = this._basedir;
     if (!basedir) basedir = process.cwd();
-    return hash(path.relative(basedir, id));
+    return hash(path.resolve(basedir, id));
 };
 
 Browserify.prototype.noParse = function(file) {
@@ -153,14 +153,14 @@ Browserify.prototype.require = function (id, opts) {
         id.forEach(function(id) { self.require(id, opts) });
         return self;
     }
-    
+
     if (opts === undefined) opts = { expose: id };
-    
+
     self._pending ++;
-    
+
     var basedir = opts.basedir || self._basedir || process.cwd();
     var fromfile = basedir + '/_fake.js';
-    
+
     var params = {
         filename: fromfile,
         modules: self._builtins,
@@ -168,28 +168,28 @@ Browserify.prototype.require = function (id, opts) {
         extensions: self._extensions,
         paths: opts.paths || self._paths
     };
-    
+
     var order;
     if (opts.entry) {
         order = self._entries.length;
         self._entries.push(null);
     }
-    
+
     self._delegateResolve(id, params, function (err, file) {
         if ((err || !file) && !opts.external) {
             if (err) return self.emit('error', err);
             if (!file) return self.emit('error', notFound(id, fromfile));
         }
-        
+
         if (opts.expose) {
             self.exports[file] = self._hash(file);
-            
+
             if (typeof opts.expose === 'string') {
                 self._expose[file] = opts.expose;
                 self._mapped[opts.expose] = file;
             }
         }
-        
+
         if (opts.external) {
             if (file) self._external[file] = true;
             else {
@@ -203,9 +203,9 @@ Browserify.prototype.require = function (id, opts) {
         else {
             self.files.push(file);
         }
-        
+
         if (opts.entry) self._entries[order] = file;
-        
+
         if (--self._pending === 0) self.emit('_ready');
     });
 
@@ -217,15 +217,15 @@ Browserify.prototype.external = function (id, opts) {
     if (!opts) opts = {};
     if (!opts.basedir) opts.basedir = self._basedir;
     if (!opts.globalTransform) opts.globalTransform = self._globalTransforms;
-    
+
     if (isBrowserify(id)) {
         self._pending++;
-        
+
         function captureDeps() {
             var d = mdeps(id.files, opts);
             d.on('error', self.emit.bind(self, 'error'));
             d.pipe(through2.obj(write, end));
-            
+
             function write (row, encoding, callback) {
                 self.external(row.id);
                 callback();
@@ -242,7 +242,7 @@ Browserify.prototype.external = function (id, opts) {
         id.forEach(function(id) { self.external(id, opts) });
         return self;
     }
-    
+
     opts.external = true;
     if (!opts.parse) {
         this.noParse(id);
@@ -300,7 +300,7 @@ Browserify.prototype.bundle = function (opts, cb) {
         if (cb) tr.resume();
         return tr;
     }
-    
+
     var output = through2();
     if (opts.standalone && self._entries.length !== 1) {
         process.nextTick(function () {
@@ -310,11 +310,11 @@ Browserify.prototype.bundle = function (opts, cb) {
         });
         return output;
     }
-    
+
     var prevCache = opts.cache && copy(opts.cache);
     var d = (opts.deps || self.deps.bind(self))(opts);
     var p = self.pack(opts);
-    
+
     if (cb) {
         output.on('error', cb);
         output.pipe(concatStream({ encoding: 'string' }, function (src) {
@@ -326,16 +326,16 @@ Browserify.prototype.bundle = function (opts, cb) {
     d.on('transform', output.emit.bind(output, 'transform'));
     p.on('error', output.emit.bind(output, 'error'));
     d.pipe(p);
-    
+
     self.emit('bundle', output);
-    
+
     if (opts.standalone) {
         p.pipe(concatStream({ encoding: 'string' }, function (body) {
             output.end(derequire(body));
         }));
     }
     else p.pipe(output);
-    
+
     output.on('end', function () {
         process.nextTick(function () {
             output.emit('close');
@@ -372,7 +372,7 @@ Browserify.prototype.transform = function (opts, t) {
     t = (function (t) {
         return function (file) { return t.call(this, file, opts) };
     })(t);
-    
+
     if (opts.global) {
         this._globalTransforms.push(t);
     }
@@ -386,7 +386,7 @@ Browserify.prototype.plugin = function (plugin, opts) {
         plugin(this, opts);
         return this;
     }
-    
+
     try {
         var r = nodeResolve.sync(plugin, {
             basedir: path.resolve(this._basedir || process.cwd())
@@ -417,7 +417,7 @@ Browserify.prototype.plugin = function (plugin, opts) {
 Browserify.prototype.deps = function (opts) {
     var self = this;
     if (!opts) opts = {};
-    
+
     if (self._pending) {
         var tr = through2.obj();
         self.on('_ready', function () {
@@ -427,17 +427,17 @@ Browserify.prototype.deps = function (opts) {
         });
         return tr;
     }
-    
+
     opts.modules = self._builtins;
     opts.extensions = self._extensions;
     opts.transforms = self._transforms;
     opts.packageCache = opts.packageCache || self._pkgcache;
-    
+
     if (opts.insertGlobals === undefined) opts.insertGlobals = false;
     if (opts.detectGlobals === undefined) opts.detectGlobals = true;
     opts.resolve = self._resolve.bind(self);
     opts.transform = self._transforms;
-    
+
     var basedir = opts.basedir || self._basedir;
     if (!basedir && self._commondir === false) {
         basedir = '/';
@@ -449,7 +449,7 @@ Browserify.prototype.deps = function (opts) {
         basedir = process.cwd();
     }
     else if (!basedir) basedir = commondir(self.files);
-    
+
     if (opts.detectGlobals || opts.insertGlobals) {
         opts.globalTransform = self._globalTransforms.concat(function (file) {
             if (self._noParse.indexOf(file) >= 0) {
@@ -474,39 +474,39 @@ Browserify.prototype.deps = function (opts) {
         });
     }
     else opts.globalTransform = self._globalTransforms;
-    
+
     opts.noParse = self._noParse;
     opts.transformKey = [ 'browserify', 'transform' ];
-    
+
     var parentFilter = opts.packageFilter;
     opts.packageFilter = function (pkg, x) {
         if (parentFilter) pkg = parentFilter(pkg || {}, x);
         return packageFilter(pkg || {}, x);
     };
 
-    
+
     if (!opts.basedir) opts.basedir = self._basedir;
     var d = mdeps(self.files, opts);
-    
+
     var index = 0;
     var tr = d.pipe(through2.obj(write));
     d.on('error', tr.emit.bind(tr, 'error'));
     d.on('transform', tr.emit.bind(tr, 'transform'));
     return tr;
-    
+
     function write (row, encoding, callback) {
         if (row.id === excludeModulePath) return callback();
         if (self._exclude[row.id]) return callback();
-        
+
         self.emit('dep', row);
-        
+
         if (row.id === emptyModulePath) {
             row.source = '';
         }
         if (/^\ufeff/.test(row.source)) {
             row.source = row.source.replace(/^\ufeff/, '');
         }
-        
+
         row.deps = Object.keys(row.deps).reduce(function (acc, key) {
             if (!self._exclude[key] && !self._external[key]
             && !self._external[row.id] && row.deps[key] !== excludeModulePath) {
@@ -514,7 +514,7 @@ Browserify.prototype.deps = function (opts) {
             }
             return acc;
         }, {});
-        
+
         if (self._expose[row.id]) {
             this.push({
                 id: row.id,
@@ -525,7 +525,7 @@ Browserify.prototype.deps = function (opts) {
                 nomap: true
             });
         }
-        
+
         if (self.exports[row.id]) row.exposed = self.exports[row.id];
 
         if (self._exposeAll) {
@@ -536,12 +536,12 @@ Browserify.prototype.deps = function (opts) {
         if (self._external[row.id]) {
             return callback();
         }
-       
+
         if (/\.json$/.test(row.id)) {
             row = copy(row);
             row.source = 'module.exports=' + row.source;
         }
-        
+
         var ix = self._entries.indexOf(row.id);
         if (row.entry === undefined || self.exports[row.id]) {
             row.entry = ix >= 0;
@@ -554,21 +554,21 @@ Browserify.prototype.deps = function (opts) {
 
 Browserify.prototype.pack = function (opts) {
     if (!opts) opts = {};
-    
+
     var self = this;
     var packer = self._browserPack(opts);
-    
+
     var mainModule;
     var hashes = {}, depList = {}, depHash = {};
-    
+
     var input = through2.obj(function (row_, encoding, callback) {
         var row = copy(row_);
-        
-        if (opts.debug) { 
-            row.sourceRoot = 'file://localhost'; 
+
+        if (opts.debug) {
+            row.sourceRoot = 'file://localhost';
             row.sourceFile = row.id.replace(/\\/g, '/');
         }
-        
+
         var dup = hashes[row.hash];
         if (dup && sameDeps(depList[dup._id], row.deps)) {
             row.source = 'module.exports=require('
@@ -584,17 +584,17 @@ Browserify.prototype.pack = function (opts) {
             ;
         }
         else hashes[row.hash] = { _id: row.id, id: getId(row) };
-        
+
         if (/^#!/.test(row.source)) row.source = '//' + row.source;
         var err = checkSyntax(row.source, row.id);
         if (err) return callback(err);
-        
+
         var newId = getId(row);
         self.emit('id', newId, row.id);
         row.id = getId(row);
-        
+
         if (row.entry) mainModule = mainModule || row.id;
-        
+
         var deps = {};
         Object.keys(row.deps || {}).forEach(function (key) {
             var file = row.deps[key];
@@ -609,7 +609,7 @@ Browserify.prototype.pack = function (opts) {
         this.push(row);
         callback();
     });
-    
+
     function getId (row) {
         if (row.exposed) {
             return row.exposed;
@@ -628,11 +628,11 @@ Browserify.prototype.pack = function (opts) {
         }
         else return row.index;
     }
-    
+
     var first = true;
     var hasExports = Object.keys(self.exports).length;
     var output = through2(write, end);
-    
+
     var sort = depSorter({ index: true });
     var emitRows = through2.obj(function (row, enc, next) {
         self.emit('row', row);
@@ -640,14 +640,14 @@ Browserify.prototype.pack = function (opts) {
         next();
     });
     return pipeline(through2.obj(hasher), sort, input, emitRows, packer, output);
-    
+
     function write (buf, encoding, callback) {
         if (first) writePrelude.call(this);
         first = false;
         this.push(buf);
         callback();
     }
-    
+
     function end (callback) {
         if (first) writePrelude.call(this);
         if (opts.standalone) {
@@ -659,7 +659,7 @@ Browserify.prototype.pack = function (opts) {
         if (opts.debug) this.push('\n');
         callback();
     }
-    
+
     function writePrelude () {
         if (!first) return;
         if (opts.standalone) {
@@ -669,7 +669,7 @@ Browserify.prototype.pack = function (opts) {
             (opts.externalRequireName || 'require') + '='
         );
     }
-    
+
     function hasher (row, encoding, callback) {
         row.hash = hash(row.source);
         depList[row.id] = row.deps;
@@ -677,18 +677,18 @@ Browserify.prototype.pack = function (opts) {
         this.push(row);
         callback();
     }
-    
+
     function sameDeps (a, b, limit) {
         var keys = Object.keys(a);
         if (keys.length !== Object.keys(b).length) return false;
-        
+
         for (var i = 0; i < keys.length; i++) {
             var k = keys[i], ka = a[k], kb = b[k];
             var ha = depHash[ka];
             var hb = depHash[kb];
             var da = depList[ka];
             var db = depList[kb];
-            
+
             if (ka === kb) continue;
             if (ha !== hb || (!limit && !sameDeps(da, db, 1))) {
                 return false;
@@ -708,13 +708,13 @@ var packageFilter = function (info) {
 
 Browserify.prototype._resolve = function (id, parent, cb) {
     var self = this;
-    
+
     if (!self._bundleExternal && id[0] !== '/' && id[0] !== '.') {
         return cb(null, excludeModulePath);
     }
     if (self._exclude[id]) return cb(null, excludeModulePath);
     if (self._ignore[id]) return cb(null, emptyModulePath);
-    
+
     var result = function (file, pkg, x) {
         if (self._pending === 0) {
             self.emit('file', file, id, parent);
@@ -725,7 +725,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         }
         else findPackage(path.dirname(file), function (err, pkgfile, pkg) {
             if (err) return cb(err)
-            
+
             if (pkg && typeof pkg === 'object') {
                 var pkg_ = copy(pkg);
                 if (typeof pkg_.browserify === 'string' && !pkg_.browser) {
@@ -740,17 +740,17 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         })
     };
     if (self._mapped[id]) return result(self._mapped[id]);
-    
+
     parent.modules = self._builtins;
     parent.extensions = self._extensions;
     parent.paths = self._paths;
-    
+
     if (self._external[id]) return cb(null, emptyModulePath);
-    
+
     return self._delegateResolve(id, parent, function(err, file, pkg) {
         var cannotFind = /Cannot find module/.test(err && err.message);
         if (err && !cannotFind) return cb(err);
-        
+
         if (!file && (self._external[id] || self._external[file])) {
             return cb(null, emptyModulePath);
         }
@@ -761,14 +761,14 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         else if (!file) {
             return cb(notFound(id, parent.filename))
         }
-        
+
         if (self._exclude[file]) return cb(null, excludeModulePath);
         if (self._ignore[file]) return cb(null, emptyModulePath);
         if (self._external[file]) return result(file, pkg, true);
-        
+
         result(file, pkg);
     });
-    
+
     function findPackage (basedir, cb) {
         var dirs = parents(basedir);
         (function next () {
@@ -776,7 +776,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
             if (dir === 'node_modules' || dir === undefined) {
                 return cb(null, null, null);
             }
-            
+
             var pkgfile = path.join(dir, 'package.json');
             if (self._pkgcache[pkgfile]) {
                 cb(null, pkgfile, self._pkgcache[pkgfile]);
@@ -788,7 +788,7 @@ Browserify.prototype._resolve = function (id, parent, cb) {
             });
         })();
     }
-    
+
     function readPackage (pkgfile, cb) {
         fs.readFile(pkgfile, function (err, src) {
             if (err) return cb(err);
