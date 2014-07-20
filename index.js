@@ -64,32 +64,40 @@ Browserify.prototype.add = function (file) {
 };
 
 Browserify.prototype._createPipeline = function (opts) {
-    var self = this;
-    
     var mopts = {};
     var bopts = { raw: true };
     return splicer.obj([
-        'deps', [ mdeps(mopts) ],
+        'deps', [ mdeps(mopts) ], this._emitDeps(),
         'pack', [ bpack(bopts) ],
-        'wrap', [ wrap() ]
+        'wrap', [ this._wrap(opts) ]
     ]);
-    
-    function wrap () {
-        var first = true;
-        return through.obj(function write (buf, enc, next) {
-            if (first && self._options.standalone) {
-                var pre = umd.prelude(self._options.standalone).trim();
-                this.push(pre + 'return ');
-            }
-            else if (first && self._hasExports) {
-                var pre = self._options.externalRequireName || 'require';
-                this.push(pre + '=');
-            }
-            first = false;
-            this.push(buf);
-            next();
-        });
-    }
+};
+
+Browserify.prototype._emitDeps = function () {
+    var self = this;
+    return through.obj(function (row, enc, next) {
+        self.emit('dep', row);
+        this.push(row);
+        next();
+    })
+};
+
+Browserify.prototype._wrap = function (opts) {
+    var self = this;
+    var first = true;
+    return through(function write (buf, enc, next) {
+        if (first && opts.standalone) {
+            var pre = umd.prelude(opts.standalone).trim();
+            this.push(pre + 'return ');
+        }
+        else if (first && self._hasExports) {
+            var pre = opts.externalRequireName || 'require';
+            this.push(pre + '=');
+        }
+        first = false;
+        this.push(buf);
+        next();
+    });
 };
 
 Browserify.prototype.reset = function (opts) {
