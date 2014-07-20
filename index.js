@@ -24,7 +24,7 @@ function Browserify (files, opts) {
     if (!(this instanceof Browserify)) return new Browserify(files, opts);
     if (!opts) opts = {};
     self._options = opts;
-    self.pipeline = this._createPipeline(opts);
+    self.pipeline = self._createPipeline(opts);
     
     if (typeof files === 'string' || isarray(files)) {
         opts = xtend(opts, { entries: [].concat(opts.entries || [], files) });
@@ -41,11 +41,12 @@ function Browserify (files, opts) {
 }
 
 Browserify.prototype.require = function (file, opts) {
+    if (!opts) opts = {};
     var row = typeof file === 'object'
         ? xtend(file, opts)
         : xtend(opts, { file: file })
     ;
-    if (!row.id) row.id = file;
+    if (!row.id) row.id = opts.expose || file;
     if (!row.entry && this._options.exports === undefined) {
         this._hasExports = true;
     }
@@ -54,22 +55,38 @@ Browserify.prototype.require = function (file, opts) {
     return this;
 };
 
-Browserify.prototype.add = function (file) {
-    var row = typeof file === 'object'
-        ? xtend(file, { entry: true })
-        : { file: file, entry: true }
-    ;
-    this.pipeline.write(row);
-    return this;
+Browserify.prototype.add = function (file, opts) {
+    if (!opts) opts = {};
+    return this.require(file, xtend(opts, { entry: true }));
 };
 
 Browserify.prototype._createPipeline = function (opts) {
     var mopts = {};
     var bopts = { raw: true };
     return splicer.obj([
-        'deps', [ mdeps(mopts) ], this._emitDeps(),
+        'deps', [ mdeps(mopts) ],
+        'label', [ this._label() ], this._emitDeps(),
         'pack', [ bpack(bopts), 'wrap', [ this._wrap(opts) ] ]
     ]);
+};
+
+Browserify.prototype._label = function () {
+    var self = this;
+    var index = 0;
+    var map = {};
+    return through.obj(function (row, enc, next) {
+        if (/^\//.test(row.id) && row.id === row.file) {
+            var prev = row.id;
+            row.id = map[prev] = ++ index;
+            self.emit('label', prev, row.id);
+        }
+        Object.keys(row.deps || {}).forEach(function (key) {
+            var id = row.deps[key];
+            if (has(map,id)) row.deps[key] = map[id];
+        });
+        this.push(row);
+        next();
+    })
 };
 
 Browserify.prototype._emitDeps = function () {
@@ -114,3 +131,5 @@ Browserify.prototype.bundle = function (cb) {
     this.pipeline.end();
     return this.pipeline;
 };
+
+function has (obj, key) { return Object.hasOwnProperty.call(obj, key) }
