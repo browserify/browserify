@@ -100,6 +100,7 @@ Browserify.prototype._label = function () {
 Browserify.prototype._emitDeps = function () {
     var self = this;
     return through.obj(function (row, enc, next) {
+        if (row.entry) self._mainModule = row.id;
         self.emit('dep', row);
         this.push(row);
         next();
@@ -120,7 +121,26 @@ Browserify.prototype._debug = function (opts) {
 Browserify.prototype._wrap = function (opts) {
     var self = this;
     var first = true;
-    return through(function write (buf, enc, next) {
+    return through(write, end);
+    
+    function write (buf, enc, next) {
+        if (first) writePrelude.call(this);
+        this.push(buf);
+        next();
+    }
+    function end () {
+        if (first) writePrelude.call(this);
+        if (opts.standalone) {
+            this.push(
+                '\n(' + JSON.stringify(self._mainModule) + ')'
+                + umd.postlude(opts.standalone)
+            );
+        }
+        if (opts.debug) this.push('\n');
+        this.push(null);
+    }
+    
+    function writePrelude () {
         if (first && opts.standalone) {
             var pre = umd.prelude(opts.standalone).trim();
             this.push(pre + 'return ');
@@ -130,10 +150,7 @@ Browserify.prototype._wrap = function (opts) {
             this.push(pre + '=');
         }
         first = false;
-        this.push(buf);
-        this.push('\n');
-        next();
-    });
+    }
 };
 
 Browserify.prototype.reset = function (opts) {
