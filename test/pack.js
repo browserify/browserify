@@ -1,6 +1,6 @@
 var browserify = require('../');
 var vm = require('vm');
-var through = require('through');
+var through = require('through2');
 var test = require('tap').test;
 
 var fs = require('fs');
@@ -19,17 +19,14 @@ var deps = {
 test('custom packer', function (t) {
     t.plan(7);
     
-    var b = browserify({
-        entries: [ __dirname + '/entry/main.js' ],
-        pack: function () {
-            return through(function (row) {
-                t.equal(sources[row.id], row.source);
-                t.deepEqual(deps[row.id], row.deps);
-                this.queue(row.id + '\n');
-            });
-        }
-    });
+    var b = browserify(__dirname + '/entry/main.js');
+    b.pipeline.get('pack').splice(0,1, through.obj(function (row, enc, next) {
+        t.equal(sources[row.id], row.source);
+        t.deepEqual(deps[row.id], row.deps);
+        this.push(row.id + '\n');
+        next();
+    }));
     b.bundle(function (err, src) {
-        t.equal(src, '1\n2\n3\n');
+        t.equal(src.toString('utf8'), '1\n2\n3\n');
     });
 });

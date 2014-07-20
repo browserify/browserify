@@ -1,3 +1,7 @@
+# 5.0.0
+
+b.deps(), b.pack(), opts.pack, opts.deps are gone
+
 # 4.2.2
 
 fixes a bug applying transforms to symlinked files by resolving the realpath

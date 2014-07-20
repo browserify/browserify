@@ -68,8 +68,7 @@ Browserify.prototype._createPipeline = function (opts) {
     var bopts = { raw: true };
     return splicer.obj([
         'deps', [ mdeps(mopts) ], this._emitDeps(),
-        'pack', [ bpack(bopts) ],
-        'wrap', [ this._wrap(opts) ]
+        'pack', [ bpack(bopts), 'wrap', [ this._wrap(opts) ] ]
     ]);
 };
 
