@@ -766,7 +766,10 @@ Browserify.prototype._resolve = function (id, parent, cb) {
         if (self._ignore[file]) return cb(null, emptyModulePath);
         if (self._external[file]) return result(file, pkg, true);
         
-        result(file, pkg);
+        fs.realpath(file, function(err, path) {
+            if (err) return cb(err);
+            result(path, pkg);
+        });
     });
     
     function findPackage (basedir, cb) {
