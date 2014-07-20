@@ -1,7 +1,8 @@
 var mdeps = require('module-deps');
+var depsSort = require('deps-sort');
 var bpack = require('browser-pack');
+
 var umd = require('umd');
-var shasum = require('shasum');
 
 var splicer = require('labeled-stream-splicer');
 var through = require('through2');
@@ -66,7 +67,9 @@ Browserify.prototype._createPipeline = function (opts) {
     var bopts = { raw: true };
     return splicer.obj([
         'deps', [ mdeps(mopts) ],
-        'label', [ this._label() ], this._emitDeps(),
+        'sort', [ depsSort({ index: true }) ],
+        'label', [ this._label() ],
+        this._emitDeps(),
         'pack', [ bpack(bopts), 'wrap', [ this._wrap(opts) ] ]
     ]);
 };
@@ -76,15 +79,12 @@ Browserify.prototype._label = function () {
     var index = 0;
     var map = {};
     return through.obj(function (row, enc, next) {
-        if (/^\//.test(row.id) && row.id === row.file) {
+        if (row.id === row.file && row.index !== undefined) {
             var prev = row.id;
-            row.id = map[prev] = shasum(row.source).slice(0,8);
+            row.id = row.index;
             self.emit('label', prev, row.id);
         }
-        Object.keys(row.deps || {}).forEach(function (key) {
-            var id = row.deps[key];
-            if (has(map,id)) row.deps[key] = map[id];
-        });
+        row.deps = row.indexDeps;
         this.push(row);
         next();
     })
