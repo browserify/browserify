@@ -139,10 +139,12 @@ Browserify.prototype.reset = function (opts) {
     this.emit('reset');
 };
 
-Browserify.prototype.bundle = function (opts, cb) {
-    if (typeof opts === 'function') {
-        cb = opts;
-        cb = null;
+Browserify.prototype.bundle = function (cb) {
+    if (cb && typeof cb === 'object') {
+        throw new Error(
+            'bundle() no longer accepts option arguments.\n'
+            + 'Move all option arguments to the browserify() constructor.'
+        );
     }
     if (cb) {
         this.pipeline.on('error', cb);
