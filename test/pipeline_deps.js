@@ -1,4 +1,4 @@
-var browserify = require('../');
+var browserify = require('../new.js');
 var vm = require('vm');
 var test = require('tap').test;
 var through = require('through2');
