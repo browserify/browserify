@@ -8,6 +8,7 @@ var duplexer = require('duplexer2');
 
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
+var xtend = require('xtend');
 
 var nextTick = typeof setImmediate !== 'undefined'
     ? setImmediate : process.nextTick
@@ -19,7 +20,21 @@ inherits(Browserify, EventEmitter);
 function Browserify (files, opts) {
     var self = this;
     if (!(this instanceof Browserify)) return new Browserify(files, opts);
+    if (!opts) opts = {};
     
+    this._options = opts;
+    this._next = [ function () {
+        [].concat(files).filter(Boolean).forEach(function (file) {
+            self.pipeline.write(file);
+        });
+    } ];
+    
+    this.pipeline = this._createPipeline(opts);
+    
+    nextTick(function () { while (self._next.length) self._next.shift()() });
+}
+
+Browserify.prototype._createPipeline = function (opts) {
     var mopts = {};
     var bopts = { raw: true };
     
@@ -33,25 +48,16 @@ function Browserify (files, opts) {
     }
     function fend () { md.pipe(mdout) }
     
-    this.pipeline = splicer.obj([
+    return splicer.obj([
         'deps', [ duplexer(mdin, mdout) ],
         'pack', [ bpack(bopts) ]
     ]);
-    
-    this._next = [ function () {
-        [].concat(files).filter(Boolean).forEach(function (file) {
-            self.pipeline.write(file);
-        });
-    } ];
-    
-    nextTick(function () { while (self._next.length) self._next.shift()() });
-}
+};
 
-Browserify.prototype.reset = function () {
+Browserify.prototype.reset = function (opts) {
     while (this._next.length) this._next.shift()();
     
-    // todo: parity with constructor version
-    this.pipeline = splicer([ 'deps', mdeps(), 'pack', bpack() ]);
+    this.pipeline = this._createPipeline(xtend(opts, this.options));
     this._bundled = false;
     this.emit('reset');
 };
