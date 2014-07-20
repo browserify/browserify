@@ -1,3 +1,8 @@
+# 4.2.2
+
+fixes a bug applying transforms to symlinked files by resolving the realpath
+first https://github.com/substack/node-browserify/pull/831
+
 # 4.2.1
 
 SECURITY NOTICE
