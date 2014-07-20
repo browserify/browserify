@@ -70,7 +70,14 @@ module.exports = function (args) {
         fullPaths: argv['full-paths'],
         builtins: argv.builtins === false ? false : undefined,
         commondir: argv.commondir === false ? false : undefined,
-        bundleExternal: argv['bundle-external']
+        bundleExternal: argv['bundle-external'],
+        
+        detectGlobals: argv['detect-globals'] !== false && argv.dg !== false,
+        insertGlobals: argv['insert-globals'] || argv.ig,
+        insertGlobalVars: insertGlobalVars,
+        ignoreMissing: argv['ignore-missing'] || argv.im,
+        debug: argv['debug'] || argv.d,
+        standalone: argv['standalone'] || argv.s
     });
     function error (msg) {
         var e = new Error(msg);
@@ -208,25 +215,6 @@ module.exports = function (args) {
             return vars;
         }, {});
     }
-
-    var bundleOpts = {
-        detectGlobals: argv['detect-globals'] !== false && argv.dg !== false,
-        insertGlobals: argv['insert-globals'] || argv.ig,
-        insertGlobalVars: insertGlobalVars,
-        ignoreMissing: argv['ignore-missing'] || argv.im,
-        debug: argv['debug'] || argv.d,
-        standalone: argv['standalone'] || argv.s
-    };
-    var bundle = b.bundle;
-    b.bundle = function (opts, cb) {
-        if (!opts) opts = {};
-        if (typeof opts === 'function') { cb = opts; opts = {} };
-        var bopts = copy(bundleOpts);
-        Object.keys(opts).forEach(function (key) {
-            bopts[key] = opts[key];
-        });
-        return bundle.call(b, bopts, cb);
-    };
     
     return b;
 };

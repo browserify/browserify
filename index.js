@@ -12,6 +12,7 @@ var duplexer = require('duplexer2');
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 var xtend = require('xtend');
+var copy = require('shallow-copy');
 var isarray = require('isarray');
 
 var nextTick = typeof setImmediate !== 'undefined'
@@ -25,13 +26,14 @@ function Browserify (files, opts) {
     var self = this;
     if (!(this instanceof Browserify)) return new Browserify(files, opts);
     if (!opts) opts = {};
-    self._options = opts;
-    self.pipeline = self._createPipeline(opts);
     
     if (typeof files === 'string' || isarray(files)) {
         opts = xtend(opts, { entries: [].concat(opts.entries || [], files) });
     }
     else opts = xtend(files, opts);
+    
+    self._options = opts;
+    self.pipeline = self._createPipeline(opts);
     
     [].concat(opts.entries).filter(Boolean).forEach(function (file) {
         self.add(file);
@@ -63,14 +65,19 @@ Browserify.prototype.add = function (file, opts) {
 };
 
 Browserify.prototype._createPipeline = function (opts) {
-    var mopts = {};
-    var bopts = { raw: true };
+    if (!opts) opts = {};
+    var mopts = opts;
+    var bopts = copy(opts);
+    bopts.raw = true;
+    
     return splicer.obj([
         'deps', [ mdeps(mopts) ],
         'sort', [ depsSort({ index: true }) ],
         'label', [ this._label() ],
         this._emitDeps(),
-        'pack', [ bpack(bopts), 'wrap', [ this._wrap(opts) ] ]
+        'debug', [ this._debug(opts) ],
+        'pack', [ bpack(bopts) ],
+        'wrap', [ this._wrap(opts) ]
     ]);
 };
 
@@ -99,6 +106,17 @@ Browserify.prototype._emitDeps = function () {
     })
 };
 
+Browserify.prototype._debug = function (opts) {
+    return through.obj(function (row, enc, next) {
+        if (opts.debug) {
+            row.sourceRoot = 'file://localhost';
+            row.sourceFile = row.file.replace(/\\/g, '/');
+        }
+        this.push(row);
+        next();
+    });
+};
+
 Browserify.prototype._wrap = function (opts) {
     var self = this;
     var first = true;
@@ -122,7 +140,11 @@ Browserify.prototype.reset = function (opts) {
     this.emit('reset');
 };
 
-Browserify.prototype.bundle = function (cb) {
+Browserify.prototype.bundle = function (opts, cb) {
+    if (typeof opts === 'function') {
+        cb = opts;
+        cb = null;
+    }
     if (cb) {
         this.pipeline.on('error', cb);
         this.pipeline.pipe(concat(function (body) {
