@@ -1,6 +1,7 @@
 var mdeps = require('module-deps');
 var bpack = require('browser-pack');
 var umd = require('umd');
+var shasum = require('shasum');
 
 var splicer = require('labeled-stream-splicer');
 var through = require('through2');
@@ -77,7 +78,7 @@ Browserify.prototype._label = function () {
     return through.obj(function (row, enc, next) {
         if (/^\//.test(row.id) && row.id === row.file) {
             var prev = row.id;
-            row.id = map[prev] = ++ index;
+            row.id = map[prev] = shasum(row.source).slice(0,8);
             self.emit('label', prev, row.id);
         }
         Object.keys(row.deps || {}).forEach(function (key) {
