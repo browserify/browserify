@@ -85,7 +85,8 @@ Browserify.prototype._label = function () {
     var index = 0;
     var map = {};
     return through.obj(function (row, enc, next) {
-        if (row.id === row.file && row.index !== undefined) {
+        if (/^\//.test(row.file) && row.id === row.file
+        && row.index !== undefined) {
             var prev = row.id;
             row.id = row.index;
             self.emit('label', prev, row.id);
@@ -130,6 +131,7 @@ Browserify.prototype._wrap = function (opts) {
         }
         first = false;
         this.push(buf);
+        this.push('\n');
         next();
     });
 };

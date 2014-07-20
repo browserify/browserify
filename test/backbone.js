@@ -7,8 +7,9 @@ test('backbone', function (t) {
     t.plan(3);
     var b = browserify();
     b.require('backbone');
-    b.bundle(function (err, src) {
-        t.ok(typeof src === 'string');
+    b.bundle(function (err, buf) {
+        t.ok(Buffer.isBuffer(buf));
+        var src = buf.toString('utf8');
         t.ok(src.length > 0);
         
         var c = { console: console };

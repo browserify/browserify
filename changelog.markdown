@@ -2,6 +2,10 @@
 
 b.deps(), b.pack(), opts.pack, opts.deps are gone
 
+bundle() no longer accepts options.
+bundle() options have all been moved to browserify()
+bundle(function (buf) {}) `buf` is a buffer now instead of a string
+
 # 4.2.2
 
 fixes a bug applying transforms to symlinked files by resolving the realpath
