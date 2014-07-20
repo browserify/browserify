@@ -121,7 +121,7 @@ function Browserify (opts) {
 Browserify.prototype._hash = function (id) {
     var basedir = this._basedir;
     if (!basedir) basedir = process.cwd();
-    return hash(path.relative(basedir, id));
+    return hash(path.resolve(basedir, id));
 };
 
 Browserify.prototype.noParse = function(file) {
