@@ -1,5 +1,6 @@
 var mdeps = require('module-deps');
 var bpack = require('browser-pack');
+var umd = require('umd');
 
 var splicer = require('labeled-stream-splicer');
 var through = require('through2');
@@ -44,6 +45,11 @@ Browserify.prototype.require = function (file, opts) {
         ? xtend(file, opts)
         : xtend(opts, { file: file })
     ;
+    if (!row.id) row.id = file;
+    if (!row.entry && this._options.exports === undefined) {
+        this._hasExports = true;
+    }
+    
     this.pipeline.write(row);
     return this;
 };
@@ -58,12 +64,32 @@ Browserify.prototype.add = function (file) {
 };
 
 Browserify.prototype._createPipeline = function (opts) {
+    var self = this;
+    
     var mopts = {};
     var bopts = { raw: true };
     return splicer.obj([
         'deps', [ mdeps(mopts) ],
-        'pack', [ bpack(bopts) ]
+        'pack', [ bpack(bopts) ],
+        'wrap', [ wrap() ]
     ]);
+    
+    function wrap () {
+        var first = true;
+        return through.obj(function write (buf, enc, next) {
+            if (first && self._options.standalone) {
+                var pre = umd.prelude(self._options.standalone).trim();
+                this.push(pre + 'return ');
+            }
+            else if (first && self._hasExports) {
+                var pre = self._options.externalRequireName || 'require';
+                this.push(pre + '=');
+            }
+            first = false;
+            this.push(buf);
+            next();
+        });
+    }
 };
 
 Browserify.prototype.reset = function (opts) {
