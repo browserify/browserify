@@ -66,9 +66,8 @@ Browserify.prototype.add = function (file, opts) {
 
 Browserify.prototype._createPipeline = function (opts) {
     if (!opts) opts = {};
-    var mopts = opts;
-    var bopts = copy(opts);
-    bopts.raw = true;
+    var mopts = copy(opts);
+    mopts.extensions = [ '.js', '.json' ].concat(mopts.extensions || []);
     
     return splicer.obj([
         'deps', [ mdeps(mopts) ],
@@ -76,7 +75,7 @@ Browserify.prototype._createPipeline = function (opts) {
         'label', [ this._label() ],
         this._emitDeps(),
         'debug', [ this._debug(opts) ],
-        'pack', [ bpack(bopts) ],
+        'pack', [ bpack(xtend(opts, { raw: true })) ],
         'wrap', [ this._wrap(opts) ]
     ]);
 };
