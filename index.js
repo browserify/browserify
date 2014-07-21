@@ -61,7 +61,7 @@ Browserify.prototype.require = function (file, opts) {
     ;
     if (!row.id) {
         row.id = opts.expose || file;
-        if (opts.expose !== false) {
+        if (opts.expose || !row.entry) {
             this._expose[row.id] = true;
         }
     }
@@ -115,7 +115,7 @@ Browserify.prototype._createPipeline = function (opts) {
         'deps', [ this._mdeps ],
         'unbom', [ this._unbom() ],
         'sort', [ depsSort({ index: true }) ],
-        'label', [ this._label() ],
+        'label', [ this._indexMap(), this._label() ],
         'emit-deps', [ this._emitDeps() ],
         'debug', [ this._debug(opts) ],
         'pack', [ bpack(xtend(opts, { raw: true })) ],
@@ -158,6 +158,23 @@ Browserify.prototype._unbom = function () {
     });
 };
 
+Browserify.prototype._indexMap = function () {
+    var map = this._imap = {};
+    var rows = [];
+    return through.obj(write, end);
+    function write (row, enc, next) {
+        map[row.index] = row.id;
+        rows.push(row);
+        next();
+    }
+    function end () {
+        for (var i = 0; i < rows.length; i++) {
+            this.push(rows[i]);
+        }
+        this.push(null);
+    }
+};
+
 Browserify.prototype._label = function () {
     var self = this;
     return through.obj(function (row, enc, next) {
@@ -173,15 +190,19 @@ Browserify.prototype._label = function () {
     
     function relabel (deps) {
         Object.keys(deps).forEach(function (key) {
+            var id = self._imap[deps[key]];
             if (self._expose[key]) {
                 deps[key] = key;
-                return;
             }
-            for (var i = 0; i < self._extensions.length; i++) {
-                var ex = self._extensions[i];
-                if (self._expose[key + ex]) {
-                    deps[key] = key + ex;
-                    return;
+            else if (self._expose[id]) {
+                deps[key] = id;
+            }
+            else {
+                for (var i = 0; i < self._extensions.length; i++) {
+                    var ex = self._extensions[i];
+                    if (self._expose[key + ex]) {
+                        deps[key] = key + ex;
+                    }
                 }
             }
         });
