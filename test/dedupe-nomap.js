@@ -5,10 +5,10 @@ test('identical content gets deduped and the row gets a "nomap" flag set when so
   t.plan(4)
 
   var rows = [];
-  browserify()
-    .on('row', [].push.bind(rows)) 
+  browserify({ debug: true })
+    .on('dep', [].push.bind(rows)) 
     .require(require.resolve('./dup'), { entry: true })
-    .bundle({ debug: true }, check);
+    .bundle(check);
 
   function check(err, src) {
     if (err) return t.fail(err);
@@ -26,10 +26,10 @@ test('identical content gets deduped and the row gets a "nomap" flag set when so
   t.plan(4)
 
   var rows = [];
-  browserify()
-    .on('row', [].push.bind(rows)) 
+  browserify({ debug: false })
+    .on('dep', [].push.bind(rows)) 
     .require(require.resolve('./dup'), { entry: true })
-    .bundle({ debug: false }, check);
+    .bundle(check);
 
   function check(err, src) {
     if (err) return t.fail(err);
