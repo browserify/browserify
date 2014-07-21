@@ -37,6 +37,10 @@ function Browserify (files, opts) {
     self._external = [];
     self.pipeline = self._createPipeline(opts);
     
+    [].concat(opts.transform).filter(Boolean).forEach(function (tr) {
+        self.transform(tr);
+    });
+    
     [].concat(opts.entries).filter(Boolean).forEach(function (file) {
         self.add(file);
     });
@@ -74,22 +78,28 @@ Browserify.prototype.external = function (file, opts) {
     return this;
 };
 
-Browserify.prototype._createPipeline = function (opts) {
-    var self = this;
+Browserify.prototype.transform = function (tr, opts) {
+    if (typeof opts === 'function' || typeof opts === 'string') {
+        tr = [ opts, tr ];
+    }
+    if (isarray(tr)) {
+        opts = tr[1];
+        tr = tr[0];
+    }
     if (!opts) opts = {};
     
-    var mopts = copy(opts);
-    mopts.extensions = [ '.js', '.json' ].concat(mopts.extensions || []);
-    mopts.filter = function (id) {
-        return self._external.indexOf(id) < 0;
-    };
-    mopts.modules = opts.builtins !== undefined
-        ? opts.builtins
-        : builtins
-    ;
-    
+    if (opts.global) {
+        this._mdeps.globalTransforms.push([ tr, opts ]);
+    }
+    else this._mdeps.transforms.push([ tr, opts ]);
+    return this;
+};
+
+Browserify.prototype._createPipeline = function (opts) {
+    if (!opts) opts = {};
+    this._mdeps = this._createDeps(opts);
     return splicer.obj([
-        'deps', [ mdeps(mopts) ],
+        'deps', [ this._mdeps ],
         'sort', [ depsSort({ index: true }) ],
         'label', [ this._label() ],
         this._emitDeps(),
@@ -97,6 +107,21 @@ Browserify.prototype._createPipeline = function (opts) {
         'pack', [ bpack(xtend(opts, { raw: true })) ],
         'wrap', [ this._wrap(opts) ]
     ]);
+};
+
+Browserify.prototype._createDeps = function (opts) {
+    var self = this;
+    var mopts = copy(opts);
+    mopts.extensions = [ '.js', '.json' ].concat(mopts.extensions || []);
+    mopts.transformKey = [ 'browserify', 'transform' ];
+    mopts.filter = function (id) {
+        return self._external.indexOf(id) < 0;
+    };
+    mopts.modules = opts.builtins !== undefined
+        ? opts.builtins
+        : builtins
+    ;
+    return mdeps(mopts);
 };
 
 Browserify.prototype._label = function () {
