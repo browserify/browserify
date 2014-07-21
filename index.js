@@ -37,6 +37,7 @@ function Browserify (files, opts) {
     self._options = opts;
     self._external = [];
     self._exclude = [];
+    self._expose = {};
     self.pipeline = self._createPipeline(opts);
     
     [].concat(opts.transform).filter(Boolean).forEach(function (tr) {
@@ -58,7 +59,10 @@ Browserify.prototype.require = function (file, opts) {
         ? xtend(file, opts)
         : xtend(opts, { file: file })
     ;
-    if (!row.id) row.id = opts.expose || file;
+    if (!row.id) {
+        if (opts.expose) this._expose[opts.expose] = true;
+        row.id = opts.expose || file;
+    }
     if (opts.external) return this.external(file, opts);
     
     if (!row.entry && this._options.exports === undefined) {
@@ -120,6 +124,8 @@ Browserify.prototype._createDeps = function (opts) {
     var self = this;
     var mopts = copy(opts);
     mopts.extensions = [ '.js', '.json' ].concat(mopts.extensions || []);
+    self._extensions = mopts.extensions;
+    
     mopts.transformKey = [ 'browserify', 'transform' ];
     mopts.filter = function (id) {
         if (self._external.indexOf(id) >= 0) return false;
@@ -151,19 +157,33 @@ Browserify.prototype._unbom = function () {
 
 Browserify.prototype._label = function () {
     var self = this;
-    var index = 0;
-    var map = {};
     return through.obj(function (row, enc, next) {
-        if (/^\//.test(row.file) && row.id === row.file
-        && row.index !== undefined) {
+        if (!self._expose[row.id] && row.index !== undefined) {
             var prev = row.id;
             row.id = row.index;
             self.emit('label', prev, row.id);
         }
-        row.deps = row.indexDeps;
+        row.deps = relabel(row.indexDeps || {});
         this.push(row);
         next();
-    })
+    });
+    
+    function relabel (deps) {
+        Object.keys(deps).forEach(function (key) {
+            if (self._expose[key]) {
+                deps[key] = key;
+                return;
+            }
+            for (var i = 0; i < self._extensions.length; i++) {
+                var ex = self._extensions[i];
+                if (self._expose[key + ex]) {
+                    deps[key] = key + ex;
+                    return;
+                }
+            }
+        });
+        return deps;
+    }
 };
 
 Browserify.prototype._emitDeps = function () {
