@@ -34,7 +34,7 @@
     "crypto-browserify": "^2.1.8",
     "deep-equal": "~0.2.1",
     "defined": "~0.0.0",
-    "deps-sort": "^1.0.0",
+    "deps-sort": "^1.1.0",
     "derequire": "~0.8.0",
     "domain-browser": "~1.1.0",
     "duplexer": "~0.1.1",
