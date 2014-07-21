@@ -106,6 +106,7 @@ Browserify.prototype._createPipeline = function (opts) {
     this._mdeps = this._createDeps(opts);
     return splicer.obj([
         'deps', [ this._mdeps ],
+        'unbom', [ this._unbom() ],
         'sort', [ depsSort({ index: true }) ],
         'label', [ this._label() ],
         'emit-deps', [ this._emitDeps() ],
@@ -133,6 +134,16 @@ Browserify.prototype._createDeps = function (opts) {
         function (file) { return insertGlobals(file, opts) }
     ];
     return mdeps(mopts);
+};
+
+Browserify.prototype._unbom = function () {
+    return through.obj(function (row, enc, next) {
+        if (/^\ufeff/.test(row.source)) {
+            row.source = row.source.replace(/^\ufeff/, '');
+        }
+        this.push(row);
+        next();
+    });
 };
 
 Browserify.prototype._label = function () {
