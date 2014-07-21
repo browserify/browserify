@@ -102,7 +102,7 @@ Browserify.prototype._createPipeline = function (opts) {
         'deps', [ this._mdeps ],
         'sort', [ depsSort({ index: true }) ],
         'label', [ this._label() ],
-        this._emitDeps(),
+        'emit-deps', [ this._emitDeps() ],
         'debug', [ this._debug(opts) ],
         'pack', [ bpack(xtend(opts, { raw: true })) ],
         'wrap', [ this._wrap(opts) ]
