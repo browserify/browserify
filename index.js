@@ -16,6 +16,7 @@ var EventEmitter = require('events').EventEmitter;
 var xtend = require('xtend');
 var copy = require('shallow-copy');
 var isarray = require('isarray');
+var shasum = require('shasum');
 
 var nextTick = typeof setImmediate !== 'undefined'
     ? setImmediate : process.nextTick
@@ -38,6 +39,7 @@ function Browserify (files, opts) {
     self._external = [];
     self._exclude = [];
     self._expose = {};
+    self._hashes = {};
     self.pipeline = self._createPipeline(opts);
     
     [].concat(opts.transform).filter(Boolean).forEach(function (tr) {
@@ -114,10 +116,13 @@ Browserify.prototype.transform = function (tr, opts) {
 Browserify.prototype._createPipeline = function (opts) {
     if (!opts) opts = {};
     this._mdeps = this._createDeps(opts);
+    var dopts = { index: true, dedupe: true, expose: this._expose };
+    
     return splicer.obj([
         'deps', [ this._mdeps ],
         'unbom', [ this._unbom() ],
-        'sort', [ depsSort({ index: true, expose: this._expose }) ],
+        'sort', [ depsSort(dopts) ],
+        'dedupe', [ this._dedupe() ],
         'label', [ this._label() ],
         'emit-deps', [ this._emitDeps() ],
         'debug', [ this._debug(opts) ],
@@ -158,12 +163,33 @@ Browserify.prototype._unbom = function () {
     });
 };
 
+Browserify.prototype._dedupe = function () {
+    return through.obj(function (row, enc, next) {
+        if (row.dedupeIndex && false) { // samedeps
+            row.source = 'module.exports=require('
+                + JSON.stringify(row.dedupeIndex)
+                + ')'
+            ;
+            row.deps = {};
+        }
+        else if (row.dedupeIndex) {
+            row.source = 'arguments[4]['
+                + JSON.stringify(row.dedupeIndex)
+                + '][0].apply(exports,arguments)'
+            ;
+        }
+        this.push(row);
+        next();
+    });
+};
+
 Browserify.prototype._label = function () {
     var self = this;
     return through.obj(function (row, enc, next) {
         var prev = row.id;
         row.id = row.index;
         self.emit('label', prev, row.id);
+        
         row.deps = row.indexDeps || {};
         this.push(row);
         next();
