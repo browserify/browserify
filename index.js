@@ -124,6 +124,9 @@ Browserify.prototype._createDeps = function (opts) {
     mopts.filter = function (id) {
         if (self._external.indexOf(id) >= 0) return false;
         if (self._exclude.indexOf(id) >= 0) return false;
+        if (opts.bundleExternal === false && !/^([\/\.]|\w:)/.test(id)) {
+            return false;
+        }
         return true;
     };
     mopts.modules = opts.builtins !== undefined
