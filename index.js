@@ -66,6 +66,7 @@ Browserify.prototype.require = function (file, opts) {
         }
     }
     if (opts.external) return this.external(file, opts);
+    if (row.entry === undefined) row.entry = false;
     
     if (!row.entry && this._options.exports === undefined) {
         this._hasExports = true;
