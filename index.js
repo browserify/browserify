@@ -60,8 +60,10 @@ Browserify.prototype.require = function (file, opts) {
         : xtend(opts, { file: file })
     ;
     if (!row.id) {
-        if (opts.expose) this._expose[opts.expose] = true;
         row.id = opts.expose || file;
+        if (opts.expose !== false) {
+            this._expose[row.id] = true;
+        }
     }
     if (opts.external) return this.external(file, opts);
     
@@ -75,7 +77,7 @@ Browserify.prototype.require = function (file, opts) {
 
 Browserify.prototype.add = function (file, opts) {
     if (!opts) opts = {};
-    return this.require(file, xtend(opts, { entry: true }));
+    return this.require(file, xtend({ entry: true, expose: false }, opts));
 };
 
 Browserify.prototype.external = function (file) {
