@@ -71,6 +71,7 @@ module.exports = function (args) {
         builtins: argv.builtins === false ? false : undefined,
         commondir: argv.commondir === false ? false : undefined,
         bundleExternal: argv['bundle-external'],
+        basedir: argv.basedir,
         
         detectGlobals: argv['detect-globals'] !== false && argv.dg !== false,
         insertGlobals: argv['insert-globals'] || argv.ig,

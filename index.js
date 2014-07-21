@@ -1,6 +1,7 @@
 var mdeps = require('module-deps');
 var depsSort = require('deps-sort');
 var bpack = require('browser-pack');
+var insertGlobals = require('insert-module-globals');
 
 var umd = require('umd');
 var builtins = require('./lib/builtins.js');
@@ -35,6 +36,7 @@ function Browserify (files, opts) {
     
     self._options = opts;
     self._external = [];
+    self._exclude = [];
     self.pipeline = self._createPipeline(opts);
     
     [].concat(opts.transform).filter(Boolean).forEach(function (tr) {
@@ -72,9 +74,13 @@ Browserify.prototype.add = function (file, opts) {
     return this.require(file, xtend(opts, { entry: true }));
 };
 
-Browserify.prototype.external = function (file, opts) {
-    if (!opts) opts = {};
+Browserify.prototype.external = function (file) {
     this._external.push(file);
+    return this;
+};
+
+Browserify.prototype.exclude = function (file) {
+    this._exclude.push(file);
     return this;
 };
 
@@ -115,12 +121,17 @@ Browserify.prototype._createDeps = function (opts) {
     mopts.extensions = [ '.js', '.json' ].concat(mopts.extensions || []);
     mopts.transformKey = [ 'browserify', 'transform' ];
     mopts.filter = function (id) {
-        return self._external.indexOf(id) < 0;
+        if (self._external.indexOf(id) >= 0) return false;
+        if (self._exclude.indexOf(id) >= 0) return false;
+        return true;
     };
     mopts.modules = opts.builtins !== undefined
         ? opts.builtins
         : builtins
     ;
+    mopts.globalTransform = [
+        function (file) { return insertGlobals(file, opts) }
+    ];
     return mdeps(mopts);
 };
 
