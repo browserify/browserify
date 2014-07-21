@@ -3,6 +3,7 @@ var depsSort = require('deps-sort');
 var bpack = require('browser-pack');
 
 var umd = require('umd');
+var builtins = require('./lib/builtins.js');
 
 var splicer = require('labeled-stream-splicer');
 var through = require('through2');
@@ -33,6 +34,7 @@ function Browserify (files, opts) {
     else opts = xtend(files, opts);
     
     self._options = opts;
+    self._external = [];
     self.pipeline = self._createPipeline(opts);
     
     [].concat(opts.entries).filter(Boolean).forEach(function (file) {
@@ -51,6 +53,8 @@ Browserify.prototype.require = function (file, opts) {
         : xtend(opts, { file: file })
     ;
     if (!row.id) row.id = opts.expose || file;
+    if (opts.external) return this.external(file, opts);
+    
     if (!row.entry && this._options.exports === undefined) {
         this._hasExports = true;
     }
@@ -64,10 +68,25 @@ Browserify.prototype.add = function (file, opts) {
     return this.require(file, xtend(opts, { entry: true }));
 };
 
-Browserify.prototype._createPipeline = function (opts) {
+Browserify.prototype.external = function (file, opts) {
     if (!opts) opts = {};
+    this._external.push(file);
+    return this;
+};
+
+Browserify.prototype._createPipeline = function (opts) {
+    var self = this;
+    if (!opts) opts = {};
+    
     var mopts = copy(opts);
     mopts.extensions = [ '.js', '.json' ].concat(mopts.extensions || []);
+    mopts.filter = function (id) {
+        return self._external.indexOf(id) < 0;
+    };
+    mopts.modules = opts.builtins !== undefined
+        ? opts.builtins
+        : builtins
+    ;
     
     return splicer.obj([
         'deps', [ mdeps(mopts) ],

@@ -28,9 +28,13 @@ test('external flag for node modules', function(t) {
 test('bundle from an arguments with --insert-global-vars', function (t) {
     t.plan(3)
 
-    var b = fromArgs([ __dirname + '/global/filename.js', '--insert-global-vars=__filename,__dirname' ]);
+    var b = fromArgs([
+        __dirname + '/global/filename.js',
+        '--insert-global-vars=__filename,__dirname',
+        '--basedir', __dirname
+    ]);
     b.require(__dirname + '/global/filename.js', { expose: 'x' });
-    b.bundle({ basedir: __dirname }, function (err, src) {
+    b.bundle(function (err, src) {
         t.ifError(err);
         var c = {};
         vm.runInNewContext(src, c);
