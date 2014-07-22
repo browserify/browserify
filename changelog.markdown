@@ -6,6 +6,8 @@ bundle() no longer accepts options.
 bundle() options have all been moved to browserify()
 bundle(function (buf) {}) `buf` is a buffer now instead of a string
 
+allow browserify.extensions in package.json for package-scoped extensions?
+
 # 4.2.2
 
 fixes a bug applying transforms to symlinked files by resolving the realpath

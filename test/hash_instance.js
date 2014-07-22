@@ -6,8 +6,9 @@ test('hash instances', function (t) {
     t.plan(6);
     
     var b = browserify(__dirname + '/hash_instance/main.js');
-    b.bundle(function (err, src) {
+    b.bundle(function (err, buf) {
         var c = { t: t };
+        var src = buf.toString('utf8');
         t.equal(src.match(RegExp('// abcdefg', 'g')).length, 1);
         vm.runInNewContext(src, c);
     });

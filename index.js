@@ -165,7 +165,7 @@ Browserify.prototype._unbom = function () {
 
 Browserify.prototype._dedupe = function () {
     return through.obj(function (row, enc, next) {
-        if (row.dedupeIndex && false) { // samedeps
+        if (row.dedupeIndex && row.sameDeps) {
             row.source = 'module.exports=require('
                 + JSON.stringify(row.dedupeIndex)
                 + ')'
