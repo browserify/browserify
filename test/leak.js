@@ -25,7 +25,8 @@ test('leaking information about system paths (process)', function (t) {
     stream.push(null);
     b.add(stream);
     
-    b.bundle(function (err, src) {
+    b.bundle(function (err, buf) {
+        var src = buf.toString('utf8');
         t.equal(src.indexOf(dirstring), -1, 'temp directory visible');
         t.equal(src.indexOf(process.cwd()), -1, 'cwd directory visible');
         t.equal(src.indexOf('/home'), -1, 'home directory visible');
@@ -42,7 +43,8 @@ test('leaking information about system paths (Buffer)', function (t) {
     stream.push(null);
     b.add(stream);
     
-    b.bundle(function (err, src) {
+    b.bundle(function (err, buf) {
+        var src = buf.toString('utf8');
         t.equal(src.indexOf(dirstring), -1, 'temp directory visible');
         t.equal(src.indexOf(process.cwd()), -1, 'cwd directory visible');
         t.equal(src.indexOf('/home'), -1, 'home directory visible');
