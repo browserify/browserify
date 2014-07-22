@@ -25,6 +25,11 @@ var nextTick = typeof setImmediate !== 'undefined'
 module.exports = Browserify;
 inherits(Browserify, EventEmitter);
 
+var path = require('path');
+var paths = {
+    empty: path.join(__dirname, 'lib/_empty.js')
+};
+
 function Browserify (files, opts) {
     var self = this;
     if (!(this instanceof Browserify)) return new Browserify(files, opts);
@@ -93,6 +98,11 @@ Browserify.prototype.external = function (file) {
 
 Browserify.prototype.exclude = function (file) {
     this._exclude.push(file);
+    return this;
+};
+
+Browserify.prototype.ignore = function (file, opts) {
+    this.require(paths.empty, xtend({ expose: file }, opts));
     return this;
 };
 
