@@ -89,7 +89,7 @@ Browserify.prototype.require = function (file, opts) {
                 file: filename,
                 id: id
             });
-            if (-- self._pending === 0) self.emit('ready');
+            if (-- self._pending === 0) self.emit('_ready');
         }));
         return this;
     }
@@ -374,7 +374,7 @@ Browserify.prototype.bundle = function (cb) {
     if (this._pending === 0) {
         this.pipeline.end();
     }
-    else this.once('ready', function () {
+    else this.once('_ready', function () {
         self.pipeline.end();
     });
     
