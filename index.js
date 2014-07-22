@@ -17,6 +17,7 @@ var xtend = require('xtend');
 var copy = require('shallow-copy');
 var isarray = require('isarray');
 var shasum = require('shasum');
+var defined = require('defined');
 
 var nextTick = typeof setImmediate !== 'undefined'
     ? setImmediate : process.nextTick
@@ -35,7 +36,7 @@ function Browserify (files, opts) {
     if (!(this instanceof Browserify)) return new Browserify(files, opts);
     if (!opts) opts = {};
     
-    if (typeof files === 'string' || isarray(files)) {
+    if (typeof files === 'string' || isarray(files) || isStream(files)) {
         opts = xtend(opts, { entries: [].concat(opts.entries || [], files) });
     }
     else opts = xtend(files, opts);
@@ -45,6 +46,7 @@ function Browserify (files, opts) {
     self._exclude = [];
     self._expose = {};
     self._hashes = {};
+    self._pending = 0;
     self.pipeline = self._createPipeline(opts);
     
     [].concat(opts.transform).filter(Boolean).forEach(function (tr) {
@@ -52,16 +54,43 @@ function Browserify (files, opts) {
     });
     
     [].concat(opts.entries).filter(Boolean).forEach(function (file) {
-        self.add(file);
+        self.add(file, { basedir: opts.basedir });
     });
     
     [].concat(opts.require).filter(Boolean).forEach(function (file) {
-        self.require(file);
+        self.require(file, { basedir: opts.basedir });
     });
 }
 
 Browserify.prototype.require = function (file, opts) {
+    var self = this;
     if (!opts) opts = {};
+    
+    if (isStream(file)) {
+        self._pending ++;
+        file.pipe(concat(function (buf) {
+            var filename = opts.file || path.join(
+                defined(opts.basedir, process.cwd()),
+                '_stream_' + Math.floor(Math.pow(16,8) * Math.random()) + '.js'
+            );
+            var id = file.id || opts.expose || filename;
+            if (opts.expose || opts.entry === false) {
+                self._expose[id] = filename;
+            }
+            if (!opts.entry && self._options.exports === undefined) {
+                self._hasExports = true;
+            }
+            self.pipeline.write({
+                source: buf.toString('utf8'),
+                entry: defined(opts.entry, true),
+                file: filename,
+                id: id
+            });
+            if (-- self._pending === 0) self.emit('ready');
+        }));
+        return this;
+    }
+    
     var row = typeof file === 'object'
         ? xtend(file, opts)
         : xtend(opts, { file: file })
@@ -81,8 +110,8 @@ Browserify.prototype.require = function (file, opts) {
     if (!row.entry && this._options.exports === undefined) {
         this._hasExports = true;
     }
-    
     this.pipeline.write(row);
+    
     return this;
 };
 
@@ -277,6 +306,7 @@ Browserify.prototype.reset = function (opts) {
 };
 
 Browserify.prototype.bundle = function (cb) {
+    var self = this;
     if (cb && typeof cb === 'object') {
         throw new Error(
             'bundle() no longer accepts option arguments.\n'
@@ -289,8 +319,16 @@ Browserify.prototype.bundle = function (cb) {
             cb(null, body);
         }));
     }
-    this.pipeline.end();
+    
+    if (this._pending === 0) {
+        this.pipeline.end();
+    }
+    else this.once('ready', function () {
+        self.pipeline.end();
+    });
+    
     return this.pipeline;
 };
 
 function has (obj, key) { return Object.hasOwnProperty.call(obj, key) }
+function isStream (s) { return s && typeof s.pipe === 'function' }
