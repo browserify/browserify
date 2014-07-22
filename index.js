@@ -158,6 +158,13 @@ Browserify.prototype._createDeps = function (opts) {
     };
     mopts.modules = opts.builtins !== undefined ? opts.builtins : builtins;
     mopts.globalTransform = [
+        function (file) {
+            var stream = through();
+            if (/\.json$/.test(file)) {
+                stream.push('module.exports=');
+            }
+            return stream;
+        },
         function (file) { return insertGlobals(file, opts) }
     ];
     return mdeps(mopts);
