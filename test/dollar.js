@@ -3,11 +3,10 @@ var vm = require('vm');
 var test = require('tap').test;
 
 test('dollar', function (t) {
-    t.plan(3);
+    t.plan(2);
     var b = browserify();
     b.require(__dirname + '/dollar/dollar/index.js', { expose: 'dollar' });
     b.bundle(function (err, src) {
-        t.ok(typeof src === 'string');
         t.ok(src.length > 0);
         
         var c = {};
