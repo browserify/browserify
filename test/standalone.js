@@ -5,8 +5,10 @@ var test = require('tap').test;
 test('standalone', function (t) {
     t.plan(3);
     
-    var b = browserify(__dirname + '/standalone/main.js');
-    b.bundle({standalone: 'stand-test'}, function (err, src) {
+    var b = browserify(__dirname + '/standalone/main.js', {
+        standalone: 'stand-test'
+    });
+    b.bundle(function (err, src) {
         t.test('window global', function (t) {
             t.plan(2);
             var c = {
@@ -41,8 +43,10 @@ test('standalone', function (t) {
 test('A.B.C standalone', function (t) {
     t.plan(3);
     
-    var b = browserify(__dirname + '/standalone/main.js');
-    b.bundle({standalone: 'A.B.C'}, function (err, src) {
+    var b = browserify(__dirname + '/standalone/main.js', {
+        standalone: 'A.B.C'
+    });
+    b.bundle(function (err, src) {
         t.test('window global', function (t) {
             t.plan(2);
             var c = { window: {} };

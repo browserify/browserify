@@ -8,14 +8,20 @@ var prelude = fs.readFileSync(path.join(__dirname, 'multi_bundle', '_prelude.js'
 test('unique require', function (t) {
     t.plan(6);
 
-    var core = browserify();
+    var core = browserify({
+        externalRequireName: 'unique_require',
+        prelude: prelude
+    });
     core.require(__dirname + '/multi_bundle/b.js', { expose: 'b' });
 
-    var app = browserify([__dirname + '/multi_bundle/a.js']);
+    var app = browserify(
+        [__dirname + '/multi_bundle/a.js'],
+        { prelude: prelude }
+    );
     // inform this bundle that b exists in another bundle
     app.external(__dirname + '/multi_bundle/b.js');
 
-    core.bundle({ externalRequireName: 'unique_require', prelude: prelude }, function (err, src) {
+    core.bundle(function (err, src) {
         var c = {
             console: console,
             t : t,
@@ -29,7 +35,7 @@ test('unique require', function (t) {
         t.equal(c.baton.times, 0);
 
         // loading the app will require
-        app.bundle({ prelude: prelude }, function (err, src) {
+        app.bundle(function (err, src) {
             vm.runInNewContext(src, c);
 
             // b required for the first time

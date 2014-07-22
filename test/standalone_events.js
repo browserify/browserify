@@ -6,14 +6,14 @@ test('standalone bundle close event', {timeout: 1000}, function (t) {
 
     var ended = false;
 
-    var b = browserify(__dirname + '/standalone/main.js');
-    b.on('_ready', function() {
-        var r = b.bundle({standalone: 'stand-test'});
-        r.resume();
-        r.on('end', function() {
-            t.ok(!ended);
-            ended = true;
-            t.end();
-        });
+    var b = browserify(__dirname + '/standalone/main.js', {
+        standalone: 'stand-test'
+    });
+    var r = b.bundle();
+    r.resume();
+    r.on('end', function() {
+        t.ok(!ended);
+        ended = true;
+        t.end();
     });
 });

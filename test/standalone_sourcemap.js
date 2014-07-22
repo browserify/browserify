@@ -9,8 +9,12 @@ test('standalone in debug mode', function (t) {
 
     var main = fs.readFileSync(__dirname + '/standalone/main.js');
 
-    var b = browserify(__dirname + '/standalone/main.js');
-    b.bundle({standalone: 'stand-test', debug: true}, function (err, src) {
+    var b = browserify(__dirname + '/standalone/main.js', {
+        standalone: 'stand-test',
+        debug: true
+    });
+    b.bundle(function (err, buf) {
+        var src = buf.toString('utf8');
         t.test('window global', function (t) {
             t.plan(2);
             var c = {
