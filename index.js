@@ -42,6 +42,8 @@ function Browserify (files, opts) {
     else opts = xtend(files, opts);
     
     self._options = opts;
+    if (opts.noParse) opts.noparse = opts.noParse;
+    
     self._external = [];
     self._exclude = [];
     self._expose = {};
@@ -195,9 +197,29 @@ Browserify.prototype._createDeps = function (opts) {
             return stream;
         },
         function (file) {
-            var vars = {
+            if (self._options.noparse === true) return through();
+            var no = [].slice.call(self._options.noparse).filter(Boolean);
+            if (no.indexOf(file) >= 0) return through();
+            if (no.map(function (x){return path.resolve(x)}).indexOf(file)>=0){
+                return through();
+            }
+            
+            var parts = file.split('/node_modules/');
+            for (var i = 0; i < no.length; i++) {
+                if (typeof no[i] === 'function' && no[i](file)) {
+                    return through();
+                }
+                else if (no[i] === parts[parts.length-1].split('/')[0]) {
+                    return through();
+                }
+                else if (no[i] === parts[parts.length-1]) {
+                    return through();
+                }
+            }
+            
+            var vars = xtend({
                 process: function () { return "require('_process')" }
-            };
+            }, opts.insertGlobalVars);
             return insertGlobals(file, xtend(opts, { vars: vars }));
         }
     ];

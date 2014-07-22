@@ -22,7 +22,7 @@ module.exports = function (args) {
             igv: 'insert-global-vars',
             d: 'debug',
             s: 'standalone',
-            noparse: 'noParse',
+            noparse: [ 'noParse', 'noparse' ],
             bare: 'bear'
         },
         'default': {
@@ -64,7 +64,7 @@ module.exports = function (args) {
     }
     
     var b = browserify({
-        noParse: [].concat(argv.noparse).filter(Boolean),
+        noparse: argv.noparse,
         extensions: [].concat(argv.extension).filter(Boolean),
         entries: entries,
         fullPaths: argv['full-paths'],
