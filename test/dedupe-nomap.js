@@ -17,7 +17,13 @@ test('identical content gets deduped and the row gets a "nomap" flag set when so
 
     t.equal(rows.length, 3, 'packs 3 rows');
     t.equal(nomappeds.length, 1, 'one of has nomapped flag set');
-    t.equal(rows.filter(function (x) { return x.hash == nm.hash }).length, 2, '2 rows with the same hash as the duplicate exist');
+    t.equal(
+        rows.filter(function (x) {
+            return x.id == nm.dedupeIndex
+        }).length,
+        1,
+        '2 rows with the same hash as the duplicate exist'
+    );
     t.similar(nm.source, /module\.exports.*=.*require\(.+\)$/, 'redirects duplicate to original via require call');
   }
 })
@@ -38,7 +44,13 @@ test('identical content gets deduped and the row gets a "nomap" flag set when so
 
     t.equal(rows.length, 3, 'packs 3 rows');
     t.equal(nomappeds.length, 1, 'one of has nomapped flag set');
-    t.equal(rows.filter(function (x) { return x.hash == nm.hash }).length, 2, '2 rows with the same hash as the duplicate exist');
+    t.equal(
+        rows.filter(function (x) {
+            return x.id == nm.dedupeIndex
+        }).length,
+        1,
+        '2 rows with the same hash as the duplicate exist'
+    );
     t.similar(nm.source, /module\.exports.*=.*require\(.+\)$/, 'redirects duplicate to original via require call');
   }
 })

@@ -171,12 +171,14 @@ Browserify.prototype._dedupe = function () {
                 + ')'
             ;
             row.deps = {};
+            row.nomap = true;
         }
         else if (row.dedupeIndex) {
             row.source = 'arguments[4]['
                 + JSON.stringify(row.dedupeIndex)
                 + '][0].apply(exports,arguments)'
             ;
+            row.nomap = true;
         }
         this.push(row);
         next();

@@ -6,8 +6,9 @@ test('hash instances with hashed contexts', function (t) {
     t.plan(17);
     
     var b = browserify(__dirname + '/hash_instance_context/main.js');
-    b.bundle(function (err, src) {
+    b.bundle(function (err, buf) {
         var c = { t: t };
+        var src = buf.toString('utf8');
         t.equal(src.match(RegExp('// FILE F ONE', 'g')).length, 1);
         t.equal(src.match(RegExp('// FILE G ONE', 'g')).length, 2);
         
