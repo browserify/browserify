@@ -130,6 +130,9 @@ Browserify.prototype.external = function (file) {
 
 Browserify.prototype.exclude = function (file) {
     this._exclude.push(file);
+    this._exclude.push(
+        path.resolve(this._options.basedir || process.cwd(), file)
+    );
     return this;
 };
 
@@ -189,6 +192,12 @@ Browserify.prototype._createDeps = function (opts) {
     self._extensions = mopts.extensions;
     
     mopts.transformKey = [ 'browserify', 'transform' ];
+    mopts.postFilter = function (id, file, pkg) {
+        if (opts.postFilter && !opts.postFilter(id, file, pkg)) return false;
+        if (self._external.indexOf(file) >= 0) return false;
+        if (self._exclude.indexOf(file) >= 0) return false;
+        return true;
+    };
     mopts.filter = function (id) {
         if (opts.filter && !opts.filter(id)) return false;
         if (self._external.indexOf(id) >= 0) return false;
