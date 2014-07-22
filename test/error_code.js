@@ -14,9 +14,11 @@ test('error code', function (t) {
     ]);
     var err = '';
     ps.stderr.on('data', function (buf) { err += buf });
+    ps.stderr.on('end', function () {
+        t.ok(/^(Syntax|Parse)Error:/m.test(err));
+    });
     
     ps.on('exit', function (code) {
         t.notEqual(code, 0);
-        t.ok(/^(Syntax|Parse)Error:/m.test(err));
     });
 });
