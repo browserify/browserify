@@ -20,7 +20,11 @@ test('reverse multi bundle', function (t) {
 
     // Lazily loaded bundle has only its own code even it uses code from the
     // shared library.
-    var lazy = browserify()
+    var lazy = browserify({
+            filter: function (id) {
+                return id !== 'not/real';
+            }
+        })
         .require(__dirname + '/reverse_multi_bundle/lazy.js')
         .external(__dirname + '/reverse_multi_bundle/shared.js')
         .external('not/real');
@@ -28,19 +32,15 @@ test('reverse multi bundle', function (t) {
 
     app.bundle(function (err, appSrc) {
         if (err) throw err;
-        lazy.bundle({
-            filter: function (id) {
-                return id !== 'not/real';
-            }
-        },  function(err, lazySrc) {
-                if (err) throw err;
+        lazy.bundle(function(err, lazySrc) {
+            if (err) throw err;
 
-                var src = appSrc + ';' + lazySrc;
-                var c = {
-                    setTimeout: setTimeout,
-                    t: t
-                };
-                vm.runInNewContext(src, c);
+            var src = appSrc + ';' + lazySrc;
+            var c = {
+                setTimeout: setTimeout,
+                t: t
+            };
+            vm.runInNewContext(src, c);
         });
     });
 });
