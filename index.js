@@ -68,16 +68,21 @@ function Browserify (files, opts) {
 Browserify.prototype.require = function (file, opts) {
     var self = this;
     if (!opts) opts = {};
+    var basedir = defined(opts.basedir, process.cwd());
+    var expose = opts.expose;
+    if (expose === true) {
+        expose = '/' + path.relative(basedir, file);
+    }
     
     if (isStream(file)) {
         self._pending ++;
         file.pipe(concat(function (buf) {
             var filename = opts.file || path.join(
-                defined(opts.basedir, process.cwd()),
+                basedir,
                 '_stream_' + Math.floor(Math.pow(16,8) * Math.random()) + '.js'
             );
-            var id = file.id || opts.expose || filename;
-            if (opts.expose || opts.entry === false) {
+            var id = file.id || expose || filename;
+            if (expose || opts.entry === false) {
                 self._expose[id] = filename;
             }
             if (!opts.entry && self._options.exports === undefined) {
@@ -99,12 +104,12 @@ Browserify.prototype.require = function (file, opts) {
         : xtend(opts, { file: file })
     ;
     if (!row.id) {
-        row.id = opts.expose || file;
-        if (opts.expose || !row.entry) {
+        row.id = expose || file;
+        if (expose || !row.entry) {
             this._expose[row.id] = file;
         }
-        if (opts.expose) {
-            this._mdeps.options.modules[opts.expose] = file;
+        if (expose) {
+            this._mdeps.options.modules[expose] = file;
         }
     }
     if (opts.external) return this.external(file, opts);
@@ -123,8 +128,18 @@ Browserify.prototype.add = function (file, opts) {
     return this.require(file, xtend({ entry: true, expose: false }, opts));
 };
 
-Browserify.prototype.external = function (file) {
+Browserify.prototype.external = function (file, opts) {
+    var self = this;
+    if (!opts) opts = {};
+    if (typeof file === 'object' && file.require) {
+        Object.keys(file._expose).forEach(function (x) {
+            self.external(x);
+        });
+        return this;
+    }
+    var basedir = defined(opts.basedir, process.cwd());
     this._external.push(file);
+    this._external.push('/' + path.relative(basedir, file));
     return this;
 };
 
@@ -177,7 +192,7 @@ Browserify.prototype._createPipeline = function (opts) {
         'syntax', [ this._syntax() ],
         'sort', [ depsSort(dopts) ],
         'dedupe', [ this._dedupe() ],
-        'label', [ this._label() ],
+        'label', [ this._label(opts) ],
         'emit-deps', [ this._emitDeps() ],
         'debug', [ this._debug(opts) ],
         'pack', [ bpack(xtend(opts, { raw: true })) ],
@@ -291,14 +306,37 @@ Browserify.prototype._dedupe = function () {
     });
 };
 
-Browserify.prototype._label = function () {
+Browserify.prototype._label = function (opts) {
     var self = this;
+    var basedir = defined(opts.basedir, process.cwd());
+    
     return through.obj(function (row, enc, next) {
         var prev = row.id;
         if (row.index) row.id = row.index;
         self.emit('label', prev, row.id);
-        
         if (row.indexDeps) row.deps = row.indexDeps || {};
+        
+        Object.keys(row.deps).forEach(function (key) {
+            if (row.deps[key] !== undefined) return;
+            if (self._external.indexOf(key) >= 0) return;
+            if (!/^[\/.]/.test(key)) return;
+            
+            var rfile = '/' + path.relative(
+                basedir,
+                path.resolve(path.dirname(row.file), key)
+            );
+            if (self._external.indexOf(rfile) >= 0) {
+                row.deps[key] = rfile;
+            }
+            for (var i = 0; i < self._extensions.length; i++) {
+                var ex = self._extensions[i];
+                if (self._external.indexOf(rfile + ex) >= 0) {
+                    row.deps[key] = rfile + ex;
+                    break;
+                }
+            }
+        });
+        
         this.push(row);
         next();
     });
