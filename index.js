@@ -156,9 +156,17 @@ Browserify.prototype.transform = function (tr, opts) {
 };
 
 Browserify.prototype._createPipeline = function (opts) {
+    var self = this;
     if (!opts) opts = {};
     this._mdeps = this._createDeps(opts);
-    var dopts = { index: true, dedupe: true, expose: this._expose };
+    this._mdeps.on('file', function (file, id) {
+        self.emit('file', file, id);
+    });
+    var dopts = {
+        index: !opts.fullPaths,
+        dedupe: true,
+        expose: this._expose
+    };
     
     return splicer.obj([
         'deps', [ this._mdeps ],
@@ -274,10 +282,10 @@ Browserify.prototype._label = function () {
     var self = this;
     return through.obj(function (row, enc, next) {
         var prev = row.id;
-        row.id = row.index;
+        if (row.index) row.id = row.index;
         self.emit('label', prev, row.id);
         
-        row.deps = row.indexDeps || {};
+        if (row.indexDeps) row.deps = row.indexDeps || {};
         this.push(row);
         next();
     });

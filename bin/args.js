@@ -23,6 +23,7 @@ module.exports = function (args) {
             d: 'debug',
             s: 'standalone',
             noparse: [ 'noParse', 'noparse' ],
+            'full-paths': [ 'fullpaths', 'fullPaths' ],
             bare: 'bear'
         },
         'default': {

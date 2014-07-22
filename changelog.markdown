@@ -9,6 +9,10 @@ bundle(function (buf) {}) `buf` is a buffer now instead of a string
 allow browserify.extensions in package.json for package-scoped extensions?
 
 a better --noparse matcher
+better hiding of system paths so intreq should no longer be necessary
+
+internals are much cleaner
+there is no hacking around with custom resolvers
 
 # 4.2.2
 
