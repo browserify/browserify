@@ -14,6 +14,9 @@ better hiding of system paths so intreq should no longer be necessary
 internals are much cleaner
 there is no hacking around with custom resolvers
 
+basedir is now process.cwd() by default
+for path masking
+
 # 4.2.2
 
 fixes a bug applying transforms to symlinked files by resolving the realpath

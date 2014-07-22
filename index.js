@@ -208,8 +208,8 @@ Browserify.prototype._createDeps = function (opts) {
             return stream;
         },
         function (file) {
-            if (self._options.noparse === true) return through();
-            var no = [].concat(self._options.noparse).filter(Boolean);
+            if (opts.noparse === true) return through();
+            var no = [].concat(opts.noparse).filter(Boolean);
             if (no.indexOf(file) >= 0) return through();
             if (no.map(function (x){return path.resolve(x)}).indexOf(file)>=0){
                 return through();
@@ -229,9 +229,13 @@ Browserify.prototype._createDeps = function (opts) {
             }
             
             var vars = xtend({
-                process: function () { return "require('_process')" }
+                process: function () { return "require('_process')" },
             }, opts.insertGlobalVars);
-            return insertGlobals(file, xtend(opts, { vars: vars }));
+            return insertGlobals(file, xtend(opts, {
+                always: opts.insertGlobals,
+                basedir: opts.basedir || process.cwd(),
+                vars: vars
+            }));
         }
     ];
     return mdeps(mopts);
