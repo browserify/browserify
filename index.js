@@ -194,7 +194,12 @@ Browserify.prototype._createDeps = function (opts) {
             }
             return stream;
         },
-        function (file) { return insertGlobals(file, opts) }
+        function (file) {
+            var vars = {
+                process: function () { return "require('_process')" }
+            };
+            return insertGlobals(file, xtend(opts, { vars: vars }));
+        }
     ];
     return mdeps(mopts);
 };
