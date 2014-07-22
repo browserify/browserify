@@ -2,6 +2,7 @@ var mdeps = require('module-deps');
 var depsSort = require('deps-sort');
 var bpack = require('browser-pack');
 var insertGlobals = require('insert-module-globals');
+var syntaxError = require('syntax-error');
 
 var umd = require('umd');
 var builtins = require('./lib/builtins.js');
@@ -162,6 +163,7 @@ Browserify.prototype._createPipeline = function (opts) {
     return splicer.obj([
         'deps', [ this._mdeps ],
         'unbom', [ this._unbom() ],
+        'syntax', [ this._syntax() ],
         'sort', [ depsSort(dopts) ],
         'dedupe', [ this._dedupe() ],
         'label', [ this._label() ],
@@ -232,6 +234,15 @@ Browserify.prototype._unbom = function () {
         if (/^\ufeff/.test(row.source)) {
             row.source = row.source.replace(/^\ufeff/, '');
         }
+        this.push(row);
+        next();
+    });
+};
+
+Browserify.prototype._syntax = function () {
+    return through.obj(function (row, enc, next) {
+        var err = syntaxError(row.source, row.file || row.id);
+        if (err) return this.emit('error', err);
         this.push(row);
         next();
     });
