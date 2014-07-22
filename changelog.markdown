@@ -8,6 +8,8 @@ bundle(function (buf) {}) `buf` is a buffer now instead of a string
 
 allow browserify.extensions in package.json for package-scoped extensions?
 
+a better --noparse matcher
+
 # 4.2.2
 
 fixes a bug applying transforms to symlinked files by resolving the realpath

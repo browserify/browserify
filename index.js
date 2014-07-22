@@ -198,7 +198,7 @@ Browserify.prototype._createDeps = function (opts) {
         },
         function (file) {
             if (self._options.noparse === true) return through();
-            var no = [].slice.call(self._options.noparse).filter(Boolean);
+            var no = [].concat(self._options.noparse).filter(Boolean);
             if (no.indexOf(file) >= 0) return through();
             if (no.map(function (x){return path.resolve(x)}).indexOf(file)>=0){
                 return through();
