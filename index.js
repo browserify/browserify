@@ -66,9 +66,6 @@ function Browserify (files, opts) {
 
 Browserify.prototype.require = function (file, opts) {
     var self = this;
-    if (self._pending > 0) {
-        return self.once('_next', function () { self.require(file, opts) });
-    }
     
     if (!opts) opts = {};
     var basedir = defined(opts.basedir, process.cwd());
@@ -104,7 +101,6 @@ Browserify.prototype.require = function (file, opts) {
             self.pipeline.write(rec);
             
             self._pending --;
-            self.emit('_next');
             if (self._pending === 0) self.emit('_ready');
         }));
         return this;
