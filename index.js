@@ -139,7 +139,6 @@ Browserify.prototype.add = function (file, opts) {
 };
 
 Browserify.prototype.external = function (file, opts) {
-    var self = this;
     if (!opts) opts = {};
     var basedir = defined(opts.basedir, process.cwd());
     this._external.push(file);
@@ -147,8 +146,11 @@ Browserify.prototype.external = function (file, opts) {
     return this;
 };
 
-Browserify.prototype.exclude = function (file) {
+Browserify.prototype.exclude = function (file, opts) {
+    if (!opts) opts = {};
+    var basedir = defined(opts.basedir, process.cwd());
     this._exclude.push(file);
+    this._exclude.push('/' + path.relative(basedir, file));
     return this;
 };
 
@@ -230,6 +232,9 @@ Browserify.prototype._createDeps = function (opts) {
             if (file) {
                 var ex = '/' + path.relative(basedir, file);
                 if (self._external.indexOf(ex) >= 0) {
+                    return cb(null, ex);
+                }
+                if (self._exclude.indexOf(ex) >= 0) {
                     return cb(null, ex);
                 }
             }
