@@ -66,6 +66,9 @@ Browserify.prototype.require = function (file, opts) {
     if (!opts) opts = {};
     var basedir = defined(opts.basedir, process.cwd());
     var expose = opts.expose;
+    if (expose === undefined && this._options.exposeAll) {
+        expose = true;
+    }
     if (expose === true) {
         expose = '/' + path.relative(basedir, file);
     }
@@ -127,9 +130,13 @@ Browserify.prototype.add = function (file, opts) {
 Browserify.prototype.external = function (file, opts) {
     var self = this;
     if (!opts) opts = {};
-    if (typeof file === 'object' && file.require) {
-        Object.keys(file._expose).forEach(function (x) {
+    var basedir = opts.basedir || process.cwd();
+    
+    if (typeof file === 'object' && typeof file.bundle === 'function') {
+        var ex = Object.keys(file._exclude);
+        ex.forEach(function (x) {
             self.external(x);
+            self.external(path.join(basedir, x));
         });
         return this;
     }
