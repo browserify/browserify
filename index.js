@@ -47,6 +47,8 @@ function Browserify (files, opts) {
     self._expose = {};
     self._hashes = {};
     self._pending = 0;
+    self._entryOrder = 0;
+    
     self.pipeline = self._createPipeline(opts);
     
     [].concat(opts.transform).filter(Boolean).forEach(function (tr) {
@@ -92,12 +94,15 @@ Browserify.prototype.require = function (file, opts) {
             if (!opts.entry && self._options.exports === undefined) {
                 self._hasExports = true;
             }
-            self.pipeline.write({
+            var rec = {
                 source: buf.toString('utf8'),
                 entry: defined(opts.entry, true),
                 file: filename,
                 id: id
-            });
+            };
+            if (rec.entry) rec.order = self._entryOrder ++;
+            self.pipeline.write(rec);
+            
             self._pending --;
             self.emit('_next');
             if (self._pending === 0) self.emit('_ready');
@@ -124,6 +129,8 @@ Browserify.prototype.require = function (file, opts) {
     if (!row.entry && this._options.exports === undefined) {
         this._hasExports = true;
     }
+    
+    if (row.entry) row.order = self._entryOrder ++;
     this.pipeline.write(row);
     
     return this;
@@ -185,7 +192,6 @@ Browserify.prototype._createPipeline = function (opts) {
     
     return splicer.obj([
         'deps', [ this._mdeps ],
-        'order-entry', [ this._orderEntry() ],
         'unbom', [ this._unbom() ],
         'syntax', [ this._syntax() ],
         'sort', [ depsSort(dopts) ],
@@ -196,17 +202,6 @@ Browserify.prototype._createPipeline = function (opts) {
         'pack', [ bpack(xtend(opts, { raw: true })) ],
         'wrap', [ this._wrap(opts) ]
     ]);
-};
-
-Browserify.prototype._orderEntry = function () {
-    var entryIndex = 0;
-    return through.obj(function (row, enc, next) {
-        if (row.entry && row.order === undefined) {
-            row.order = entryIndex ++;
-        }
-        this.push(row);
-        next();
-    });
 };
 
 Browserify.prototype._createDeps = function (opts) {
@@ -444,6 +439,7 @@ Browserify.prototype._wrap = function (opts) {
 
 Browserify.prototype.reset = function (opts) {
     this.pipeline = this._createPipeline(xtend(opts, this.options));
+    this._entryOrder = 0;
     this.emit('reset');
 };
 
