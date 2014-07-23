@@ -190,6 +190,7 @@ Browserify.prototype._createPipeline = function (opts) {
     };
     
     return splicer.obj([
+        'record', [ this._recorder() ],
         'deps', [ this._mdeps ],
         'unbom', [ this._unbom() ],
         'syntax', [ this._syntax() ],
@@ -304,6 +305,15 @@ Browserify.prototype._createDeps = function (opts) {
         }
     ];
     return mdeps(mopts);
+};
+
+Browserify.prototype._recorder = function (opts) {
+    var recs = this._recorded = [];
+    return through.obj(function (row, enc, next) {
+        recs.push(row);
+        this.push(row);
+        next();
+    });
 };
 
 Browserify.prototype._unbom = function () {
@@ -440,6 +450,7 @@ Browserify.prototype._wrap = function (opts) {
 };
 
 Browserify.prototype.reset = function (opts) {
+    if (!opts) opts = {};
     this.pipeline = this._createPipeline(xtend(opts, this.options));
     this._entryOrder = 0;
     this.emit('reset');
@@ -453,6 +464,14 @@ Browserify.prototype.bundle = function (cb) {
             + 'Move all option arguments to the browserify() constructor.'
         );
     }
+    if (this._recorded) {
+        var recorded = this._recorded;
+        this.reset();
+        recorded.forEach(function (x) {
+            self.pipeline.write(x);
+        });
+    }
+    
     if (cb) {
         this.pipeline.on('error', cb);
         this.pipeline.pipe(concat(function (body) {
