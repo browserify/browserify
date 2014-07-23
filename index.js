@@ -222,7 +222,16 @@ Browserify.prototype._createDeps = function (opts) {
         }
         return true;
     };
-    mopts.modules = opts.builtins !== undefined ? opts.builtins : builtins;
+    
+    if (opts.builtins === false) {
+        Object.keys(builtins).forEach(function (key) {
+            self.exclude(key);
+        });
+    }
+    else {
+        mopts.modules = opts.builtins || builtins;
+    }
+    
     mopts.globalTransform = [
         function (file) {
             var stream = through();
@@ -257,7 +266,10 @@ Browserify.prototype._createDeps = function (opts) {
             }, opts.insertGlobalVars);
             return insertGlobals(file, xtend(opts, {
                 always: opts.insertGlobals,
-                basedir: opts.basedir || process.cwd(),
+                basedir: opts.commondir === false
+                    ? '/'
+                    : opts.basedir || process.cwd()
+                ,
                 vars: vars
             }));
         }
