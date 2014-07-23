@@ -35,23 +35,18 @@ if (b.argv.pack) {
 if (b.argv.deps) {
     var stringify = JSONStream.stringify();
     stringify.pipe(process.stdout);
-    var t = [].concat(b.argv.t).concat(b.argv.transform);
-    var d = b.pipeline.get('deps').push(through.obj(
+    b.pipeline.get('deps').push(through.obj(
         function (row, enc, next) { stringify.write(row); next() },
         function () { stringify.end() }
     ));
-    b.bundle();
-    return;
+    return b.bundle();
 }
 
 if (b.argv.list) {
-    var t = [].concat(b.argv.t).concat(b.argv.transform);
-    var d = b.deps({ packageFilter: packageFilter, transform: t });
-    d.pipe(through.obj(function (dep, enc, next) {
-        this.push(dep.id + '\n');
-        next();
-    })).pipe(process.stdout);
-    return;
+    b.pipeline.get('deps').push(through.obj(
+        function (row, enc, next) { console.log(row.id); next() }
+    ));
+    return b.bundle();
 }
 
 var bundle = b.bundle();
