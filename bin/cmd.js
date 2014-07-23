@@ -34,9 +34,13 @@ if (b.argv.pack) {
 
 if (b.argv.deps) {
     var stringify = JSONStream.stringify();
+    stringify.pipe(process.stdout);
     var t = [].concat(b.argv.t).concat(b.argv.transform);
-    var d = b.deps({ packageFilter: packageFilter, transform: t });
-    d.pipe(stringify).pipe(process.stdout);
+    var d = b.pipeline.get('deps').push(through.obj(
+        function (row, enc, next) { stringify.write(row); next() },
+        function () { stringify.end() }
+    ));
+    b.bundle();
     return;
 }
 
