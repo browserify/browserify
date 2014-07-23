@@ -63,6 +63,10 @@ function Browserify (files, opts) {
 
 Browserify.prototype.require = function (file, opts) {
     var self = this;
+    if (self._pending > 0) {
+        return self.once('_next', function () { self.require(file, opts) });
+    }
+    
     if (!opts) opts = {};
     var basedir = defined(opts.basedir, process.cwd());
     var expose = opts.expose;
@@ -93,7 +97,9 @@ Browserify.prototype.require = function (file, opts) {
                 file: filename,
                 id: id
             });
-            if (-- self._pending === 0) self.emit('_ready');
+            self._pending --;
+            self.emit('_next');
+            if (self._pending === 0) self.emit('_ready');
         }));
         return this;
     }
@@ -191,6 +197,7 @@ Browserify.prototype._createPipeline = function (opts) {
     
     return splicer.obj([
         'deps', [ this._mdeps ],
+        'order-entry', [ this._orderEntry() ],
         'unbom', [ this._unbom() ],
         'syntax', [ this._syntax() ],
         'sort', [ depsSort(dopts) ],
@@ -201,6 +208,17 @@ Browserify.prototype._createPipeline = function (opts) {
         'pack', [ bpack(xtend(opts, { raw: true })) ],
         'wrap', [ this._wrap(opts) ]
     ]);
+};
+
+Browserify.prototype._orderEntry = function () {
+    var entryIndex = 0;
+    return through.obj(function (row, enc, next) {
+        if (row.entry && row.order === undefined) {
+            row.order = entryIndex ++;
+        }
+        this.push(row);
+        next();
+    });
 };
 
 Browserify.prototype._createDeps = function (opts) {
