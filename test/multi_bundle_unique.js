@@ -12,14 +12,14 @@ test('unique require', function (t) {
         externalRequireName: 'unique_require',
         prelude: prelude
     });
-    core.require(__dirname + '/multi_bundle/b.js', { expose: 'b' });
+    core.require(__dirname + '/multi_bundle/b.js', { expose: './b' });
 
     var app = browserify(
         [__dirname + '/multi_bundle/a.js'],
         { prelude: prelude }
     );
     // inform this bundle that b exists in another bundle
-    app.external(__dirname + '/multi_bundle/b.js');
+    app.external('./b');
 
     core.bundle(function (err, src) {
         var c = {
@@ -49,7 +49,7 @@ test('unique require', function (t) {
             // because it was part of the core bundle
             t.equal(c.baton.times, 1);
             
-            t.equal(c.unique_require('b'), 'foo');
+            t.equal(c.unique_require('./b'), 'foo');
         });
     });
 });

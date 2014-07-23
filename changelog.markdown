@@ -19,6 +19,10 @@ for path masking
 
 removes derequire for performance reasons
 
+.external(bundle) has been removed for now
+
+semicolon at end of output
+
 # 4.2.2
 
 fixes a bug applying transforms to symlinked files by resolving the realpath
