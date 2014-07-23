@@ -5,7 +5,7 @@ var test = require('tap').test;
 var derequire = require('derequire');
 
 test('standalone in debug mode', function (t) {
-    t.plan(4);
+    t.plan(3);
 
     var main = fs.readFileSync(__dirname + '/standalone/main.js');
 
@@ -43,8 +43,6 @@ test('standalone in debug mode', function (t) {
             c.define.amd = true;
             vm.runInNewContext(src, c);
         });
-        t.equal(0, src.split('\n').slice(1).join('\n').indexOf(derequire("!function(require){"+main+"}").slice(19,-1)),
-                'preserves preamble line count');
     });
 });
 

@@ -20,10 +20,6 @@ var isarray = require('isarray');
 var shasum = require('shasum');
 var defined = require('defined');
 
-var nextTick = typeof setImmediate !== 'undefined'
-    ? setImmediate : process.nextTick
-;
-
 module.exports = Browserify;
 inherits(Browserify, EventEmitter);
 

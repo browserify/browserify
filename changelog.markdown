@@ -17,6 +17,8 @@ there is no hacking around with custom resolvers
 basedir is now process.cwd() by default
 for path masking
 
+removes derequire for performance reasons
+
 # 4.2.2
 
 fixes a bug applying transforms to symlinked files by resolving the realpath
