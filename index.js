@@ -453,6 +453,7 @@ Browserify.prototype.reset = function (opts) {
     if (!opts) opts = {};
     this.pipeline = this._createPipeline(xtend(opts, this.options));
     this._entryOrder = 0;
+    this._bundled = false;
     this.emit('reset');
 };
 
