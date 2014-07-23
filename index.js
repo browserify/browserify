@@ -79,6 +79,7 @@ Browserify.prototype.require = function (file, opts) {
     
     if (isStream(file)) {
         self._pending ++;
+        var order = self._entryOrder ++;
         file.pipe(concat(function (buf) {
             var filename = opts.file || path.join(
                 basedir,
@@ -97,7 +98,7 @@ Browserify.prototype.require = function (file, opts) {
                 file: filename,
                 id: id
             };
-            if (rec.entry) rec.order = self._entryOrder ++;
+            if (rec.entry) rec.order = order;
             self.pipeline.write(rec);
             
             self._pending --;
