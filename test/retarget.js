@@ -12,6 +12,7 @@ test('retarget with -r', function (t) {
     ], { cwd: __dirname });
     var src = '';
     ps.stdout.on('data', function (buf) { src += buf });
+    ps.stderr.pipe(process.stderr);
     
     ps.on('exit', function (code) {
         t.equal(code, 0);

@@ -101,16 +101,16 @@ Browserify.prototype.require = function (file, opts) {
     
     var row = typeof file === 'object'
         ? xtend(file, opts)
-        : xtend(opts, { file: file })
+        : (/^[\/.]/.test(file)
+            ? xtend(opts, { file: file })
+            : xtend(opts, { id: file })
+        )
     ;
     if (!row.id) {
         row.id = expose || file;
-        if (expose || !row.entry) {
-            this._expose[row.id] = file;
-        }
-        if (expose) {
-            this._mdeps.options.modules[expose] = file;
-        }
+    }
+    if (expose || !row.entry) {
+        this._expose[row.id] = file;
     }
     if (opts.external) return this.external(file, opts);
     if (row.entry === undefined) row.entry = false;
