@@ -464,7 +464,7 @@ Browserify.prototype.bundle = function (cb) {
             + 'Move all option arguments to the browserify() constructor.'
         );
     }
-    if (this._recorded) {
+    if (this._bundled) {
         var recorded = this._recorded;
         this.reset();
         recorded.forEach(function (x) {
@@ -486,6 +486,7 @@ Browserify.prototype.bundle = function (cb) {
         self.pipeline.end();
     });
     
+    this._bundled = true;
     return this.pipeline;
 };
 
