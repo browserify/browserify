@@ -406,7 +406,7 @@ Browserify.prototype._wrap = function (opts) {
                 + umd.postlude(opts.standalone)
             );
         }
-        if (opts.debug) this.push('\n');
+        this.push(';\n');
         this.push(null);
     }
     
