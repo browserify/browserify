@@ -15,7 +15,7 @@ test('reverse multi bundle', function (t) {
     // Main app bundle has the main app code and the shared libarary code
     var app = browserify([__dirname + '/reverse_multi_bundle/app.js'])
         .external(__dirname + '/reverse_multi_bundle/lazy.js')
-        .require(__dirname + '/reverse_multi_bundle/shared.js')
+        .require(__dirname + '/reverse_multi_bundle/shared.js', { expose: true })
         .require(__dirname + '/reverse_multi_bundle/arbitrary.js', {expose: 'not/real'});
 
     // Lazily loaded bundle has only its own code even it uses code from the
@@ -25,7 +25,7 @@ test('reverse multi bundle', function (t) {
                 return id !== 'not/real';
             }
         })
-        .require(__dirname + '/reverse_multi_bundle/lazy.js')
+        .require(__dirname + '/reverse_multi_bundle/lazy.js', { expose: true })
         .external(__dirname + '/reverse_multi_bundle/shared.js')
         .external('not/real');
 
