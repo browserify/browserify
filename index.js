@@ -17,8 +17,9 @@ var EventEmitter = require('events').EventEmitter;
 var xtend = require('xtend');
 var copy = require('shallow-copy');
 var isarray = require('isarray');
-var shasum = require('shasum');
 var defined = require('defined');
+
+var bresolve = require('browser-resolve');
 
 module.exports = Browserify;
 inherits(Browserify, EventEmitter);
@@ -136,16 +137,6 @@ Browserify.prototype.add = function (file, opts) {
 Browserify.prototype.external = function (file, opts) {
     var self = this;
     if (!opts) opts = {};
-    var basedir = opts.basedir || process.cwd();
-    
-    if (typeof file === 'object' && typeof file.bundle === 'function') {
-        var ex = Object.keys(file._exclude);
-        ex.forEach(function (x) {
-            self.external(x);
-            self.external(path.join(basedir, x));
-        });
-        return this;
-    }
     var basedir = defined(opts.basedir, process.cwd());
     this._external.push(file);
     this._external.push('/' + path.relative(basedir, file));
@@ -154,9 +145,6 @@ Browserify.prototype.external = function (file, opts) {
 
 Browserify.prototype.exclude = function (file) {
     this._exclude.push(file);
-    this._exclude.push(
-        path.resolve(this._options.basedir || process.cwd(), file)
-    );
     return this;
 };
 
@@ -224,6 +212,8 @@ Browserify.prototype._orderEntry = function () {
 Browserify.prototype._createDeps = function (opts) {
     var self = this;
     var mopts = copy(opts);
+    var basedir = defined(opts.basedir, process.cwd());
+    
     mopts.extensions = [ '.js', '.json' ].concat(mopts.extensions || []);
     self._extensions = mopts.extensions;
     
@@ -242,6 +232,17 @@ Browserify.prototype._createDeps = function (opts) {
             return false;
         }
         return true;
+    };
+    mopts.resolve = function (id, parent, cb) {
+        bresolve(id, parent, function (err, file, pkg) {
+            if (file) {
+                var ex = '/' + path.relative(basedir, file);
+                if (self._external.indexOf(ex) >= 0) {
+                    return cb(null, ex);
+                }
+            }
+            cb(err, file, pkg);
+        });
     };
     
     if (opts.builtins === false) {

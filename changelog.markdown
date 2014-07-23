@@ -23,6 +23,8 @@ removes derequire for performance reasons
 
 semicolon at end of output
 
+hashing is gone so `expose: true` is required for doing exports
+
 # 4.2.2
 
 fixes a bug applying transforms to symlinked files by resolving the realpath
