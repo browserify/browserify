@@ -1,29 +1,24 @@
 # 5.0.0
 
-b.deps(), b.pack(), opts.pack, opts.deps are gone
+At a glance:
 
-bundle() no longer accepts options.
-bundle() options have all been moved to browserify()
-bundle(function (buf) {}) `buf` is a buffer now instead of a string
+* extensible internal labeled-stream-splicer pipeline
+* bundle() - no longer accepts `opts`, callback gets a buffer 
+* b.deps(), b.pack(), opts.pack, opts.deps are gone
+* can call bundle() multiple times on the same instance
+* a better --noparse matcher
+* id labeling integer index based instead of hash based
+* derequire removed for performance reasons
+* .external(bundle) has been removed (for now)
+* semicolon at end of output
+* hashing is gone so `expose: true` or explicit expose id is required for doing
+multi-export bundles
 
-allow browserify.extensions in package.json for package-scoped extensions?
+In more depth: [doc/changelog/5_0.markdown].
 
-a better --noparse matcher
-better hiding of system paths so intreq should no longer be necessary
+# 4.2.3
 
-internals are much cleaner
-there is no hacking around with custom resolvers
-
-basedir is now process.cwd() by default
-for path masking
-
-removes derequire for performance reasons
-
-.external(bundle) has been removed for now
-
-semicolon at end of output
-
-hashing is gone so `expose: true` is required for doing exports
+reverts 4.2.2 due to breaking some existing use-cases
 
 # 4.2.2
 
