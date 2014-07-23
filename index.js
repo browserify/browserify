@@ -224,13 +224,23 @@ Browserify.prototype._createDeps = function (opts) {
     };
     
     if (opts.builtins === false) {
-        Object.keys(builtins).forEach(function (key) {
-            self.exclude(key);
+        mopts.modules = {};
+        self._exclude.push.apply(self._exclude, Object.keys(builtins));
+    }
+    else if (opts.builtins && isarray(opts.builtins)) {
+        mopts.modules = {};
+        opts.builtins.forEach(function (key) {
+            mopts.modules[key] = builtins[key];
         });
     }
-    else {
-        mopts.modules = opts.builtins || builtins;
+    else if (opts.builtins && typeof opts.builtins === 'object') {
+        mopts.modules = opts.builtins;
     }
+    else mopts.modules = builtins;
+    
+    Object.keys(builtins).forEach(function (key) {
+        if (!has(mopts.modules, key)) self._exclude.push(key);
+    });
     
     mopts.globalTransform = [
         function (file) {
