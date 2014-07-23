@@ -345,10 +345,9 @@ For each `file` in `files`, if `file` is a stream, its contents will be used.
 You should use `opts.basedir` when using streaming files so that relative
 requires will know where to resolve from.
 
-You can also specify an `opts.noParse` array which will skip all require() and
-global parsing for each file in the array. Use this for giant libs like jquery
-or threejs that don't have any requires or node-style globals but take forever
-to parse.
+`opts.noparse` is an array which will skip all require() and global parsing for
+each file in the array. Use this for giant libs like jquery or threejs that
+don't have any requires or node-style globals but take forever to parse.
 
 `opts.extensions` is an array of optional extra extensions for the module lookup
 machinery to use when the extension has not been specified.
@@ -370,59 +369,6 @@ useful for preserving the original paths that a bundle was generated with.
 `opts.bundleExternal` boolean option to set if external modules should be
 bundled. Defaults to true.
 
-`opts.pack` sets the browser-pack implementation to use. The `opts.pack()`
-should return a transform stream that accepts objects of the form that
-[module-deps](https://npmjs.org/package/module-deps) generates. Simplified, this
-is roughly:
-
-```
-{"id":"1","source":"console.log('beep boop')","deps":{}}
-{"id":"2","source":"require('./boop.js')","deps":{"./boop.js":"1"}}
-```
-
-By default, `opts.pack` uses
-[browser-pack](https://npmjs.org/package/browser-pack):
-
-```
-require('browser-pack')({ raw: true, sourceMapPrefix: '//@' });
-```
-
-`opts.externalRequireName` defaults to `'require'` in `expose` mode but you can
-use another name.
-
-You can give browserify a custom `opts.resolve()` function or by default it uses
-[browser-resolve](https://npmjs.org/package/browser-resolve).
-
-Note that if files do not contain javascript source code then you also need to
-specify a corresponding transform for them.
-
-## b.add(file)
-
-Add an entry file from `file` that will be executed when the bundle loads.
-
-If `file` is an array, each item in `file` will be added as an entry file.
-
-## b.require(file[, opts])
-
-Make `file` available from outside the bundle with `require(file)`.
-
-The `file` param is anything that can be resolved by `require.resolve()`.
-
-`file` can also be a stream, but you should also use `opts.basedir` so that
-relative requires will be resolvable.
-
-If `file` is an array, each item in `file` will be required.
-
-Use the `expose` property of opts to specify a custom dependency name. 
-`require('./vendor/angular/angular.js', {expose: 'angular'})` enables `require('angular')`
-
-## b.bundle(opts, cb)
-
-Bundle the files and their dependencies into a single javascript file.
-
-Return a readable stream with the javascript file contents or
-optionally specify a `cb(err, src)` to get the buffered results.
-
 When `opts.insertGlobals` is true, always insert `process`, `global`,
 `__filename`, and `__dirname` without analyzing the AST for faster builds but
 larger output bundles. Default false.
@@ -443,6 +389,43 @@ name as a separator. For example: `'A.B.C'`
 `opts.insertGlobalVars` will be passed to
 [insert-module-globals](http://npmjs.org/package/insert-module-globals)
 as the `opts.vars` parameter.
+
+`opts.externalRequireName` defaults to `'require'` in `expose` mode but you can
+use another name.
+
+Note that if files do not contain javascript source code then you also need to
+specify a corresponding transform for them.
+
+All other options are forwarded along to
+[module-deps](https://npmjs.org/package/module-deps)
+and [browser-pack](https://npmjs.org/package/browser-pack) directly.
+
+## b.add(file, opts)
+
+Add an entry file from `file` that will be executed when the bundle loads.
+
+If `file` is an array, each item in `file` will be added as an entry file.
+
+## b.require(file, opts)
+
+Make `file` available from outside the bundle with `require(file)`.
+
+The `file` param is anything that can be resolved by `require.resolve()`.
+
+`file` can also be a stream, but you should also use `opts.basedir` so that
+relative requires will be resolvable.
+
+If `file` is an array, each item in `file` will be required.
+
+Use the `expose` property of opts to specify a custom dependency name. 
+`require('./vendor/angular/angular.js', {expose: 'angular'})` enables `require('angular')`
+
+## b.bundle(cb)
+
+Bundle the files and their dependencies into a single javascript file.
+
+Return a readable stream with the javascript file contents or
+optionally specify a `cb(err, buf)` to get the buffered results.
 
 ## b.external(file)
 
