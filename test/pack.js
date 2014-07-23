@@ -26,6 +26,7 @@ test('custom packer', function (t) {
         this.push(row.id + '\n');
         next();
     }));
+    b.pipeline.get('wrap').splice(0);
     b.bundle(function (err, src) {
         t.equal(src.toString('utf8'), '1\n2\n3\n');
     });
