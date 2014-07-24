@@ -271,6 +271,8 @@ Browserify.prototype._createDeps = function (opts) {
             return stream;
         },
         function (file) {
+            if (opts.detectGlobals === false) return through();
+            
             if (opts.noparse === true) return through();
             var no = [].concat(opts.noparse).filter(Boolean);
             if (no.indexOf(file) >= 0) return through();
@@ -294,6 +296,7 @@ Browserify.prototype._createDeps = function (opts) {
             var vars = xtend({
                 process: function () { return "require('_process')" },
             }, opts.insertGlobalVars);
+            
             if (opts.bundleExternal === false) {
                 delete vars.process;
                 delete vars.buffer;

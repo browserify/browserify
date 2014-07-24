@@ -17,7 +17,7 @@ module.exports = function (args) {
         string: [ 's', 'r', 'u', 'x', 't', 'i', 'o', 'e', 'c' ],
         alias: {
             ig: [ 'insert-globals', 'fast' ],
-            dg: 'detect-globals',
+            dg: [ 'detect-globals', 'detectGlobals', 'dg' ],
             im: 'ignore-missing',
             igv: 'insert-global-vars',
             d: 'debug',
@@ -67,6 +67,7 @@ module.exports = function (args) {
     if (argv.bare) {
         argv.builtins = false;
         argv.commondir = false;
+        argv.detectGlobals = false;
         if (argv.igv === undefined) {
             argv.igv = '__filename,__dirname';
         }
@@ -82,7 +83,7 @@ module.exports = function (args) {
         bundleExternal: argv['bundle-external'],
         basedir: argv.basedir,
         
-        detectGlobals: argv['detect-globals'] !== false && argv.dg !== false,
+        detectGlobals: argv.detectGlobals,
         insertGlobals: argv['insert-globals'] || argv.ig,
         insertGlobalVars: insertGlobalVars,
         ignoreMissing: argv['ignore-missing'] || argv.im,
