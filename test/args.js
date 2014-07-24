@@ -43,3 +43,12 @@ test('bundle from an arguments with --insert-global-vars', function (t) {
         t.equal(x.dirname, '/global');
     })
 });
+
+test('numeric module names', function(t) {
+    t.plan(1);
+
+    var b = fromArgs([ '-x', '1337' ]);
+    b.bundle(function (err, src) {
+        t.notOk(err);
+    });
+});
