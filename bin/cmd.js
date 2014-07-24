@@ -44,7 +44,10 @@ if (b.argv.deps) {
 
 if (b.argv.list) {
     b.pipeline.get('deps').push(through.obj(
-        function (row, enc, next) { console.log(row.id); next() }
+        function (row, enc, next) {
+            console.log(row.file || row.id);
+            next()
+        }
     ));
     return b.bundle();
 }
