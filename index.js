@@ -62,6 +62,10 @@ function Browserify (files, opts) {
     [].concat(opts.require).filter(Boolean).forEach(function (file) {
         self.require(file, { basedir: opts.basedir });
     });
+    
+    [].concat(opts.plugin).filter(Boolean).forEach(function (p) {
+        self.plugin(p, { basedir: opts.basedir });
+    });
 }
 
 Browserify.prototype.require = function (file, opts) {
@@ -177,6 +181,10 @@ Browserify.prototype.transform = function (tr, opts) {
 };
 
 Browserify.prototype.plugin = function (p, opts) {
+    if (isarray(p)) {
+        opts = p[1];
+        p = p[0];
+    }
     if (!opts) opts = {};
     var basedir = defined(opts.basedir, process.cwd());
     if (typeof p === 'function') {
