@@ -1,3 +1,30 @@
+# 5.0.6
+
+test for --bare
+
+# 5.0.5
+
+fix for detectGlobals, --bare
+
+# 5.0.4
+
+fixes --no-bundle-external with globals
+
+https://github.com/substack/node-browserify/issues/828
+
+# 5.0.3
+
+upgrades insert-module-globals to fix
+https://github.com/substack/node-browserify/issues/834
+
+# 5.0.2
+
+fixes the changelog link https://github.com/substack/node-browserify/pull/835
+
+# 5.0.1
+
+adds an untracked test
+
 # 5.0.0
 
 At a glance:
