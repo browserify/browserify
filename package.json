@@ -80,7 +80,8 @@
     "es6ify": "~0.4.8",
     "mkdirp": "~0.3.3",
     "seq": "0.3.3",
-    "tap": "~0.4.0"
+    "tap": "~0.4.0",
+    "through": "^2.3.4"
   },
   "author": {
     "name": "James Halliday",
