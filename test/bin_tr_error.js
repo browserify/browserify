@@ -2,7 +2,6 @@ var browserify = require('../');
 var spawn = require('child_process').spawn;
 var test = require('tap').test;
 var path = require('path')
-var through = require('through');
 
 test('function transform', function (t) {
     t.plan(3);

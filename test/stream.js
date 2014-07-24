@@ -1,7 +1,6 @@
 var browserify = require('../');
 var vm = require('vm');
 var test = require('tap').test;
-var stream = require('through');
 var fs = require('fs');
 
 test('stream', function (t) {

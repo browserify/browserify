@@ -1,6 +1,6 @@
 {
   "name": "browserify",
-  "version": "5.0.0",
+  "version": "4.2.3",
   "description": "browser-side require() the node way",
   "main": "index.js",
   "bin": {
@@ -35,15 +35,15 @@
     "deep-equal": "~0.2.1",
     "defined": "~0.0.0",
     "deps-sort": "^1.3.0",
-    "derequire": "~0.8.0",
     "domain-browser": "~1.1.0",
-    "duplexer": "~0.1.1",
+    "duplexer2": "~0.0.2",
     "events": "~1.0.0",
     "glob": "~3.2.8",
     "http-browserify": "^1.4.0",
     "https-browserify": "~0.0.0",
     "inherits": "~2.0.1",
     "insert-module-globals": "~6.0.0",
+    "isarray": "0.0.1",
     "labeled-stream-splicer": "^1.0.0",
     "module-deps": "^3.2.1",
     "os-browserify": "~0.1.1",
@@ -80,8 +80,7 @@
     "es6ify": "~0.4.8",
     "mkdirp": "~0.3.3",
     "seq": "0.3.3",
-    "tap": "~0.4.0",
-    "through": "~2.3.4"
+    "tap": "~0.4.0"
   },
   "author": {
     "name": "James Halliday",

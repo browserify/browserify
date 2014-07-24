@@ -1,7 +1,7 @@
 var browserify = require('../');
 var vm = require('vm');
 var test = require('tap').test;
-var through = require('through');
+var through = require('through2');
 
 test('transform errors errback', function (t) {
     t.plan(2);
