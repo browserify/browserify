@@ -5,6 +5,7 @@ test for --bare
 # 5.0.5
 
 fix for detectGlobals, --bare
+https://github.com/substack/node-browserify/issues/803
 
 # 5.0.4
 
