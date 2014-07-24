@@ -1,3 +1,7 @@
+# 5.4.1
+
+fixes an error with basedir resolving plugins from names
+
 # 5.4.0
 
 also allows opts.plugin from the constructor like transform
