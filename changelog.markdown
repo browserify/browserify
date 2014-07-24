@@ -1,3 +1,7 @@
+# 5.2.1
+
+sets require() for streams to not just be entry files
+
 # 5.2.0
 
 upgrades crypto-browserify to v3
