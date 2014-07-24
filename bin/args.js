@@ -57,12 +57,6 @@ module.exports = function (args) {
         }
         return path.resolve(process.cwd(), entry);
     });
-    var requires = [].concat(argv.require).filter(Boolean);
-   
-    if (argv.s && entries.length === 0 && requires.length === 1) {
-        entries.push(requires[0]);
-        argv.r = argv.require = [];
-    }
     
     if (argv.bare) {
         argv.builtins = false;

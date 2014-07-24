@@ -396,6 +396,9 @@ Browserify.prototype._label = function (opts) {
             }
         });
         
+        if (row.entry || row.expose) {
+            self._bpack.standaloneModule = row.id;
+        }
         this.push(row);
         next();
     });
@@ -404,9 +407,6 @@ Browserify.prototype._label = function (opts) {
 Browserify.prototype._emitDeps = function () {
     var self = this;
     return through.obj(function (row, enc, next) {
-        if (row.entry || row.expose) {
-            self._bpack.standaloneModule = row.id;
-        }
         self.emit('dep', row);
         this.push(row);
         next();
