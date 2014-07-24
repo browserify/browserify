@@ -20,7 +20,7 @@ test('standalone in debug mode', function (t) {
                 window: {},
                 done : done(t)
             };
-            vm.runInNewContext(src + 'window.standTest(done)', c);
+            vm.runInNewContext(src + '\nwindow.standTest(done)', c);
         });
         t.test('CommonJS', function (t) {
             t.plan(2);
@@ -30,7 +30,7 @@ test('standalone in debug mode', function (t) {
                 exports: exp,
                 done : done(t)
             };
-            vm.runInNewContext(src + 'module.exports(done)', c);
+            vm.runInNewContext(src + '\nmodule.exports(done)', c);
         });
         t.test('RequireJS', function (t) {
             t.plan(2);
