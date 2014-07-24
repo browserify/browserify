@@ -1,6 +1,7 @@
 # 5.0.8
 
 fixes using debug and standalone at the same time
+https://github.com/substack/node-browserify/issues/750
 
 # 5.0.7
 
