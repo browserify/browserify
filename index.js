@@ -4,7 +4,6 @@ var bpack = require('browser-pack');
 var insertGlobals = require('insert-module-globals');
 var syntaxError = require('syntax-error');
 
-var umd = require('umd');
 var builtins = require('./lib/builtins.js');
 
 var splicer = require('labeled-stream-splicer');
@@ -90,7 +89,7 @@ Browserify.prototype.require = function (file, opts) {
                 self._expose[id] = filename;
             }
             if (!opts.entry && self._options.exports === undefined) {
-                self._hasExports = true;
+                self._options.hasExports = true;
             }
             var rec = {
                 source: buf.toString('utf8'),
@@ -188,6 +187,7 @@ Browserify.prototype._createPipeline = function (opts) {
         dedupe: true,
         expose: this._expose
     };
+    this._bpack = bpack(xtend(opts, { raw: true }));
     
     return splicer.obj([
         'record', [ this._recorder() ],
@@ -199,8 +199,7 @@ Browserify.prototype._createPipeline = function (opts) {
         'label', [ this._label(opts) ],
         'emit-deps', [ this._emitDeps() ],
         'debug', [ this._debug(opts) ],
-        'pack', [ bpack(xtend(opts, { raw: true })) ],
-        'wrap', [ this._wrap(opts) ]
+        'pack', [ this._bpack ],
     ]);
 };
 
@@ -404,7 +403,9 @@ Browserify.prototype._label = function (opts) {
 Browserify.prototype._emitDeps = function () {
     var self = this;
     return through.obj(function (row, enc, next) {
-        if (row.entry) self._mainModule = row.id;
+        if (row.entry || row.expose) {
+            self._bpack.standaloneModule = row.id;
+        }
         self.emit('dep', row);
         this.push(row);
         next();
@@ -420,41 +421,6 @@ Browserify.prototype._debug = function (opts) {
         this.push(row);
         next();
     });
-};
-
-Browserify.prototype._wrap = function (opts) {
-    var self = this;
-    var first = true;
-    return through(write, end);
-    
-    function write (buf, enc, next) {
-        if (first) writePrelude.call(this);
-        this.push(buf);
-        next();
-    }
-    function end () {
-        if (first) writePrelude.call(this);
-        if (opts.standalone) {
-            this.push(
-                '\n(' + JSON.stringify(self._mainModule) + ')'
-                + umd.postlude(opts.standalone)
-            );
-        }
-        else if (!opts.debug) this.push(';\n');
-        this.push(null);
-    }
-    
-    function writePrelude () {
-        if (first && opts.standalone) {
-            var pre = umd.prelude(opts.standalone).trim();
-            this.push(pre + 'return ');
-        }
-        else if (first && self._hasExports) {
-            var pre = opts.externalRequireName || 'require';
-            this.push(pre + '=');
-        }
-        first = false;
-    }
 };
 
 Browserify.prototype.reset = function (opts) {
