@@ -186,7 +186,7 @@ Browserify.prototype.plugin = function (p, opts) {
         p = p[0];
     }
     if (!opts) opts = {};
-    var basedir = defined(opts.basedir, process.cwd());
+    var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
     if (typeof p === 'function') {
         p(this, opts);
     }
