@@ -14,7 +14,7 @@ test('ordinary debug', function (t) {
     b.add(stream);
     b.bundle(function (err, buf) {
         var src = buf.toString('utf8');
-        var last = src.split('\n').slice(-1)[0];
+        var last = src.split('\n').slice(-2)[0];
         t.ok(
             /\/\/# sourceMappingURL=data:application\/json;base64,[\w+\/=]+$/
             .test(last)
@@ -33,7 +33,7 @@ test('debug standalone', function (t) {
     b.add(stream);
     b.bundle(function (err, buf) {
         var src = buf.toString('utf8');
-        var last = src.split('\n').slice(-1)[0];
+        var last = src.split('\n').slice(-2)[0];
         t.ok(
             /\/\/# sourceMappingURL=data:application\/json;base64,[\w+\/=]+$/
             .test(last)
