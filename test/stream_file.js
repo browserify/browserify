@@ -2,12 +2,13 @@ var browserify = require('../');
 var vm = require('vm');
 var test = require('tap').test;
 var fs = require('fs');
+var through = require('through2');
 
 test('stream file', function (t) {
     var expected = [
+        '/fake.js',
         __dirname + '/stream/foo.js',
-        __dirname + '/stream/bar.js',
-        '/fake.js'
+        __dirname + '/stream/bar.js'
     ];
     t.plan(2 + expected.length);
     
@@ -17,6 +18,7 @@ test('stream file', function (t) {
     var b = browserify(stream, { basedir: __dirname + '/stream' });
     b.transform(function (file) {
         t.equal(file, expected.shift());
+        return through();
     });
     
     b.bundle(function (err, src) {
