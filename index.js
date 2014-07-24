@@ -94,7 +94,7 @@ Browserify.prototype.require = function (file, opts) {
             }
             var rec = {
                 source: buf.toString('utf8'),
-                entry: defined(opts.entry, true),
+                entry: defined(opts.entry, false),
                 file: filename,
                 id: id
             };
