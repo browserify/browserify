@@ -89,7 +89,7 @@ Browserify.prototype.require = function (file, opts) {
                 self._expose[id] = filename;
             }
             if (!opts.entry && self._options.exports === undefined) {
-                self._options.hasExports = true;
+                self._bpack.hasExports = true;
             }
             var rec = {
                 source: buf.toString('utf8'),
@@ -123,7 +123,7 @@ Browserify.prototype.require = function (file, opts) {
     if (row.entry === undefined) row.entry = false;
     
     if (!row.entry && this._options.exports === undefined) {
-        this._hasExports = true;
+        this._bpack.hasExports = true;
     }
     
     if (row.entry) row.order = self._entryOrder ++;
