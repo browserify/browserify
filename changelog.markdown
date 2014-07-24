@@ -1,3 +1,7 @@
+# 5.1.1
+
+updates --list to always print file paths
+
 # 5.1.0
 
 adds back `.plugin()` which was mistakenly omitted
