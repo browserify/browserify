@@ -23,6 +23,6 @@ test('plugin module', function (t) {
     
     b.bundle(function (err, src) {
         t.ifError(err);
-        t.equal(src, 'beep boop');
+        t.equal(src.toString('utf8'), 'beep boop');
     });
 });

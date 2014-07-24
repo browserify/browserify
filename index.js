@@ -19,6 +19,7 @@ var isarray = require('isarray');
 var defined = require('defined');
 
 var bresolve = require('browser-resolve');
+var resolve = require('resolve');
 
 module.exports = Browserify;
 inherits(Browserify, EventEmitter);
@@ -172,6 +173,23 @@ Browserify.prototype.transform = function (tr, opts) {
         this._mdeps.globalTransforms.push([ tr, opts ]);
     }
     else this._mdeps.transforms.push([ tr, opts ]);
+    return this;
+};
+
+Browserify.prototype.plugin = function (p, opts) {
+    if (!opts) opts = {};
+    var basedir = defined(opts.basedir, process.cwd());
+    if (typeof p === 'function') {
+        p(this, opts);
+    }
+    else {
+        var pfile = resolve.sync(String(p), { basedir: basedir })
+        var f = require(pfile);
+        if (typeof f !== 'function') {
+            throw new Error('plugin ' + p + ' should export a function');
+        }
+        f(this, opts);
+    }
     return this;
 };
 
