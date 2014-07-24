@@ -1,3 +1,7 @@
+# 5.1.0
+
+adds back `.plugin()` which was mistakenly omitted
+
 # 5.0.8
 
 fixes using debug and standalone at the same time
