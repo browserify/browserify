@@ -440,7 +440,7 @@ Browserify.prototype._wrap = function (opts) {
                 + umd.postlude(opts.standalone)
             );
         }
-        this.push(';\n');
+        else if (!opts.debug) this.push(';\n');
         this.push(null);
     }
     
