@@ -40,3 +40,25 @@ test('debug standalone', function (t) {
         );
     });
 });
+
+test('debug standalone exposed', function (t) {
+    t.plan(2);
+    
+    var stream = through();
+    stream.push('console.log(1+2)');
+    stream.push(null);
+    
+    var b = browserify({ debug: true, standalone: 'xyz' });
+    b.require(__dirname + '/debug_standalone/x.js', { expose: 'xxx' });
+    b.bundle(function (err, buf) {
+        var src = buf.toString('utf8');
+        var last = src.split('\n').slice(-2)[0];
+        t.ok(
+            /\/\/# sourceMappingURL=data:application\/json;base64,[\w+\/=]+$/
+            .test(last)
+        );
+        var c = { window: {} };
+        vm.runInNewContext(src, c);
+        t.equal(c.window.xyz, 555);
+    });
+});
