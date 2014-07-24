@@ -14,7 +14,7 @@ At a glance:
 * hashing is gone so `expose: true` or explicit expose id is required for doing
 multi-export bundles
 
-In more depth: [doc/changelog/5_0.markdown].
+In more depth: [doc/changelog/5_0.markdown](doc/changelog/5_0.markdown).
 
 # 4.2.3
 
