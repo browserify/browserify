@@ -1,3 +1,8 @@
+# 5.0.7
+
+fixes command-line versions of -u and -x
+https://github.com/substack/node-browserify/issues/821
+
 # 5.0.6
 
 test for --bare
