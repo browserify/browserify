@@ -13,7 +13,7 @@ test('transform errors errback', function (t) {
         })
     });
     b.bundle(function (err, src) {
-        t.equal(err.message, 'blah');
+        t.ok(/^blah/.test(err.message));
         t.equal(src, undefined);
     });
 });
@@ -28,6 +28,6 @@ test('transform errors propagate', function (t) {
         });
     });
     b.bundle().on('error', function (err) {
-        t.equal(err.message, 'blah');
+        t.ok(/^blah/.test(err.message));
     });
 });
