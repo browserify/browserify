@@ -1,3 +1,7 @@
+# 5.4.0
+
+also allows opts.plugin from the constructor like transform
+
 # 5.3.0
 
 passes `.file` on stream inputs through to transforms
