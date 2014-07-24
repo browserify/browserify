@@ -118,6 +118,8 @@ module.exports = function (args) {
     
     [].concat(argv.exclude).filter(Boolean)
         .forEach(function (u) {
+            b.exclude(u);
+            
             b._pending ++;
             glob(u, function (err, files) {
                 if (err) return b.emit('error', err);
@@ -142,6 +144,7 @@ module.exports = function (args) {
                 add(xs[0], { expose: xs[1] });
             }
             else if (/\*/.test(x)) {
+                b.external(x);
                 glob(x, function (err, files) {
                     files.forEach(function (file) {
                         add(file, {});
