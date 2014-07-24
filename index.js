@@ -200,6 +200,7 @@ Browserify.prototype._createPipeline = function (opts) {
         'emit-deps', [ this._emitDeps() ],
         'debug', [ this._debug(opts) ],
         'pack', [ this._bpack ],
+        'wrap', []
     ]);
 };
 
