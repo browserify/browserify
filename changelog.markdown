@@ -1,3 +1,7 @@
+# 5.0.8
+
+fixes using debug and standalone at the same time
+
 # 5.0.7
 
 fixes command-line versions of -u and -x
