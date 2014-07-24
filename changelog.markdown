@@ -1,3 +1,8 @@
+# 5.3.0
+
+passes `.file` on stream inputs through to transforms
+https://github.com/substack/node-browserify/issues/744
+
 # 5.2.1
 
 sets require() for streams to not just be entry files
