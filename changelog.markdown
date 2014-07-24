@@ -1,3 +1,7 @@
+# 5.2.0
+
+upgrades crypto-browserify to v3
+
 # 5.1.1
 
 updates --list to always print file paths
