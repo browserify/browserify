@@ -294,6 +294,11 @@ Browserify.prototype._createDeps = function (opts) {
             var vars = xtend({
                 process: function () { return "require('_process')" },
             }, opts.insertGlobalVars);
+            if (opts.bundleExternal === false) {
+                delete vars.process;
+                delete vars.buffer;
+            }
+            
             return insertGlobals(file, xtend(opts, {
                 always: opts.insertGlobals,
                 basedir: opts.commondir === false
