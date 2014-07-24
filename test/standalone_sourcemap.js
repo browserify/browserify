@@ -2,7 +2,6 @@ var browserify = require('../');
 var fs = require('fs');
 var vm = require('vm');
 var test = require('tap').test;
-var derequire = require('derequire');
 
 test('standalone in debug mode', function (t) {
     t.plan(3);
