@@ -6,14 +6,14 @@ var through = require('through2');
 
 test('stream file', function (t) {
     var expected = [
-        '/fake.js',
+        __dirname + '/stream/fake.js',
         __dirname + '/stream/foo.js',
         __dirname + '/stream/bar.js'
     ];
     t.plan(2 + expected.length);
     
     var stream = fs.createReadStream(__dirname + '/stream/main.js');
-    stream.file = '/fake.js';
+    stream.file = __dirname + '/stream/fake.js';
     
     var b = browserify(stream, { basedir: __dirname + '/stream' });
     b.transform(function (file) {

@@ -81,7 +81,7 @@ Browserify.prototype.require = function (file, opts) {
         self._pending ++;
         var order = self._entryOrder ++;
         file.pipe(concat(function (buf) {
-            var filename = opts.file || path.join(
+            var filename = opts.file || file.file || path.join(
                 basedir,
                 '_stream_' + Math.floor(Math.pow(16,8) * Math.random()) + '.js'
             );
