@@ -239,6 +239,7 @@ Browserify.prototype._createPipeline = function (opts) {
     var pipeline = splicer.obj([
         'record', [ this._recorder() ],
         'deps', [ this._mdeps ],
+        'json', [ this._json() ],
         'unbom', [ this._unbom() ],
         'syntax', [ this._syntax() ],
         'sort', [ depsSort(dopts) ],
@@ -312,13 +313,6 @@ Browserify.prototype._createDeps = function (opts) {
     
     mopts.globalTransform = [
         function (file) {
-            var stream = through();
-            if (/\.json$/.test(file)) {
-                stream.push('module.exports=');
-            }
-            return stream;
-        },
-        function (file) {
             if (opts.detectGlobals === false) return through();
             
             if (opts.noparse === true) return through();
@@ -367,6 +361,16 @@ Browserify.prototype._recorder = function (opts) {
     var recs = this._recorded = [];
     return through.obj(function (row, enc, next) {
         recs.push(row);
+        this.push(row);
+        next();
+    });
+};
+
+Browserify.prototype._json = function () {
+    return through.obj(function (row, enc, next) {
+        if (/\.json$/.test(row.file)) {
+            row.source = 'module.exports=' + row.source;
+        }
         this.push(row);
         next();
     });
