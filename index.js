@@ -103,6 +103,7 @@ Browserify.prototype.require = function (file, opts) {
                 id: id
             };
             if (rec.entry) rec.order = order;
+            if (rec.transform === false) rec.transform = false;
             self.pipeline.write(rec);
             
             self._pending --;
@@ -132,8 +133,9 @@ Browserify.prototype.require = function (file, opts) {
     }
     
     if (row.entry) row.order = self._entryOrder ++;
-    this.pipeline.write(row);
+    if (opts.transform === false) row.transform = false;
     
+    this.pipeline.write(row);
     return this;
 };
 
@@ -159,7 +161,10 @@ Browserify.prototype.exclude = function (file, opts) {
 };
 
 Browserify.prototype.ignore = function (file, opts) {
-    this.require(paths.empty, xtend({ expose: file }, opts));
+    this.require(paths.empty, xtend({
+        expose: file,
+        transform: false
+    }, opts));
     return this;
 };
 
