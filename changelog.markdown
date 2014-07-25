@@ -1,3 +1,7 @@
+# 5.8.0
+
+allow optional extensions in bin/args
+
 # 5.7.0
 
 re-instates transforms after a reset and fixes exposing the transform events
