@@ -550,6 +550,13 @@ You can call `b.get()` with a label name to get a handle on a stream pipeline
 that you can `push()`, `unshift()`, or `splice()` to insert your own transform
 streams.
 
+# b.reset(opts)
+
+Reset the pipeline back to a normal state. This function is called automatically
+when `bundle()` is called multiple times.
+
+This function triggers a 'reset' event.
+
 # package.json
 
 browserify uses the `package.json` in its module resolution algorithm just like
@@ -617,6 +624,11 @@ when files change.
 ## b.on('bundle', function (bundle) {})
 
 When `.bundle()` is called, this event fires with the `bundle` output stream.
+
+## b.on('reset', function () {})
+
+When the `.reset()` method is called or implicitly called by another call to
+`.bundle()`, this event fires.
 
 ## bundle.on('transform', function (tr, file) {})
 
