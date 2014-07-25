@@ -7,8 +7,9 @@ var duplexer = require('duplexer2');
 var subarg = require('subarg');
 var glob = require('glob');
 var Readable = require('readable-stream').Readable;
+var xtend = require('xtend');
 
-module.exports = function (args) {
+module.exports = function (args, opts) {
     var argv = subarg(args, {
         'boolean': [
             'deps', 'pack', 'ig', 'dg', 'im', 'd', 'list', 'builtins',
@@ -67,7 +68,7 @@ module.exports = function (args) {
         }
     }
     
-    var b = browserify({
+    var b = browserify(xtend({
         noparse: argv.noparse,
         extensions: [].concat(argv.extension).filter(Boolean),
         entries: entries,
@@ -83,7 +84,7 @@ module.exports = function (args) {
         ignoreMissing: argv['ignore-missing'] || argv.im,
         debug: argv['debug'] || argv.d,
         standalone: argv['standalone'] || argv.s
-    });
+    }, opts));
     function error (msg) {
         var e = new Error(msg);
         process.nextTick(function () { b.emit('error', e) });
