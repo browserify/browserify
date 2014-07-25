@@ -386,6 +386,16 @@ with that name and a [umd](https://github.com/forbeslindesay/umd) wrapper.
 You can use namespaces in the standalone global export using a `.` in the string
 name as a separator. For example: `'A.B.C'` 
 
+Note that in standalone mode the `require()` calls from the original source will
+still be around, which may trip up AMD loaders scanning for `require()` calls.
+You can remove these calls with
+[derequire](https://npmjs.org/package/derequire):
+
+```
+$ npm install -g derequire
+$ browserify main.js --standalone Foo | derequire > bundle.js
+```
+
 `opts.insertGlobalVars` will be passed to
 [insert-module-globals](http://npmjs.org/package/insert-module-globals)
 as the `opts.vars` parameter.
