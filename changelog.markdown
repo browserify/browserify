@@ -1,3 +1,7 @@
+# 5.6.1
+
+makes stream entry files deterministic
+
 # 5.6.0
 
 adds 'package' events from module-deps when a package.json file is read
