@@ -473,6 +473,7 @@ Browserify.prototype.bundle = function (cb) {
             self.pipeline.write(x);
         });
     }
+    this.emit('bundle', this.pipeline);
     
     if (cb) {
         this.pipeline.on('error', cb);
