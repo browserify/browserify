@@ -1,3 +1,7 @@
+# 5.5.0
+
+adds back the `'bundle'` event and copies over options correctly to reset()
+
 # 5.4.2
 
 adds a note about derequire in standalone mode to the readme
