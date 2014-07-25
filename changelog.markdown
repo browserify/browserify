@@ -1,3 +1,7 @@
+# 5.9.1
+
+improves the detection for --ignore
+
 # 5.9.0
 
 fixes bug with builtins that load json files (the 'constants' module),
