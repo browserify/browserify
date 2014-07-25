@@ -1,3 +1,7 @@
+# 5.4.2
+
+adds a note about derequire in standalone mode to the readme
+
 # 5.4.1
 
 fixes an error with basedir resolving plugins from names
