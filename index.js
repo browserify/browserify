@@ -44,6 +44,7 @@ function Browserify (files, opts) {
     
     self._external = [];
     self._exclude = [];
+    self._ignore = [];
     self._expose = {};
     self._hashes = {};
     self._pending = 0;
@@ -161,10 +162,7 @@ Browserify.prototype.exclude = function (file, opts) {
 };
 
 Browserify.prototype.ignore = function (file, opts) {
-    this.require(paths.empty, xtend({
-        expose: file,
-        transform: false
-    }, opts));
+    this._ignore.push(file);
     return this;
 };
 
@@ -278,7 +276,22 @@ Browserify.prototype._createDeps = function (opts) {
         return true;
     };
     mopts.resolve = function (id, parent, cb) {
+        if (self._ignore.indexOf(id) >= 0) return cb(null, paths.empty, {});
+        
         bresolve(id, parent, function (err, file, pkg) {
+            if (file && self._ignore.indexOf(file) >= 0) {
+                return cb(null, paths.empty, {});
+            }
+            if (file && self._ignore.length) {
+                var nm = file.split('/node_modules/')[1];
+                if (nm) {
+                    nm = nm.split('/')[0];
+                    if (self._ignore.indexOf(nm) >= 0) {
+                        return cb(null, paths.empty, {});
+                    }
+                }
+            }
+            
             if (file) {
                 var ex = '/' + path.relative(basedir, file);
                 if (self._external.indexOf(ex) >= 0) {
