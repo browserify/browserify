@@ -3,6 +3,8 @@
 fixes bug with builtins that load json files (the 'constants' module),
 new 'json' pipeline label
 
+https://github.com/substack/module-deps/issues/46
+
 # 5.8.0
 
 allow optional extensions in bin/args
