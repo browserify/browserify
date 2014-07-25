@@ -1,3 +1,7 @@
+# 5.6.0
+
+adds 'package' events from module-deps when a package.json file is read
+
 # 5.5.0
 
 adds back the `'bundle'` event and copies over options correctly to reset()
