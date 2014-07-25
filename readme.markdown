@@ -536,6 +536,7 @@ pipeline with these labels:
 
 * `'record'` - save inputs to play back later on subsequent `bundle()` calls
 * `'deps'` - [module-deps](https://npmjs.org/package/module-deps)
+* `'json'` - adds `module.exports=` to the beginning of json files
 * `'unbom'` - remove byte-order markers
 * `'syntax'` - check for syntax errors
 * `'sort'` - sort the dependencies for deterministic bundles
