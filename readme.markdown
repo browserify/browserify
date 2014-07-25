@@ -612,6 +612,7 @@ your package.json dependencies field.
 # events
 
 ## b.on('file', function (file, id, parent) {})
+## b.pipeline.on('file', function (file, id, parent) {})
 
 When a file is resolved for the bundle, the bundle emits a `'file'` event with
 the full `file` path, the `id` string passed to `require()`, and the `parent`
@@ -622,6 +623,7 @@ You could use the `file` event to implement a file watcher to regenerate bundles
 when files change.
 
 ## b.on('package', function (pkg) {})
+## b.pipeline.on('package', function (pkg) {})
 
 When a package file is read, this event fires with the contents. The package
 directory is available at `pkg.__dirname`.
@@ -635,7 +637,8 @@ When `.bundle()` is called, this event fires with the `bundle` output stream.
 When the `.reset()` method is called or implicitly called by another call to
 `.bundle()`, this event fires.
 
-## bundle.on('transform', function (tr, file) {})
+## b.on('transform', function (tr, file) {})
+## b.pipeline.on('transform', function (tr, file) {})
 
 When a transform is applied to a file, the `'transform'` event fires on the
 bundle stream with the transform stream `tr` and the `file` that the transform
