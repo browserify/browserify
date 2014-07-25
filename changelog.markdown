@@ -1,3 +1,8 @@
+# 5.9.0
+
+fixes bug with builtins that load json files (the 'constants' module),
+new 'json' pipeline label
+
 # 5.8.0
 
 allow optional extensions in bin/args
