@@ -169,6 +169,7 @@ Browserify.prototype.ignore = function (file, opts) {
 };
 
 Browserify.prototype.transform = function (tr, opts) {
+    var self = this;
     if (typeof opts === 'function' || typeof opts === 'string') {
         tr = [ opts, tr ];
     }
@@ -178,10 +179,15 @@ Browserify.prototype.transform = function (tr, opts) {
     }
     if (!opts) opts = {};
     
-    if (opts.global) {
-        this._mdeps.globalTransforms.push([ tr, opts ]);
+    apply();
+    self.on('reset', apply);
+    
+    function apply () {
+        if (opts.global) {
+            self._mdeps.globalTransforms.push([ tr, opts ]);
+        }
+        else self._mdeps.transforms.push([ tr, opts ]);
     }
-    else this._mdeps.transforms.push([ tr, opts ]);
     return this;
 };
 
