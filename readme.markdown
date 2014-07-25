@@ -621,6 +621,11 @@ object used by
 You could use the `file` event to implement a file watcher to regenerate bundles
 when files change.
 
+## b.on('package', function (pkg) {})
+
+When a package file is read, this event fires with the contents. The package
+directory is available at `pkg.__dirname`.
+
 ## b.on('bundle', function (bundle) {})
 
 When `.bundle()` is called, this event fires with the `bundle` output stream.
