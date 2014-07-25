@@ -208,6 +208,10 @@ Browserify.prototype._createPipeline = function (opts) {
     this._mdeps.on('file', function (file, id) {
         self.emit('file', file, id);
     });
+    this._mdeps.on('package', function (pkg) {
+        self.emit('package', pkg);
+    });
+    
     var dopts = {
         index: !opts.fullPaths,
         dedupe: true,
