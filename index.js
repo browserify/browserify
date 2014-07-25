@@ -211,10 +211,16 @@ Browserify.prototype._createPipeline = function (opts) {
     if (!opts) opts = {};
     this._mdeps = this._createDeps(opts);
     this._mdeps.on('file', function (file, id) {
+        pipeline.emit('file', file, id);
         self.emit('file', file, id);
     });
     this._mdeps.on('package', function (pkg) {
+        pipeline.emit('package', pkg);
         self.emit('package', pkg);
+    });
+    this._mdeps.on('transform', function (tr, file) {
+        pipeline.emit('transform', tr, file);
+        self.emit('transform', tr, file);
     });
     
     var dopts = {
@@ -224,7 +230,7 @@ Browserify.prototype._createPipeline = function (opts) {
     };
     this._bpack = bpack(xtend(opts, { raw: true }));
     
-    return splicer.obj([
+    var pipeline = splicer.obj([
         'record', [ this._recorder() ],
         'deps', [ this._mdeps ],
         'unbom', [ this._unbom() ],
@@ -237,6 +243,7 @@ Browserify.prototype._createPipeline = function (opts) {
         'pack', [ this._bpack ],
         'wrap', []
     ]);
+    return pipeline;
 };
 
 Browserify.prototype._createDeps = function (opts) {
