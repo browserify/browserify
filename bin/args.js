@@ -102,6 +102,8 @@ module.exports = function (args, opts) {
     
     [].concat(argv.ignore).filter(Boolean)
         .forEach(function (i) {
+            b.ignore(i);
+
             b._pending ++;
             glob(i, function (err, files) {
                 if (err) return b.emit('error', err);
