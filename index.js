@@ -114,7 +114,7 @@ Browserify.prototype.require = function (file, opts) {
     }
 
     if(typeof file === 'string' && file.charAt(0) === '.') {
-        file = path.resolve(file);
+        file = '/' + path.relative(basedir, file);
     }
     
     var row = typeof file === 'object'
