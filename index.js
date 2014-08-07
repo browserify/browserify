@@ -112,6 +112,10 @@ Browserify.prototype.require = function (file, opts) {
         }));
         return this;
     }
+
+    if(typeof file === 'string' && file.charAt(0) === '.') {
+        file = path.resolve(file);
+    }
     
     var row = typeof file === 'object'
         ? xtend(file, opts)
