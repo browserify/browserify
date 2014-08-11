@@ -1,3 +1,8 @@
+# 5.9.3
+
+buffers the record pipeline phase to start outputting after the first tick
+so that user plugins can capture and modify recorder output
+
 # 5.9.2
 
 fixes a bug with using --ignore to exclude node_modules packages on the command-line
