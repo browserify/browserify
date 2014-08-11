@@ -49,6 +49,7 @@ function Browserify (files, opts) {
     self._hashes = {};
     self._pending = 0;
     self._entryOrder = 0;
+    self._ticked = false;
     
     self.pipeline = self._createPipeline(opts);
     
@@ -235,7 +236,6 @@ Browserify.prototype._createPipeline = function (opts) {
     this._bpack = bpack(xtend(opts, { raw: true }));
     
     var pipeline = splicer.obj([
-        'delay', [ this._delayer() ],
         'record', [ this._recorder() ],
         'deps', [ this._mdeps ],
         'json', [ this._json() ],
@@ -371,32 +371,33 @@ Browserify.prototype._createDeps = function (opts) {
     return mdeps(mopts);
 };
 
-Browserify.prototype._delayer = function (opts) {
-    var ticked = false, inext;
-    process.nextTick(function () {
-        ticked = true;
-        if (inext) inext();
-    });
-    
-    var stream = through.obj(function f (row, enc, next) {
-        if (!ticked) {
-            inext = function () { f.call(stream, row, enc, next) };
-        }
-        else {
-            this.push(row);
-            next();
-        }
-    });
-    return stream;
-};
-
 Browserify.prototype._recorder = function (opts) {
-    var recs = this._recorded = [];
-    return through.obj(function (row, enc, next) {
-        recs.push(row);
-        this.push(row);
+    var self = this;
+    var ended = false;
+    this._recorded = [];
+    
+    if (!this._ticked) {
+        process.nextTick(function () {
+            self._ticked = true;
+            self._recorded.forEach(function (row) {
+                stream.push(row);
+            });
+            if (ended) stream.push(null);
+        });
+    }
+    
+    var stream = through.obj(write, end);
+    return stream;
+    
+    function write (row, enc, next) {
+        self._recorded.push(row);
+        if (self._ticked) this.push(row);
         next();
-    });
+    }
+    function end () {
+        ended = true;
+        if (self._ticked) this.push(null);
+    }
 };
 
 Browserify.prototype._json = function () {
