@@ -1,3 +1,9 @@
+# 5.9.2
+
+fixes a bug with using --ignore to exclude node_modules packages on the command-line
+
+https://github.com/substack/node-browserify/pull/845
+
 # 5.9.1
 
 improves the detection for --ignore
