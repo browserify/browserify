@@ -235,6 +235,7 @@ Browserify.prototype._createPipeline = function (opts) {
     this._bpack = bpack(xtend(opts, { raw: true }));
     
     var pipeline = splicer.obj([
+        'delay', [ this._delayer() ],
         'record', [ this._recorder() ],
         'deps', [ this._mdeps ],
         'json', [ this._json() ],
@@ -368,6 +369,25 @@ Browserify.prototype._createDeps = function (opts) {
         }
     ];
     return mdeps(mopts);
+};
+
+Browserify.prototype._delayer = function (opts) {
+    var ticked = false, inext;
+    process.nextTick(function () {
+        ticked = true;
+        if (inext) inext();
+    });
+    
+    var stream = through.obj(function f (row, enc, next) {
+        if (!ticked) {
+            inext = function () { f.call(stream, row, enc, next) };
+        }
+        else {
+            this.push(row);
+            next();
+        }
+    });
+    return stream;
 };
 
 Browserify.prototype._recorder = function (opts) {
