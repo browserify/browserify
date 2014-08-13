@@ -44,7 +44,7 @@ test('multi bundle', function (t) {
 });
 
 // re-enable this in future releases
-if (false) test('multi bundle', function (t) {
+test('multi bundle', function (t) {
     t.plan(8);
 
     var core = browserify({ exposeAll: true });

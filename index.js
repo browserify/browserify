@@ -147,6 +147,19 @@ Browserify.prototype.add = function (file, opts) {
 };
 
 Browserify.prototype.external = function (file, opts) {
+    var self = this;
+    if (file && typeof file === 'object' && typeof file.bundle === 'function') {
+        var b = file;
+        self._pending ++;
+        b.on('label', function (prev, id) {
+            self._external.push(id);
+        });
+        b.pipeline.get('label').once('end', function () {
+            if (-- self._pending === 0) self.emit('_ready');
+        });
+        return this;
+    }
+    
     if (!opts) opts = {};
     var basedir = defined(opts.basedir, process.cwd());
     this._external.push(file);
@@ -229,7 +242,7 @@ Browserify.prototype._createPipeline = function (opts) {
     });
     
     var dopts = {
-        index: !opts.fullPaths,
+        index: !opts.fullPaths && !opts.exposeAll,
         dedupe: true,
         expose: this._expose
     };
@@ -249,6 +262,22 @@ Browserify.prototype._createPipeline = function (opts) {
         'pack', [ this._bpack ],
         'wrap', []
     ]);
+    if (opts.exposeAll) {
+        var basedir = defined(opts.basedir, process.cwd());
+        pipeline.get('deps').push(through.obj(function (row, enc, next) {
+            if (self._external.indexOf(row.id) >= 0) return next();
+            if (self._external.indexOf(row.file) >= 0) return next();
+            
+            if (/^\//.test(row.id)) {
+                row.id = '/' + path.relative(basedir, row.file);
+            }
+            Object.keys(row.deps || {}).forEach(function (key) {
+                row.deps[key] = '/' + path.relative(basedir, row.deps[key]);
+            });
+            this.push(row);
+            next();
+        }));
+    }
     return pipeline;
 };
 
@@ -457,22 +486,33 @@ Browserify.prototype._label = function (opts) {
     
     return through.obj(function (row, enc, next) {
         var prev = row.id;
+        
+        var relf = '/' + path.relative(basedir, row.id);
+        var reli = '/' + path.relative(basedir, row.id);
+        if (self._external.indexOf(row.id) >= 0) return next();
+        if (self._external.indexOf(reli) >= 0) return next();
+        if (self._external.indexOf(row.file) >= 0) return next();
+        if (self._external.indexOf(relf) >= 0) return next();
+        
         if (row.index) row.id = row.index;
+        
         self.emit('label', prev, row.id);
         if (row.indexDeps) row.deps = row.indexDeps || {};
         
         Object.keys(row.deps).forEach(function (key) {
-            if (row.deps[key] !== undefined) return;
-            if (self._external.indexOf(key) >= 0) return;
-            if (!/^[\/.]/.test(key)) return;
-            
-            var rfile = '/' + path.relative(
-                basedir,
-                path.resolve(path.dirname(row.file), key)
-            );
+            var afile = path.resolve(path.dirname(row.file), key);
+            var rfile = '/' + path.relative(basedir, afile);
             if (self._external.indexOf(rfile) >= 0) {
                 row.deps[key] = rfile;
             }
+            if (self._external.indexOf(afile) >= 0) {
+                row.deps[key] = rfile;
+            }
+            if (self._external.indexOf(key) >= 0) {
+                row.deps[key] = key;
+                return;
+            }
+            
             for (var i = 0; i < self._extensions.length; i++) {
                 var ex = self._extensions[i];
                 if (self._external.indexOf(rfile + ex) >= 0) {
