@@ -1,3 +1,8 @@
+# 5.10.0
+
+adds back support for `.external(b)` on a browserify instance `b`
+that was dropped on the v5 refactor
+
 # 5.9.3
 
 buffers the record pipeline phase to start outputting after the first tick
