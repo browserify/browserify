@@ -444,6 +444,9 @@ from another bundle.
 
 If `file` is an array, each item in `file` will be externalized.
 
+If `file` is another bundle, that bundle's contents will be read and excluded
+from the current bundle as the bundle in `file` gets bundled.
+
 ## b.ignore(file)
 
 Prevent the module name or file at `file` from showing up in the output bundle.
