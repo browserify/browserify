@@ -105,7 +105,12 @@ module.exports = function (args, opts) {
             b._pending ++;
             glob(i, function (err, files) {
                 if (err) return b.emit('error', err);
-                files.forEach(function (file) { b.ignore(file) });
+                if (files.length === 0) {
+                  b.ignore(i);
+                }
+                else {
+                  files.forEach(function (file) { b.ignore(file) });
+                }
                 if (--b._pending === 0) b.emit('_ready');
             });
         })
