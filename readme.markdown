@@ -345,7 +345,7 @@ For each `file` in `files`, if `file` is a stream, its contents will be used.
 You should use `opts.basedir` when using streaming files so that relative
 requires will know where to resolve from.
 
-`opts.noparse` is an array which will skip all require() and global parsing for
+`opts.noParse` is an array which will skip all require() and global parsing for
 each file in the array. Use this for giant libs like jquery or threejs that
 don't have any requires or node-style globals but take forever to parse.
 
