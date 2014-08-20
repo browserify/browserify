@@ -1,3 +1,8 @@
+# 5.10.1
+
+fixes the command-line client to properly ignore paths that don't match a glob
+https://github.com/substack/node-browserify/pull/866
+
 # 5.10.0
 
 adds back support for `.external(b)` on a browserify instance `b`
