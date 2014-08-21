@@ -484,7 +484,7 @@ example.
 
 Here's how you might compile coffee script on the fly using `.transform()`:
 
-```
+``` js
 var coffee = require('coffee-script');
 var through = require('through');
 
