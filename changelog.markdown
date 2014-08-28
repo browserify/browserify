@@ -1,3 +1,8 @@
+# 5.11.0
+
+adds an implicit dependency on the original module during dedupe
+https://github.com/substack/node-browserify/pull/880
+
 # 5.10.1
 
 fixes the command-line client to properly ignore paths that don't match a glob
