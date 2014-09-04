@@ -45,7 +45,7 @@ module.exports = function (args, opts) {
             'bundle-external': true
         }
     });
-    
+
     var entries = argv._.concat(argv.entry)
     .filter(Boolean).map(function (entry) {
         if (entry === '-') {
@@ -58,7 +58,7 @@ module.exports = function (args, opts) {
         }
         return path.resolve(process.cwd(), entry);
     });
-    
+
     if (argv.bare) {
         argv.builtins = false;
         argv.commondir = false;
@@ -67,7 +67,7 @@ module.exports = function (args, opts) {
             argv.igv = '__filename,__dirname';
         }
     }
-    
+
     var b = browserify(xtend({
         noparse: argv.noparse,
         extensions: [].concat(argv.extension).filter(Boolean),
@@ -77,7 +77,7 @@ module.exports = function (args, opts) {
         commondir: argv.commondir === false ? false : undefined,
         bundleExternal: argv['bundle-external'],
         basedir: argv.basedir,
-        
+
         detectGlobals: argv.detectGlobals,
         insertGlobals: argv['insert-globals'] || argv.ig,
         insertGlobalVars: insertGlobalVars,
@@ -87,7 +87,7 @@ module.exports = function (args, opts) {
     }, opts));
     function error (msg) {
         var e = new Error(msg);
-        process.nextTick(function () { b.emit('error', e) });
+        process.nextTick(function () { b.emit('error', e); });
     }
     b.argv = argv;
     [].concat(argv.p).concat(argv.plugin).filter(Boolean)
@@ -99,7 +99,7 @@ module.exports = function (args, opts) {
             b.plugin(pf, pOpts);
         })
     ;
-    
+
     [].concat(argv.ignore).filter(Boolean)
         .forEach(function (i) {
             b._pending ++;
@@ -109,21 +109,21 @@ module.exports = function (args, opts) {
                   b.ignore(i);
                 }
                 else {
-                  files.forEach(function (file) { b.ignore(file) });
+                  files.forEach(function (file) { b.ignore(file); });
                 }
                 if (--b._pending === 0) b.emit('_ready');
             });
         })
     ;
-    
+
     [].concat(argv.exclude).filter(Boolean)
         .forEach(function (u) {
             b.exclude(u);
-            
+
             b._pending ++;
             glob(u, function (err, files) {
                 if (err) return b.emit('error', err);
-                files.forEach(function (file) { b.exclude(file) });
+                files.forEach(function (file) { b.exclude(file); });
                 if (--b._pending === 0) b.emit('_ready');
             });
         })
@@ -132,10 +132,10 @@ module.exports = function (args, opts) {
     [].concat(argv.require).filter(Boolean)
         .forEach(function (r) {
             var xs = r.split(':');
-            b.require(xs[0], { expose: xs.length === 1 ? xs[0] : xs[1] })
+            b.require(xs[0], { expose: xs.length === 1 ? xs[0] : xs[1] });
         })
     ;
-    
+
     // resolve any external files and add them to the bundle as externals
     [].concat(argv.external).filter(Boolean)
         .forEach(function (x) {
@@ -152,26 +152,26 @@ module.exports = function (args, opts) {
                 });
             }
             else add(x, {});
-            
+
             function add (x, opts) {
-                if (/^[\/.]/.test(x)) b.external(path.resolve(x), opts)
-                else b.external(x, opts)
+                if (/^[\/.]/.test(x)) b.external(path.resolve(x), opts);
+                else b.external(x, opts);
             }
         })
     ;
-    
+
     [].concat(argv.transform)
         .filter(Boolean)
-        .forEach(function (t) { addTransform(t) })
+        .forEach(function (t) { addTransform(t); })
     ;
-    
+
     [].concat(argv.g).concat(argv['global-transform'])
         .filter(Boolean)
         .forEach(function (t) {
             addTransform(t, { global: true });
         })
     ;
-    
+
     function addTransform (t, opts) {
         if (typeof t === 'string' || typeof t === 'function') {
             b.transform(opts, t);
@@ -189,7 +189,7 @@ module.exports = function (args, opts) {
         }
         else error('unexpected transform of type ' + typeof t);
     }
-    
+
     [].concat(argv.command).filter(Boolean)
         .forEach(function (c) {
             var cmd = parseShell(c);
@@ -201,8 +201,8 @@ module.exports = function (args, opts) {
                 env.FILENAME = file;
                 var ps = spawn(cmd[0], cmd.slice(1), { env: env });
                 var error = '';
-                ps.stderr.on('data', function (buf) { error += buf });
-                
+                ps.stderr.on('data', function (buf) { error += buf; });
+
                 ps.on('exit', function (code) {
                     if (code === 0) return;
                     console.error([
@@ -216,12 +216,12 @@ module.exports = function (args, opts) {
             });
         })
     ;
-    
+
     if (argv.standalone === '') {
         error('--standalone requires an export name argument');
         return b;
     }
-    
+
     var insertGlobalVars;
     if (argv.igv) {
         insertGlobalVars = argv.igv.split(',').reduce(function (vars, x) {
@@ -229,13 +229,6 @@ module.exports = function (args, opts) {
             return vars;
         }, {});
     }
-    
+
     return b;
 };
-
-function copy (obj) {
-    return Object.keys(obj).reduce(function (acc, key) {
-        acc[key] = obj[key];
-        return acc;
-    }, {});
-}

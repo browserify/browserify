@@ -1,1 +1,1 @@
-module.exports = function (s) { return s.toUpperCase() + '!' };
+module.exports = function (s) { return s.toUpperCase() + '!'; };
