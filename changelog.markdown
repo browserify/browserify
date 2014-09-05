@@ -1,3 +1,8 @@
+# 5.11.1
+
+fixes exports across resets, which caused issues for watchify with exports
+https://github.com/substack/node-browserify/pull/892
+
 # 5.11.0
 
 adds an implicit dependency on the original module during dedupe
