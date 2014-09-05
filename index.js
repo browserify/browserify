@@ -555,7 +555,9 @@ Browserify.prototype._debug = function (opts) {
 
 Browserify.prototype.reset = function (opts) {
     if (!opts) opts = {};
+    var hadExports = this._bpack.hasExports;
     this.pipeline = this._createPipeline(xtend(opts, this._options));
+    this._bpack.hasExports = hadExports;
     this._entryOrder = 0;
     this._bundled = false;
     this.emit('reset');
