@@ -176,7 +176,16 @@ Browserify.prototype.exclude = function (file, opts) {
 };
 
 Browserify.prototype.ignore = function (file, opts) {
-    this._ignore.push(file);
+    if (!opts) opts = {};
+    var basedir = defined(opts.basedir, process.cwd());
+
+    // Handle relative paths
+    if (file[0] === '.') {
+        this._ignore.push(path.resolve(basedir, file));
+    }
+    else {
+        this._ignore.push(file);
+    }
     return this;
 };
 
@@ -329,6 +338,9 @@ Browserify.prototype._createDeps = function (opts) {
                 }
                 if (self._exclude.indexOf(ex) >= 0) {
                     return cb(null, ex);
+                }
+                if (self._ignore.indexOf(ex) >= 0) {
+                    return cb(null, paths.empty, {});
                 }
             }
             cb(err, file, pkg);
