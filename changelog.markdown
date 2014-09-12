@@ -1,3 +1,8 @@
+# 5.11.2
+
+fixes ignore for relative paths
+in https://github.com/substack/node-browserify/issues/896
+
 # 5.11.1
 
 fixes exports across resets, which caused issues for watchify with exports
