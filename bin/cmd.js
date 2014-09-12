@@ -10,14 +10,14 @@ if ((b.argv._[0] === 'help' && b.argv._[1]) === 'advanced'
 || (b.argv.h || b.argv.help) === 'advanced') {
     return fs.createReadStream(__dirname + '/advanced.txt')
         .pipe(process.stdout)
-        .on('close', function () { process.exit(1) })
+        .on('close', function () { process.exit(1); })
     ;
 }
 if (b.argv._[0] === 'help' || b.argv.h || b.argv.help
 || (process.argv.length <= 2 && process.stdin.isTTY)) {
     return fs.createReadStream(__dirname + '/usage.txt')
         .pipe(process.stdout)
-        .on('close', function () { process.exit(1) })
+        .on('close', function () { process.exit(1); })
     ;
 }
 if (b.argv.v || b.argv.version) {
@@ -36,8 +36,8 @@ if (b.argv.deps) {
     var stringify = JSONStream.stringify();
     stringify.pipe(process.stdout);
     b.pipeline.get('deps').push(through.obj(
-        function (row, enc, next) { stringify.write(row); next() },
-        function () { stringify.end() }
+        function (row, enc, next) { stringify.write(row); next(); },
+        function () { stringify.end(); }
     ));
     return b.bundle();
 }
@@ -46,7 +46,7 @@ if (b.argv.list) {
     b.pipeline.get('deps').push(through.obj(
         function (row, enc, next) {
             console.log(row.file || row.id);
-            next()
+            next();
         }
     ));
     return b.bundle();
@@ -61,14 +61,6 @@ if (outfile) {
 }
 else {
     bundle.pipe(process.stdout);
-}
-
-function packageFilter (info) {
-    if (info && typeof info.browserify === 'string' && !info.browser) {
-        info.browser = info.browserify;
-        delete info.browserify;
-    }
-    return info || {};
 }
 
 function errorExit(err) {
