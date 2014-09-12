@@ -420,8 +420,6 @@ and [browser-pack](https://npmjs.org/package/browser-pack) directly.
 
 Add an entry file from `file` that will be executed when the bundle loads.
 
-If `file` is an array, each item in `file` will be added as an entry file.
-
 ## b.require(file, opts)
 
 Make `file` available from outside the bundle with `require(file)`.
@@ -430,8 +428,6 @@ The `file` param is anything that can be resolved by `require.resolve()`.
 
 `file` can also be a stream, but you should also use `opts.basedir` so that
 relative requires will be resolvable.
-
-If `file` is an array, each item in `file` will be required.
 
 Use the `expose` property of opts to specify a custom dependency name. 
 `require('./vendor/angular/angular.js', {expose: 'angular'})` enables `require('angular')`
@@ -447,8 +443,6 @@ optionally specify a `cb(err, buf)` to get the buffered results.
 
 Prevent `file` from being loaded into the current bundle, instead referencing
 from another bundle.
-
-If `file` is an array, each item in `file` will be externalized.
 
 If `file` is another bundle, that bundle's contents will be read and excluded
 from the current bundle as the bundle in `file` gets bundled.
