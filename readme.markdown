@@ -13,6 +13,12 @@ tag.
 
 ![browserify!](http://substack.net/images/browserify_logo.png)
 
+# getting started
+
+If you're new to browserify, check out the
+[browserify handbook](https://github.com/substack/browserify-handbook)
+and the resources on [browserify.org](http://browserify.org/).
+
 # example
 
 Whip up a file, `main.js` with some `require()s` in it. You can use relative
