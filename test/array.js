@@ -33,6 +33,6 @@ test('array require', function (t) {
         
         t.equal(c.require('isarray')([]), true);
         t.equal(c.require('isarray')({}), false);
-        t.equal(c.require('subarg')(['-x', '3']), { x: 3, _: [] });
+        t.deepEqual(c.require('subarg')(['-x', '3']), { x: 3, _: [] });
     });
 });

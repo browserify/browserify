@@ -72,6 +72,12 @@ function Browserify (files, opts) {
 
 Browserify.prototype.require = function (file, opts) {
     var self = this;
+    if (isarray(file)) {
+        file.forEach(function (x) {
+            self.require(x, opts);
+        });
+        return this;
+    }
     
     if (!opts) opts = {};
     var basedir = defined(opts.basedir, process.cwd());
@@ -142,7 +148,12 @@ Browserify.prototype.require = function (file, opts) {
 };
 
 Browserify.prototype.add = function (file, opts) {
+    var self = this;
     if (!opts) opts = {};
+    if (isarray(file)) {
+        file.forEach(function (x) { self.add(x, opts) });
+        return this;
+    }
     return this.require(file, xtend({ entry: true, expose: false }, opts));
 };
 
