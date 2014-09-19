@@ -1,3 +1,8 @@
+# 5.12.0
+
+adds back the array form for add() and require(), with extra places to add
+options
+
 # 5.11.2
 
 fixes ignore for relative paths
