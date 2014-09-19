@@ -74,7 +74,10 @@ Browserify.prototype.require = function (file, opts) {
     var self = this;
     if (isarray(file)) {
         file.forEach(function (x) {
-            self.require(x, opts);
+            if (typeof x === 'object') {
+                self.require(x.file, xtend(opts, x));
+            }
+            else self.require(x, opts);
         });
         return this;
     }

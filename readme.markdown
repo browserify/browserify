@@ -432,6 +432,9 @@ The `file` param is anything that can be resolved by `require.resolve()`.
 relative requires will be resolvable.
 
 If `file` is an array, each item in `file` will be required.
+In `file` array form, you can use a string or object for each item. Object items
+should have a `file` property and the rest of the parameters will be used for
+the `opts`.
 
 Use the `expose` property of opts to specify a custom dependency name. 
 `require('./vendor/angular/angular.js', {expose: 'angular'})` enables `require('angular')`

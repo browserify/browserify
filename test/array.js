@@ -36,3 +36,22 @@ test('array require', function (t) {
         t.deepEqual(c.require('subarg')(['-x', '3']), { x: 3, _: [] });
     });
 });
+
+test('array require opts', function (t) {
+    t.plan(3);
+    
+    var b = browserify();
+    var files = [
+        { file: require.resolve('isarray'), expose: 'abc' },
+        { file: require.resolve('subarg'), expose: 'def' }
+    ];
+    b.require(files);
+    b.bundle(function (err, src) {
+        var c = {};
+        vm.runInNewContext(src, c);
+        
+        t.equal(c.require('abc')([]), true);
+        t.equal(c.require('abc')({}), false);
+        t.deepEqual(c.require('def')(['-x', '3']), { x: 3, _: [] });
+    });
+});
