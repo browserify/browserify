@@ -228,7 +228,7 @@ When you `require()` any of these modules, you will get a browser-specific shim:
 * [vm](https://npmjs.org/package/vm-browserify)
 * [zlib](https://npmjs.org/package/browserify-zlib)
 
-Additionally if you use any of these variables, they
+Additionally, if you use any of these variables, they
 [will be defined](https://github.com/substack/insert-module-globals)
 in the bundled output in a browser-appropriate way:
 
@@ -242,7 +242,7 @@ in the bundled output in a browser-appropriate way:
 
 ## external requires
 
-You can just as easily create bundle that will export a `require()` function so
+You can just as easily create a bundle that will export a `require()` function so
 you can `require()` modules from another script tag. Here we'll create a
 `bundle.js` with the [through](https://npmjs.org/package/through)
 and [duplexer](https://npmjs.org/package/duplexer) modules.
@@ -280,7 +280,7 @@ If browserify finds a `require`d function already defined in the page scope, it
 will fall back to that function if it didn't find any matches in its own set of
 bundled modules.
 
-In this way you can use browserify to split up bundles among multiple pages to
+In this way, you can use browserify to split up bundles among multiple pages to
 get the benefit of caching for shared, infrequently-changing modules, while
 still being able to use `require()`. Just use a combination of `--external` and
 `--require` to factor out common dependencies.
@@ -351,7 +351,7 @@ For each `file` in `files`, if `file` is a stream, its contents will be used.
 You should use `opts.basedir` when using streaming files so that relative
 requires will know where to resolve from.
 
-`opts.noparse` is an array which will skip all require() and global parsing for
+`opts.noparse` is an array which will skip all `require()` and global parsing for
 each file in the array. Use this for giant libs like jquery or threejs that
 don't have any requires or node-style globals but take forever to parse.
 
@@ -369,7 +369,7 @@ filenames that start with `.`.
 `opts.fullPaths` disables converting module ids into numerical indexes. This is
 useful for preserving the original paths that a bundle was generated with.
 
-`opts.builtins` sets the list of builtins to use, which by default is set in
+`opts.builtins` sets the list of built-ins to use, which by default is set in
 `lib/builtins.js` in this distribution.
 
 `opts.bundleExternal` boolean option to set if external modules should be
@@ -569,7 +569,7 @@ This function triggers a 'reset' event.
 
 # package.json
 
-browserify uses the `package.json` in its module resolution algorithm just like
+browserify uses the `package.json` in its module resolution algorithm, just like
 node. If there is a `"main"` field, browserify will start resolving the package
 at that point. If there is no `"main"` field, browserify will look for an
 `"index.js"` file in the module root directory. Here are some more
@@ -597,8 +597,8 @@ or you can have overrides on a per-file basis:
 }
 ```
 
-Note that the browser field only applies to files in the local module and like
-transforms it doesn't apply into `node_modules` directories.
+Note that the browser field only applies to files in the local module, and like
+transforms, it doesn't apply into `node_modules` directories.
 
 ## browserify.transform
 
