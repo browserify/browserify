@@ -486,6 +486,15 @@ Browserify.prototype._syntax = function () {
 
 Browserify.prototype._dedupe = function () {
     return through.obj(function (row, enc, next) {
+        if (!row.dedupeIndex && row.dedupe) {
+            row.source = 'module.exports=require('
+                + JSON.stringify(row.dedupe)
+                + ')'
+            ;
+            row.deps = {};
+            row.deps[row.dedupe] = row.dedupe;
+            row.nomap = true;
+        }
         if (row.dedupeIndex && row.sameDeps) {
             row.source = 'module.exports=require('
                 + JSON.stringify(row.dedupeIndex)
