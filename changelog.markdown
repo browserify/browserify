@@ -1,3 +1,9 @@
+# 5.12.1
+
+dedupe deps when fullPaths is on
+https://github.com/substack/node-browserify/pull/917
+and fixes the crypto tests
+
 # 5.12.0
 
 adds back the array form for add() and require(), with extra places to add
