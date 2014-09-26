@@ -15,7 +15,7 @@ test('*-browserify libs from node_modules/', function (t) {
     t.plan(2);
     
     var bin = __dirname + '/../bin/cmd.js';
-    var ps = spawn(bin, [ 'main.js' ], { cwd : tmpdir });
+    var ps = spawn(process.execPath, [ bin, 'main.js' ], { cwd : tmpdir });
     
     ps.stderr.pipe(process.stderr, { end : false });
     
@@ -31,7 +31,8 @@ test('*-browserify libs from node_modules/', function (t) {
             DataView: DataView,
             beep : function (c) {
                 t.equal(typeof c.createHash, 'function');
-            }
+            },
+            require: function () {}
         };
         vm.runInNewContext(src.toString('utf8'), c);
     }));

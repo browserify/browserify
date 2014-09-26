@@ -31,7 +31,8 @@ test('crypto --insertGlobals', function (t) {
             DataView: DataView,
             beep : function (c) {
                 t.equal(typeof c.createHash, 'function');
-            }
+            },
+            require: function () {}
         };
         vm.runInNewContext(src.toString('utf8'), c);
     }));
