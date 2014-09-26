@@ -214,6 +214,10 @@ Browserify.prototype.transform = function (tr, opts) {
     }
     if (!opts) opts = {};
     
+    opts.debug = 'debug' in opts
+        ? opts.debug
+        : !!self._options.debug;
+
     apply();
     self.on('reset', apply);
     
