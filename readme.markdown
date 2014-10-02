@@ -55,6 +55,11 @@ recursive walk of the `require()` graph using
 To use this bundle, just toss a `<script src="bundle.js"></script>` into your
 html!
 
+**Note:** browserify resolves internal requires in the application, unlike node.
+This means you should use `require(path.join(__dirname, 'foo.js'))` wherever you 
+would use `require('./foo.js')` in files that aren't in the same directory as 
+the root file.
+
 # install
 
 With [npm](http://npmjs.org) do:
