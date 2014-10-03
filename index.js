@@ -162,6 +162,15 @@ Browserify.prototype.add = function (file, opts) {
 
 Browserify.prototype.external = function (file, opts) {
     var self = this;
+    if (isarray(file)) {
+        file.forEach(function (f) {
+            if (typeof f === 'object') {
+                self.external(f, xtend(opts, f));
+            }
+            else self.external(f, opts)
+        });
+        return this;
+    }
     if (file && typeof file === 'object' && typeof file.bundle === 'function') {
         var b = file;
         self._pending ++;
