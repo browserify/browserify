@@ -131,7 +131,7 @@ Browserify.prototype.require = function (file, opts) {
         ? xtend(file, opts)
         : (/^[\/.]/.test(file)
             ? xtend(opts, { file: file })
-            : xtend(opts, { id: file })
+            : xtend(opts, { id: expose || file })
         )
     ;
     if (!row.id) {
