@@ -12,7 +12,7 @@ test('--debug passed to transforms', function (t) {
         var b = browserify(empty, { debug: debug });
 
         b.transform(function(file, opts) {
-            t.equal(opts.flags.debug, debug, 'debug: ' + debug);
+            t.equal(opts._flags.debug, debug, 'debug: ' + debug);
             return through();
         });
 
@@ -24,9 +24,9 @@ test('--debug passed to transforms', function (t) {
     var b = browserify(empty, { debug: true });
 
     b.transform({
-        flags: Infinity
+        _flags: Infinity
     }, function(file, opts) {
-        t.equal(opts.flags, Infinity, 'transform arguents are preserved');
+        t.equal(opts._flags, Infinity, 'transform arguents are preserved');
         return through();
     });
 
