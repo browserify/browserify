@@ -1,3 +1,8 @@
+# 5.12.2
+
+fixes the array form of b.external()
+https://github.com/substack/node-browserify/issues/930
+
 # 5.12.1
 
 dedupe deps when fullPaths is on
