@@ -1,3 +1,8 @@
+# 6.0.2
+
+upgrades process to 0.8.0
+https://github.com/substack/node-browserify/pull/906
+
 # 6.0.1
 
 respects opts.expose in require()
