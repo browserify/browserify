@@ -531,6 +531,31 @@ transform will suffice. You can also not configure global transforms in a
 
 Global transforms always run after any ordinary transforms have run.
 
+Transforms may obtain options from the command-line with
+[subarg](https://npmjs.org/package/subarg) syntax:
+
+```
+$ browserify -t [ foo --bar=555 ] main.js
+```
+
+or from the api:
+
+```
+b.transform('foo', { bar: 555 })
+```
+
+In both cases, these options are provided as the second argument to the
+transform function:
+
+```
+module.exports = function (file, opts) { /* opts.bar === 555 */ }
+```
+
+Options sent to the browserify constructor are also provided under
+`opts._flags`. These browserify options are sometimes required if your transform
+needs to do something different when browserify is run in debug mode, for
+example.
+
 ## b.plugin(plugin, opts)
 
 Register a `plugin` with `opts`. Plugins can be a string module name or a
