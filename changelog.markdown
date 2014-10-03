@@ -1,3 +1,8 @@
+# 6.0.1
+
+respects opts.expose in require()
+https://github.com/substack/node-browserify/pull/907
+
 # 6.0.0
 
 resolves source map maths relative to the base url. This should help with more
