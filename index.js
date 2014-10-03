@@ -223,6 +223,10 @@ Browserify.prototype.transform = function (tr, opts) {
     }
     if (!opts) opts = {};
     
+    opts.flags = 'flags' in opts
+      ? opts.flags
+      : self._options;
+
     apply();
     self.on('reset', apply);
     
