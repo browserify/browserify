@@ -1,3 +1,8 @@
+# 5.13.0
+
+exposes global browserify options to transforms under opts._flags
+https://github.com/substack/node-browserify/pull/910
+
 # 5.12.2
 
 fixes the array form of b.external()
