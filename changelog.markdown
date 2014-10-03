@@ -1,3 +1,8 @@
+# 5.13.1
+
+bails early if opts.basedir is not the correct type
+https://github.com/substack/node-browserify/pull/927
+
 # 5.13.0
 
 exposes global browserify options to transforms under opts._flags
