@@ -42,6 +42,10 @@ function Browserify (files, opts) {
     self._options = opts;
     if (opts.noParse) opts.noparse = opts.noParse;
     
+    if (opts.basedir !== undefined && typeof opts.basedir !== 'string') {
+        throw new Error('opts.basedir must be either undefined or a string.');
+    }
+    
     self._external = [];
     self._exclude = [];
     self._ignore = [];
