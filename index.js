@@ -593,10 +593,11 @@ Browserify.prototype._emitDeps = function () {
 };
 
 Browserify.prototype._debug = function (opts) {
+    var basedir = defined(opts.basedir, process.cwd());
     return through.obj(function (row, enc, next) {
         if (opts.debug) {
             row.sourceRoot = 'file://localhost';
-            row.sourceFile = row.file.replace(/\\/g, '/');
+            row.sourceFile = path.relative(basedir, row.file);
         }
         this.push(row);
         next();
