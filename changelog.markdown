@@ -1,3 +1,10 @@
+# 6.0.0
+
+resolves source map maths relative to the base url. This should help with more
+reproducible builds.
+
+https://github.com/substack/node-browserify/pull/923
+
 # 5.13.1
 
 bails early if opts.basedir is not the correct type

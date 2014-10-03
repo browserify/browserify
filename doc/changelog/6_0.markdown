@@ -1,0 +1,8 @@
+Version 6 is a tiny but breaking change to how source map paths work.
+
+Now all source map paths are relative by default. This makes it easier to have
+deterministic debug builds across different systems and directories. If
+browserify is installed in a project-local directory, all the source map paths
+will be self-contained and relative against that location in node_modules.
+
+https://github.com/substack/node-browserify/pull/923
