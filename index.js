@@ -395,49 +395,52 @@ Browserify.prototype._createDeps = function (opts) {
         if (!has(mopts.modules, key)) self._exclude.push(key);
     });
     
-    mopts.globalTransform = [
-        function (file) {
-            if (opts.detectGlobals === false) return through();
-            
-            if (opts.noparse === true) return through();
-            var no = [].concat(opts.noparse).filter(Boolean);
-            if (no.indexOf(file) >= 0) return through();
-            if (no.map(function (x){return path.resolve(x)}).indexOf(file)>=0){
+    mopts.globalTransform = [];
+    this.once('bundle', function () {
+        self._mdeps.globalTransforms.push([ globalTr, {} ]);
+    });
+    
+    function globalTr (file) {
+        if (opts.detectGlobals === false) return through();
+        
+        if (opts.noparse === true) return through();
+        var no = [].concat(opts.noparse).filter(Boolean);
+        if (no.indexOf(file) >= 0) return through();
+        if (no.map(function (x){return path.resolve(x)}).indexOf(file)>=0){
+            return through();
+        }
+        
+        var parts = file.split('/node_modules/');
+        for (var i = 0; i < no.length; i++) {
+            if (typeof no[i] === 'function' && no[i](file)) {
                 return through();
             }
-            
-            var parts = file.split('/node_modules/');
-            for (var i = 0; i < no.length; i++) {
-                if (typeof no[i] === 'function' && no[i](file)) {
-                    return through();
-                }
-                else if (no[i] === parts[parts.length-1].split('/')[0]) {
-                    return through();
-                }
-                else if (no[i] === parts[parts.length-1]) {
-                    return through();
-                }
+            else if (no[i] === parts[parts.length-1].split('/')[0]) {
+                return through();
             }
-            
-            var vars = xtend({
-                process: function () { return "require('_process')" },
-            }, opts.insertGlobalVars);
-            
-            if (opts.bundleExternal === false) {
-                delete vars.process;
-                delete vars.buffer;
+            else if (no[i] === parts[parts.length-1]) {
+                return through();
             }
-            
-            return insertGlobals(file, xtend(opts, {
-                always: opts.insertGlobals,
-                basedir: opts.commondir === false
-                    ? '/'
-                    : opts.basedir || process.cwd()
-                ,
-                vars: vars
-            }));
         }
-    ];
+        
+        var vars = xtend({
+            process: function () { return "require('_process')" },
+        }, opts.insertGlobalVars);
+        
+        if (opts.bundleExternal === false) {
+            delete vars.process;
+            delete vars.buffer;
+        }
+        
+        return insertGlobals(file, xtend(opts, {
+            always: opts.insertGlobals,
+            basedir: opts.commondir === false
+                ? '/'
+                : opts.basedir || process.cwd()
+            ,
+            vars: vars
+        }));
+    }
     return mdeps(mopts);
 };
 
