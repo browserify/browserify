@@ -1,3 +1,12 @@
+# 6.0.3
+
+fixes a bug where module insert-module-globals would trigger too soon and
+conflict with other transforms
+
+https://github.com/substack/node-browserify/issues/867
+https://github.com/substack/node-browserify/issues/895
+https://github.com/substack/node-browserify/issues/855
+
 # 6.0.2
 
 upgrades process to 0.8.0
