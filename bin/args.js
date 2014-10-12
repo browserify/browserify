@@ -15,11 +15,12 @@ module.exports = function (args, opts) {
             'deps', 'pack', 'ig', 'dg', 'im', 'd', 'list', 'builtins',
             'commondir', 'bare', 'full-paths', 'bundle-external'
         ],
-        string: [ 's', 'r', 'u', 'x', 't', 'i', 'o', 'e', 'c' ],
+        string: [ 's', 'r', 'u', 'x', 't', 'i', 'o', 'e', 'c', 'it' ],
         alias: {
             ig: [ 'insert-globals', 'fast' ],
             dg: [ 'detect-globals', 'detectGlobals', 'dg' ],
             im: 'ignore-missing',
+            it: 'ignore-transform',
             igv: 'insert-global-vars',
             d: 'debug',
             s: 'standalone',
@@ -67,10 +68,12 @@ module.exports = function (args, opts) {
             argv.igv = '__filename,__dirname';
         }
     }
-    
+
+    var ignoreTransform = argv['ignore-transform'] || argv.it;
     var b = browserify(xtend({
         noparse: argv.noparse,
         extensions: [].concat(argv.extension).filter(Boolean),
+        ignoreTransform: [].concat(ignoreTransform).filter(Boolean),
         entries: entries,
         fullPaths: argv['full-paths'],
         builtins: argv.builtins === false ? false : undefined,

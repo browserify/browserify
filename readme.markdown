@@ -175,6 +175,11 @@ Advanced Options:
     Consider files with specified EXTENSION as modules, this option can used
     multiple times.
 
+  --ignore-transform=MODULE, --it MODULE
+
+    Any transforms matching the given name will be ignored, including
+    those in your module dependencies. 
+
   --global-transform=MODULE, -g MODULE
 
     Use a transform module on all files after any ordinary transforms have run.

@@ -54,6 +54,11 @@ function Browserify (files, opts) {
     self._pending = 0;
     self._entryOrder = 0;
     self._ticked = false;
+
+    var ignoreTransform = [].concat(opts.ignoreTransform).filter(Boolean);
+    self._filterTransform = function(tr) {
+        return ignoreTransform.indexOf(tr) === -1;
+    }
     
     self.pipeline = self._createPipeline(opts);
     
@@ -225,6 +230,12 @@ Browserify.prototype.transform = function (tr, opts) {
         opts = tr[1];
         tr = tr[0];
     }
+
+
+    //if the bundler is ignoring this transform
+    if (typeof tr === 'string' && !self._filterTransform(tr)) 
+        return this;
+
     if (!opts) opts = {};
     
     opts._flags = '_flags' in opts ? opts._flags : self._options;
@@ -327,11 +338,25 @@ Browserify.prototype._createDeps = function (opts) {
     mopts.extensions = [ '.js', '.json' ].concat(mopts.extensions || []);
     self._extensions = mopts.extensions;
     
+    //filter transforms on top-level
+    mopts.transform = [].concat(opts.transform)
+                .filter(Boolean)
+                .filter(self._filterTransform);
+
     mopts.transformKey = [ 'browserify', 'transform' ];
     mopts.postFilter = function (id, file, pkg) {
         if (opts.postFilter && !opts.postFilter(id, file, pkg)) return false;
         if (self._external.indexOf(file) >= 0) return false;
         if (self._exclude.indexOf(file) >= 0) return false;
+
+        //filter transforms on module dependencies
+        if (pkg && pkg.browserify && pkg.browserify.transform) {
+            //In edge cases it may be a string
+            
+            pkg.browserify.transform = [].concat(pkg.browserify.transform)
+                    .filter(Boolean)
+                    .filter(self._filterTransform);
+        }
         return true;
     };
     mopts.filter = function (id) {
