@@ -352,7 +352,6 @@ Browserify.prototype._createDeps = function (opts) {
         //filter transforms on module dependencies
         if (pkg && pkg.browserify && pkg.browserify.transform) {
             //In edge cases it may be a string
-            
             pkg.browserify.transform = [].concat(pkg.browserify.transform)
                     .filter(Boolean)
                     .filter(self._filterTransform);
