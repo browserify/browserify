@@ -1,6 +1,6 @@
 {
   "name": "browserify",
-  "version": "6.0.3",
+  "version": "6.1.0",
   "description": "browser-side require() the node way",
   "main": "index.js",
   "bin": {

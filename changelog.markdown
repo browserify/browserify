@@ -1,3 +1,9 @@
+# 6.1.0
+
+allows transforms to be ignored throughout the entire bundle
+
+https://github.com/substack/node-browserify/pull/945
+
 # 6.0.3
 
 fixes a bug where module insert-module-globals would trigger too soon and
