@@ -140,9 +140,9 @@ Browserify.prototype.require = function (file, opts) {
     
     var row = typeof file === 'object'
         ? xtend(file, opts)
-        : (/^[\/.]/.test(file)
-            ? xtend(opts, { file: file })
-            : xtend(opts, { id: expose || file })
+        : (isExternalModule(file)
+            ? xtend(opts, { id: expose || file })
+            : xtend(opts, { file: file })
         )
     ;
     if (!row.id) {
@@ -324,7 +324,7 @@ Browserify.prototype._createPipeline = function (opts) {
             if (self._external.indexOf(row.id) >= 0) return next();
             if (self._external.indexOf(row.file) >= 0) return next();
             
-            if (/^\//.test(row.id)) {
+            if (isAbsolutePath(row.id)) {
                 row.id = '/' + path.relative(basedir, row.file);
             }
             Object.keys(row.deps || {}).forEach(function (key) {
@@ -369,7 +369,7 @@ Browserify.prototype._createDeps = function (opts) {
         if (opts.filter && !opts.filter(id)) return false;
         if (self._external.indexOf(id) >= 0) return false;
         if (self._exclude.indexOf(id) >= 0) return false;
-        if (opts.bundleExternal === false && !/^([\/\.]|\w:)/.test(id)) {
+        if (opts.bundleExternal === false && isExternalModule(id)) {
             return false;
         }
         return true;
@@ -695,3 +695,15 @@ Browserify.prototype.bundle = function (cb) {
 
 function has (obj, key) { return Object.hasOwnProperty.call(obj, key) }
 function isStream (s) { return s && typeof s.pipe === 'function' }
+function isAbsolutePath (file) {
+    var regexp = process.platform === 'win32' ?
+        /^\w:/ :
+        /^\//;
+    return regexp.test(file);
+}
+function isExternalModule (file) {
+    var regexp = process.platform === 'win32' ?
+        /^(\.|\w:)/ :
+        /^[\/.]/;
+    return !regexp.test(file);
+}
