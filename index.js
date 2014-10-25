@@ -305,6 +305,7 @@ Browserify.prototype._createPipeline = function (opts) {
         'deps', [ this._mdeps ],
         'json', [ this._json() ],
         'unbom', [ this._unbom() ],
+        'unshebang', [ this._unshebang() ],
         'syntax', [ this._syntax() ],
         'sort', [ depsSort(dopts) ],
         'dedupe', [ this._dedupe() ],
@@ -514,6 +515,16 @@ Browserify.prototype._unbom = function () {
     return through.obj(function (row, enc, next) {
         if (/^\ufeff/.test(row.source)) {
             row.source = row.source.replace(/^\ufeff/, '');
+        }
+        this.push(row);
+        next();
+    });
+};
+
+Browserify.prototype._unshebang = function () {
+    return through.obj(function (row, enc, next) {
+        if (/^#!/.test(row.source)) {
+            row.source = row.source.replace(/^#![^\n]*\n/, '');
         }
         this.push(row);
         next();
