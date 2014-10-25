@@ -1,3 +1,9 @@
+# 6.1.2
+
+fixes the behavior for multiple external bundles
+
+https://github.com/substack/node-browserify/issues/933
+
 # 6.1.1
 
 fixes a circular dependency issue with readable-stream
