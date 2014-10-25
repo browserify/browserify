@@ -52,7 +52,7 @@
     "process": "^0.8.0",
     "punycode": "~1.2.3",
     "querystring-es3": "~0.2.0",
-    "readable-stream": "^1.0.27-1",
+    "readable-stream": "^1.0.33-1",
     "resolve": "~0.7.1",
     "shallow-copy": "0.0.1",
     "shasum": "^1.0.0",
