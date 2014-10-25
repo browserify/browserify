@@ -94,6 +94,9 @@ Browserify.prototype.require = function (file, opts) {
     if (!opts) opts = {};
     var basedir = defined(opts.basedir, process.cwd());
     var expose = opts.expose;
+    if (/^[\.]/.test(expose)) {
+        expose = '/' + path.relative(basedir, expose);
+    }
     if (expose === undefined && this._options.exposeAll) {
         expose = true;
     }

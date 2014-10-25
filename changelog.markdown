@@ -1,3 +1,10 @@
+# 6.1.1
+
+fixes a circular dependency issue with readable-stream
+
+https://github.com/substack/node-browserify/pull/964
+https://github.com/substack/node-browserify/issues/963
+
 # 6.1.0
 
 allows transforms to be ignored throughout the entire bundle
