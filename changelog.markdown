@@ -1,3 +1,10 @@
+# 6.2.0
+
+fixes #!shebang syntax when --bare is in effect by adding an unshebang phase to
+the pipeline
+
+https://github.com/substack/node-browserify/issues/943
+
 # 6.1.2
 
 fixes the behavior for multiple external bundles

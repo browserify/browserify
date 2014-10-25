@@ -580,6 +580,7 @@ pipeline with these labels:
 * `'deps'` - [module-deps](https://npmjs.org/package/module-deps)
 * `'json'` - adds `module.exports=` to the beginning of json files
 * `'unbom'` - remove byte-order markers
+* `'unshebang'` - remove #! labels on the first line
 * `'syntax'` - check for syntax errors
 * `'sort'` - sort the dependencies for deterministic bundles
 * `'dedupe'` - remove duplicate source contents
