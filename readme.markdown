@@ -311,7 +311,7 @@ module.exports = function (s) { return s.toUpperCase() + '!' };
 ```
 
 ```
-$ browserify -r ./robot > static/common.js
+$ browserify -r ./robot.js > static/common.js
 $ browserify -x ./robot.js beep.js > static/beep.js
 $ browserify -x ./robot.js boop.js > static/boop.js
 ```
