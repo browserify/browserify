@@ -474,7 +474,7 @@ Prevent the module name or file at `file` from showing up in the output bundle.
 If your code tries to `require()` that file it will throw unless you've provided
 another mechanism for loading it.
 
-## b.transform(opts={}, tr)
+## b.transform(tr, opts={})
 
 Transform source code before parsing it for `require()` calls with the transform
 function or module name `tr`.
