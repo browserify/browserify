@@ -57,6 +57,9 @@ function Browserify (files, opts) {
 
     var ignoreTransform = [].concat(opts.ignoreTransform).filter(Boolean);
     self._filterTransform = function(tr) {
+        if (Array.isArray(tr)) {
+            return ignoreTransform.indexOf(tr[0]) === -1;
+        }
         return ignoreTransform.indexOf(tr) === -1;
     }
     
