@@ -1,3 +1,10 @@
+# 6.3.2
+
+updates regexps that test for absolute and relative paths to work better on
+windows
+
+https://github.com/substack/node-browserify/pull/948
+
 # 6.3.1
 
 fixes ignoreTransform for the case where transforms were given in package.json
