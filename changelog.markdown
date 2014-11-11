@@ -1,3 +1,10 @@
+# 6.3.1
+
+fixes ignoreTransform for the case where transforms were given in package.json
+as an array
+
+https://github.com/substack/node-browserify/pull/966
+
 # 6.3.0
 
 uses noParse for better parity with module-deps
