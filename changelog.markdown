@@ -1,3 +1,9 @@
+# 6.3.0
+
+uses noParse for better parity with module-deps
+
+https://github.com/substack/node-browserify/pull/954
+
 # 6.2.0
 
 fixes #!shebang syntax when --bare is in effect by adding an unshebang phase to
