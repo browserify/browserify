@@ -40,7 +40,7 @@ function Browserify (files, opts) {
     else opts = xtend(files, opts);
     
     self._options = opts;
-    if (opts.noParse) opts.noparse = opts.noParse;
+    if (opts.noparse) opts.noParse = opts.noparse;
     
     if (opts.basedir !== undefined && typeof opts.basedir !== 'string') {
         throw new Error('opts.basedir must be either undefined or a string.');
@@ -431,8 +431,8 @@ Browserify.prototype._createDeps = function (opts) {
     function globalTr (file) {
         if (opts.detectGlobals === false) return through();
         
-        if (opts.noparse === true) return through();
-        var no = [].concat(opts.noparse).filter(Boolean);
+        if (opts.noParse === true) return through();
+        var no = [].concat(opts.noParse).filter(Boolean);
         if (no.indexOf(file) >= 0) return through();
         if (no.map(function (x){return path.resolve(x)}).indexOf(file)>=0){
             return through();

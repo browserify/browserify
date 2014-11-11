@@ -24,7 +24,7 @@ module.exports = function (args, opts) {
             igv: 'insert-global-vars',
             d: 'debug',
             s: 'standalone',
-            noparse: [ 'noParse', 'noparse' ],
+            noParse: [ 'noparse' ],
             'full-paths': [ 'fullpaths', 'fullPaths' ],
             r: 'require',
             u: 'exclude',
@@ -71,7 +71,7 @@ module.exports = function (args, opts) {
 
     var ignoreTransform = argv['ignore-transform'] || argv.it;
     var b = browserify(xtend({
-        noparse: argv.noparse,
+        noParse: Array.isArray(argv.noParse) ? argv.noParse : [argv.noParse],
         extensions: [].concat(argv.extension).filter(Boolean),
         ignoreTransform: [].concat(ignoreTransform).filter(Boolean),
         entries: entries,
