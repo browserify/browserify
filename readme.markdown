@@ -523,7 +523,7 @@ Note that on the command-line with the `-c` flag you can just do:
 $ browserify -c 'coffee -sc' main.coffee > bundle.js
 ```
 
-Or better still, use the [coffeeify](https://github.com/substack/coffeeify)
+Or better still, use the [coffeeify](https://github.com/jnordberg/coffeeify)
 module:
 
 ```
