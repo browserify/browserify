@@ -1,6 +1,7 @@
 var unpack = require('browser-unpack');
 var browserify = require('../');
 var test = require('tap').test;
+var vm = require('vm');
 
 var deps = [
     __dirname + '/entry/main.js',
@@ -34,6 +35,23 @@ test('fullPaths disabled', function (t) {
     b.bundle(function (err, src) {
         unpack(src).forEach(function(dep) {
             t.equal(deps.indexOf(dep.id), -1, 'full path name no longer available');
+        });
+    });
+});
+
+test('fullPaths enabled, with custom exposed dependency name', function (t) {
+    t.plan(1);
+
+    var b = browserify({
+        entries: [__dirname + '/entry/needs_three.js'],
+        fullPaths: true
+    });
+
+    b.require(__dirname + '/entry/three.js', { expose: 'three' });
+
+    b.bundle(function (err, src) {
+        t.doesNotThrow(function () {
+            vm.runInNewContext(src, { console: console, t: t });
         });
     });
 });

@@ -597,6 +597,11 @@ Browserify.prototype._label = function (opts) {
         if (row.indexDeps) row.deps = row.indexDeps || {};
         
         Object.keys(row.deps).forEach(function (key) {
+            if (self._expose[key]) {
+                row.deps[key] = key;
+                return;
+            }
+
             var afile = path.resolve(path.dirname(row.file), key);
             var rfile = '/' + path.relative(basedir, afile);
             if (self._external.indexOf(rfile) >= 0) {
