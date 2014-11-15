@@ -14,10 +14,8 @@ test('identical content gets deduped and the row gets an implicit dep on the ori
     if (err) return t.fail(err);
     var deduped = rows.filter(function (x) { return x.dedupeIndex });
     var d = deduped[0];
-    var deps = {};
-    deps[d.dedupe] = d.dedupeIndex;
 
-    t.deepEqual(d.deps, deps, "adds implicit dep");
+    t.deepEqual(d.deps, { 'dup': d.dedupeIndex }, "adds implicit dep");
   }
 })
 

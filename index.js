@@ -569,8 +569,8 @@ Browserify.prototype._dedupe = function () {
             ;
             row.nomap = true;
         }
-        if (row.dedupeIndex && row.dedupe && row.indexDeps) {
-            row.indexDeps[row.dedupe] = row.dedupeIndex;
+        if (row.dedupeIndex && row.indexDeps) {
+            row.indexDeps.dup = row.dedupeIndex;
         }
         this.push(row);
         next();
