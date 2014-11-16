@@ -45,6 +45,7 @@
     "insert-module-globals": "^6.1.0",
     "isarray": "0.0.1",
     "labeled-stream-splicer": "^1.0.0",
+    "mkdirp": "^0.5.0",
     "module-deps": "^3.5.0",
     "os-browserify": "~0.1.1",
     "parents": "~0.0.1",

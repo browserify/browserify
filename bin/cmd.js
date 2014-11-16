@@ -2,6 +2,8 @@
 var fs = require('fs');
 var JSONStream = require('JSONStream');
 var through = require('through2');
+var mkdirp = require('mkdirp');
+var path = require('path');
 
 var b = require('./args')(process.argv.slice(2));
 process.stdout.on('error', process.exit);
@@ -57,6 +59,7 @@ bundle.on('error', errorExit);
 
 var outfile = b.argv.o || b.argv.outfile;
 if (outfile) {
+    mkdirp.sync(path.dirname(outfile));
     bundle.pipe(fs.createWriteStream(outfile));
 }
 else {
