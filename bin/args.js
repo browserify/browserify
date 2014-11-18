@@ -135,7 +135,7 @@ module.exports = function (args, opts) {
     [].concat(argv.require).filter(Boolean)
         .forEach(function (r) {
             var xs = r.split(':');
-            b.require(xs[0], { expose: xs.length === 1 ? xs[0] : xs[1] })
+            b.require(xs[0], { expose: xs.length === 1 ? xs[0] : xs[1], entry: xs.length === 3 && xs[2] === 'true' })
         })
     ;
     
