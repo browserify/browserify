@@ -1,3 +1,12 @@
+# 6.3.3
+
+fixes an issue with the expose property when opts.fullPaths is enabled
+
+This issue commonly crops up in watchify.
+
+https://github.com/substack/node-browserify/pull/991
+https://github.com/substack/node-browserify/issues/850
+
 # 6.3.2
 
 updates regexps that test for absolute and relative paths to work better on
