@@ -422,8 +422,9 @@ as the `opts.vars` parameter.
 `opts.externalRequireName` defaults to `'require'` in `expose` mode but you can
 use another name.
 
+With `opts.resolve` you can pass in a custom resolve function which has to apply to the [browser-resolve API](https://github.com/defunctzombie/node-browser-resolve#api). Otherwise [browser-resolve](https://npmjs.org/package/browser-resolve) is used for resolving.
 Note that if files do not contain javascript source code then you also need to
-specify a corresponding transform for them.
+specify a corresponding transform for them. 
 
 All other options are forwarded along to
 [module-deps](https://npmjs.org/package/module-deps)
