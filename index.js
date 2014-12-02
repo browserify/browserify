@@ -236,17 +236,29 @@ Browserify.prototype.transform = function (tr, opts) {
         opts = tr[1];
         tr = tr[0];
     }
-
-
+    
     //if the bundler is ignoring this transform
-    if (typeof tr === 'string' && !self._filterTransform(tr)) 
+    if (typeof tr === 'string' && !self._filterTransform(tr)) {
         return this;
-
+    }
+    
     if (!opts) opts = {};
     
     opts._flags = '_flags' in opts ? opts._flags : self._options;
     
-    apply();
+    var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
+    if (opts.global && typeof tr === 'string' && !/^[\.\/]/.test(tr)) {
+        self._pending ++;
+        resolve(tr, { basedir: basedir }, function (err, res) {
+            if (err) return self.emit('error', err);
+            tr = res;
+            if (-- self._pending === 0) {
+                apply();
+                self.emit('_ready');
+            }
+        });
+    }
+    else apply();
     self.on('reset', apply);
     
     function apply () {
