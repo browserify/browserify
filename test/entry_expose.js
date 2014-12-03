@@ -4,7 +4,7 @@ var path = require('path');
 var vm = require('vm');
 
 test('entry expose', function (t) {
-    t.plan(2)
+    t.plan(3)
     
     var b = browserify();
     b.add(__dirname + '/entry_expose/main.js');

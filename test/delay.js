@@ -8,8 +8,10 @@ test('delay for pipelines', function (t) {
     
     var b = browserify(__dirname + '/delay/main.js');
     b.pipeline.get('record').push(through.obj(function (row, enc, next) {
-        t.equal(row.file, __dirname + '/delay/main.js');
-        row.file = __dirname + '/delay/diverted.js';
+        if (row.file) {
+            t.equal(row.file, __dirname + '/delay/main.js');
+            row.file = __dirname + '/delay/diverted.js';
+        }
         this.push(row);
         next();
     }));
