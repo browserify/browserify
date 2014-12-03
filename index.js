@@ -251,21 +251,30 @@ Browserify.prototype.transform = function (tr, opts) {
         self._pending ++;
         resolve(tr, { basedir: basedir }, function (err, res) {
             if (err) return self.emit('error', err);
-            tr = res;
+            var rec = {
+                transform: res,
+                options: opts,
+                global: true
+            };
+            self.pipeline.write(rec);
+            self.on('reset', function () {
+                self.pipeline.write(rec);
+            });
             if (-- self._pending === 0) {
-                apply();
                 self.emit('_ready');
             }
         });
     }
-    else apply();
-    self.on('reset', apply);
-    
-    function apply () {
-        if (opts.global) {
-            self._mdeps.globalTransforms.push([ tr, opts ]);
-        }
-        else self._mdeps.transforms.push([ tr, opts ]);
+    else {
+        var rec = {
+            transform: tr,
+            options: opts,
+            global: opts.global
+        };
+        self.pipeline.write(rec);
+        self.on('reset', function () {
+            self.pipeline.write(rec);
+        });
     }
     return this;
 };
@@ -359,9 +368,10 @@ Browserify.prototype._createDeps = function (opts) {
     
     //filter transforms on top-level
     mopts.transform = [].concat(opts.transform)
-                .filter(Boolean)
-                .filter(self._filterTransform);
-
+        .filter(Boolean)
+        .filter(self._filterTransform)
+    ;
+    
     mopts.transformKey = [ 'browserify', 'transform' ];
     mopts.postFilter = function (id, file, pkg) {
         if (opts.postFilter && !opts.postFilter(id, file, pkg)) return false;
@@ -440,7 +450,8 @@ Browserify.prototype._createDeps = function (opts) {
     
     mopts.globalTransform = [];
     this.once('bundle', function () {
-        self._mdeps.globalTransforms.push([ globalTr, {} ]);
+        self.pipeline.write({ transform: globalTr, global: true, options: {} });
+        //self._mdeps.globalTransforms.push([ globalTr, {} ]);
     });
     
     function globalTr (file) {
@@ -690,8 +701,6 @@ Browserify.prototype.bundle = function (cb) {
             self.pipeline.write(x);
         });
     }
-    this.emit('bundle', this.pipeline);
-    
     if (cb) {
         this.pipeline.on('error', cb);
         this.pipeline.pipe(concat(function (body) {
@@ -700,9 +709,11 @@ Browserify.prototype.bundle = function (cb) {
     }
     
     if (this._pending === 0) {
+        this.emit('bundle', this.pipeline);
         this.pipeline.end();
     }
     else this.once('_ready', function () {
+        self.emit('bundle', self.pipeline);
         self.pipeline.end();
     });
     
