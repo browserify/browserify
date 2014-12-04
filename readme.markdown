@@ -333,6 +333,11 @@ while the boop page can have:
 <script src="boop.js"></script>
 ```
 
+This approach using `-r` and `-x` works fine for a small number of split assets,
+but there are plugins for automatically factoring out components which are
+described in the
+[partitioning section of the browserify handbook](https://github.com/substack/browserify-handbook#partitioning).
+
 ## api example
 
 You can use the API directly too:
