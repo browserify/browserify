@@ -1,3 +1,7 @@
+# 6.3.4
+
+fixes a bug setting placeholder filenames on stream inputs to be properly unique
+
 # 6.3.3
 
 fixes an issue with the expose property when opts.fullPaths is enabled
