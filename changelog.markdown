@@ -1,3 +1,13 @@
+# 7.0.0
+
+global transforms are now resolved to an absolute path before walking files.
+This fixes some bugs with local module versions taking precedence over global
+transforms and unresolvable global transforms spanning system directories.
+
+This is a small breaking change since now transform objects live in the pipeline
+between the record and deps phases. This should only affect programs that expect
+records in the pipeline to only contain file objects.
+
 # 6.3.4
 
 fixes a bug setting placeholder filenames on stream inputs to be properly unique
