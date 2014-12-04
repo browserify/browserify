@@ -113,7 +113,7 @@ Browserify.prototype.require = function (file, opts) {
         file.pipe(concat(function (buf) {
             var filename = opts.file || file.file || path.join(
                 basedir,
-                '_stream_' + self._entryOrder + '.js'
+                '_stream_' + order + '.js'
             );
             var id = file.id || expose || filename;
             if (expose || opts.entry === false) {
