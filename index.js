@@ -113,7 +113,7 @@ Browserify.prototype.require = function (file, opts) {
         file.pipe(concat(function (buf) {
             var filename = opts.file || file.file || path.join(
                 basedir,
-                '_stream_' + self._entryOrder + '.js'
+                '_stream_' + order + '.js'
             );
             var id = file.id || expose || filename;
             if (expose || opts.entry === false) {
@@ -132,8 +132,7 @@ Browserify.prototype.require = function (file, opts) {
             if (rec.transform === false) rec.transform = false;
             self.pipeline.write(rec);
             
-            self._pending --;
-            if (self._pending === 0) self.emit('_ready');
+            if (-- self._pending === 0) self.emit('_ready');
         }));
         return this;
     }
@@ -451,7 +450,6 @@ Browserify.prototype._createDeps = function (opts) {
     mopts.globalTransform = [];
     this.once('bundle', function () {
         self.pipeline.write({ transform: globalTr, global: true, options: {} });
-        //self._mdeps.globalTransforms.push([ globalTr, {} ]);
     });
     
     function globalTr (file) {
