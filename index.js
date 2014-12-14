@@ -249,7 +249,9 @@ Browserify.prototype.transform = function (tr, opts) {
         self._pending ++;
         var topts = {
             basedir: basedir,
-            paths: self._options.paths || []
+            paths: (self._options.paths || []).map(function (p) {
+                return path.resolve(basedir, p);
+            })
         };
         resolve(tr, topts, function (err, res) {
             if (err) return self.emit('error', err);

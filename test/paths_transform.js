@@ -32,7 +32,7 @@ test('relative paths with transform property', function (t) {
   var b = browserify({
     transform: ['tr'],
     basedir: __dirname,
-    paths: ['./test/paths/x', './test/paths/y' ],
+    paths: [ './paths/x', './paths/y' ],
     entries: __dirname + '/paths/main.js'
   });
   b.bundle(function (err, src) {
@@ -64,7 +64,7 @@ test('relative paths with transform method', function (t) {
   t.plan(6);
   var b = browserify({
     basedir: __dirname,
-    paths: ['./test/paths/x', './test/paths/y' ],
+    paths: ['./paths/x', './paths/y' ],
     entries: __dirname + '/paths/main.js'
   });
   b.transform('tr');
