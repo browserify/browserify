@@ -11,7 +11,7 @@ function ensureTransform(t, buf) {
 }
 
 test('absolute paths with transform property', function (t) {
-  t.plan(5);
+  t.plan(6);
 
   var b = browserify({
     transform: ['tr'],
@@ -19,14 +19,14 @@ test('absolute paths with transform property', function (t) {
     entries: __dirname + '/paths/main.js'
   });
   b.bundle(function (err, src) {
-    if (err) t.fail(err);
+    t.ifError(err);
     ensureTransform(t,src);
     vm.runInNewContext(src, { t: t });
   });
 });
 
 test('relative paths with transform property', function (t) {
-  t.plan(5);
+  t.plan(6);
 
   var b = browserify({
     transform: ['tr'],
@@ -34,7 +34,7 @@ test('relative paths with transform property', function (t) {
     entries: __dirname + '/paths/main.js'
   });
   b.bundle(function (err, src) {
-    if (err) t.fail(err);
+    t.ifError(err);
     ensureTransform(t,src);
     vm.runInNewContext(src, { t: t });
   });
@@ -42,7 +42,7 @@ test('relative paths with transform property', function (t) {
 
 
 test('absolute paths with transform method', function (t) {
-  t.plan(5);
+  t.plan(6);
 
   var b = browserify({
     paths: [ __dirname + '/paths/x', __dirname + '/paths/y' ],
@@ -50,7 +50,7 @@ test('absolute paths with transform method', function (t) {
   });
   b.transform('tr');
   b.bundle(function (err, src) {
-    if (err) t.fail(err);
+    t.ifError(err);
     ensureTransform(t,src);
     vm.runInNewContext(src, { t: t });
   });
@@ -58,14 +58,14 @@ test('absolute paths with transform method', function (t) {
 
 
 test('relative paths with transform method', function (t) {
-  t.plan(3);
+  t.plan(4);
   var b = browserify({
     paths: ['./test/paths/x', './test/paths/y' ],
     entries: __dirname + '/paths/main.js'
   });
   b.transform('tr');
   b.bundle(function (err, src) {
-    if (err) t.fail(err);
+    t.ifError(err);
     ensureTransform(t,src);
     vm.runInNewContext(src, { t: t });
   });
