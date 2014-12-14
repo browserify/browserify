@@ -242,23 +242,23 @@ Browserify.prototype.transform = function (tr, opts) {
     }
     
     if (!opts) opts = {};
-    
     opts._flags = '_flags' in opts ? opts._flags : self._options;
     
     var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
-    if (opts.global && typeof tr === 'string' && !/^[\.\/]/.test(tr)) {
+    if (typeof tr === 'string') {
         self._pending ++;
-        resolve(tr, { basedir: basedir }, function (err, res) {
+        var topts = {
+            basedir: basedir,
+            paths: self._options.paths || []
+        };
+        resolve(tr, topts, function (err, res) {
             if (err) return self.emit('error', err);
             var rec = {
                 transform: res,
                 options: opts,
-                global: true
+                global: opts.global
             };
             self.pipeline.write(rec);
-            self.on('reset', function () {
-                self.pipeline.write(rec);
-            });
             if (-- self._pending === 0) {
                 self.emit('_ready');
             }
@@ -271,9 +271,6 @@ Browserify.prototype.transform = function (tr, opts) {
             global: opts.global
         };
         self.pipeline.write(rec);
-        self.on('reset', function () {
-            self.pipeline.write(rec);
-        });
     }
     return this;
 };
