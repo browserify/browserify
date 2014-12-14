@@ -15,6 +15,7 @@ test('absolute paths with transform property', function (t) {
 
   var b = browserify({
     transform: ['tr'],
+    basedir: __dirname,
     paths: [ __dirname + '/paths/x', __dirname + '/paths/y' ],
     entries: __dirname + '/paths/main.js'
   });
@@ -30,6 +31,7 @@ test('relative paths with transform property', function (t) {
 
   var b = browserify({
     transform: ['tr'],
+    basedir: __dirname,
     paths: ['./test/paths/x', './test/paths/y' ],
     entries: __dirname + '/paths/main.js'
   });
@@ -45,6 +47,7 @@ test('absolute paths with transform method', function (t) {
   t.plan(6);
 
   var b = browserify({
+    basedir: __dirname,
     paths: [ __dirname + '/paths/x', __dirname + '/paths/y' ],
     entries: __dirname + '/paths/main.js'
   });
@@ -58,8 +61,9 @@ test('absolute paths with transform method', function (t) {
 
 
 test('relative paths with transform method', function (t) {
-  t.plan(4);
+  t.plan(6);
   var b = browserify({
+    basedir: __dirname,
     paths: ['./test/paths/x', './test/paths/y' ],
     entries: __dirname + '/paths/main.js'
   });
