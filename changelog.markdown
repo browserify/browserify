@@ -1,3 +1,9 @@
+# 7.0.1
+
+fixes rebundling (used by watchify) when transforming
+
+https://github.com/substack/node-browserify/issues/1012
+
 # 7.0.0
 
 global transforms are now resolved to an absolute path before walking files.
