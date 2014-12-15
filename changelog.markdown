@@ -4,6 +4,8 @@ fixes rebundling (used by watchify) when transforming
 
 https://github.com/substack/node-browserify/issues/1012
 
+also fixes https://github.com/substack/node-browserify/issues/1015
+
 # 7.0.0
 
 global transforms are now resolved to an absolute path before walking files.
