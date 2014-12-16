@@ -447,9 +447,15 @@ Browserify.prototype._createDeps = function (opts) {
     });
     
     mopts.globalTransform = [];
-    this.once('bundle', function () {
-        self.pipeline.write({ transform: globalTr, global: true, options: {} });
-    });
+    if (!this._bundled) {
+        this.once('bundle', function () {
+            self.pipeline.write({
+                transform: globalTr,
+                global: true,
+                options: {}
+            });
+        });
+    }
     
     function globalTr (file) {
         if (opts.detectGlobals === false) return through();
