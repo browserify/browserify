@@ -1,3 +1,9 @@
+# 7.0.2
+
+fixes the global transform getting added each re-bundle
+
+https://github.com/substack/node-browserify/issues/1026
+
 # 7.0.1
 
 fixes rebundling (used by watchify) when transforming
