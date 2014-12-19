@@ -1,3 +1,9 @@
+# 7.0.3
+
+allows modules to be bundled with local paths and exposed at the same time
+
+https://github.com/substack/node-browserify/pull/1033
+
 # 7.0.2
 
 fixes the global transform getting added each re-bundle
