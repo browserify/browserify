@@ -347,7 +347,7 @@ Browserify.prototype._createPipeline = function (opts) {
                 row.id = '/' + path.relative(basedir, row.file);
             }
             Object.keys(row.deps || {}).forEach(function (key) {
-                row.deps[key] = '/' + path.relative(basedir, row.deps[key]);
+                row.deps[key] = row.deps[key] ? '/' + path.relative(basedir, row.deps[key]) : key;
             });
             this.push(row);
             next();
