@@ -1,0 +1,1 @@
+t.equal(require('freelist')(5), 1005);
