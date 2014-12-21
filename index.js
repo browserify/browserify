@@ -95,7 +95,7 @@ Browserify.prototype.require = function (file, opts) {
     }
     
     if (!opts) opts = {};
-    var basedir = defined(opts.basedir, process.cwd());
+    var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
     var expose = opts.expose;
     if (file === expose && /^[\.]/.test(expose)) {
         expose = '/' + path.relative(basedir, expose);
@@ -198,7 +198,7 @@ Browserify.prototype.external = function (file, opts) {
     }
     
     if (!opts) opts = {};
-    var basedir = defined(opts.basedir, process.cwd());
+    var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
     this._external.push(file);
     this._external.push('/' + path.relative(basedir, file));
     return this;
@@ -206,7 +206,7 @@ Browserify.prototype.external = function (file, opts) {
 
 Browserify.prototype.exclude = function (file, opts) {
     if (!opts) opts = {};
-    var basedir = defined(opts.basedir, process.cwd());
+    var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
     this._exclude.push(file);
     this._exclude.push('/' + path.relative(basedir, file));
     return this;
@@ -214,7 +214,7 @@ Browserify.prototype.exclude = function (file, opts) {
 
 Browserify.prototype.ignore = function (file, opts) {
     if (!opts) opts = {};
-    var basedir = defined(opts.basedir, process.cwd());
+    var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
 
     // Handle relative paths
     if (file[0] === '.') {
@@ -338,7 +338,7 @@ Browserify.prototype._createPipeline = function (opts) {
         'wrap', []
     ]);
     if (opts.exposeAll) {
-        var basedir = defined(opts.basedir, process.cwd());
+        var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
         pipeline.get('deps').push(through.obj(function (row, enc, next) {
             if (self._external.indexOf(row.id) >= 0) return next();
             if (self._external.indexOf(row.file) >= 0) return next();
@@ -359,7 +359,7 @@ Browserify.prototype._createPipeline = function (opts) {
 Browserify.prototype._createDeps = function (opts) {
     var self = this;
     var mopts = copy(opts);
-    var basedir = defined(opts.basedir, process.cwd());
+    var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
     
     mopts.extensions = [ '.js', '.json' ].concat(mopts.extensions || []);
     self._extensions = mopts.extensions;
@@ -493,7 +493,7 @@ Browserify.prototype._createDeps = function (opts) {
             always: opts.insertGlobals,
             basedir: opts.commondir === false
                 ? '/'
-                : opts.basedir || process.cwd()
+                : opts.basedir || basedir || process.cwd()
             ,
             vars: vars
         }));
@@ -605,7 +605,7 @@ Browserify.prototype._dedupe = function () {
 
 Browserify.prototype._label = function (opts) {
     var self = this;
-    var basedir = defined(opts.basedir, process.cwd());
+    var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
     
     return through.obj(function (row, enc, next) {
         var prev = row.id;
@@ -668,7 +668,7 @@ Browserify.prototype._emitDeps = function () {
 };
 
 Browserify.prototype._debug = function (opts) {
-    var basedir = defined(opts.basedir, process.cwd());
+    var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
     return through.obj(function (row, enc, next) {
         if (opts.debug) {
             row.sourceRoot = 'file://localhost';
