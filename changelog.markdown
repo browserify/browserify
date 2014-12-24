@@ -1,3 +1,10 @@
+# 8.0.1
+
+fixes some file path leaks in deduped deps
+
+https://github.com/substack/node-browserify/pull/994
+https://github.com/substack/node-browserify/issues/951
+
 # 8.0.0
 
 In previous releases, the deduping logic was over-zealous about how it handled
