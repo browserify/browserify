@@ -1,3 +1,21 @@
+# 8.0.0
+
+In previous releases, the deduping logic was over-zealous about how it handled
+module references for duplicates. The prior behavior would detect when the
+dependency tree of a module matched an existing module in addition to having the
+exact same source code to share an instance. This was originally designed to
+support libraries like threejs that internally use `instanceof` checks that
+don't usually work very well across multiple packages. This feature didn't pan
+out and didn't work very well in practice.
+
+Later, a better way of deduping emerged after some unrelated tweaks to
+browser-pack to support source introspection for webworkers. The reflection form
+of deduping using implicit arguments is now the only kind.
+
+The deduping instance feature resulted in this bug:
+https://github.com/substack/node-browserify/issues/1027
+which created very surprising results when duplicate files were in use.
+
 # 7.1.0
 
 uses the new buffer@3.0.0, which passes node's own buffer test suite
