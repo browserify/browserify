@@ -35,6 +35,11 @@ test('identical content gets deduped with fullPaths', function (t) {
     var deduped = rows.filter(function (x) { return x.dedupe });
     var d = deduped[0];
 
-    t.deepEqual(d.source, 'module.exports=require('+ JSON.stringify(d.dedupe) + ')', "dedupes content");
+    t.deepEqual(
+        d.source,
+        'arguments[4]['+ JSON.stringify(d.dedupe) + '][0]'
+        + '.apply(exports,arguments)',
+        "dedupes content"
+    );
   }
 })

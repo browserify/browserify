@@ -24,7 +24,11 @@ test('identical content gets deduped and the row gets a "nomap" flag set when so
         1,
         '2 rows with the same hash as the duplicate exist'
     );
-    t.similar(nm.source, /module\.exports.*=.*require\(.+\)$/, 'redirects duplicate to original via require call');
+    t.similar(
+      nm.source,
+      /arguments\[4\]\[.+\]\[0\]\.apply\(exports,arguments\)$/,
+      'redirects duplicate to original via require call'
+    );
   }
 })
 
@@ -51,6 +55,10 @@ test('identical content gets deduped and the row gets a "nomap" flag set when so
         1,
         '2 rows with the same hash as the duplicate exist'
     );
-    t.similar(nm.source, /module\.exports.*=.*require\(.+\)$/, 'redirects duplicate to original via require call');
+    t.similar(
+      nm.source,
+      /arguments\[4\]\[.+\]\[0\]\.apply\(exports,arguments\)$/,
+      'redirects duplicate to original via require call'
+    );
   }
 })
