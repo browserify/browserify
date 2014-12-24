@@ -1,3 +1,9 @@
+# 7.1.0
+
+uses the new buffer@3.0.0, which passes node's own buffer test suite
+
+https://github.com/substack/node-browserify/pull/1040
+
 # 7.0.3
 
 allows modules to be bundled with local paths and exposed at the same time
