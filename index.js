@@ -52,6 +52,9 @@ function Browserify (files, opts) {
     self._expose = {};
     self._hashes = {};
     self._pending = 0;
+    self._transformOrder = 0;
+    self._transformPending = 0;
+    self._transforms = [];
     self._entryOrder = 0;
     self._ticked = false;
 
@@ -240,13 +243,28 @@ Browserify.prototype.transform = function (tr, opts) {
     if (typeof tr === 'string' && !self._filterTransform(tr)) {
         return this;
     }
+
+    function resolved() {
+      -- self._pending;
+      if (-- self._transformPending === 0) {
+          self._transforms.forEach(function(transform) {
+            self.pipeline.write(transform);
+          });
+
+          if (self._pending === 0) {
+            self.emit('_ready');
+          }
+      }
+    }
     
     if (!opts) opts = {};
     opts._flags = '_flags' in opts ? opts._flags : self._options;
     
     var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
+    var order = self._transformOrder ++;
+    self._pending ++;
+    self._transformPending ++;
     if (typeof tr === 'string') {
-        self._pending ++;
         var topts = {
             basedir: basedir,
             paths: (self._options.paths || []).map(function (p) {
@@ -260,10 +278,8 @@ Browserify.prototype.transform = function (tr, opts) {
                 options: opts,
                 global: opts.global
             };
-            self.pipeline.write(rec);
-            if (-- self._pending === 0) {
-                self.emit('_ready');
-            }
+            self._transforms[order] = rec;
+            resolved();
         });
     }
     else {
@@ -272,7 +288,8 @@ Browserify.prototype.transform = function (tr, opts) {
             options: opts,
             global: opts.global
         };
-        self.pipeline.write(rec);
+        self._transforms[order] = rec;
+        process.nextTick(resolved);
     }
     return this;
 };
