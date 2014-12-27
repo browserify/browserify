@@ -1,3 +1,9 @@
+# 8.0.2
+
+ensures that transforms always execute in the order they were added
+
+https://github.com/substack/node-browserify/pull/1043
+
 # 8.0.1
 
 fixes some file path leaks in deduped deps
