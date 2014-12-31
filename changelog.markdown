@@ -1,3 +1,8 @@
+# 8.0.3
+
+passes opts.debug through to insert-module-globals so that is can insert inline
+source maps for its modifications
+
 # 8.0.2
 
 ensures that transforms always execute in the order they were added
