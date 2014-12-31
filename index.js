@@ -507,6 +507,7 @@ Browserify.prototype._createDeps = function (opts) {
         }
         
         return insertGlobals(file, xtend(opts, {
+            debug: opts.debug,
             always: opts.insertGlobals,
             basedir: opts.commondir === false
                 ? '/'
