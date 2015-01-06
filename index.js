@@ -658,7 +658,7 @@ Browserify.prototype._label = function (opts) {
             }
         });
         
-        if (row.entry || row.expose) {
+        if (row.entry) {
             self._bpack.standaloneModule = row.id;
         }
         this.push(row);
