@@ -14,10 +14,8 @@ test('identical content gets deduped and the row gets an implicit dep on the ori
     if (err) return t.fail(err);
     var deduped = rows.filter(function (x) { return x.dedupeIndex });
     var d = deduped[0];
-    var deps = {};
-    deps[d.dedupe] = d.dedupeIndex;
 
-    t.deepEqual(d.deps, deps, "adds implicit dep");
+    t.deepEqual(d.deps, { 'dup': d.dedupeIndex }, "adds implicit dep");
   }
 })
 
@@ -35,6 +33,11 @@ test('identical content gets deduped with fullPaths', function (t) {
     var deduped = rows.filter(function (x) { return x.dedupe });
     var d = deduped[0];
 
-    t.deepEqual(d.source, 'module.exports=require('+ JSON.stringify(d.dedupe) + ')', "dedupes content");
+    t.deepEqual(
+        d.source,
+        'arguments[4]['+ JSON.stringify(d.dedupe) + '][0]'
+        + '.apply(exports,arguments)',
+        "dedupes content"
+    );
   }
 })

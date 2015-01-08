@@ -1,6 +1,68 @@
+# 8.0.3
+
+passes opts.debug through to insert-module-globals so that is can insert inline
+source maps for its modifications
+
+# 8.0.2
+
+ensures that transforms always execute in the order they were added
+
+https://github.com/substack/node-browserify/pull/1043
+
+# 8.0.1
+
+fixes some file path leaks in deduped deps
+
+https://github.com/substack/node-browserify/pull/994
+https://github.com/substack/node-browserify/issues/951
+
+# 8.0.0
+
+In previous releases, the deduping logic was over-zealous about how it handled
+module references for duplicates. The prior behavior would detect when the
+dependency tree of a module matched an existing module in addition to having the
+exact same source code to share an instance. This was originally designed to
+support libraries like threejs that internally use `instanceof` checks that
+don't usually work very well across multiple packages. This feature didn't pan
+out and didn't work very well in practice.
+
+Later, a better way of deduping emerged after some unrelated tweaks to
+browser-pack to support source introspection for webworkers. The reflection form
+of deduping using implicit arguments is now the only kind.
+
+The deduping instance feature resulted in this bug:
+https://github.com/substack/node-browserify/issues/1027
+which created very surprising results when duplicate files were in use.
+
+# 7.1.0
+
+uses the new buffer@3.0.0, which passes node's own buffer test suite
+
+https://github.com/substack/node-browserify/pull/1040
+
+# 7.0.3
+
+allows modules to be bundled with local paths and exposed at the same time
+
+https://github.com/substack/node-browserify/pull/1033
+
+# 7.0.2
+
+fixes the global transform getting added each re-bundle
+
+https://github.com/substack/node-browserify/issues/1026
+
+# 7.0.1
+
+fixes rebundling (used by watchify) when transforming
+
+https://github.com/substack/node-browserify/issues/1012
+
+also fixes https://github.com/substack/node-browserify/issues/1015
+
 # 7.0.0
 
-global transforms are now resolved to an absolute path before walking files.
+Global transforms are now resolved to an absolute path before walking files.
 This fixes some bugs with local module versions taking precedence over global
 transforms and unresolvable global transforms spanning system directories.
 
@@ -92,6 +154,13 @@ resolves source map maths relative to the base url. This should help with more
 reproducible builds.
 
 https://github.com/substack/node-browserify/pull/923
+
+Version 6 is a tiny but breaking change to how source map paths work.
+
+Now all source map paths are relative by default. This makes it easier to have
+deterministic debug builds across different systems and directories. If
+browserify is installed in a project-local directory, all the source map paths
+will be self-contained and relative against that location in node_modules.
 
 # 5.13.1
 
@@ -274,7 +343,78 @@ At a glance:
 * hashing is gone so `expose: true` or explicit expose id is required for doing
 multi-export bundles
 
-In more depth: [doc/changelog/5_0.markdown](doc/changelog/5_0.markdown).
+Version 5 is a big rearranging of browserify internals with more places for
+external code to hook into the build pipeline.
+
+These changes are mostly aligned around the theme of making it easier for
+external code to interface with browserify internals in a less hacky way.
+
+## pipeline
+
+Now the core of browserify is organized into a
+[labeled-stream-splicer](https://npmjs.org/package/labeled-stream-splicer)
+pipeline. This means that user code and plugins can hook into browserify by
+pushing themselves onto the pipeline at a label:
+
+``` js
+var browserify = require('browserify');
+var through = require('through2');
+var bundle = browserify();
+
+bundle.pipeline.get('deps').push(through.obj(function (row, enc, next) {
+    console.log('DEP:', row.id);
+    this.push(row);
+    next();
+}));
+```
+
+User code can remove existing transforms or add its own hooks. These are the
+labeled sections you can get a handle on with `bundle.pipeline.get()`
+
+* `'record'` - save inputs to play back later on subsequent `bundle()` calls
+* `'deps'` - [module-deps](https://npmjs.org/package/module-deps)
+* `'unbom'` - remove byte-order markers
+* `'syntax'` - check for syntax errors
+* `'sort'` - sort the dependencies for deterministic bundles
+* `'dedupe'` - remove duplicate source contents
+* `'label'` - apply integer labels to files
+* `'emit-deps'` - emit `'dep'` event
+* `'debug'` - apply source maps
+* `'pack'` - [browser-pack](https://npmjs.org/package/browser-pack)
+* `'wrap'` - apply final wrapping, `require=` and a newline and semicolon
+
+Because there is now a proper pipeline, `opts.pack`, `opts.deps`, `b.deps()`,
+and `b.pack()` are removed.
+
+## bundle()
+
+Big changes have been made to the `bundle()` function. All options have been
+moved out of the `bundle(opts)` form and into the browserify constructor. Before
+there was an unclear split between which arguments went into which function.
+
+You can now call `bundle()` multiple times on the same instance, even in
+parallel. This will greatly simplify the caching system under watchify and will
+fix many long-standing bugs.
+
+The callback to `bundle(cb)` is now called with `cb(err, buf)` instead of
+`cb(err, string)` as before.
+
+## labeling
+
+The former hashing system is removed, in favor of file paths rooted at the
+`opts.basedir`, or the cwd.
+
+This removal means that browserify can be much more consistent about applying
+integer ids, which avoids exposing system paths in bundle output.
+
+Hashes are used internally for deduping purposes, but they operate on the
+source content only.
+
+## others
+
+The matching logic in the `--noparse` feature is greatly improved.
+
+derequire has been taken out of core, which should speed up `--standalone`.
 
 # 4.2.3
 
@@ -353,7 +493,25 @@ upgrades the version of buffer to ^2.3.0
 
 # 4.0
 
-4.0 is hot off the presses. See [doc/changelog/4_0.markdown].
+Here are the new breaking changes in browserify v4. Most users should be unaffected.
+
+## readable-stream
+
+`require('stream')` is now using [readable-stream](https://npmjs.org/package/readable-stream) (but the classic-mode shim persists in stream-browserify just like in node core). This should result in much smaller files for all modules using a similar-enough version of readable-stream as browserify itself. Other modules should be relatively unaffected.
+
+## removed .expose()
+
+Removal of the previously-deprecated and obscure `bundle.expose()`.
+
+## took out implicit reading from stdin
+
+Previously if you invoked the browserify command without any entry files as arguments and stdin was a tty, stdin would be implicitly added as an entry file. This feature was causing problems so it has been removed. https://github.com/substack/node-browserify/issues/724#issuecomment-42731877
+
+## more!
+
+In the run-up to the 4.0, [module-deps](https://npmjs.org/package/module-deps) got an extensive rewrite with minimal test changes. Mostly it was just getting really messy because it was a giant ball-of-mud closure instead of a more straightforward prototype-based implementation with more clearly-defined methods.
+
+The module-deps rewrite was triggered by [system paths showing up in build output](https://github.com/substack/node-browserify/issues/675) but was fixed in 3.46.1. The solution actually didn't end up needing changes in module-deps as originally anticipated but module-deps was in dire need of a cleanup.
 
 # 3.46.1
 
@@ -605,5 +763,77 @@ restores support for node 0.8 by upgrading concat-stream
 
 # 3.0
 
-See [doc/changelog/3_0.markdown](doc/changelog/3_0.markdown).
+A new [browserify](http://browserify.org) version is upon us, just in time for
+the FESTIVE SEASON during which we in the northern hemisphere at mid to high
+latitudes huddle for warmth around oxidizing hydrocarbons!
 
+There are 2 big changes in v3 but most code should be relatively unaffected.
+
+## shiny new Buffer
+
+[feross](https://github.com/feross) forked
+the [buffer-browserify](https://npmjs.org/package/buffer-browserify) package
+to create 
+[native-buffer-browserify](https://npmjs.org/package/native-buffer-browserify),
+a `Buffer` implementation that uses `Uint8Array` to get `buf[i]` notation and
+parity with the node core `Buffer` api without the performance hit of the
+previous implementation and a much smaller file size. The downside is that
+`Buffer` now only works in browsers with `Uint8Array` and `DataView` support.
+All the other modules should maintain existing browser support.
+
+*Update*: a [shim was added](https://npmjs.org/package/typedarray)
+to in 3.1 for Uint8Array and DataView support. Now you can use `Buffer` in every
+browser.
+
+## direct builtin dependencies
+
+In v3, browserify no longer depends on
+[browser-builtins](https://npmjs.org/package/browser-builtins), in favor of
+depending on packages directly. Instead of having some separate packages and
+some files in a `builtin/` directory like browser-builtins, browserify now uses
+*only* external packages for the shims it uses. By only using external packages
+we can keep browserify core focused purely on the static analysis and bundling
+machinery while letting the individual packages worry about things like browser
+compatibility and parity with the node core API as it evolves.
+
+Individual, tiny packages should also be much easier for newcomers to contribute
+packages toward because they won't need to get up to speed with all the other
+pieces going on and the packages can have their own tests and documentation.
+Additionally, each package may find uses in other projects beside browserify
+more easily and if people want variations on the versions of shims that ship
+with browserify core this is easier to do when everything is separate.
+
+Back when we were using browser-builtins there was a large latency between
+pushing out fixes to the individual packages and getting them into browserify
+core because we had to wait on browser-builtins to upgrade the semvers in its
+package.json. With direct dependencies we get much lower latency for package
+upgrades and much more granular control over upgrading packages.
+
+Here is the list of packages we now directly depend on in v3:
+
+* [assert](https://npmjs.org/package/assert)
+* [buffer](https://npmjs.org/package/native-buffer-browserify)
+* [console](https://npmjs.org/package/console-browserify)
+* [constants](https://npmjs.org/package/constants-browserify)
+* [crypto](https://npmjs.org/package/crypto-browserify)
+* [events](https://npmjs.org/package/events-browserify)
+* [http](https://npmjs.org/package/http-browserify)
+* [https](https://npmjs.org/package/https-browserify)
+* [os](https://npmjs.org/package/os-browserify)
+* [path](https://npmjs.org/package/path-browserify)
+* [punycode](https://npmjs.org/package/punycode)
+* [querystring](https://npmjs.org/package/querystring)
+* [stream](https://npmjs.org/package/stream-browserify)
+* [string_decoder](https://npmjs.org/package/string_decoder)
+* [timers](https://npmjs.org/package/timers-browserify)
+* [tty](https://npmjs.org/package/tty-browserify)
+* [url](https://npmjs.org/package/url)
+* [util](https://npmjs.org/package/util)
+* [vm](https://npmjs.org/package/vm-browserify)
+* [zlib](https://npmjs.org/package/zlib-browserify)
+
+That's it! If you're bold enough to give v3 a spin, just do:
+
+```
+npm install -g browserify
+```

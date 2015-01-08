@@ -1,1 +1,1 @@
-module.exports = 'C'
+module.exports = 'CX'

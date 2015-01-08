@@ -12,6 +12,6 @@ t.equal(D(), 333);
 
 var E = require('./three/f.js');
 var F = require('./three/dir/f.js');
-t.equal(E, F);
+t.notEqual(E, F);
 t.equal(E(), 555);
 t.equal(F(), 555);

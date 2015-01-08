@@ -1,3 +1,3 @@
-t.equal(require('aaa'), 'A');
-t.equal(require('bbb'), 'B');
-t.equal(require('ccc'), 'C');
+t.equal(require('aaa'), 'AX');
+t.equal(require('bbb'), 'BY');
+t.equal(require('ccc'), 'CX');
