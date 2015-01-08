@@ -151,7 +151,7 @@ Browserify.prototype.require = function (file, opts) {
         row.id = expose || file;
     }
     if (expose || !row.entry) {
-        this._expose[row.id] = path.resolve(basedir, file);
+        this._expose[row.id] = resolve.sync(file, {basedir: basedir});
     }
     if (opts.external) return this.external(file, opts);
     if (row.entry === undefined) row.entry = false;
