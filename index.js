@@ -617,13 +617,11 @@ Browserify.prototype._label = function (opts) {
     
     return through.obj(function (row, enc, next) {
         var prev = row.id;
-        
-        var relf = '/' + path.relative(basedir, row.id);
-        var reli = '/' + path.relative(basedir, row.id);
+
         if (self._external.indexOf(row.id) >= 0) return next();
-        if (self._external.indexOf(reli) >= 0) return next();
+        if (self._external.indexOf('/' + path.relative(basedir, row.id)) >= 0)
+            return next();
         if (self._external.indexOf(row.file) >= 0) return next();
-        if (self._external.indexOf(relf) >= 0) return next();
         
         if (row.index) row.id = row.index;
         
