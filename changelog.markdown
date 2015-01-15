@@ -1,3 +1,11 @@
+# 8.1.1
+
+fixes an issue with resolving exposed packages relative to the basedir
+
+https://github.com/substack/node-browserify/pull/1059
+https://github.com/substack/node-browserify/issues/1039
+https://github.com/daiweilu/browserify-broken-require
+
 # 8.1.0
 
 use assert@1.3, which fixes a bug in assert.deepEqual related to argument ordering,
