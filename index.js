@@ -386,7 +386,10 @@ Browserify.prototype._createDeps = function (opts) {
     var self = this;
     var mopts = copy(opts);
     var basedir = defined(opts.basedir, process.cwd());
-    
+
+    // Let mdeps populate these values since it will be resolving file paths
+    // anyway.
+    mopts.expose = this._expose;
     mopts.extensions = [ '.js', '.json' ].concat(mopts.extensions || []);
     self._extensions = mopts.extensions;
     
