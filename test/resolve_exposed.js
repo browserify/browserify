@@ -8,7 +8,7 @@ test('resolve exposed files', function (t) {
     var b = browserify(__dirname + '/resolve_exposed/main.js', {
         basedir: __dirname + '/resolve_exposed'
     });
-    b.require('zzz', { expose: 'xyz' });
+    b.require('./x.js', { expose: 'xyz' });
     b.bundle(function (err, src) {
         t.ifError(err);
         var c = { console: { log: log } };
