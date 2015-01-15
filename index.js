@@ -98,7 +98,7 @@ Browserify.prototype.require = function (file, opts) {
     }
     
     if (!opts) opts = {};
-    var basedir = defined(opts.basedir, process.cwd());
+    var basedir = defined(opts.basedir, self._options.basedir, process.cwd());
     var expose = opts.expose;
     if (file === expose && /^[\.]/.test(expose)) {
         expose = '/' + path.relative(basedir, expose);
@@ -151,20 +151,29 @@ Browserify.prototype.require = function (file, opts) {
         row.id = expose || file;
     }
     if (expose || !row.entry) {
-        this._expose[row.id] = resolve.sync(file, {basedir: basedir});
+        self._pending ++;
+        resolve(file, { basedir: basedir }, function (err, res) {
+            if (err) return self.emit('error', err);
+            self._expose[row.id] = res;
+            write();
+            if (-- self._pending === 0) self.emit('_ready');
+        });
     }
-    if (opts.external) return this.external(file, opts);
-    if (row.entry === undefined) row.entry = false;
+    else write();
     
-    if (!row.entry && this._options.exports === undefined) {
-        this._bpack.hasExports = true;
+    function write () {
+        if (opts.external) return self.external(file, opts);
+        if (row.entry === undefined) row.entry = false;
+        
+        if (!row.entry && self._options.exports === undefined) {
+            self._bpack.hasExports = true;
+        }
+        
+        if (row.entry) row.order = self._entryOrder ++;
+        if (opts.transform === false) row.transform = false;
+        self.pipeline.write(row);
     }
-    
-    if (row.entry) row.order = self._entryOrder ++;
-    if (opts.transform === false) row.transform = false;
-    
-    this.pipeline.write(row);
-    return this;
+    return self;
 };
 
 Browserify.prototype.add = function (file, opts) {
