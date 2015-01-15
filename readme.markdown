@@ -501,8 +501,7 @@ module.exports = function (file) { return through() };
 ```
 
 You don't need to necessarily use the
-[through](https://npmjs.org/package/through) module, this is just a simple
-example.
+[through](https://npmjs.org/package/through) module. Browserify is compatable with the newer, more verbose [Transform streams](http://nodejs.org/api/stream.html#stream_class_stream_transform_1) built into Node v0.10.
 
 Here's how you might compile coffee script on the fly using `.transform()`:
 

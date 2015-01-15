@@ -1,3 +1,14 @@
+# 8.1.0
+
+use assert@1.3, which fixes a bug in assert.deepEqual related to argument ordering,
+and ensures assert.deepEqual continues working in Chrome 40 and Firefox 35.
+
+use process@0.10, which adds process.umask() and a faster process.nextTick()
+implementation.
+
+https://github.com/substack/node-browserify/pull/1018
+https://github.com/substack/node-browserify/pull/1041
+
 # 8.0.3
 
 passes opts.debug through to insert-module-globals so that is can insert inline
