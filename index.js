@@ -151,28 +151,21 @@ Browserify.prototype.require = function (file, opts) {
         row.id = expose || file;
     }
     if (expose || !row.entry) {
-        self._pending ++;
-        resolve(file, { basedir: basedir }, function (err, res) {
-            if (err) return self.emit('error', err);
-            self._expose[row.id] = res;
-            write();
-            if (-- self._pending === 0) self.emit('_ready');
-        });
+        // Make this available to mdeps so that it can assign the value when it
+        // resolves the pathname.
+        row.expose = row.id;
     }
-    else write();
-    
-    function write () {
-        if (opts.external) return self.external(file, opts);
-        if (row.entry === undefined) row.entry = false;
-        
-        if (!row.entry && self._options.exports === undefined) {
-            self._bpack.hasExports = true;
-        }
-        
-        if (row.entry) row.order = self._entryOrder ++;
-        if (opts.transform === false) row.transform = false;
-        self.pipeline.write(row);
+
+    if (opts.external) return self.external(file, opts);
+    if (row.entry === undefined) row.entry = false;
+
+    if (!row.entry && self._options.exports === undefined) {
+        self._bpack.hasExports = true;
     }
+
+    if (row.entry) row.order = self._entryOrder ++;
+    if (opts.transform === false) row.transform = false;
+    self.pipeline.write(row);
     return self;
 };
 
