@@ -247,15 +247,10 @@ Browserify.prototype.transform = function (tr, opts) {
     }
 
     function resolved() {
-      -- self._pending;
       if (-- self._transformPending === 0) {
           self._transforms.forEach(function(transform) {
             self.pipeline.write(transform);
           });
-
-          if (self._pending === 0) {
-            self.emit('_ready');
-          }
       }
     }
     
@@ -264,7 +259,6 @@ Browserify.prototype.transform = function (tr, opts) {
     
     var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
     var order = self._transformOrder ++;
-    self._pending ++;
     self._transformPending ++;
     if (typeof tr === 'string') {
         var topts = {
@@ -273,7 +267,7 @@ Browserify.prototype.transform = function (tr, opts) {
                 return path.resolve(basedir, p);
             })
         };
-        resolve(tr, topts, function (err, res) {
+        resolve(tr, topts, this.pendReady(function (err, res) {
             if (err) return self.emit('error', err);
             var rec = {
                 transform: res,
@@ -282,7 +276,7 @@ Browserify.prototype.transform = function (tr, opts) {
             };
             self._transforms[order] = rec;
             resolved();
-        });
+        }));
     }
     else {
         var rec = {
@@ -291,7 +285,7 @@ Browserify.prototype.transform = function (tr, opts) {
             global: opts.global
         };
         self._transforms[order] = rec;
-        process.nextTick(resolved);
+        process.nextTick(this.pendReady(resolved));
     }
     return this;
 };
