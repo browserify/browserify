@@ -741,6 +741,24 @@ Browserify.prototype.bundle = function (cb) {
     return this.pipeline;
 };
 
+// Increment _pending and wrap the callback to decrement on execution and emit
+// _ready if appropriate. In other words, make the readyness of the pipeline
+// pending on execution of cb.
+Browserify.prototype.pendReady = function (cb) {
+    if (typeof cb !== 'function') {
+        throw new Error('cb must be a function');
+    }
+
+    var self = this;
+    self._pending ++;
+
+    return function pendReadyCb () {
+        cb.apply(this, arguments);
+        if (-- self._pending === 0) self.emit('_ready');
+    };
+};
+// pendReady
+
 function has (obj, key) { return Object.hasOwnProperty.call(obj, key) }
 function isStream (s) { return s && typeof s.pipe === 'function' }
 function isAbsolutePath (file) {
