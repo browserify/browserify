@@ -111,9 +111,8 @@ Browserify.prototype.require = function (file, opts) {
     }
     
     if (isStream(file)) {
-        self._pending ++;
         var order = self._entryOrder ++;
-        file.pipe(concat(function (buf) {
+        file.pipe(concat(this.pendReady(function (buf) {
             var filename = opts.file || file.file || path.join(
                 basedir,
                 '_stream_' + order + '.js'
@@ -134,9 +133,7 @@ Browserify.prototype.require = function (file, opts) {
             if (rec.entry) rec.order = order;
             if (rec.transform === false) rec.transform = false;
             self.pipeline.write(rec);
-            
-            if (-- self._pending === 0) self.emit('_ready');
-        }));
+        })));
         return this;
     }
     
