@@ -194,13 +194,11 @@ Browserify.prototype.external = function (file, opts) {
     }
     if (file && typeof file === 'object' && typeof file.bundle === 'function') {
         var b = file;
-        self._pending ++;
         b.on('label', function (prev, id) {
             self._external.push(id);
         });
-        b.pipeline.get('label').once('end', function () {
-            if (-- self._pending === 0) self.emit('_ready');
-        });
+        b.pipeline.get('label').once('end', this.pendReady(function () {
+        }));
         return this;
     }
     
