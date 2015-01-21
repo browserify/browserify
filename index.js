@@ -111,9 +111,8 @@ Browserify.prototype.require = function (file, opts) {
     }
     
     if (isStream(file)) {
-        self._pending ++;
         var order = self._entryOrder ++;
-        file.pipe(concat(function (buf) {
+        file.pipe(concat(this.pendReady(function (buf) {
             var filename = opts.file || file.file || path.join(
                 basedir,
                 '_stream_' + order + '.js'
@@ -134,9 +133,7 @@ Browserify.prototype.require = function (file, opts) {
             if (rec.entry) rec.order = order;
             if (rec.transform === false) rec.transform = false;
             self.pipeline.write(rec);
-            
-            if (-- self._pending === 0) self.emit('_ready');
-        }));
+        })));
         return this;
     }
     
@@ -151,13 +148,11 @@ Browserify.prototype.require = function (file, opts) {
         row.id = expose || file;
     }
     if (expose || !row.entry) {
-        self._pending ++;
-        resolve(file, { basedir: basedir }, function (err, res) {
+        resolve(file, { basedir: basedir }, this.pendReady(function (err, res) {
             if (err) return self.emit('error', err);
             self._expose[row.id] = res;
             write();
-            if (-- self._pending === 0) self.emit('_ready');
-        });
+        }));
     }
     else write();
     
@@ -199,13 +194,11 @@ Browserify.prototype.external = function (file, opts) {
     }
     if (file && typeof file === 'object' && typeof file.bundle === 'function') {
         var b = file;
-        self._pending ++;
         b.on('label', function (prev, id) {
             self._external.push(id);
         });
-        b.pipeline.get('label').once('end', function () {
-            if (-- self._pending === 0) self.emit('_ready');
-        });
+        b.pipeline.get('label').once('end', this.pendReady(function () {
+        }));
         return this;
     }
     
@@ -254,15 +247,10 @@ Browserify.prototype.transform = function (tr, opts) {
     }
 
     function resolved() {
-      -- self._pending;
       if (-- self._transformPending === 0) {
           self._transforms.forEach(function(transform) {
             self.pipeline.write(transform);
           });
-
-          if (self._pending === 0) {
-            self.emit('_ready');
-          }
       }
     }
     
@@ -271,7 +259,6 @@ Browserify.prototype.transform = function (tr, opts) {
     
     var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
     var order = self._transformOrder ++;
-    self._pending ++;
     self._transformPending ++;
     if (typeof tr === 'string') {
         var topts = {
@@ -280,7 +267,7 @@ Browserify.prototype.transform = function (tr, opts) {
                 return path.resolve(basedir, p);
             })
         };
-        resolve(tr, topts, function (err, res) {
+        resolve(tr, topts, this.pendReady(function (err, res) {
             if (err) return self.emit('error', err);
             var rec = {
                 transform: res,
@@ -289,7 +276,7 @@ Browserify.prototype.transform = function (tr, opts) {
             };
             self._transforms[order] = rec;
             resolved();
-        });
+        }));
     }
     else {
         var rec = {
@@ -298,7 +285,7 @@ Browserify.prototype.transform = function (tr, opts) {
             global: opts.global
         };
         self._transforms[order] = rec;
-        process.nextTick(resolved);
+        process.nextTick(this.pendReady(resolved));
     }
     return this;
 };
@@ -740,6 +727,24 @@ Browserify.prototype.bundle = function (cb) {
     this._bundled = true;
     return this.pipeline;
 };
+
+// Increment _pending and wrap the callback to decrement on execution and emit
+// _ready if appropriate. In other words, make the readyness of the pipeline
+// pending on execution of cb.
+Browserify.prototype.pendReady = function (cb) {
+    if (typeof cb !== 'function') {
+        throw new Error('cb must be a function');
+    }
+
+    var self = this;
+    self._pending ++;
+
+    return function pendReadyCb () {
+        cb.apply(this, arguments);
+        if (-- self._pending === 0) self.emit('_ready');
+    };
+};
+// pendReady
 
 function has (obj, key) { return Object.hasOwnProperty.call(obj, key) }
 function isStream (s) { return s && typeof s.pipe === 'function' }
