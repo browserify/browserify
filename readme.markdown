@@ -738,10 +738,7 @@ tools](https://npmjs.org/browse/keyword/browserify-tool) on npmjs.org.
 
 # changelog
 
-Writeups for major releases are available in
-[doc/changelog](doc/changelog).
-
-Minor and patch releases are documented in
+Releases are documented in
 [changelog.markdown](changelog.markdown) and on the
 [browserify twitter feed](https://twitter.com/browserify).
 
