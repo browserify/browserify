@@ -24,7 +24,7 @@ browserify-compatible packages on npm.
 
 # example
 
-Whip up a file, `main.js` with some `require()s` in it. You can use relative
+Whip up a file, `main.js` with some `require()`s in it. You can use relative
 paths like `'./foo.js'` and `'../lib/bar.js'` or module paths like `'gamma'`
 that will search `node_modules/` using
 [node's module lookup algorithm](https://github.com/substack/node-resolve).
