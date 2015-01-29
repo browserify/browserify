@@ -200,9 +200,37 @@ Browserify.prototype.external = function (file, opts) {
     if (file && typeof file === 'object' && typeof file.bundle === 'function') {
         var b = file;
         self._pending ++;
+
+        var bdeps = {};
+        var blabels = {};
+
         b.on('label', function (prev, id) {
             self._external.push(id);
+
+            if (prev !== id) {
+                blabels[prev] = id;
+                self._external.push(prev);
+            }
         });
+
+        b.pipeline.get('deps').push(through.obj(function (row, enc, next) {
+            bdeps = xtend(bdeps, row.deps);
+            this.push(row);
+            next();
+        }));
+
+        self.on('dep', function (row) {
+            Object.keys(row.deps).forEach(function (key) {
+                var prev = bdeps[key];
+                if (prev) {
+                    var id = blabels[prev];
+                    if (id) {
+                        row.indexDeps[key] = id;
+                    }
+                }
+            });
+        });
+
         b.pipeline.get('label').once('end', function () {
             if (-- self._pending === 0) self.emit('_ready');
         });
