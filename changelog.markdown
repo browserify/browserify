@@ -1,3 +1,9 @@
+# 8.1.2
+
+resolves mappings from the browser field for externals
+
+https://github.com/substack/node-browserify/pull/1100
+
 # 8.1.1
 
 fixes an issue with resolving exposed packages relative to the basedir
