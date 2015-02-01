@@ -1,3 +1,8 @@
+# 8.1.3
+
+uses / instead of \ for source map url separators on windows
+https://github.com/substack/node-browserify/pull/1096
+
 # 8.1.2
 
 resolves mappings from the browser field for externals
