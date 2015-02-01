@@ -717,7 +717,8 @@ Browserify.prototype._debug = function (opts) {
     return through.obj(function (row, enc, next) {
         if (opts.debug) {
             row.sourceRoot = 'file://localhost';
-            row.sourceFile = path.relative(basedir, row.file);
+            row.sourceFile = path.relative(basedir, row.file)
+                .replace(/\\/g, '/');
         }
         this.push(row);
         next();
