@@ -152,7 +152,7 @@ Browserify.prototype.require = function (file, opts) {
     }
     if (expose || !row.entry) {
         self._pending ++;
-        resolve(file, { basedir: basedir }, function (err, res) {
+        bresolve(file, { basedir: basedir }, function (err, res) {
             if (err) return self.emit('error', err);
             self._expose[row.id] = res;
             write();
