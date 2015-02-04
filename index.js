@@ -619,8 +619,9 @@ Browserify.prototype._label = function (opts) {
         var prev = row.id;
 
         if (self._external.indexOf(row.id) >= 0) return next();
-        if (self._external.indexOf('/' + path.relative(basedir, row.id)) >= 0)
+        if (self._external.indexOf('/' + path.relative(basedir, row.id)) >= 0) {
             return next();
+        }
         if (self._external.indexOf(row.file) >= 0) return next();
         
         if (row.index) row.id = row.index;
