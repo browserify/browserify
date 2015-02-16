@@ -1,6 +1,6 @@
 {
   "name": "browserify",
-  "version": "8.1.3",
+  "version": "9.0.0",
   "description": "browser-side require() the node way",
   "main": "index.js",
   "bin": {
@@ -45,7 +45,7 @@
     "insert-module-globals": "^6.2.0",
     "isarray": "0.0.1",
     "labeled-stream-splicer": "^1.0.0",
-    "module-deps": "^3.6.3",
+    "module-deps": "^3.7.0",
     "os-browserify": "~0.1.1",
     "parents": "^1.0.1",
     "path-browserify": "~0.0.0",

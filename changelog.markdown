@@ -1,3 +1,11 @@
+# 9.0.0
+
+updates browser-pack which uses umd 3.0.0.
+This sligtly changes how `--standalone $name` works.
+
+https://github.com/substack/browser-pack/pull/49
+https://github.com/substack/node-browserify/pull/1105
+
 # 8.1.3
 
 uses / instead of \ for source map url separators on windows
