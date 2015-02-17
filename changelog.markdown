@@ -6,6 +6,10 @@ This sligtly changes how `--standalone $name` works.
 https://github.com/substack/browser-pack/pull/49
 https://github.com/substack/node-browserify/pull/1105
 
+Also some tidying up around handling expose that module-deps can do now:
+
+https://github.com/substack/node-browserify/pull/1077
+
 # 8.1.3
 
 uses / instead of \ for source map url separators on windows

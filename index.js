@@ -17,6 +17,7 @@ var xtend = require('xtend');
 var copy = require('shallow-copy');
 var isarray = require('isarray');
 var defined = require('defined');
+var has = require('has');
 
 var bresolve = require('browser-resolve');
 var resolve = require('resolve');
