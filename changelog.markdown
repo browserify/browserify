@@ -10,6 +10,10 @@ Also some tidying up around handling expose that module-deps can do now:
 
 https://github.com/substack/node-browserify/pull/1077
 
+and some fixes to regressions involving the `'package'` event:
+
+https://github.com/substack/node-resolve/issues/69
+
 # 8.1.3
 
 uses / instead of \ for source map url separators on windows
