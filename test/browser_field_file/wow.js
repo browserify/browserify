@@ -1,1 +1,1 @@
-module.exports = 'cool'
+console.log('cool beans');
