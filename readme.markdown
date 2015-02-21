@@ -24,7 +24,7 @@ browserify-compatible packages on npm.
 
 # example
 
-Whip up a file, `main.js` with some `require()s` in it. You can use relative
+Whip up a file, `main.js` with some `require()`s in it. You can use relative
 paths like `'./foo.js'` and `'../lib/bar.js'` or module paths like `'gamma'`
 that will search `node_modules/` using
 [node's module lookup algorithm](https://github.com/substack/node-resolve).
@@ -501,7 +501,7 @@ module.exports = function (file) { return through() };
 ```
 
 You don't need to necessarily use the
-[through](https://npmjs.org/package/through) module. Browserify is compatable with the newer, more verbose [Transform streams](http://nodejs.org/api/stream.html#stream_class_stream_transform_1) built into Node v0.10.
+[through](https://npmjs.org/package/through) module. Browserify is compatible with the newer, more verbose [Transform streams](http://nodejs.org/api/stream.html#stream_class_stream_transform_1) built into Node v0.10.
 
 Here's how you might compile coffee script on the fly using `.transform()`:
 
