@@ -1,3 +1,13 @@
+# 9.0.3
+
+fixes a problem with deduping for json files.
+
+This caused problems for running bundle() multiple times on the same instance
+with caching turned on, which people reported encountering using watchify.
+
+https://github.com/substack/node-browserify/issues/1101
+https://github.com/substack/watchify/issues/143
+
 # 9.0.2
 
 fixes a bug where transforms in `opts.transform` were getting run twice
