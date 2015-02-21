@@ -414,13 +414,8 @@ Browserify.prototype._createDeps = function (opts) {
     mopts.expose = this._expose;
     mopts.extensions = [ '.js', '.json' ].concat(mopts.extensions || []);
     self._extensions = mopts.extensions;
-    
-    //filter transforms on top-level
-    mopts.transform = [].concat(opts.transform)
-        .filter(Boolean)
-        .filter(self._filterTransform)
-    ;
-    
+
+    mopts.transform = [];
     mopts.transformKey = [ 'browserify', 'transform' ];
     mopts.postFilter = function (id, file, pkg) {
         if (opts.postFilter && !opts.postFilter(id, file, pkg)) return false;
