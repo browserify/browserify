@@ -1,3 +1,10 @@
+# 9.0.2
+
+fixes a bug where transforms in `opts.transform` were getting run twice
+
+https://github.com/substack/node-browserify/issues/1124
+https://github.com/substack/node-browserify/pull/1128
+
 # 9.0.1
 
 fixes exposed files persisting across bundles
