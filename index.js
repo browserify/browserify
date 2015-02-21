@@ -491,7 +491,7 @@ Browserify.prototype._createDeps = function (opts) {
     else if (opts.builtins && typeof opts.builtins === 'object') {
         mopts.modules = opts.builtins;
     }
-    else mopts.modules = builtins;
+    else mopts.modules = copy(builtins);
     
     Object.keys(builtins).forEach(function (key) {
         if (!has(mopts.modules, key)) self._exclude.push(key);
