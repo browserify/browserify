@@ -14,6 +14,15 @@ and some fixes to regressions involving the `'package'` event:
 
 https://github.com/substack/node-resolve/issues/69
 
+Upstream changes in resolve/browser-resolve mean that `require('foo/bar')` works
+better with the package.json browser field. You can do something like:
+
+``` json
+{
+  "browser": { "./bar": "whatever.js" }
+}
+```
+
 # 8.1.3
 
 uses / instead of \ for source map url separators on windows
