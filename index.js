@@ -69,7 +69,8 @@ function Browserify (files, opts) {
     
     self.pipeline = self._createPipeline(opts);
     
-    [].concat(opts.transform).filter(Boolean).forEach(function (tr) {
+    [].concat(opts.transform).filter(Boolean).filter(self._filterTransform)
+    .forEach(function (tr) {
         self.transform(tr);
     });
     
