@@ -39,6 +39,7 @@
     "duplexer2": "~0.0.2",
     "events": "~1.0.0",
     "glob": "^4.0.5",
+    "has": "^1.0.0",
     "http-browserify": "^1.4.0",
     "https-browserify": "~0.0.0",
     "inherits": "~2.0.1",
