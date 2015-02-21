@@ -1,3 +1,9 @@
+# 9.0.1
+
+fixes exposed files persisting across bundles
+
+https://github.com/substack/node-browserify/pull/1030
+
 # 9.0.0
 
 updates browser-pack which uses umd 3.0.0.
