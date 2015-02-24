@@ -60,13 +60,13 @@ function Browserify (files, opts) {
     self._ticked = false;
 
     var ignoreTransform = [].concat(opts.ignoreTransform).filter(Boolean);
-    self._filterTransform = function(tr) {
+    self._filterTransform = function (tr) {
         if (Array.isArray(tr)) {
             return ignoreTransform.indexOf(tr[0]) === -1;
         }
         return ignoreTransform.indexOf(tr) === -1;
-    }
-    
+    };
+
     self.pipeline = self._createPipeline(opts);
     
     [].concat(opts.transform).filter(Boolean).filter(self._filterTransform)
@@ -276,11 +276,11 @@ Browserify.prototype.transform = function (tr, opts) {
         return this;
     }
 
-    function resolved() {
+    function resolved () {
       self._transforms[order] = rec;
       -- self._pending;
       if (-- self._transformPending === 0) {
-          self._transforms.forEach(function(transform) {
+          self._transforms.forEach(function (transform) {
             self.pipeline.write(transform);
           });
 
