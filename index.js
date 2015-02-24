@@ -277,6 +277,7 @@ Browserify.prototype.transform = function (tr, opts) {
     }
 
     function resolved() {
+      self._transforms[order] = rec;
       -- self._pending;
       if (-- self._transformPending === 0) {
           self._transforms.forEach(function(transform) {
@@ -296,6 +297,13 @@ Browserify.prototype.transform = function (tr, opts) {
     var order = self._transformOrder ++;
     self._pending ++;
     self._transformPending ++;
+
+    var rec = {
+        transform: tr,
+        options: opts,
+        global: opts.global
+    };
+
     if (typeof tr === 'string') {
         var topts = {
             basedir: basedir,
@@ -305,24 +313,11 @@ Browserify.prototype.transform = function (tr, opts) {
         };
         resolve(tr, topts, function (err, res) {
             if (err) return self.emit('error', err);
-            var rec = {
-                transform: res,
-                options: opts,
-                global: opts.global
-            };
-            self._transforms[order] = rec;
+            rec.transform = res;
             resolved();
         });
     }
-    else {
-        var rec = {
-            transform: tr,
-            options: opts,
-            global: opts.global
-        };
-        self._transforms[order] = rec;
-        process.nextTick(resolved);
-    }
+    else process.nextTick(resolved);
     return this;
 };
 
