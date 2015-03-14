@@ -763,7 +763,6 @@ Browserify.prototype.bundle = function (cb) {
     return this.pipeline;
 };
 
-function has (obj, key) { return Object.hasOwnProperty.call(obj, key) }
 function isStream (s) { return s && typeof s.pipe === 'function' }
 function isAbsolutePath (file) {
     var regexp = process.platform === 'win32' ?
