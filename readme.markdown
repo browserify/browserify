@@ -375,6 +375,11 @@ By default browserify considers only `.js` and `.json` files in such cases.
 `opts.basedir` is the directory that browserify starts bundling from for
 filenames that start with `.`.
 
+`opts.paths` is an array of directories that browserify searches when looking
+for modules which are not referenced using relative path. Can be absolute or
+relative to `basedir`. Equivalent of setting `NODE_PATH` environmental variable
+when calling `browserify` command.
+
 `opts.commondir` sets the algorithm used to parse out the common paths. Use
 `false` to turn this off, otherwise it uses the
 [commondir](https://npmjs.org/package/commondir) module.
