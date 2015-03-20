@@ -3,7 +3,7 @@
 `require('modules')` in the browser
 
 Use a [node](http://nodejs.org)-style `require()` to organize your browser code
-and load modules installed by [npm](https://npmjs.org).
+and load modules installed by [npm](https://www.npmjs.com).
 
 browserify will recursively analyze all the `require()` calls in your app in
 order to build a bundle you can serve up to the browser in a single `<script>`
@@ -214,34 +214,34 @@ when you explicitly `require()` or use their functionality.
 
 When you `require()` any of these modules, you will get a browser-specific shim:
 
-* [assert](https://npmjs.org/package/assert)
-* [buffer](https://npmjs.org/package/buffer)
-* [console](https://npmjs.org/package/console-browserify)
-* [constants](https://npmjs.org/package/constants-browserify)
-* [crypto](https://npmjs.org/package/crypto-browserify)
-* [domain](https://npmjs.org/package/domain-browser)
-* [events](https://npmjs.org/package/events-browserify)
-* [http](https://npmjs.org/package/http-browserify)
-* [https](https://npmjs.org/package/https-browserify)
-* [os](https://npmjs.org/package/os-browserify)
-* [path](https://npmjs.org/package/path-browserify)
-* [punycode](https://npmjs.org/package/punycode)
-* [querystring](https://npmjs.org/package/querystring)
-* [stream](https://npmjs.org/package/stream-browserify)
-* [string_decoder](https://npmjs.org/package/string_decoder)
-* [timers](https://npmjs.org/package/timers-browserify)
-* [tty](https://npmjs.org/package/tty-browserify)
-* [url](https://npmjs.org/package/url)
-* [util](https://npmjs.org/package/util)
-* [vm](https://npmjs.org/package/vm-browserify)
-* [zlib](https://npmjs.org/package/browserify-zlib)
+* [assert](https://www.npmjs.com/package/assert)
+* [buffer](https://www.npmjs.com/package/buffer)
+* [console](https://www.npmjs.com/package/console-browserify)
+* [constants](https://www.npmjs.com/package/constants-browserify)
+* [crypto](https://www.npmjs.com/package/crypto-browserify)
+* [domain](https://www.npmjs.com/package/domain-browser)
+* [events](https://www.npmjs.com/package/events-browserify)
+* [http](https://www.npmjs.com/package/http-browserify)
+* [https](https://www.npmjs.com/package/https-browserify)
+* [os](https://www.npmjs.com/package/os-browserify)
+* [path](https://www.npmjs.com/package/path-browserify)
+* [punycode](https://www.npmjs.com/package/punycode)
+* [querystring](https://www.npmjs.com/package/querystring)
+* [stream](https://www.npmjs.com/package/stream-browserify)
+* [string_decoder](https://www.npmjs.com/package/string_decoder)
+* [timers](https://www.npmjs.com/package/timers-browserify)
+* [tty](https://www.npmjs.com/package/tty-browserify)
+* [url](https://www.npmjs.com/package/url)
+* [util](https://www.npmjs.com/package/util)
+* [vm](https://www.npmjs.com/package/vm-browserify)
+* [zlib](https://www.npmjs.com/package/browserify-zlib)
 
 Additionally, if you use any of these variables, they
 [will be defined](https://github.com/substack/insert-module-globals)
 in the bundled output in a browser-appropriate way:
 
-* [process](https://npmjs.org/package/process)
-* [Buffer](https://npmjs.org/package/buffer)
+* [process](https://www.npmjs.com/package/process)
+* [Buffer](https://www.npmjs.com/package/buffer)
 * global - top-level scope object (window)
 * __filename - file path of the currently executing file
 * __dirname - directory path of the currently executing file
@@ -252,8 +252,8 @@ in the bundled output in a browser-appropriate way:
 
 You can just as easily create a bundle that will export a `require()` function so
 you can `require()` modules from another script tag. Here we'll create a
-`bundle.js` with the [through](https://npmjs.org/package/through)
-and [duplexer](https://npmjs.org/package/duplexer) modules.
+`bundle.js` with the [through](https://www.npmjs.com/package/through)
+and [duplexer](https://www.npmjs.com/package/duplexer) modules.
 
 ```
 $ browserify -r through -r duplexer -r ./my-file.js:my-module > bundle.js
@@ -377,7 +377,7 @@ filenames that start with `.`.
 
 `opts.commondir` sets the algorithm used to parse out the common paths. Use
 `false` to turn this off, otherwise it uses the
-[commondir](https://npmjs.org/package/commondir) module.
+[commondir](https://www.npmjs.com/package/commondir) module.
 
 `opts.fullPaths` disables converting module ids into numerical indexes. This is
 useful for preserving the original paths that a bundle was generated with.
@@ -408,7 +408,7 @@ name as a separator. For example: `'A.B.C'`
 Note that in standalone mode the `require()` calls from the original source will
 still be around, which may trip up AMD loaders scanning for `require()` calls.
 You can remove these calls with
-[derequire](https://npmjs.org/package/derequire):
+[derequire](https://www.npmjs.com/package/derequire):
 
 ```
 $ npm install -g derequire
@@ -426,8 +426,8 @@ Note that if files do not contain javascript source code then you also need to
 specify a corresponding transform for them.
 
 All other options are forwarded along to
-[module-deps](https://npmjs.org/package/module-deps)
-and [browser-pack](https://npmjs.org/package/browser-pack) directly.
+[module-deps](https://www.npmjs.com/package/module-deps)
+and [browser-pack](https://www.npmjs.com/package/browser-pack) directly.
 
 ## b.add(file, opts)
 
@@ -501,7 +501,7 @@ module.exports = function (file) { return through() };
 ```
 
 You don't need to necessarily use the
-[through](https://npmjs.org/package/through) module. Browserify is compatible with the newer, more verbose [Transform streams](http://nodejs.org/api/stream.html#stream_class_stream_transform_1) built into Node v0.10.
+[through](https://www.npmjs.com/package/through) module. Browserify is compatible with the newer, more verbose [Transform streams](http://nodejs.org/api/stream.html#stream_class_stream_transform_1) built into Node v0.10.
 
 Here's how you might compile coffee script on the fly using `.transform()`:
 
@@ -544,7 +544,7 @@ transform will suffice. You can also not configure global transforms in a
 Global transforms always run after any ordinary transforms have run.
 
 Transforms may obtain options from the command-line with
-[subarg](https://npmjs.org/package/subarg) syntax:
+[subarg](https://www.npmjs.com/package/subarg) syntax:
 
 ```
 $ browserify -t [ foo --bar=555 ] main.js
@@ -580,11 +580,11 @@ For more information, consult the plugins section below.
 ## b.pipeline
 
 There is an internal
-[labeled-stream-splicer](https://npmjs.org/package/labeled-stream-splicer)
+[labeled-stream-splicer](https://www.npmjs.com/package/labeled-stream-splicer)
 pipeline with these labels:
 
 * `'record'` - save inputs to play back later on subsequent `bundle()` calls
-* `'deps'` - [module-deps](https://npmjs.org/package/module-deps)
+* `'deps'` - [module-deps](https://www.npmjs.com/package/module-deps)
 * `'json'` - adds `module.exports=` to the beginning of json files
 * `'unbom'` - remove byte-order markers
 * `'unshebang'` - remove #! labels on the first line
@@ -594,7 +594,7 @@ pipeline with these labels:
 * `'label'` - apply integer labels to files
 * `'emit-deps'` - emit `'dep'` event
 * `'debug'` - apply source maps
-* `'pack'` - [browser-pack](https://npmjs.org/package/browser-pack)
+* `'pack'` - [browser-pack](https://www.npmjs.com/package/browser-pack)
 * `'wrap'` - apply final wrapping, `require=` and a newline and semicolon
 
 You can call `b.get()` with a label name to get a handle on a stream pipeline
@@ -648,7 +648,7 @@ You can specify source transforms in the package.json in the
 transforms work in package.json on the
 [module-deps readme](https://github.com/substack/module-deps#transforms).
 
-For example, if your module requires [brfs](https://npmjs.org/package/brfs), you
+For example, if your module requires [brfs](https://www.npmjs.com/package/brfs), you
 can add
 
 ``` json
@@ -702,10 +702,10 @@ Plugins are modules that take the bundle instance as their first parameter and
 an option hash as their second.
 
 Plugins can be used to do perform some fancy features that transforms can't do.
-For example, [factor-bundle](https://npmjs.org/package/factor-bundle) is a
+For example, [factor-bundle](https://www.npmjs.com/package/factor-bundle) is a
 plugin that can factor out common dependencies from multiple entry-points into a
 common bundle. Use plugins with `-p` and pass options to plugins with
-[subarg](https://npmjs.org/package/subarg) syntax:
+[subarg](https://www.npmjs.com/package/subarg) syntax:
 
 ```
 browserify x.js y.js -p [ factor-bundle -o bundle/x.js -o bundle/y.js ] \
@@ -713,7 +713,7 @@ browserify x.js y.js -p [ factor-bundle -o bundle/x.js -o bundle/y.js ] \
 ```
 
 For a list of plugins, consult the
-[browserify-plugin tag](https://npmjs.org/browse/keyword/browserify-plugin)
+[browserify-plugin tag](https://www.npmjs.com/browse/keyword/browserify-plugin)
 on npm.
 
 # list of source transforms
@@ -724,7 +724,7 @@ transforms](https://github.com/substack/node-browserify/wiki/list-of-transforms)
 If you write a transform, make sure to add your transform to that wiki page and
 add a package.json keyword of `browserify-transform` so that
 [people can browse for all the browserify
-transforms](https://npmjs.org/browse/keyword/browserify-transform) on npmjs.org.
+transforms](https://www.npmjs.com/browse/keyword/browserify-transform) on npmjs.org.
 
 # third-party tools
 
@@ -734,7 +734,7 @@ tools](https://github.com/substack/node-browserify/wiki/browserify-tools).
 If you write a tool, make sure to add it to that wiki page and
 add a package.json keyword of `browserify-tool` so that
 [people can browse for all the browserify
-tools](https://npmjs.org/browse/keyword/browserify-tool) on npmjs.org.
+tools](https://www.npmjs.com/browse/keyword/browserify-tool) on npmjs.org.
 
 # changelog
 
