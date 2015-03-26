@@ -2,17 +2,15 @@ var test = require('tap').test;
 var spawn = require('child_process').spawn;
 var concat = require('concat-stream');
 var path = require('path');
-var mkdirp = require('mkdirp');
 var fs = require('fs');
 var vm = require('vm');
 
-var tmpdir = path.join(
-    require('osenv').tmpdir(),
-    'browserify-test-' + Math.random()
-);
+var temp = require('temp');
+temp.track();
+var tmpdir = temp.mkdirSync({prefix: 'browserify-test'});
 var pubdir = path.join(tmpdir, 'public');
 
-mkdirp.sync(pubdir);
+fs.mkdirSync(pubdir);
 fs.writeFileSync(
     path.join(tmpdir, 'robot.js'),
     fs.readFileSync(path.join(__dirname, 'externalize/robot.js'))

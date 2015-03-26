@@ -15,7 +15,7 @@ test('file event', function (t) {
     
     b.on('file', function (file, id) {
         var key = path.basename(file);
-        t.equal(file, __dirname + '/entry/' + key);
+        t.equal(file, path.join(__dirname, 'entry', key));
         t.equal(id, files[key]);
         delete files[key];
     });

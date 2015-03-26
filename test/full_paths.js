@@ -2,11 +2,12 @@ var unpack = require('browser-unpack');
 var browserify = require('../');
 var test = require('tap').test;
 var vm = require('vm');
+var path = require('path');
 
 var deps = [
-    __dirname + '/entry/main.js',
-    __dirname + '/entry/one.js',
-    __dirname + '/entry/two.js'
+    path.join(__dirname, '/entry/main.js'),
+    path.join(__dirname, '/entry/one.js'),
+    path.join(__dirname, '/entry/two.js')
 ];
 
 test('fullPaths enabled', function (t) {

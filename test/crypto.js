@@ -5,9 +5,9 @@ var fs = require('fs');
 var vm = require('vm');
 var concat = require('concat-stream');
 
-var mkdirp = require('mkdirp');
-var tmpdir = '/tmp/browserify-test/' + Math.random().toString(16).slice(2);
-mkdirp.sync(tmpdir);
+var temp = require('temp');
+temp.track();
+var tmpdir = temp.mkdirSync({prefix: 'browserify-test'});
 
 fs.writeFileSync(tmpdir + '/main.js', 'beep(require("crypto"))\n');
 

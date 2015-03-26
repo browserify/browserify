@@ -76,10 +76,9 @@
     "coffee-script": "~1.5.0",
     "coffeeify": "~0.6.0",
     "es6ify": "~0.4.8",
-    "mkdirp": "~0.3.3",
-    "osenv": "^0.1.0",
     "seq": "0.3.3",
     "tap": "~0.4.0",
+    "temp": "^0.8.1",
     "through": "^2.3.4"
   },
   "author": {
