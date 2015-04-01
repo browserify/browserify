@@ -134,7 +134,7 @@ module.exports = function (args, opts) {
 
     [].concat(argv.require).filter(Boolean)
         .forEach(function (r) {
-            var xs = _splitOnColon(r);
+            var xs = splitOnColon(r);
             b.require(xs[0], { expose: xs.length === 1 ? xs[0] : xs[1] })
         })
     ;
@@ -142,7 +142,7 @@ module.exports = function (args, opts) {
     // resolve any external files and add them to the bundle as externals
     [].concat(argv.external).filter(Boolean)
         .forEach(function (x) {
-            var xs = _splitOnColon(x);
+            var xs = splitOnColon(x);
             if (xs.length === 2) {
                 add(xs[0], { expose: xs[1] });
             }
@@ -243,7 +243,7 @@ function copy (obj) {
     }, {});
 }
 
-function _splitOnColon (f) {
+function splitOnColon (f) {
     var pos = f.lastIndexOf(':');
     if (pos == -1) {
         return [f]; // No colon
