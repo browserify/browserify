@@ -1,3 +1,11 @@
+# 9.0.4
+
+handles the colon better for drive paths and improves the test suite for windows
+users
+
+https://github.com/substack/node-browserify/pull/1182
+https://github.com/substack/node-browserify/pull/1183
+
 # 9.0.3
 
 fixes a problem with deduping for json files.
