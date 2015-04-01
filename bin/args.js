@@ -134,7 +134,7 @@ module.exports = function (args, opts) {
 
     [].concat(argv.require).filter(Boolean)
         .forEach(function (r) {
-            var xs = r.split(':');
+            var xs = _splitOnColon(r);
             b.require(xs[0], { expose: xs.length === 1 ? xs[0] : xs[1] })
         })
     ;
@@ -142,8 +142,8 @@ module.exports = function (args, opts) {
     // resolve any external files and add them to the bundle as externals
     [].concat(argv.external).filter(Boolean)
         .forEach(function (x) {
-            if (/:/.test(x)) {
-                var xs = x.split(':');
+            var xs = _splitOnColon(x);
+            if (xs.length === 2) {
                 add(xs[0], { expose: xs[1] });
             }
             else if (/\*/.test(x)) {
@@ -241,4 +241,17 @@ function copy (obj) {
         acc[key] = obj[key];
         return acc;
     }, {});
+}
+
+function _splitOnColon (f) {
+    var pos = f.lastIndexOf(':');
+    if (pos == -1) {
+        return [f]; // No colon
+    } else {
+        if ((/[a-zA-Z]:[\\/]/.test(f)) && (pos == 1)){
+            return [f]; // Windows path and colon is part of drive name
+        } else {
+            return [f.substr(0, pos), f.substr(pos + 1)];
+        }
+    }
 }

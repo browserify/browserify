@@ -54,3 +54,19 @@ test('numeric module names', function(t) {
         t.ifError(err);
     });
 });
+
+test('entry expose', function (t) {
+    t.plan(3)
+    
+    var b = fromArgs([
+        path.join(__dirname, '/entry_expose/main.js'),
+        '--require', path.join(__dirname, '/entry_expose/main.js') + ':x',
+    ]);
+    b.bundle(function (err, src) {
+        t.ifError(err);
+        var c = { console: { log: log } };
+        function log (msg) { t.equal(msg, 'wow') }
+        vm.runInNewContext(src, c);
+        t.equal(c.require('x'), 555);
+    })
+});
