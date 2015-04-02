@@ -22,6 +22,8 @@ var has = require('has');
 var bresolve = require('browser-resolve');
 var resolve = require('resolve');
 
+var readonly = require('read-only-stream');
+
 module.exports = Browserify;
 inherits(Browserify, EventEmitter);
 
@@ -730,6 +732,7 @@ Browserify.prototype.reset = function (opts) {
 
 Browserify.prototype.bundle = function (cb) {
     var self = this;
+    var output = readonly(this.pipeline);
     if (cb && typeof cb === 'object') {
         throw new Error(
             'bundle() no longer accepts option arguments.\n'
@@ -744,23 +747,23 @@ Browserify.prototype.bundle = function (cb) {
         });
     }
     if (cb) {
-        this.pipeline.on('error', cb);
+        output.on('error', cb);
         this.pipeline.pipe(concat(function (body) {
             cb(null, body);
         }));
     }
     
     if (this._pending === 0) {
-        this.emit('bundle', this.pipeline);
+        this.emit('bundle', output);
         this.pipeline.end();
     }
     else this.once('_ready', function () {
-        self.emit('bundle', self.pipeline);
+        self.emit('bundle', output);
         self.pipeline.end();
     });
     
     this._bundled = true;
-    return this.pipeline;
+    return output;
 };
 
 function isStream (s) { return s && typeof s.pipe === 'function' }
