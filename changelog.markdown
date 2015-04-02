@@ -1,3 +1,9 @@
+# 9.0.5
+
+sets the stream returned by bundle() to be readable-only
+
+https://github.com/substack/node-browserify/pull/1187#issuecomment-89044008
+
 # 9.0.4
 
 handles the colon better for drive paths and improves the test suite for windows
