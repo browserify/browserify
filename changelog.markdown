@@ -1,3 +1,7 @@
+# 9.0.6
+
+republishing 9.0.5 in an attempt to satisfy npm.
+
 # 9.0.5
 
 sets the stream returned by bundle() to be readable-only
