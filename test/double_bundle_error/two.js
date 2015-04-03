@@ -1,1 +1,1 @@
-module.exports = 2;
+module.exports = require('./three.js') - 1;
