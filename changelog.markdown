@@ -1,3 +1,10 @@
+# 9.0.7
+
+fixes an issue with catching error events on the b.bundle() stream
+
+https://github.com/substack/node-browserify/issues/1194
+https://github.com/substack/node-browserify/pull/1195
+
 # 9.0.6
 
 republishing 9.0.5 in an attempt to satisfy npm.
