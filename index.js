@@ -732,7 +732,6 @@ Browserify.prototype.reset = function (opts) {
 
 Browserify.prototype.bundle = function (cb) {
     var self = this;
-    var output = readonly(this.pipeline);
     if (cb && typeof cb === 'object') {
         throw new Error(
             'bundle() no longer accepts option arguments.\n'
@@ -746,6 +745,7 @@ Browserify.prototype.bundle = function (cb) {
             self.pipeline.write(x);
         });
     }
+    var output = readonly(this.pipeline);
     if (cb) {
         output.on('error', cb);
         this.pipeline.pipe(concat(function (body) {
