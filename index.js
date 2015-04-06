@@ -752,16 +752,15 @@ Browserify.prototype.bundle = function (cb) {
             cb(null, body);
         }));
     }
-    
-    if (this._pending === 0) {
-        this.emit('bundle', output);
-        this.pipeline.end();
-    }
-    else this.once('_ready', function () {
+
+    function ready () {
         self.emit('bundle', output);
         self.pipeline.end();
-    });
-    
+    }
+
+    if (this._pending === 0) ready();
+    else this.once('_ready', ready);
+
     this._bundled = true;
     return output;
 };
