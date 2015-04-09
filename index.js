@@ -143,14 +143,17 @@ Browserify.prototype.require = function (file, opts) {
         }));
         return this;
     }
-    
-    var row = typeof file === 'object'
-        ? xtend(file, opts)
-        : (isExternalModule(file)
-            ? xtend(opts, { id: expose || file })
-            : xtend(opts, { file: file })
-        )
-    ;
+
+    var row;
+    if (typeof file === 'object') {
+        row = xtend(file, opts);
+    } else if (isExternalModule(file)) {
+        // external module or builtin
+        row = xtend(opts, { id: expose || file, file: file });
+    } else {
+        row = xtend(opts, { file: file });
+    };
+
     if (!row.id) {
         row.id = expose || file;
     }

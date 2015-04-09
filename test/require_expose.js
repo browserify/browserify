@@ -2,6 +2,32 @@ var browserify = require('../');
 var test = require('tap').test;
 var vm = require('vm');
 
+test('require expose external module', function (t) {
+    t.plan(2);
+    
+    var b = browserify({ basedir: __dirname });
+    b.require('beep', { expose: 'bip' });
+    b.bundle(function (err, src) {
+        t.ifError(err);
+        var c = { };
+        vm.runInNewContext(src, c);
+        t.equal(c.require('bip'), 'boop');
+    })
+});
+
+test('renaming builtin', function (t) {
+    t.plan(2);
+    
+    var b = browserify({ basedir: __dirname });
+    b.require('os', { expose: 'bone' });
+    b.bundle(function (err, src) {
+        t.ifError(err);
+        var c = { };
+        vm.runInNewContext(src, c);
+        t.equal(c.require('bone').platform(), 'browser');
+    })
+});
+
 test('exposed modules do not leak across bundles', function (t) {
     var bundle1, bundle2;
 
