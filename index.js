@@ -143,17 +143,19 @@ Browserify.prototype.require = function (file, opts) {
         }));
         return this;
     }
-
+    
     var row;
     if (typeof file === 'object') {
         row = xtend(file, opts);
-    } else if (isExternalModule(file)) {
+    }
+    else if (isExternalModule(file)) {
         // external module or builtin
         row = xtend(opts, { id: expose || file, file: file });
-    } else {
+    }
+    else {
         row = xtend(opts, { file: file });
-    };
-
+    }
+    
     if (!row.id) {
         row.id = expose || file;
     }
@@ -162,14 +164,14 @@ Browserify.prototype.require = function (file, opts) {
         // resolves the pathname.
         row.expose = row.id;
     }
-
+    
     if (opts.external) return self.external(file, opts);
     if (row.entry === undefined) row.entry = false;
-
+    
     if (!row.entry && self._options.exports === undefined) {
         self._bpack.hasExports = true;
     }
-
+    
     if (row.entry) row.order = self._entryOrder ++;
     if (opts.transform === false) row.transform = false;
     self.pipeline.write(row);
