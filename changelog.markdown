@@ -1,3 +1,10 @@
+# 9.0.8
+
+makes `.require({ expose: 'name' })` and `require('name')` work at the same time
+
+https://github.com/substack/node-browserify/issues/850
+https://github.com/substack/node-browserify/pull/1202
+
 # 9.0.7
 
 fixes an issue with catching error events on the b.bundle() stream
