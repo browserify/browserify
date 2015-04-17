@@ -263,6 +263,13 @@ Browserify.prototype.external = function (file, opts) {
 
 Browserify.prototype.exclude = function (file, opts) {
     if (!opts) opts = {};
+    if (isArray(file)) {
+        var self = this;
+        file.forEach(function(file) {
+            self.exclude(file, opts);
+        });
+        return this;
+    }
     var basedir = defined(opts.basedir, process.cwd());
     this._exclude.push(file);
     this._exclude.push('/' + relativePath(basedir, file));
@@ -271,6 +278,13 @@ Browserify.prototype.exclude = function (file, opts) {
 
 Browserify.prototype.ignore = function (file, opts) {
     if (!opts) opts = {};
+    if (isArray(file)) {
+        var self = this;
+        file.forEach(function(file) {
+            self.ignore(file, opts);
+        });
+        return this;
+    }
     var basedir = defined(opts.basedir, process.cwd());
 
     // Handle relative paths
