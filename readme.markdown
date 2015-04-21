@@ -368,6 +368,9 @@ requires will know where to resolve from.
 each file in the array. Use this for giant libs like jquery or threejs that
 don't have any requires or node-style globals but take forever to parse.
 
+`opts.transform` is an array of transform functions or modules names which will
+transform the source code before the parsing.
+
 `opts.extensions` is an array of optional extra extensions for the module lookup
 machinery to use when the extension has not been specified.
 By default browserify considers only `.js` and `.json` files in such cases.
