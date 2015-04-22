@@ -355,14 +355,38 @@ b.bundle().pipe(process.stdout);
 var browserify = require('browserify')
 ```
 
-## var b = browserify(files=[] or opts={})
+## `browserify([files] [, opts])`
 
-Create a browserify instance `b` from the entry main `files` or `opts.entries`.
-`files` can be an array of files or a single file.
+Returns a new browserify instance.
 
-For each `file` in `files`, if `file` is a stream, its contents will be used.
-You should use `opts.basedir` when using streaming files so that relative
-requires will know where to resolve from.
+<dl>
+<dt>
+files
+</dt>
+
+<dd>
+String, file object, or array of those types (they may be mixed) specifying entry file(s).
+</dd>
+
+<dt>
+opts
+</dt>
+
+<dd>
+Object.
+</dd>
+</dl>
+
+`files` and `opts` are both optional, but must be in the order shown if both are
+passed.
+
+Entry files may be passed in `files` and / or `opts.entries`.
+
+If an entry file is a stream, its contents will be used. You should pass
+`opts.basedir` when using streaming files so that relative requires can be
+resolved.
+
+`opts.entries` has the same definition as `files`.
 
 `opts.noParse` is an array which will skip all require() and global parsing for
 each file in the array. Use this for giant libs like jquery or threejs that
