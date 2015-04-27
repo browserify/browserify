@@ -432,7 +432,8 @@ you are in a modern enough browser.
 When `opts.standalone` is a non-empty string, a standalone module is created
 with that name and a [umd](https://github.com/forbeslindesay/umd) wrapper.
 You can use namespaces in the standalone global export using a `.` in the string
-name as a separator. For example: `'A.B.C'` 
+name as a separator, for example `'A.B.C'`. The global export will be [sanitized
+and camel cased](https://github.com/ForbesLindesay/umd#name-casing-and-characters).
 
 Note that in standalone mode the `require()` calls from the original source will
 still be around, which may trip up AMD loaders scanning for `require()` calls.
