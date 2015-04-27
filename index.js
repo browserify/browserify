@@ -18,6 +18,7 @@ var copy = require('shallow-copy');
 var isarray = require('isarray');
 var defined = require('defined');
 var has = require('has');
+var sanitize = require('htmlescape').sanitize;
 
 var bresolve = require('browser-resolve');
 var resolve = require('resolve');
@@ -583,7 +584,7 @@ Browserify.prototype._recorder = function (opts) {
 Browserify.prototype._json = function () {
     return through.obj(function (row, enc, next) {
         if (/\.json$/.test(row.file) && !isdedupe(row.source)) {
-            row.source = 'module.exports=' + row.source;
+            row.source = 'module.exports=' + sanitize(row.source);
         }
         this.push(row);
         next();
