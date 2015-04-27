@@ -38,6 +38,7 @@ test('reverse multi bundle', function (t) {
             var src = appSrc + ';' + lazySrc;
             var c = {
                 setTimeout: setTimeout,
+                clearTimeout: clearTimeout,
                 t: t
             };
             vm.runInNewContext(src, c);

@@ -18,6 +18,7 @@ test('reset', function (t) {
         t.ifError(err);
         var c = {
             setTimeout : setTimeout,
+            clearTimeout : clearTimeout,
             console : console
         };
         vm.runInNewContext(src, c);

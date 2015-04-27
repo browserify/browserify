@@ -30,7 +30,11 @@ test('leaking information about system paths (process)', function (t) {
         t.equal(src.indexOf(dirstring), -1, 'temp directory visible');
         t.equal(src.indexOf(process.cwd()), -1, 'cwd directory visible');
         t.equal(src.indexOf('/home'), -1, 'home directory visible');
-        vm.runInNewContext(src, { t: t, setTimeout: setTimeout });
+        vm.runInNewContext(src, {
+            t: t,
+            setTimeout: setTimeout,
+            clearTimeout: clearTimeout
+        });
     });
 });
 

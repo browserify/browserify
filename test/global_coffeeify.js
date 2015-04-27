@@ -11,7 +11,8 @@ test('coffeeify globally', function (t) {
         if (err) t.fail(err);
         vm.runInNewContext(src, {
             console: { log: log },
-            setTimeout: setTimeout
+            setTimeout: setTimeout,
+            clearTimeout: clearTimeout
         });
         function log (msg) { t.equal(msg, 'eyo') }
     });

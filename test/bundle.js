@@ -13,6 +13,7 @@ test('bundle', function (t) {
         
         var c = {
             setTimeout : setTimeout,
+            clearTimeout : clearTimeout,
             console : console
         };
         vm.runInNewContext(src, c);
