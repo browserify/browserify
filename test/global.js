@@ -69,7 +69,7 @@ test('process.nextTick', function (t) {
     var b = browserify();
     b.add(__dirname + '/global/tick.js');
     b.bundle(function (err, src) {
-        var c = { t: t, setTimeout: setTimeout };
+        var c = { t: t, setTimeout: setTimeout, clearTimeout: clearTimeout };
         vm.runInNewContext(src, c);
     });
 });

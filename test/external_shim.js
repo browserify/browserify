@@ -14,7 +14,11 @@ test('requiring a shimmed module name from an external bundle', function (t) {
         b2.bundle(function (err, src2) {
             t.plan(1);
 
-            var c = {setTimeout: setTimeout, console: console};
+            var c = {
+                console: console,
+                setTimeout: setTimeout,
+                clearTimeout: clearTimeout
+            };
             vm.runInNewContext(src1 + src2, c);
 
             t.ok(c.require('bundle1').shim === c.require('bundle2').shim);
