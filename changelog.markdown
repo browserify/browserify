@@ -1,3 +1,21 @@
+# 10.0.0
+
+## Possibly Breaking Change
+The ‘process’ dependency was updated to ~0.11.0, this module is inserted into bundles as the ‘process’ global/dependency.
+Previously, an unhandled error thrown in a ‘process.nextTick’ task would prevent any subsequent tasks from running, forever.
+The task queue now recovers from this condition, but may do so on a future browser tick.
+As part of this update, ‘process.nextTick’ now accepts variadic arguments, passed to the task, added to io.js in 1.8.1.
+
+* [#1231](https://github.com/substack/node-browserify/pull/1231)
+* [defunctzombie/node-process#38](https://github.com/defunctzombie/node-process/pull/38)
+* [iojs/io.js#1077](https://github.com/iojs/io.js/pull/1077)
+
+## Other changes
+
+* Escapes JavaScript-unsafe characters from JSON. [#1211](https://github.com/substack/node-browserify/pull/1211)
+* Removes ‘-v’ shortcut for ‘--version’ (conflicted with watchify) [#1222](https://github.com/substack/node-browserify/pull/1222)
+* Updated ‘defined’, ‘punycode’, ‘module-deps’, and ‘xtend’ dependencies to reduce install size [#1230](https://github.com/substack/node-browserify/pull/1230)
+
 # 9.0.8
 
 makes `.require({ expose: 'name' })` and `require('name')` work at the same time
