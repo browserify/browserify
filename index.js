@@ -61,6 +61,7 @@ function Browserify (files, opts) {
     self._transforms = [];
     self._entryOrder = 0;
     self._ticked = false;
+    self._delegateResolve = opts.resolve || bresolve;
 
     var ignoreTransform = [].concat(opts.ignoreTransform).filter(Boolean);
     self._filterTransform = function (tr) {
@@ -447,7 +448,7 @@ Browserify.prototype._createDeps = function (opts) {
     mopts.resolve = function (id, parent, cb) {
         if (self._ignore.indexOf(id) >= 0) return cb(null, paths.empty, {});
         
-        bresolve(id, parent, function (err, file, pkg) {
+        self._delegateResolve(id, parent, function (err, file, pkg) {
             if (file && self._ignore.indexOf(file) >= 0) {
                 return cb(null, paths.empty, {});
             }
