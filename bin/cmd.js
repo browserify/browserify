@@ -56,7 +56,12 @@ var bundle = b.bundle();
 bundle.on('error', errorExit);
 
 var outfile = b.argv.o || b.argv.outfile;
+var outfileExists = true;
+
 if (outfile) {
+    var tmp = fs.createReadStream(outfile);
+    tmp.on('error', function() { outfileExists = false; });
+    tmp.close();
     bundle.pipe(fs.createWriteStream(outfile));
 }
 else {
@@ -77,6 +82,9 @@ function errorExit(err) {
     }
     else {
         console.error(String(err));
+    }
+    if (!outfileExists) {
+        fs.unlinkSync(outfile);
     }
     process.exit(1);
 }
