@@ -61,7 +61,7 @@ var outfileExists = true;
 if (outfile) {
     var tmp = fs.createReadStream(outfile);
     tmp.on('error', function() { outfileExists = false; });
-    tmp.close();
+    tmp.destroy();
     bundle.pipe(fs.createWriteStream(outfile));
 }
 else {
