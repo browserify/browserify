@@ -61,6 +61,13 @@ function Browserify (files, opts) {
     self._transforms = [];
     self._entryOrder = 0;
     self._ticked = false;
+    self._bresolve = opts.browserField === false
+        ? function (id, opts, cb) {
+            if (!opts.basedir) opts.basedir = path.dirname(opts.filename)
+            resolve(id, opts, cb)
+        }
+        : bresolve
+    ;
 
     var ignoreTransform = [].concat(opts.ignoreTransform).filter(Boolean);
     self._filterTransform = function (tr) {
@@ -447,7 +454,7 @@ Browserify.prototype._createDeps = function (opts) {
     mopts.resolve = function (id, parent, cb) {
         if (self._ignore.indexOf(id) >= 0) return cb(null, paths.empty, {});
         
-        bresolve(id, parent, function (err, file, pkg) {
+        self._bresolve(id, parent, function (err, file, pkg) {
             if (file && self._ignore.indexOf(file) >= 0) {
                 return cb(null, paths.empty, {});
             }
