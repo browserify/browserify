@@ -159,6 +159,15 @@ Advanced Options:
     to just "__filename,__dirname". This is handy if you want to run bundles in
     node.
 
+  --no-browser-field, --no-bf
+
+    Turn off package.json browser field resolution. This is also handy if you
+    need to run a bundle in node.
+
+  --node
+
+    Alias for --bare and --no-browser-field.
+
   --full-paths
 
     Turn off converting module ids into numerical indexes. This is useful for
@@ -177,11 +186,6 @@ Advanced Options:
 
     Consider files with specified EXTENSION as modules, this option can used
     multiple times.
-
-  --ignore-transform=MODULE, --it MODULE
-
-    Any transforms matching the given name will be ignored, including
-    those in your module dependencies. 
 
   --global-transform=MODULE, -g MODULE
 

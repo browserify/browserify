@@ -13,12 +13,14 @@ module.exports = function (args, opts) {
     var argv = subarg(args, {
         'boolean': [
             'deps', 'pack', 'ig', 'dg', 'im', 'd', 'list', 'builtins',
-            'commondir', 'bare', 'full-paths', 'bundle-external'
+            'commondir', 'bare', 'full-paths', 'bundle-external', 'bf',
+            'node'
         ],
         string: [ 's', 'r', 'u', 'x', 't', 'i', 'o', 'e', 'c', 'it' ],
         alias: {
             ig: [ 'insert-globals', 'fast' ],
             dg: [ 'detect-globals', 'detectGlobals', 'dg' ],
+            bf: [ 'browser-field', 'browserField ' ],
             im: 'ignore-missing',
             it: 'ignore-transform',
             igv: 'insert-global-vars',
@@ -43,7 +45,9 @@ module.exports = function (args, opts) {
             d: false,
             builtins: true,
             commondir: true,
-            'bundle-external': true
+            'bundle-external': true,
+            bf: true,
+            node: false
         }
     });
     
@@ -60,6 +64,10 @@ module.exports = function (args, opts) {
         return path.resolve(process.cwd(), entry);
     });
     
+    if (argv.node) {
+        argv.bare = true;
+        argv.browserField = false;
+    }
     if (argv.bare) {
         argv.builtins = false;
         argv.commondir = false;
@@ -80,6 +88,7 @@ module.exports = function (args, opts) {
         commondir: argv.commondir === false ? false : undefined,
         bundleExternal: argv['bundle-external'],
         basedir: argv.basedir,
+        browserField: argv.browserField,
         
         detectGlobals: argv.detectGlobals,
         insertGlobals: argv['insert-globals'] || argv.ig,
