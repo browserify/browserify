@@ -1,3 +1,13 @@
+# 10.1.0
+
+adds `--no-browser-field` and `opts.browserField = false` behavior to turn off
+the package.json browser field. This is useful if you want to make a bundle with
+a target of node or some environment with shimmed node primitives.
+
+A new alias `--node` sets `--no-browser-field` and `--bare`.
+
+https://github.com/substack/node-browserify/pull/1240
+
 # 10.0.0
 
 ## Possibly Breaking Change
