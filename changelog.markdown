@@ -1,3 +1,9 @@
+# 10.1.1
+
+ensures that entry paths are always full paths
+
+https://github.com/substack/node-browserify/pull/1248
+
 # 10.1.0
 
 adds `--no-browser-field` and `opts.browserField = false` behavior to turn off
