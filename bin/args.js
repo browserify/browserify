@@ -61,7 +61,7 @@ module.exports = function (args, opts) {
             s.resume();
             return rs;
         }
-        return path.resolve(process.cwd(), entry);
+        return entry;
     });
     
     if (argv.node) {

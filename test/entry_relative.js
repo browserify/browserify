@@ -2,10 +2,10 @@ var browserify = require('../');
 var vm = require('vm');
 var test = require('tap').test;
 
-test('entry', function (t) {
+test('entry - relative path', function (t) {
     t.plan(3);
-    
-    var b = browserify(__dirname + '/entry/main.js');
+
+    var b = browserify('entry/main.js');
     b.on('dep', function(row) {
         if (row.entry) t.equal(row.file, __dirname + '/entry/main.js');
     });
@@ -21,11 +21,11 @@ test('entry', function (t) {
     });
 });
 
-test('entry via add', function (t) {
+test('entry - relative path via add', function (t) {
     t.plan(3);
     
-    var b = browserify();
-    b.add(__dirname + '/entry/main.js');
+    var b = browserify({basedir: __dirname});
+    b.add('entry/main.js');
     b.on('dep', function(row) {
         if (row.entry) t.equal(row.file, __dirname + '/entry/main.js');
     });

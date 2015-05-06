@@ -180,7 +180,11 @@ Browserify.prototype.require = function (file, opts) {
         self._bpack.hasExports = true;
     }
     
-    if (row.entry) row.order = self._entryOrder ++;
+    if (row.entry) {
+        row.file = path.resolve(basedir, row.file);
+        row.order = self._entryOrder ++;
+    }
+    
     if (opts.transform === false) row.transform = false;
     self.pipeline.write(row);
     return self;
