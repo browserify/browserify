@@ -56,12 +56,11 @@ var bundle = b.bundle();
 bundle.on('error', errorExit);
 
 var outfile = b.argv.o || b.argv.outfile;
-var outfileExists = true;
+var outfileExists = false;
 
 if (outfile) {
-    var tmp = fs.createReadStream(outfile);
-    tmp.on('error', function() { outfileExists = false; });
-    tmp.destroy();
+    try { outfileExists = !!fs.lstatSync(outfile); }
+    catch (e) {}
     bundle.pipe(fs.createWriteStream(outfile));
 }
 else {
