@@ -1,3 +1,9 @@
+# 10.1.3
+
+Replace jsonstream with JSONStream
+
+https://github.com/substack/node-browserify/pull/1252
+
 # 10.1.2
 
 Replace JSONStream with jsonstream
