@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 var fs = require('fs');
-var JSONStream = require('jsonstream');
+var JSONStream = require('JSONStream');
 var through = require('through2');
 
 var b = require('./args')(process.argv.slice(2));
