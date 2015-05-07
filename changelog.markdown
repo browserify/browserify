@@ -1,3 +1,11 @@
+# 10.1.2
+
+Replace JSONStream with jsonstream
+Update deps to avoid jsonstream npm case problems
+
+https://github.com/substack/node-browserify/pull/1247
+https://github.com/substack/node-browserify/commit/1ca71e23
+
 # 10.1.1
 
 ensures that entry paths are always full paths
