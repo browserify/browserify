@@ -446,6 +446,11 @@ Browserify.prototype._createDeps = function (opts) {
         }
         return true;
     };
+    mopts.parseFilter = function (id, file, pkg) {
+        if (opts.parseFilter && !opts.parseFilter(id, file, pkg)) return false;
+        var no = [].concat(opts.noParse).filter(Boolean);
+        return fileFilter(file, basedir, no);
+    };
     mopts.filter = function (id) {
         if (opts.filter && !opts.filter(id)) return false;
         if (self._external.indexOf(id) >= 0) return false;
@@ -523,23 +528,7 @@ Browserify.prototype._createDeps = function (opts) {
         
         if (opts.noParse === true) return through();
         var no = [].concat(opts.noParse).filter(Boolean);
-        if (no.indexOf(file) >= 0) return through();
-        if (no.map(function (x){return path.resolve(x)}).indexOf(file)>=0){
-            return through();
-        }
-        
-        var parts = file.split('/node_modules/');
-        for (var i = 0; i < no.length; i++) {
-            if (typeof no[i] === 'function' && no[i](file)) {
-                return through();
-            }
-            else if (no[i] === parts[parts.length-1].split('/')[0]) {
-                return through();
-            }
-            else if (no[i] === parts[parts.length-1]) {
-                return through();
-            }
-        }
+        if (!fileFilter(file, basedir, no)) return through();
         
         var vars = xtend({
             process: function () { return "require('_process')" },
@@ -782,6 +771,30 @@ Browserify.prototype.bundle = function (cb) {
     return output;
 };
 
+function fileFilter(file, basedir, filters) {
+    if (filters.indexOf(file) >= 0) return false;
+    var foundByResolved = filters
+        .filter(isString)
+        .map(function (x) { return path.resolve(basedir, x); })
+        .indexOf(file) >= 0;
+    if (foundByResolved) return false;
+    
+    var parts = file.split('/node_modules/');
+    for (var i = 0; i < filters.length; i++) {
+        if (typeof filters[i] === 'function' && filters[i](file)) {
+            return false;
+        }
+        else if (filters[i] === parts[parts.length-1].split('/')[0]) {
+            return false
+        }
+        else if (filters[i] === parts[parts.length-1]) {
+            return false
+        }
+    }
+    return true;
+}
+
+function isString (s) { return typeof s === 'string'; }
 function isStream (s) { return s && typeof s.pipe === 'function' }
 function isAbsolutePath (file) {
     var regexp = process.platform === 'win32' ?
