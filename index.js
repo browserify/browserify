@@ -518,15 +518,19 @@ Browserify.prototype._createDeps = function (opts) {
         });
     }
     
+    var no = [].concat(opts.noParse).filter(Boolean);
+    var absno = no.filter(function(x) {
+        return typeof x === 'string';
+    }).map(function (x) {
+        return path.resolve(basedir, x);
+    });
+    
     function globalTr (file) {
         if (opts.detectGlobals === false) return through();
         
         if (opts.noParse === true) return through();
-        var no = [].concat(opts.noParse).filter(Boolean);
         if (no.indexOf(file) >= 0) return through();
-        if (no.map(function (x){return path.resolve(x)}).indexOf(file)>=0){
-            return through();
-        }
+        if (absno.indexOf(file) >= 0) return through();
         
         var parts = file.split('/node_modules/');
         for (var i = 0; i < no.length; i++) {
