@@ -110,6 +110,12 @@ Browserify.prototype.require = function (file, opts) {
     }
     
     if (!opts) opts = {};
+
+    // Prevent .require() from adding transforms. See: module-deps and
+    // https://github.com/substack/node-browserify/pull/1057
+    delete file.transform;
+    delete opts.transform;
+
     var basedir = defined(opts.basedir, self._options.basedir, process.cwd());
     var expose = opts.expose;
     if (file === expose && /^[\.]/.test(expose)) {
@@ -183,8 +189,7 @@ Browserify.prototype.require = function (file, opts) {
         row.file = path.resolve(basedir, row.file);
         row.order = self._entryOrder ++;
     }
-    
-    if (opts.transform === false) row.transform = false;
+
     self.pipeline.write(row);
     return self;
 };
