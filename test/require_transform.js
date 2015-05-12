@@ -19,12 +19,22 @@ test('b.require transform prop file path', function (t) {
     });
 });
 
+// Require file stream with file.transform prop.
+test('b.require transform prop file stream', function (t) {
+    requireTest(t, { transformVia: 'file' });
+});
+
 // Require file path with opts.transform prop.
 test('b.require transform prop file path', function (t) {
     requireTest(t, {
         requirePath: requirePath,
         transformVia: 'opts',
     });
+});
+
+// Require file stream with opts.transform prop.
+test('b.require transform prop file stream', function (t) {
+    requireTest(t, { transformVia: 'opts' });
 });
 
 function requireTest (t, opts) {
