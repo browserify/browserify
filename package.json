@@ -22,7 +22,7 @@
   "dependencies": {
     "JSONStream": "^1.0.3",
     "assert": "~1.3.0",
-    "browser-pack": "^4.0.3",
+    "browser-pack": "^5.0.0",
     "browser-resolve": "^1.7.1",
     "browserify-zlib": "~0.1.2",
     "buffer": "^3.0.0",

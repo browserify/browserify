@@ -16,7 +16,7 @@ test('ordinary debug', function (t) {
         var src = buf.toString('utf8');
         var last = src.split('\n').slice(-2)[0];
         t.ok(
-            /\/\/# sourceMappingURL=data:application\/json;base64,[\w+\/=]+$/
+            /\/\/# sourceMappingURL=data:application\/json;charset:utf-8;base64,[\w+\/=]+$/
             .test(last)
         );
     });
@@ -35,7 +35,7 @@ test('debug standalone', function (t) {
         var src = buf.toString('utf8');
         var last = src.split('\n').slice(-2)[0];
         t.ok(
-            /\/\/# sourceMappingURL=data:application\/json;base64,[\w+\/=]+$/
+            /\/\/# sourceMappingURL=data:application\/json;charset:utf-8;base64,[\w+\/=]+$/
             .test(last)
         );
     });
@@ -54,7 +54,7 @@ test('debug standalone exposed', function (t) {
         var src = buf.toString('utf8');
         var last = src.split('\n').slice(-2)[0];
         t.ok(
-            /\/\/# sourceMappingURL=data:application\/json;base64,[\w+\/=]+$/
+            /\/\/# sourceMappingURL=data:application\/json;charset:utf-8;base64,[\w+\/=]+$/
             .test(last)
         );
         var c = { window: {} };
