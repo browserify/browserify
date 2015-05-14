@@ -19,6 +19,7 @@ var isarray = require('isarray');
 var defined = require('defined');
 var has = require('has');
 var sanitize = require('htmlescape').sanitize;
+var shasum = require('shasum');
 
 var bresolve = require('browser-resolve');
 var resolve = require('resolve');
@@ -68,6 +69,7 @@ function Browserify (files, opts) {
         }
         : bresolve
     ;
+    self._syntaxCache = {};
 
     var ignoreTransform = [].concat(opts.ignoreTransform).filter(Boolean);
     self._filterTransform = function (tr) {
@@ -627,9 +629,14 @@ Browserify.prototype._unshebang = function () {
 };
 
 Browserify.prototype._syntax = function () {
+    var self = this;
     return through.obj(function (row, enc, next) {
-        var err = syntaxError(row.source, row.file || row.id);
-        if (err) return this.emit('error', err);
+        var h = shasum(row.source);
+        if (typeof self._syntaxCache[h] === 'undefined') {
+            var err = syntaxError(row.source, row.file || row.id);
+            if (err) return this.emit('error', err);
+            self._syntaxCache[h] = true;
+        }
         this.push(row);
         next();
     });
