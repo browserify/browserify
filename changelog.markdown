@@ -1,3 +1,21 @@
+# 10.2.0
+
+remove unnecessary "isDedupe" json check. this was a hack-fix for watchify <=2.4.
+
+https://github.com/substack/node-browserify/pull/1244
+
+fixes for the "noParse" path matcher.
+
+https://github.com/substack/node-browserify/pull/1259
+
+add syntax check cache. this speeds up rebuilds (like when using watchify).
+
+https://github.com/substack/node-browserify/pull/1253
+
+update to browser-pack@^5.0.0 - includes several fixes related to source maps.
+
+https://github.com/substack/node-browserify/pull/1257
+
 # 10.1.3
 
 Replace jsonstream with JSONStream
