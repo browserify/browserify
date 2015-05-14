@@ -1,6 +1,8 @@
 var browserify = require('../');
 var vm = require('vm');
 var test = require('tap').test;
+var through = require('through2');
+var xtend = require('xtend');
 
 test('double bundle json', function (t) {
     t.plan(6);
@@ -12,11 +14,16 @@ test('double bundle json', function (t) {
     
     var cache = {};
     var b = browserify(__dirname + '/double_bundle_json/index.js', {
-        cache: cache, fullPaths: true
+        cache: cache
     });
-    b.on('dep', function (row) {
-        cache[row.id] = row;
-    });
+    b.pipeline.get('deps').push(through.obj(function(row, enc, next) {
+        cache[row.file] = {
+            source: row.source,
+            deps: xtend(row.deps)
+        };
+        this.push(row);
+        next();
+    }));
     b.bundle(function (err, src0) {
         t.ifError(err);
         vm.runInNewContext(src0, { console: { log: log0 } });

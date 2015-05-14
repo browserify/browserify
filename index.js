@@ -594,7 +594,7 @@ Browserify.prototype._recorder = function (opts) {
 
 Browserify.prototype._json = function () {
     return through.obj(function (row, enc, next) {
-        if (/\.json$/.test(row.file) && !isdedupe(row.source)) {
+        if (/\.json$/.test(row.file)) {
             row.source = 'module.exports=' + sanitize(row.source);
         }
         this.push(row);
@@ -630,12 +630,6 @@ Browserify.prototype._syntax = function () {
         next();
     });
 };
-
-function isdedupe (src) { // mega-hack
-    return /^arguments\[4\]\[/.test(src)
-        && /\]\[0\]\.apply\(exports,arguments\)$/.test(src)
-    ;
-}
 
 Browserify.prototype._dedupe = function () {
     return through.obj(function (row, enc, next) {
