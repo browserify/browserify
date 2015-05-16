@@ -510,43 +510,7 @@ Browserify.prototype._createDeps = function (opts) {
     });
     
     mopts.globalTransform = [];
-    if (!this._bundled) {
-        this.once('bundle', function () {
-            self.pipeline.write({
-                transform: globalTr,
-                global: true,
-                options: {}
-            });
-        });
-    }
-    
-    var no = [].concat(opts.noParse).filter(Boolean);
-    var absno = no.filter(function(x) {
-        return typeof x === 'string';
-    }).map(function (x) {
-        return path.resolve(basedir, x);
-    });
-    
-    function globalTr (file) {
-        if (opts.detectGlobals === false) return through();
-        
-        if (opts.noParse === true) return through();
-        if (no.indexOf(file) >= 0) return through();
-        if (absno.indexOf(file) >= 0) return through();
-        
-        var parts = file.split('/node_modules/');
-        for (var i = 0; i < no.length; i++) {
-            if (typeof no[i] === 'function' && no[i](file)) {
-                return through();
-            }
-            else if (no[i] === parts[parts.length-1].split('/')[0]) {
-                return through();
-            }
-            else if (no[i] === parts[parts.length-1]) {
-                return through();
-            }
-        }
-        
+    if (!this._bundled && opts.detectGlobals !== false && opts.noParse !== true) {
         var vars = xtend({
             process: function () { return "require('_process')" },
         }, opts.insertGlobalVars);
@@ -556,15 +520,45 @@ Browserify.prototype._createDeps = function (opts) {
             delete vars.buffer;
         }
         
-        return insertGlobals(file, xtend(opts, {
-            debug: opts.debug,
+        var gopts = xtend(opts, {
             always: opts.insertGlobals,
             basedir: opts.commondir === false
                 ? '/'
-                : opts.basedir || process.cwd()
+                : basedir
             ,
             vars: vars
-        }));
+        });
+        
+        var no = [].concat(opts.noParse).filter(Boolean);
+        var absno = no
+            .filter(function (x) { return typeof x === 'string'; })
+            .map(function (x) { return path.resolve(basedir, x); });
+            
+        var globalTr = function (file) {
+            if (no.indexOf(file) >= 0) return through();
+            if (absno.indexOf(file) >= 0) return through();
+            
+            var parts = file.split('/node_modules/');
+            for (var i = 0; i < no.length; i++) {
+                if (typeof no[i] === 'function' && no[i](file)) {
+                    return through();
+                }
+                else if (no[i] === parts[parts.length-1].split('/')[0]) {
+                    return through();
+                }
+                else if (no[i] === parts[parts.length-1]) {
+                    return through();
+                }
+            }
+            return insertGlobals(file, gopts);
+        };
+        this.once('bundle', function () {
+            self.pipeline.write({
+                transform: globalTr,
+                global: true,
+                options: {}
+            });
+        });
     }
     return mdeps(mopts);
 };
