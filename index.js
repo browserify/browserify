@@ -9,7 +9,6 @@ var builtins = require('./lib/builtins.js');
 var splicer = require('labeled-stream-splicer');
 var through = require('through2');
 var concat = require('concat-stream');
-var duplexer = require('duplexer2');
 
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
