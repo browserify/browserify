@@ -1,3 +1,9 @@
+# 10.2.1
+
+housekeeping - removed unused code
+
+https://github.com/substack/node-browserify/pull/1273
+
 # 10.2.0
 
 remove unnecessary "isDedupe" json check. this was a hack-fix for watchify <=2.4.
