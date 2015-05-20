@@ -57,7 +57,6 @@
     "read-only-stream": "^1.1.1",
     "readable-stream": "^1.1.13",
     "resolve": "^1.1.4",
-    "shallow-copy": "0.0.1",
     "shasum": "^1.0.0",
     "shell-quote": "~0.0.1",
     "stream-browserify": "^1.0.0",

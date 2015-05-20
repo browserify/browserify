@@ -9,12 +9,10 @@ var builtins = require('./lib/builtins.js');
 var splicer = require('labeled-stream-splicer');
 var through = require('through2');
 var concat = require('concat-stream');
-var duplexer = require('duplexer2');
 
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 var xtend = require('xtend');
-var copy = require('shallow-copy');
 var isarray = require('isarray');
 var defined = require('defined');
 var has = require('has');
@@ -423,7 +421,7 @@ Browserify.prototype._createPipeline = function (opts) {
 
 Browserify.prototype._createDeps = function (opts) {
     var self = this;
-    var mopts = copy(opts);
+    var mopts = xtend(opts);
     var basedir = defined(opts.basedir, process.cwd());
 
     // Let mdeps populate these values since it will be resolving file paths
@@ -503,7 +501,7 @@ Browserify.prototype._createDeps = function (opts) {
     else if (opts.builtins && typeof opts.builtins === 'object') {
         mopts.modules = opts.builtins;
     }
-    else mopts.modules = copy(builtins);
+    else mopts.modules = xtend(builtins);
     
     Object.keys(builtins).forEach(function (key) {
         if (!has(mopts.modules, key)) self._exclude.push(key);
