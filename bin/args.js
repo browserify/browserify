@@ -245,13 +245,6 @@ module.exports = function (args, opts) {
     return b;
 };
 
-function copy (obj) {
-    return Object.keys(obj).reduce(function (acc, key) {
-        acc[key] = obj[key];
-        return acc;
-    }, {});
-}
-
 function splitOnColon (f) {
     var pos = f.lastIndexOf(':');
     if (pos == -1) {

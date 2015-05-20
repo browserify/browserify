@@ -63,14 +63,6 @@ else {
     bundle.pipe(process.stdout);
 }
 
-function packageFilter (info) {
-    if (info && typeof info.browserify === 'string' && !info.browser) {
-        info.browser = info.browserify;
-        delete info.browserify;
-    }
-    return info || {};
-}
-
 function errorExit(err) {
     if (err.stack) {
         console.error(err.stack);
