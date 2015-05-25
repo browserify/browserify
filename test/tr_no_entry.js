@@ -3,6 +3,8 @@ var test = require('tap').test;
 var path = require('path')
 
 test('transform with no entry files', function (t) {
+    process.chdir(__dirname);
+    
     t.plan(2);
     var b = browserify();
     b.transform('tr');

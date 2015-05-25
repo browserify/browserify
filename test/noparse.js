@@ -3,6 +3,8 @@ var test = require('tap').test;
 var path = require('path');
 
 test('noParse array', function (t) {
+    process.chdir(__dirname);
+    
     t.plan(2);
     
     var actual = [];
