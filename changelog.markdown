@@ -1,3 +1,9 @@
+# 10.2.2
+
+fix tests for tap@^1.1.0 (and update tap)
+
+https://github.com/substack/node-browserify/pull/1276
+
 # 10.2.1
 
 housekeeping - removed unused code
