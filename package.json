@@ -32,7 +32,6 @@
     "console-browserify": "^1.1.0",
     "constants-browserify": "~0.0.1",
     "crypto-browserify": "^3.0.0",
-    "deep-equal": "^1.0.0",
     "defined": "^1.0.0",
     "deps-sort": "^1.3.7",
     "domain-browser": "~1.1.0",
