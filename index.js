@@ -15,7 +15,6 @@ var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 var xtend = require('xtend');
 var copy = require('shallow-copy');
-var glob = require('glob');
 var isarray = require('isarray');
 var defined = require('defined');
 var has = require('has');
@@ -40,11 +39,6 @@ function Browserify (files, opts) {
         opts = xtend(opts, { entries: [].concat(opts.entries || [], files) });
     }
     else opts = xtend(files, opts);
-    
-    if (isarray(opts.entries) && opts.entries.length === 1 
-      && typeof opts.entries[0] === 'string' && glob.hasMagic(opts.entries[0])) {
-       opts.entries = glob.sync(opts.entries[0]);
-    }
     
     self._options = opts;
     if (opts.noparse) opts.noParse = opts.noparse;
