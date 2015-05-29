@@ -20,7 +20,7 @@ module.exports = function (args, opts) {
         alias: {
             ig: [ 'insert-globals', 'fast' ],
             dg: [ 'detect-globals', 'detectGlobals', 'dg' ],
-            bf: [ 'browser-field', 'browserField ' ],
+            bf: [ 'browser-field', 'browserField' ],
             im: 'ignore-missing',
             it: 'ignore-transform',
             igv: 'insert-global-vars',
