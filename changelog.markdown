@@ -1,3 +1,10 @@
+# 10.2.3
+
+fixes an errant space in the `--no-browser-field` flag alias
+that kept it from working
+
+https://github.com/substack/node-browserify/issues/1286
+
 # 10.2.2
 
 fix tests for tap@^1.1.0 (and update tap)
