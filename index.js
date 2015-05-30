@@ -165,7 +165,11 @@ Browserify.prototype.require = function (file, opts) {
     }
     
     if (!row.id) {
-        row.id = expose || file;
+        if (!self._options.fullPaths) {
+            row.id = expose || file;
+        } else {
+            row.id = path.resolve(basedir, file)
+        }
     }
     if (expose || !row.entry) {
         // Make this available to mdeps so that it can assign the value when it
