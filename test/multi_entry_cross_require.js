@@ -1,17 +1,16 @@
 var browserify = require('../');
 var vm = require('vm');
 var test = require('tap').test;
-var fs = require('fs');
 
 var testFiles = [
-    __dirname + '/multi_entry/a.js',
-    __dirname + '/multi_entry/b.js',
-    __dirname + '/multi_entry/c.js'
+    __dirname + '/multi_entry_cross_require/a.js',
+    __dirname + '/multi_entry_cross_require/lib/b.js',
+    __dirname + '/multi_entry_cross_require/c.js'
 ];
 
-test('multi entry', function (t) {
-    t.plan(6);
-    
+test('multi entry cross require', function (t) {
+    t.plan(8);
+
     var b = browserify([
         testFiles[0],
         testFiles[1]
@@ -25,6 +24,7 @@ test('multi entry', function (t) {
     });
     
     b.bundle(function (err, src) {
+        if (err) throw err;
         var c = {
             times : 0,
             t : t
@@ -33,9 +33,38 @@ test('multi entry', function (t) {
     });
 });
 
-test('multi entry relative', function (t) {
-    t.plan(6);
+test('multi entry cross require - relative cwd', function (t) {
+    t.plan(8);
+
+    var dsTestFiles = testFiles.map(function(x) {
+        return x.replace(__dirname + '/', './');
+    });
+
+    var b = browserify({
+        entries: [dsTestFiles[0], dsTestFiles[1]],
+        basedir: __dirname
+    });
+    b.add(dsTestFiles[2]);
     
+    b.on('dep', function(row) {
+        if (row.entry) {
+            t.ok(testFiles.indexOf(row.file) > -1, 'should contain full entry path');
+        }
+    });
+    
+    b.bundle(function (err, src) {
+        if (err) throw err;
+        var c = {
+            times : 0,
+            t : t
+        };
+        vm.runInNewContext(src, c);
+    });
+});
+
+test('multi entry cross require - relative', function (t) {
+    t.plan(8);
+
     var rTestFiles = testFiles.map(function(x) {
         return x.replace(__dirname + '/', '');
     });
@@ -53,65 +82,7 @@ test('multi entry relative', function (t) {
     });
     
     b.bundle(function (err, src) {
-        var c = {
-            times : 0,
-            t : t
-        };
-        vm.runInNewContext(src, c);
-    });
-});
-
-test('multi entry relative cwd', function (t) {
-    t.plan(6);
-    
-    var rTestFiles = testFiles.map(function(x) {
-        return x.replace(__dirname + '/', './');
-    });
-
-    var b = browserify({
-        entries: [rTestFiles[0], rTestFiles[1]],
-        basedir: __dirname
-    });
-    b.add(rTestFiles[2]);
-    
-    b.on('dep', function(row) {
-        if (row.entry) {
-            t.ok(testFiles.indexOf(row.file) > -1, 'should contain full entry path');
-        }
-    });
-    
-    b.bundle(function (err, src) {
-        var c = {
-            times : 0,
-            t : t
-        };
-        vm.runInNewContext(src, c);
-    });
-});
-
-test('entries as streams', function (t) {
-    t.plan(6);
-    
-    // commondir blows up with streams and without basedir
-    var opts = { basedir: __dirname + '/multi_entry' };
-    
-    var b = browserify([
-        fs.createReadStream(testFiles[0]),
-        fs.createReadStream(testFiles[1])
-    ], opts);
-    b.add(fs.createReadStream(testFiles[2]));
-    
-    b.on('dep', function(row) {
-        if (row.entry) {
-            t.similar(
-                row.file,
-                RegExp(__dirname + '/multi_entry/_stream_[\\d].js'),
-                'should be full entry path'
-            );
-        }
-    });
-    
-    b.bundle(function (err, src) {
+        if (err) throw err;
         var c = {
             times : 0,
             t : t
