@@ -1,3 +1,11 @@
+# 10.2.4
+
+fixes requiring an entry from another entry
+
+remove unused dep "deep-equal" and unused file "lib/_exclude.js"
+
+https://github.com/substack/node-browserify/pull/1268
+
 # 10.2.3
 
 fixes an errant space in the `--no-browser-field` flag alias
