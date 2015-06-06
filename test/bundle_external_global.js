@@ -18,7 +18,7 @@ test('bundle external global', function (t) {
             process: process
         });
         function log (msg) {
-            t.equal(typeof msg.nextTick, 'function');
+            t.equal(msg, process);
         }
     });
 });
