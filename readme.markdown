@@ -224,7 +224,7 @@ When you `require()` any of these modules, you will get a browser-specific shim:
 * [constants](https://www.npmjs.com/package/constants-browserify)
 * [crypto](https://www.npmjs.com/package/crypto-browserify)
 * [domain](https://www.npmjs.com/package/domain-browser)
-* [events](https://www.npmjs.com/package/events-browserify)
+* [events](https://www.npmjs.com/package/events)
 * [http](https://www.npmjs.com/package/http-browserify)
 * [https](https://www.npmjs.com/package/https-browserify)
 * [os](https://www.npmjs.com/package/os-browserify)
