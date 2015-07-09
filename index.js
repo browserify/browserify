@@ -27,6 +27,7 @@ var readonly = require('read-only-stream');
 module.exports = Browserify;
 inherits(Browserify, EventEmitter);
 
+var fs = require('fs');
 var path = require('path');
 var paths = {
     empty: path.join(__dirname, 'lib/_empty.js')
@@ -481,7 +482,7 @@ Browserify.prototype._createDeps = function (opts) {
                     return cb(null, paths.empty, {});
                 }
             }
-            cb(err, file, pkg);
+            cb(err, file && fs.realpathSync(file), pkg);
         });
     };
     
