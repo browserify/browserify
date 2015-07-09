@@ -1,3 +1,10 @@
+# 10.2.5
+
+fixes an issue with symlinked files executing multiple times
+
+https://github.com/substack/node-browserify/issues/1063
+https://github.com/substack/node-browserify/pull/1318
+
 # 10.2.4
 
 fixes requiring an entry from another entry
