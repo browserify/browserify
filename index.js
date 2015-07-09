@@ -482,7 +482,11 @@ Browserify.prototype._createDeps = function (opts) {
                     return cb(null, paths.empty, {});
                 }
             }
-            cb(err, file && fs.realpathSync(file), pkg);
+            if (err) cb(err, file, pkg)
+            else if (file) fs.realpath(file, function (err, res) {
+                cb(err, res, pkg);
+            });
+            else cb(err, null, pkg)
         });
     };
     
