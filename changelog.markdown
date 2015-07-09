@@ -1,3 +1,7 @@
+# 10.2.6
+
+uses the non-sync version of fs.realpath
+
 # 10.2.5
 
 fixes an issue with symlinked files executing multiple times
