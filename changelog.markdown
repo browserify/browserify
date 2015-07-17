@@ -1,3 +1,37 @@
+# 11.0.0
+
+## streams3
+
+The [`readable-stream`](https://npmjs.com/package/readable-stream) dependency was updated to `^2.0.0`. This package is inserted into bundles as `require('stream')`. Bundles will now get the latest streams implementation from io.js/node.js core, instead of an old version from node.js 0.11.x. Go forth and stream ALL THE DATA without fear!
+
+## shiny new HTTP package
+
+[John Hiesey](https://github.com/jhiesey) rewrote the [http-browserify](https://npmjs.org/package/http-browserify) package
+to create [stream-http](https://npmjs.org/package/stream-http), an implemention of `http` that supports streaming in modern browsers. Before v11.0.0, in most situations when you used `http.get` or `http.request`, the entire request would buffer in memory until the download was complete, and a single `'data'` event was emitted with the entire response as a string.
+
+`stream-http` uses the [Fetch API](https://fetch.spec.whatwg.org/) and various browser-specific XHR extensions to make binary streaming http requests work in as many browsers as possible.
+
+The following browsers support true streaming, where only a small amount of the request has to be held in memory at once:
+
+* Chrome >= 43 (using the `fetch` api)
+* Firefox >= 9 (using `moz-chunked-arraybuffer` responseType with XHR)
+
+The following browsers support pseudo-streaming, where the data is available before the request finishes, but the entire response must be held in memory:
+
+* Safari >= 5
+* IE >= 10
+* Most other Webkit-based browsers, including the default Android browser
+
+Older browsers will work, without streaming support. There is no support for IE6 or IE7.
+
+Compared to `http-browserify`, it is not necessary to set `options.responseType`. The `responseType` property of the XHR object will be set automatically depending on what features are detected in the browser (although see `options.mode` in the [readme](https://github.com/jhiesey/stream-http) to see how you can optimize this choice manually).
+
+The `response` is a streams3 stream, so all data is passed as `Buffer`s, unlike the variable types provided by the `'data'` event in `http-browserify`. This behavior tries to mimic the node core `http` module as closely as possible.
+
+* [#1327](https://github.com/substack/node-browserify/pull/1327)
+
+If you're brave, go ahead and give v11.0.0 a try today!
+
 # 10.2.6
 
 uses the non-sync version of fs.realpath
