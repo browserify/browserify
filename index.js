@@ -770,7 +770,7 @@ Browserify.prototype.bundle = function (cb) {
     var output = readonly(this.pipeline);
     if (cb) {
         output.on('error', cb);
-        this.pipeline.pipe(concat(function (body) {
+        output.pipe(concat(function (body) {
             cb(null, body);
         }));
     }
