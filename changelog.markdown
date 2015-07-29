@@ -1,3 +1,10 @@
+# 11.0.1
+
+The callback form of bundle() uses the returned output stream instead of the
+pipeline so that the `'end'` event will fire on the bundle instance.
+
+https://github.com/substack/watchify/pull/249#issuecomment-126061169
+
 # 11.0.0
 
 ## streams3
