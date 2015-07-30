@@ -631,7 +631,7 @@ pipeline with these labels:
 * `'pack'` - [browser-pack](https://www.npmjs.com/package/browser-pack)
 * `'wrap'` - apply final wrapping, `require=` and a newline and semicolon
 
-You can call `b.get()` with a label name to get a handle on a stream pipeline
+You can call `b.pipeline.get()` with a label name to get a handle on a stream pipeline
 that you can `push()`, `unshift()`, or `splice()` to insert your own transform
 streams.
 
