@@ -80,7 +80,13 @@ module.exports = function (args, opts) {
     var ignoreTransform = argv['ignore-transform'] || argv.it;
     var b = browserify(xtend({
         noParse: Array.isArray(argv.noParse) ? argv.noParse : [argv.noParse],
-        extensions: [].concat(argv.extension).filter(Boolean),
+        extensions: [].concat(argv.extension).filter(Boolean).map(function (extension) {
+            if (extension.charAt(0) != '.') { 
+                return '.' + extension;
+            } else {
+                return extension
+            }
+        }),
         ignoreTransform: [].concat(ignoreTransform).filter(Boolean),
         entries: entries,
         fullPaths: argv['full-paths'],
