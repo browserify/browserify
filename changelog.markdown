@@ -1,3 +1,9 @@
+# 11.1.0
+
+adds a `'.'` to extensions if it wasn't added
+
+https://github.com/substack/node-browserify/pull/1380
+
 # 11.0.1
 
 The callback form of bundle() uses the returned output stream instead of the
