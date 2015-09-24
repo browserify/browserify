@@ -3,6 +3,6 @@ node_js:
   - "0.8"
   - "0.10"
   - "0.12"
-  - "iojs"
+  - "4.0.0"
 before_install:
   - npm install -g npm@~1.4.6
