@@ -1,3 +1,9 @@
+# 11.2.0
+
+When `bundleExternal` is set to `false`, `process` and `buffer` are now correctly excluded. Also, using `--igv` via the CLI now works. That also means that `--bare` and `--node` actually insert `__filename` and `__dirname`.
+
+https://github.com/substack/node-browserify/pull/1361
+
 # 11.1.0
 
 adds a `'.'` to extensions if it wasn't added
