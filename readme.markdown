@@ -230,7 +230,7 @@ When you `require()` any of these modules, you will get a browser-specific shim:
 * [os](https://www.npmjs.com/package/os-browserify)
 * [path](https://www.npmjs.com/package/path-browserify)
 * [punycode](https://www.npmjs.com/package/punycode)
-* [querystring](https://www.npmjs.com/package/querystring)
+* [querystring](https://www.npmjs.com/package/querystring-es3)
 * [stream](https://www.npmjs.com/package/stream-browserify)
 * [string_decoder](https://www.npmjs.com/package/string_decoder)
 * [timers](https://www.npmjs.com/package/timers-browserify)
