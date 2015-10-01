@@ -25,7 +25,7 @@
     "browser-pack": "^5.0.0",
     "browser-resolve": "^1.7.1",
     "browserify-zlib": "~0.1.2",
-    "buffer": "^3.0.0",
+    "buffer": "^3.4.3",
     "builtins": "~0.0.3",
     "commondir": "0.0.1",
     "concat-stream": "~1.4.1",
