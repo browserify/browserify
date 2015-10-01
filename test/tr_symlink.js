@@ -7,10 +7,16 @@ var test = require('tap').test;
 var through = require('through2');
 
 test('transform symlink', function (t) {
-    t.plan(3);
-    var expected = [ 9, 555 ];
+    t.plan(4);
+    var expected = [ 9, 555, 777 ];
     var b = browserify(__dirname + '/tr_symlink/app/main.js', {
         basedir: __dirname + '/tr_symlink/app'
+    });
+    b.transform(function (file) {
+        return through(function (buf, enc, next) {
+            this.push(String(buf).replace(/7/g, 9));
+            next();
+        })
     });
     b.bundle(function (err, src) {
         t.ifError(err);
