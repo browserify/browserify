@@ -27,7 +27,7 @@
     "browserify-zlib": "~0.1.2",
     "buffer": "^3.4.3",
     "builtins": "~0.0.3",
-    "commondir": "0.0.1",
+    "commondir": "^1.0.1",
     "concat-stream": "~1.4.1",
     "console-browserify": "^1.1.0",
     "constants-browserify": "~0.0.1",
