@@ -40,7 +40,7 @@
     "glob": "^4.0.5",
     "has": "^1.0.0",
     "htmlescape": "^1.1.0",
-    "stream-http": "^1.2.0",
+    "stream-http": "^2.0.2",
     "https-browserify": "~0.0.0",
     "inherits": "~2.0.1",
     "insert-module-globals": "^6.4.1",
