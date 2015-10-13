@@ -18,7 +18,7 @@ var deps = {
 
 test('custom packer', function (t) {
     t.plan(7);
-    
+
     var b = browserify(__dirname + '/entry/main.js');
     b.pipeline.get('pack').splice(0,1, through.obj(function (row, enc, next) {
         t.equal(sources[row.id], row.source);

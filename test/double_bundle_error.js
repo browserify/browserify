@@ -4,7 +4,7 @@ var test = require('tap').test;
 
 test('double bundle error', function (t) {
     t.plan(2);
-    
+
     var b = browserify(__dirname + '/double_bundle_error/main.js');
     var x = b.bundle();
     x.on('error', function (err) {

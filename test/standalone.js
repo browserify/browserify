@@ -4,7 +4,7 @@ var test = require('tap').test;
 
 test('standalone', function (t) {
     t.plan(3);
-    
+
     var b = browserify(__dirname + '/standalone/main.js', {
         standalone: 'stand-test'
     });
@@ -42,7 +42,7 @@ test('standalone', function (t) {
 
 test('A.B.C standalone', function (t) {
     t.plan(3);
-    
+
     var b = browserify(__dirname + '/standalone/main.js', {
         standalone: 'A.B.C'
     });

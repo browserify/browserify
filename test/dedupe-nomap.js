@@ -6,7 +6,7 @@ test('identical content gets deduped and the row gets a "nomap" flag set when so
 
   var rows = [];
   browserify({ debug: true })
-    .on('dep', [].push.bind(rows)) 
+    .on('dep', [].push.bind(rows))
     .require(require.resolve('./dup'), { entry: true })
     .bundle(check);
 
@@ -37,7 +37,7 @@ test('identical content gets deduped and the row gets a "nomap" flag set when so
 
   var rows = [];
   browserify({ debug: false })
-    .on('dep', [].push.bind(rows)) 
+    .on('dep', [].push.bind(rows))
     .require(require.resolve('./dup'), { entry: true })
     .bundle(check);
 

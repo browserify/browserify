@@ -8,12 +8,12 @@ test('ignore browser field', function (t) {
     t.plan(3);
     var b = browserify(mainfile, { browserField: false });
     var expected = [ 'A:NODE', 'B:X.JS' ];
-    
+
     b.bundle(function (err, src) {
         t.ifError(err);
         var c = { console: { log: log } };
         vm.runInNewContext(src, c);
-        
+
         function log (msg) {
             t.equal(msg, expected.shift());
         }

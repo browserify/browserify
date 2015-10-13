@@ -7,10 +7,10 @@ var vm = require('vm');
 test('glob', function (t) {
     var expected = [ 'a', '!x', 'z', 'b', '!y' ];
     t.plan(expected.length + 1);
-    
+
     var cwd = process.cwd();
     process.chdir(__dirname);
-    
+
     var ps = spawn(process.execPath, [
         path.resolve(__dirname, '../bin/cmd.js'),
         'a.js', 'b.js',
@@ -22,7 +22,7 @@ test('glob', function (t) {
         vm.runInNewContext(body.toString('utf8'), c);
         function log (msg) { t.equal(msg, expected.shift()) }
     }));
-    
+
     ps.on('exit', function (code) {
         t.equal(code, 0);
     });

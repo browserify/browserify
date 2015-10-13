@@ -13,7 +13,7 @@ test('function transform', function (t) {
     var err = '';
     ps.stdout.on('data', function (buf) { src += buf });
     ps.stderr.on('data', function (buf) { err += buf });
-    
+
     ps.on('exit', function (code) {
         t.notEqual(code, 0);
         var errorFile = path.resolve(__dirname, 'bin_tr_error', 'tr.js');

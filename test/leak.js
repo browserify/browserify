@@ -15,7 +15,7 @@ var dirstring = dir.split(path.sep).slice(-2).join(path.sep);
 
 test('leaking information about system paths (process)', function (t) {
     t.plan(4);
-    
+
     var b = browserify({ basedir: dir });
     var stream = through();
     stream.push('process.nextTick(function () {'
@@ -24,7 +24,7 @@ test('leaking information about system paths (process)', function (t) {
     );
     stream.push(null);
     b.add(stream);
-    
+
     b.bundle(function (err, buf) {
         var src = buf.toString('utf8');
         t.equal(src.indexOf(dirstring), -1, 'temp directory visible');
@@ -40,13 +40,13 @@ test('leaking information about system paths (process)', function (t) {
 
 test('leaking information about system paths (Buffer)', function (t) {
     t.plan(4);
-    
+
     var b = browserify({ basedir: dir });
     var stream = through();
     stream.push('t.equal(Buffer("eHl6", "base64").toString(), "xyz")');
     stream.push(null);
     b.add(stream);
-    
+
     b.bundle(function (err, buf) {
         var src = buf.toString('utf8');
         t.equal(src.indexOf(dirstring), -1, 'temp directory visible');

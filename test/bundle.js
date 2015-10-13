@@ -7,17 +7,17 @@ test('bundle', function (t) {
     b.require('seq');
     b.bundle(function (err, src) {
         t.plan(3);
-        
+
         t.ifError(err);
         t.ok(src.length > 0);
-        
+
         var c = {
             setTimeout : setTimeout,
             clearTimeout : clearTimeout,
             console : console
         };
         vm.runInNewContext(src, c);
-        
+
         c.require('seq')([1,2,3])
             .parMap_(function (next, x) {
                 setTimeout(function () {

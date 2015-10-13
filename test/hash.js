@@ -4,7 +4,7 @@ var test = require('tap').test;
 
 test('hash', function (t) {
     t.plan(3);
-    
+
     var b = browserify(__dirname + '/hash/main.js');
     b.bundle(function (err, buf) {
         var c = { t: t };

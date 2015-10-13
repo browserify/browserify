@@ -4,7 +4,7 @@ var test = require('tap').test;
 
 test('resolve exposed files', function (t) {
     t.plan(2);
-    
+
     var b = browserify(__dirname + '/resolve_exposed/main.js', {
         basedir: __dirname + '/resolve_exposed'
     });

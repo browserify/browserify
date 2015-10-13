@@ -4,7 +4,7 @@ var vm = require('vm');
 
 test('coffeeify globally', function (t) {
     t.plan(1);
-    
+
     var b = browserify(__dirname + '/coffeeify/main.coffee');
     b.transform('coffeeify', { global: true });
     b.bundle(function (err, src) {

@@ -16,13 +16,13 @@ test('multi entry cross require', function (t) {
         testFiles[1]
     ]);
     b.add(testFiles[2]);
-    
+
     b.on('dep', function(row) {
         if (row.entry) {
             t.ok(testFiles.indexOf(row.file) > -1, 'should contain full entry path');
         }
     });
-    
+
     b.bundle(function (err, src) {
         if (err) throw err;
         var c = {
@@ -45,13 +45,13 @@ test('multi entry cross require - relative cwd', function (t) {
         basedir: __dirname
     });
     b.add(dsTestFiles[2]);
-    
+
     b.on('dep', function(row) {
         if (row.entry) {
             t.ok(testFiles.indexOf(row.file) > -1, 'should contain full entry path');
         }
     });
-    
+
     b.bundle(function (err, src) {
         if (err) throw err;
         var c = {
@@ -74,13 +74,13 @@ test('multi entry cross require - relative', function (t) {
         basedir: __dirname
     });
     b.add(rTestFiles[2]);
-    
+
     b.on('dep', function(row) {
         if (row.entry) {
             t.ok(testFiles.indexOf(row.file) > -1, 'should contain full entry path');
         }
     });
-    
+
     b.bundle(function (err, src) {
         if (err) throw err;
         var c = {

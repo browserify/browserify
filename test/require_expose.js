@@ -4,7 +4,7 @@ var vm = require('vm');
 
 test('require expose external module', function (t) {
     t.plan(2);
-    
+
     var b = browserify({ basedir: __dirname });
     b.require('beep', { expose: 'bip' });
     b.bundle(function (err, src) {
@@ -17,7 +17,7 @@ test('require expose external module', function (t) {
 
 test('renaming builtin', function (t) {
     t.plan(2);
-    
+
     var b = browserify({ basedir: __dirname });
     b.require('os', { expose: 'bone' });
     b.bundle(function (err, src) {
