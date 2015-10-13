@@ -10,7 +10,7 @@ test('dependency events', function (t) {
         deps.push({ id: row.id, deps: row.deps });
         t.equal(typeof row.source, 'string');
     });
-    
+
     b.bundle(function (err, src) {
         t.deepEqual(deps.sort(cmp), [
             { id: 1, deps: { './one': 2, './two': 3 } },
@@ -18,7 +18,7 @@ test('dependency events', function (t) {
             { id: 3, deps: {} }
         ]);
     });
-    
+
     function cmp (a, b) {
         return a.id < b.id ? -1 : 1;
     }

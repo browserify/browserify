@@ -11,12 +11,12 @@ var expected = [
 
 test('package event', function (t) {
     t.plan(2 + expected.length);
-    
+
     var b = browserify(__dirname + '/pkg_event/main.js');
     b.on('package', function (pkg) {
         t.deepEqual(pkg, expected.shift());
     });
-    
+
     b.bundle(function (err, src) {
         t.ifError(err);
         vm.runInNewContext(src, { console: { log: log } });

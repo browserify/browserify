@@ -4,7 +4,7 @@ var test = require('tap').test;
 
 test('fake', function (t) {
     t.plan(1);
-    
+
     var b = browserify();
     b.require(__dirname + '/fake/fake_fs.js', { expose: 'fs' });
     b.add(__dirname + '/fake/main.js');

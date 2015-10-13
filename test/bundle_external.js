@@ -4,12 +4,12 @@ var vm = require('vm');
 
 test('bundle external', function (t) {
     t.plan(3);
-    
+
     var expected = [
         { name: 'beep', value: 111 },
         { name: 't-rex', value: 5 }
     ];
-    
+
     var b = browserify({ bundleExternal: false });
     b.add(__dirname + '/bundle_external/main.js');
     b.bundle(function (err, src) {

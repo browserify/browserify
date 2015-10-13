@@ -1,7 +1,7 @@
 // RE: substack/node-browserify#713
 
-// https://github.com/substack/node-browserify/pull/713 breaks resolving 
-// an identical module multiple time from different locations when the 
+// https://github.com/substack/node-browserify/pull/713 breaks resolving
+// an identical module multiple time from different locations when the
 // module has a circular require.
 
 // other than path, mod1 and mod2 are identical

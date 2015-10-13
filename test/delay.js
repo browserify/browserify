@@ -5,7 +5,7 @@ var through = require('through2');
 
 test('delay for pipelines', function (t) {
     t.plan(3);
-    
+
     var b = browserify(__dirname + '/delay/main.js');
     b.pipeline.get('record').push(through.obj(function (row, enc, next) {
         if (row.file) {
@@ -15,7 +15,7 @@ test('delay for pipelines', function (t) {
         this.push(row);
         next();
     }));
-    
+
     b.bundle(function (err, src) {
         t.ifError(err);
         vm.runInNewContext(src, { console: { log: log } });

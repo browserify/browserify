@@ -5,16 +5,16 @@ var shasum = require('shasum');
 
 test('syntax cache - valid', function (t) {
     t.plan(2);
-    
+
     var expectedCache = {}
     var cacheKey;
-    
-    var b = browserify(__dirname + '/syntax_cache/valid.js');    
+
+    var b = browserify(__dirname + '/syntax_cache/valid.js');
     b.once('dep', function(row) {
         cacheKey = shasum(row.source);
         expectedCache[cacheKey] = true;
     });
-    
+
     Seq()
         .seq(function() { b.bundle(this); })
         .seq(function() {
@@ -30,9 +30,9 @@ test('syntax cache - valid', function (t) {
 
 test('syntax cache - skip invalid', function (t) {
     t.plan(5);
-    
+
     var b = browserify(__dirname + '/syntax_cache/invalid.js');
-    
+
     Seq()
         .seq(function() { b.bundle(this); })
         .catch(function(lastErr) {

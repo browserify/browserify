@@ -48,9 +48,8 @@ test('unique require', function (t) {
             // b should not have been required again
             // because it was part of the core bundle
             t.equal(c.baton.times, 1);
-            
+
             t.equal(c.unique_require('./b'), 'foo');
         });
     });
 });
-

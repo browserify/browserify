@@ -5,7 +5,7 @@ var through = require('through2');
 
 test('transform errors errback', function (t) {
     t.plan(2);
-    
+
     var b = browserify(__dirname + '/tr/main.js');
     b.transform(function (file) {
         return through(function (buf) {
@@ -20,7 +20,7 @@ test('transform errors errback', function (t) {
 
 test('transform errors propagate', function (t) {
     t.plan(1);
-    
+
     var b = browserify(__dirname + '/tr/main.js');
     b.transform(function (file) {
         return through(function (buf) {

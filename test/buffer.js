@@ -35,7 +35,7 @@ test('ascii buffer to base64', function (t) {
     t.plan(1);
     var b = browserify();
     b.require('buffer');
-    
+
     b.bundle(function (err, src) {
         var c = context();
         vm.runInNewContext(src, c);

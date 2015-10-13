@@ -5,11 +5,11 @@ var vm = require('vm');
 
 test('bundle external global', function (t) {
     t.plan(1);
-    
+
     var stream = through();
     stream.push('console.log(process)');
     stream.push(null);
-    
+
     var b = browserify({ bundleExternal: false });
     b.add(stream);
     b.bundle(function (err, src) {

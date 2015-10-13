@@ -4,7 +4,7 @@ var test = require('tap').test;
 
 test('reset', function (t) {
     t.plan(4);
-    
+
     var b = browserify();
     b.require('path');
     b.bundle(function (err, src) {
@@ -13,7 +13,7 @@ test('reset', function (t) {
             check(err, src);
         });
     });
-    
+
     function check (err, src) {
         t.ifError(err);
         var c = {
@@ -22,7 +22,7 @@ test('reset', function (t) {
             console : console
         };
         vm.runInNewContext(src, c);
-        
+
         t.equal(
             c.require('path').join('/a', 'b'),
             '/a/b'

@@ -4,9 +4,9 @@ var test = require('tap').test;
 
 test('entry - relative path', function (t) {
     process.chdir(__dirname);
-    
+
     t.plan(3);
-    
+
     var b = browserify('entry/main.js');
     b.on('dep', function(row) {
         if (row.entry) t.equal(row.file, __dirname + '/entry/main.js');
@@ -25,7 +25,7 @@ test('entry - relative path', function (t) {
 
 test('entry - relative path via add', function (t) {
     t.plan(3);
-    
+
     var b = browserify({basedir: __dirname});
     b.add('entry/main.js');
     b.on('dep', function(row) {

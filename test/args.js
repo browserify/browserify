@@ -5,7 +5,7 @@ var vm = require('vm');
 
 test('bundle from an arguments array', function (t) {
     t.plan(2);
-    
+
     var b = fromArgs([ __dirname + '/entry/two.js', '-s', 'XYZ' ]);
     b.bundle(function (err, src) {
         t.ifError(err);
@@ -17,7 +17,7 @@ test('bundle from an arguments array', function (t) {
 
 test('external flag for node modules', function(t) {
     t.plan(2);
-    
+
     var b = fromArgs([ __dirname + '/external_args/main.js', '-x', 'backbone' ]);
     b.bundle(function (err, src) {
         t.ifError(err);
@@ -57,7 +57,7 @@ test('numeric module names', function(t) {
 
 test('entry expose', function (t) {
     t.plan(3)
-    
+
     var b = fromArgs([
         path.join(__dirname, '/entry_expose/main.js'),
         '--require', path.join(__dirname, '/entry_expose/main.js') + ':x',

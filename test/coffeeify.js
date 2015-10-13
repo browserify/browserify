@@ -4,7 +4,7 @@ var vm = require('vm');
 
 test('coffeeify with an implicit global', function (t) {
     t.plan(1);
-    
+
     var b = browserify(__dirname + '/coffeeify/main.coffee');
     b.transform('coffeeify');
     b.bundle(function (err, src) {

@@ -5,11 +5,11 @@ var vm = require('vm');
 
 test('ordinary debug', function (t) {
     t.plan(1);
-    
+
     var stream = through();
     stream.push('console.log(1+2)');
     stream.push(null);
-    
+
     var b = browserify({ debug: true });
     b.add(stream);
     b.bundle(function (err, buf) {
@@ -24,11 +24,11 @@ test('ordinary debug', function (t) {
 
 test('debug standalone', function (t) {
     t.plan(1);
-    
+
     var stream = through();
     stream.push('console.log(1+2)');
     stream.push(null);
-    
+
     var b = browserify({ debug: true, standalone: 'xyz' });
     b.add(stream);
     b.bundle(function (err, buf) {
@@ -43,11 +43,11 @@ test('debug standalone', function (t) {
 
 test('debug standalone exposed', function (t) {
     t.plan(2);
-    
+
     var stream = through();
     stream.push('console.log(1+2)');
     stream.push(null);
-    
+
     var b = browserify({ debug: true, standalone: 'xyz' });
     b.require(__dirname + '/debug_standalone/x.js', { expose: 'xxx' });
     b.bundle(function (err, buf) {

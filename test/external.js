@@ -4,7 +4,7 @@ var test = require('tap').test;
 
 test('external', function (t) {
     t.plan(2);
-    
+
     var b = browserify(__dirname + '/external/main.js');
     b.external('freelist');
     b.bundle(function (err, src) {

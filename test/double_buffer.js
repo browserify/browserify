@@ -4,7 +4,7 @@ var vm = require('vm');
 
 test('double buffer', function (t) {
     t.plan(1);
-    
+
     var b = browserify(__dirname + '/double_buffer/main.js');
     b.require('buffer');
     b.bundle(function (err, src) {

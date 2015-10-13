@@ -4,7 +4,7 @@ var vm = require('vm');
 
 test('builtins false', function (t) {
     t.plan(1);
-    
+
     var b = browserify({
         entries: [ __dirname + '/no_builtins/main.js' ],
         commondir: false,

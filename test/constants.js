@@ -9,7 +9,7 @@ test('constants', function (t) {
     stream.push('console.log(require("constants").ENOENT)');
     stream.push(null);
     var b = browserify(stream);
-    
+
     b.bundle(function (err, src) {
         t.ifError(err);
         vm.runInNewContext(src, { console: { log: log } });

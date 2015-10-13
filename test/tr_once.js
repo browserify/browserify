@@ -6,7 +6,7 @@ var path = require('path');
 
 test('transform exactly once', function (t) {
     t.plan(3);
-    
+
     var b = browserify(__dirname + '/tr_once/main.js', {
         transform: function (file) {
         t.equal(file, path.join(__dirname, 'tr_once/main.js') );

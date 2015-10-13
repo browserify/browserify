@@ -5,7 +5,7 @@ var vm = require('vm');
 
 test('retarget with -r', function (t) {
     t.plan(2);
-    
+
     var ps = spawn(process.execPath, [
         path.resolve(__dirname, '../bin/cmd.js'),
         '-r', 'beep'
@@ -13,10 +13,10 @@ test('retarget with -r', function (t) {
     var src = '';
     ps.stdout.on('data', function (buf) { src += buf });
     ps.stderr.pipe(process.stderr);
-    
+
     ps.on('exit', function (code) {
         t.equal(code, 0);
-        
+
         var c = {};
         vm.runInNewContext(src, c);
         t.equal(c.require('beep'), 'boop');

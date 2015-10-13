@@ -4,7 +4,7 @@ var test = require('tap').test;
 
 test('global noparse module', function (t) {
     t.plan(2);
-    
+
     var b = browserify({
         noParse: 'aaa'
     });
@@ -23,7 +23,7 @@ test('global noparse module', function (t) {
 
 test('global noparse module file', function (t) {
     t.plan(2);
-    
+
     var b = browserify({
         noParse: 'aaa/index.js'
     });
@@ -42,7 +42,7 @@ test('global noparse module file', function (t) {
 
 test('global noparse module deep file', function (t) {
     t.plan(2);
-    
+
     var b = browserify({
         noParse: 'robot/lib/beep.js'
     });
@@ -61,7 +61,7 @@ test('global noparse module deep file', function (t) {
 
 test('global noparse basedir', function (t) {
     t.plan(2);
-    
+
     var b = browserify({
         basedir: __dirname + '/global',
         noParse: 'filename.js'

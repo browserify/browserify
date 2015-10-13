@@ -4,7 +4,7 @@ var test = require('tap').test;
 
 test('global', function (t) {
     t.plan(2);
-    
+
     var b = browserify();
     b.add(__dirname + '/global/main.js');
     b.bundle(function (err, src) {
@@ -37,7 +37,7 @@ test('__filename and __dirname with insertGlobals: true', function (t) {
 
 test('__filename and __dirname', function (t) {
     t.plan(2);
-    
+
     var b = browserify({ basedir: __dirname + '/global' });
     b.require(__dirname + '/global/filename.js', { expose: 'x' });
     b.bundle(function (err, src) {
@@ -51,7 +51,7 @@ test('__filename and __dirname', function (t) {
 
 test('__filename and __dirname with basedir', function (t) {
     t.plan(2);
-    
+
     var b = browserify({ basedir: __dirname });
     b.require(__dirname + '/global/filename.js', { expose: 'x' });
     b.bundle(function (err, src) {
@@ -65,7 +65,7 @@ test('__filename and __dirname with basedir', function (t) {
 
 test('process.nextTick', function (t) {
     t.plan(1);
-    
+
     var b = browserify();
     b.add(__dirname + '/global/tick.js');
     b.bundle(function (err, src) {
@@ -76,7 +76,7 @@ test('process.nextTick', function (t) {
 
 test('Buffer', function (t) {
     t.plan(2);
-    
+
     var b = browserify();
     b.add(__dirname + '/global/buffer.js');
     b.bundle(function (err, src) {

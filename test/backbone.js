@@ -11,7 +11,7 @@ test('backbone', function (t) {
         t.ok(Buffer.isBuffer(buf));
         var src = buf.toString('utf8');
         t.ok(src.length > 0);
-        
+
         var c = { console: console };
         vm.runInNewContext(src, c);
         t.deepEqual(

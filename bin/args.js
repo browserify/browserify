@@ -50,7 +50,7 @@ module.exports = function (args, opts) {
             node: false
         }
     });
-    
+
     var entries = argv._.concat(argv.entry)
     .filter(Boolean).map(function (entry) {
         if (entry === '-') {
@@ -63,7 +63,7 @@ module.exports = function (args, opts) {
         }
         return entry;
     });
-    
+
     if (argv.node) {
         argv.bare = true;
         argv.browserField = false;
@@ -75,7 +75,7 @@ module.exports = function (args, opts) {
             argv.igv = '__filename,__dirname';
         }
     }
-    
+
     if (argv.igv) {
         var insertGlobalVars = {};
         var wantedGlobalVars = argv.igv.split(',');
@@ -85,12 +85,12 @@ module.exports = function (args, opts) {
             }
         });
     }
-    
+
     var ignoreTransform = argv['ignore-transform'] || argv.it;
     var b = browserify(xtend({
         noParse: Array.isArray(argv.noParse) ? argv.noParse : [argv.noParse],
         extensions: [].concat(argv.extension).filter(Boolean).map(function (extension) {
-            if (extension.charAt(0) != '.') { 
+            if (extension.charAt(0) != '.') {
                 return '.' + extension;
             } else {
                 return extension
@@ -104,7 +104,7 @@ module.exports = function (args, opts) {
         bundleExternal: argv['bundle-external'],
         basedir: argv.basedir,
         browserField: argv.browserField,
-        
+
         detectGlobals: argv.detectGlobals,
         insertGlobals: argv['insert-globals'] || argv.ig,
         insertGlobalVars: insertGlobalVars,
@@ -126,7 +126,7 @@ module.exports = function (args, opts) {
             b.plugin(pf, pOpts);
         })
     ;
-    
+
     [].concat(argv.ignore).filter(Boolean)
         .forEach(function (i) {
             b._pending ++;
@@ -142,11 +142,11 @@ module.exports = function (args, opts) {
             });
         })
     ;
-    
+
     [].concat(argv.exclude).filter(Boolean)
         .forEach(function (u) {
             b.exclude(u);
-            
+
             b._pending ++;
             glob(u, function (err, files) {
                 if (err) return b.emit('error', err);
@@ -162,7 +162,7 @@ module.exports = function (args, opts) {
             b.require(xs[0], { expose: xs.length === 1 ? xs[0] : xs[1] })
         })
     ;
-    
+
     // resolve any external files and add them to the bundle as externals
     [].concat(argv.external).filter(Boolean)
         .forEach(function (x) {
@@ -179,26 +179,26 @@ module.exports = function (args, opts) {
                 });
             }
             else add(x, {});
-            
+
             function add (x, opts) {
                 if (/^[\/.]/.test(x)) b.external(path.resolve(x), opts)
                 else b.external(x, opts)
             }
         })
     ;
-    
+
     [].concat(argv.transform)
         .filter(Boolean)
         .forEach(function (t) { addTransform(t) })
     ;
-    
+
     [].concat(argv.g).concat(argv['global-transform'])
         .filter(Boolean)
         .forEach(function (t) {
             addTransform(t, { global: true });
         })
     ;
-    
+
     function addTransform (t, opts) {
         if (typeof t === 'string' || typeof t === 'function') {
             b.transform(opts, t);
@@ -216,7 +216,7 @@ module.exports = function (args, opts) {
         }
         else error('unexpected transform of type ' + typeof t);
     }
-    
+
     [].concat(argv.command).filter(Boolean)
         .forEach(function (c) {
             var cmd = parseShell(c);
@@ -229,7 +229,7 @@ module.exports = function (args, opts) {
                 var ps = spawn(cmd[0], cmd.slice(1), { env: env });
                 var error = '';
                 ps.stderr.on('data', function (buf) { error += buf });
-                
+
                 ps.on('exit', function (code) {
                     if (code === 0) return;
                     console.error([
@@ -243,12 +243,12 @@ module.exports = function (args, opts) {
             });
         })
     ;
-    
+
     if (argv.standalone === '') {
         error('--standalone requires an export name argument');
         return b;
     }
-    
+
     return b;
 };
 

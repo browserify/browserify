@@ -5,10 +5,10 @@ var vm = require('vm');
 
 test('compiling coffee with -c', function (t) {
     t.plan(4);
-    
+
     var cwd = process.cwd();
     process.chdir(__dirname);
-    
+
     var ps = spawn(process.execPath, [
         path.resolve(__dirname, '../bin/cmd.js'),
         '-c', '"' + process.execPath + '" "' + __dirname + '/../node_modules/coffee-script/bin/coffee" -sc',
@@ -18,11 +18,11 @@ test('compiling coffee with -c', function (t) {
     var err = '';
     ps.stdout.on('data', function (buf) { src += buf });
     ps.stderr.on('data', function (buf) { err += buf });
-    
+
     ps.on('exit', function (code) {
         t.equal(code, 0);
         t.equal(err, '');
-        
+
         var msgs = [ 'hello world!', 'from x!' ];
         var c = {
             console: {

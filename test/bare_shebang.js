@@ -6,7 +6,7 @@ var vm = require('vm');
 
 test('bare shebang', function (t) {
     t.plan(4);
-    
+
     var ps = spawn(process.execPath, [
         path.resolve(__dirname, '../bin/cmd.js'),
         '-', '--bare'
@@ -30,7 +30,7 @@ test('bare shebang', function (t) {
         });
     }));
     ps.stdin.end('#!/usr/bin/env node\nconsole.log(Buffer("WOO"))');
-    
+
     ps.on('exit', function (code) {
         t.equal(code, 0);
     });
