@@ -46,7 +46,7 @@
     "insert-module-globals": "^6.4.1",
     "isarray": "0.0.1",
     "labeled-stream-splicer": "^1.0.0",
-    "module-deps": "^3.7.11",
+    "module-deps": "^4.0.0",
     "os-browserify": "~0.1.1",
     "parents": "^1.0.1",
     "path-browserify": "~0.0.0",
