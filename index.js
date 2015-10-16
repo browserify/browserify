@@ -547,9 +547,7 @@ Browserify.prototype._createDeps = function (opts) {
             }
         }
         
-        var vars = xtend({
-            process: function () { return "require('_process')" },
-        }, opts.insertGlobalVars);
+        var vars = xtend(opts.insertGlobalVars);
         
         if (opts.bundleExternal === false) {
             vars.process = undefined;
