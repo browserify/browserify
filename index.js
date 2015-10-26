@@ -448,6 +448,7 @@ Browserify.prototype._createDeps = function (opts) {
         if (opts.filter && !opts.filter(id)) return false;
         if (self._external.indexOf(id) >= 0) return false;
         if (self._exclude.indexOf(id) >= 0) return false;
+        if (self._expose.hasOwnProperty(id)) return false;
         if (opts.bundleExternal === false && isExternalModule(id)) {
             return false;
         }
