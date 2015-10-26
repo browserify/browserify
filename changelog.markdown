@@ -1,3 +1,21 @@
+# 12.0.0
+
+Node support changes: now testing against the latest node (currently 4.2.1).
+node 0.8 is no longer supported, and iojs isn't actively tested.
+
+Stream3 everywhere! Everything has been updated to use streams3.
+
+Sourcemaps charset now uses an `=` instead of a `:`. This fixes certain issues
+with Chinese characters in sourcemaps. See #753.
+
+module-deps has been updated to fix root transforms on symlinked modules. See
+https://github.com/substack/module-deps/pull/99.
+
+stream-http, the module that provides `http` support, dropped IE8 support. If
+you depend on this, see https://github.com/jhiesey/stream-http#ie8-note.
+
+Removed `builtins` and `commondir` – both unused dependencies.
+
 # 11.2.0
 
 When `bundleExternal` is set to `false`, `process` and `buffer` are now correctly excluded. Also, using `--igv` via the CLI now works. That also means that `--bare` and `--node` actually insert `__filename` and `__dirname`.
