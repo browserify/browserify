@@ -70,13 +70,13 @@
   },
   "devDependencies": {
     "backbone": "~0.9.2",
-    "browser-unpack": "~0.0.0",
-    "coffee-script": "~1.5.0",
-    "coffeeify": "~0.6.0",
+    "browser-unpack": "^1.1.1",
+    "coffee-script": "~1.10.0",
+    "coffeeify": "~1.1.0",
     "es6ify": "~0.4.8",
     "isstream": "^0.1.2",
-    "seq": "0.3.3",
-    "tap": "^1.1.0",
+    "seq": "0.3.5",
+    "tap": "^2.2.0",
     "temp": "^0.8.1",
     "through": "^2.3.4"
   },
