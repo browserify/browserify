@@ -1,3 +1,10 @@
+# 12.0.1
+
+adds the previously failing tests and a small change necessary for transforms to
+be applied properly for symlinked packages
+
+https://github.com/substack/node-browserify/pull/1392
+
 # 12.0.0
 
 Node support changes: now testing against the latest node (currently 4.2.1).
