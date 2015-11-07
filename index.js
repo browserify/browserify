@@ -115,12 +115,14 @@ Browserify.prototype.require = function (file, opts) {
     var expose = opts.expose;
     if (file === expose && /^[\.]/.test(expose)) {
         expose = '/' + path.relative(basedir, expose);
+        expose = expose.replace(/\\/g, '/');
     }
     if (expose === undefined && this._options.exposeAll) {
         expose = true;
     }
     if (expose === true) {
         expose = '/' + path.relative(basedir, file);
+        expose = expose.replace(/\\/g, '/');
     }
     
     if (isStream(file)) {
