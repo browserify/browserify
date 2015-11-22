@@ -9,7 +9,7 @@ browserify will recursively analyze all the `require()` calls in your app in
 order to build a bundle you can serve up to the browser in a single `<script>`
 tag.
 
-[![build status](https://secure.travis-ci.org/substack/node-browserify.png)](http://travis-ci.org/substack/node-browserify)
+[![build status](https://secure.travis-ci.org/substack/node-browserify.png)](https://travis-ci.org/substack/node-browserify)
 
 ![browserify!](http://substack.net/images/browserify_logo.png)
 
@@ -60,7 +60,7 @@ html!
 
 # install
 
-With [npm](http://npmjs.org) do:
+With [npm](https://www.npmjs.com/) do:
 
 ```
 npm install -g browserify
@@ -210,7 +210,7 @@ Passing arguments to transforms and plugins:
 
 # compatibility
 
-Many [npm](http://npmjs.org) modules that don't do IO will just work after being
+Many [npm](https://www.npmjs.com/) modules that don't do IO will just work after being
 browserified. Others take more work.
 
 Many node built-in modules have been wrapped to work in the browser, but only
@@ -450,7 +450,7 @@ $ browserify main.js --standalone Foo | derequire > bundle.js
 ```
 
 `opts.insertGlobalVars` will be passed to
-[insert-module-globals](http://npmjs.org/package/insert-module-globals)
+[insert-module-globals](https://www.npmjs.com/package/insert-module-globals)
 as the `opts.vars` parameter.
 
 `opts.externalRequireName` defaults to `'require'` in `expose` mode but you can
