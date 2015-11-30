@@ -52,3 +52,13 @@ test('browser field resolve (e)', function (t) {
         function log (x) { t.equal(x, 111) }
     });
 });
+
+test('browser field resolve (f)', function (t) {
+    t.plan(2);
+    var b = browserify(__dirname + '/browser_field_resolve/f/main.js');
+    b.bundle(function (err, src) {
+        t.ifError(err);
+        vm.runInNewContext(src, { console: { log: log } });
+        function log (x) { t.equal(x, 999) }
+    });
+});
