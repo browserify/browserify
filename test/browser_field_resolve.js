@@ -62,3 +62,43 @@ test('browser field resolve (f)', function (t) {
         function log (x) { t.equal(x, 999) }
     });
 });
+
+test('browser field resolve (g)', function (t) {
+    t.plan(2);
+    var b = browserify(__dirname + '/browser_field_resolve/g/main.js');
+    b.bundle(function (err, src) {
+        t.ifError(err);
+        vm.runInNewContext(src, { console: { log: log } });
+        function log (x) { t.deepEqual(x, {}) }
+    });
+});
+
+test('browser field resolve (h)', function (t) {
+    t.plan(2);
+    var b = browserify(__dirname + '/browser_field_resolve/h/main.js');
+    b.bundle(function (err, src) {
+        t.ifError(err);
+        vm.runInNewContext(src, { console: { log: log } });
+        function log (x) { t.deepEqual(x, {}) }
+    });
+});
+
+test('browser field resolve (i)', function (t) {
+    t.plan(2);
+    var b = browserify(__dirname + '/browser_field_resolve/i/main.js');
+    b.bundle(function (err, src) {
+        t.ifError(err);
+        vm.runInNewContext(src, { console: { log: log } });
+        function log (x) { t.deepEqual(x, 5000) }
+    });
+});
+
+test('browser field resolve (j)', function (t) {
+    t.plan(2);
+    var b = browserify(__dirname + '/browser_field_resolve/j/main.js');
+    b.bundle(function (err, src) {
+        t.ifError(err);
+        vm.runInNewContext(src, { console: { log: log } });
+        function log (x) { t.deepEqual(x, 5000) }
+    });
+});
