@@ -102,3 +102,23 @@ test('browser field resolve (j)', function (t) {
         function log (x) { t.deepEqual(x, 5000) }
     });
 });
+
+test('browser field resolve (k)', function (t) {
+    t.plan(2);
+    var b = browserify(__dirname + '/browser_field_resolve/k/main.js');
+    b.bundle(function (err, src) {
+        t.ifError(err);
+        vm.runInNewContext(src, { console: { log: log } });
+        function log (x) { t.deepEqual(x, 3000) }
+    });
+});
+
+test('browser field resolve (l)', function (t) {
+    t.plan(2);
+    var b = browserify(__dirname + '/browser_field_resolve/l/main.js');
+    b.bundle(function (err, src) {
+        t.ifError(err);
+        vm.runInNewContext(src, { console: { log: log } });
+        function log (x) { t.deepEqual(x, 3000) }
+    });
+});
