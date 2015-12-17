@@ -110,7 +110,13 @@ Browserify.prototype.require = function (file, opts) {
         return this;
     }
     
-    if (!opts) opts = {};
+    if (!opts) {
+        if (typeof file === 'object') {
+            opts = file;
+        } else {
+            opts = {};
+        }
+    }
     var basedir = defined(opts.basedir, self._options.basedir, process.cwd());
     var expose = opts.expose;
     if (file === expose && /^[\.]/.test(expose)) {
