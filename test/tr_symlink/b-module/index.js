@@ -1,1 +1,2 @@
-module.exports = 777
+var ext = require('./ext');
+module.exports = ext;
