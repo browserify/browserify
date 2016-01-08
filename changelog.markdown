@@ -1,3 +1,9 @@
+# 12.0.2
+
+normalizes module paths on windows to consistently use `/`
+
+https://github.com/substack/node-browserify/pull/1424#issuecomment-170143099
+
 # 12.0.1
 
 adds the previously failing tests and a small change necessary for transforms to
