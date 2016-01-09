@@ -1,3 +1,27 @@
+# 13.0.0
+
+This release bumps the [`buffer`](https://www.npmjs.com/package/buffer) depedendency
+to v4, which has one possible breaking change:
+
+- The `buffer.toArrayBuffer()` method on `Buffer` instances has been removed.
+
+(This is probably not a problem for 99.9% of users.)
+
+This API was added in node v0.11.8 and
+[removed before v0.12 was released](https://github.com/nodejs/node-v0.x-archive/issues/7609#issuecomment-42903457).
+It was added to browserify's `buffer` implementation but was never removed when v0.12
+ was released. `buffer` v4 removes it so we have full parity with node.js.
+
+Going forward, to get an `ArrayBuffer` from a node.js-style `Buffer`, users should
+just use `buffer.buffer`. This works because `Buffer` is a subclass of `Uint8Array`
+in both the browser and node.js (since v3).
+
+On the plus side, this release also includes:
+
+- Performance improvements to `buffer` that
+[increase the speed](https://github.com/feross/buffer/pull/92) of some buffer
+methods by as much as 30%!
+
 # 12.0.2
 
 normalizes module paths on windows to consistently use `/`
