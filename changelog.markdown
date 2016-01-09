@@ -1,6 +1,6 @@
 # 13.0.0
 
-This release bumps the [`buffer`](https://www.npmjs.com/package/buffer) depedendency
+This release bumps the [`buffer`](https://www.npmjs.com/package/buffer) dependency
 to v4, which has one possible breaking change:
 
 - The `buffer.toArrayBuffer()` method on `Buffer` instances has been removed.
