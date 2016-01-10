@@ -191,6 +191,10 @@ Advanced Options:
 
     Use a transform module on all files after any ordinary transforms have run.
 
+  --ignore-transform=MODULE, -it MODULE
+
+    Do not run certain transformations, even if specified elsewhere.
+
   --plugin=MODULE, -p MODULE
 
     Register MODULE as a plugin.
@@ -386,6 +390,9 @@ passed.
 
 Entry files may be passed in `files` and / or `opts.entries`.
 
+External requires may be specified in `opts.require`, accepting the same formats
+that the `files` argument does.
+
 If an entry file is a stream, its contents will be used. You should pass
 `opts.basedir` when using streaming files so that relative requires can be
 resolved.
@@ -398,6 +405,12 @@ don't have any requires or node-style globals but take forever to parse.
 
 `opts.transform` is an array of transform functions or modules names which will
 transform the source code before the parsing.
+
+`opts.ignoreTransform` is an array of transformations that will not be run,
+even if specified elsewhere.
+
+`opts.plugin` is an array of plugin functions or module names to use. See the
+plugins section below for details.
 
 `opts.extensions` is an array of optional extra extensions for the module lookup
 machinery to use when the extension has not been specified.
@@ -423,6 +436,8 @@ useful for preserving the original paths that a bundle was generated with.
 
 `opts.bundleExternal` boolean option to set if external modules should be
 bundled. Defaults to true.
+
+When `opts.browserField` is false, the package.json browser field will be ignored.
 
 When `opts.insertGlobals` is true, always insert `process`, `global`,
 `__filename`, and `__dirname` without analyzing the AST for faster builds but
@@ -538,7 +553,10 @@ module.exports = function (file) { return through() };
 ```
 
 You don't need to necessarily use the
-[through](https://www.npmjs.com/package/through) module. Browserify is compatible with the newer, more verbose [Transform streams](http://nodejs.org/api/stream.html#stream_class_stream_transform_1) built into Node v0.10.
+[through](https://www.npmjs.com/package/through) module.
+Browserify is compatible with the newer, more verbose
+[Transform streams](http://nodejs.org/api/stream.html#stream_class_stream_transform_1)
+built into Node v0.10.
 
 Here's how you might compile coffee script on the fly using `.transform()`:
 
