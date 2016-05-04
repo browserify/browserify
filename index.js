@@ -13,7 +13,6 @@ var concat = require('concat-stream');
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 var xtend = require('xtend');
-var isarray = require('isarray');
 var defined = require('defined');
 var has = require('has');
 var sanitize = require('htmlescape').sanitize;
@@ -38,7 +37,7 @@ function Browserify (files, opts) {
     if (!(this instanceof Browserify)) return new Browserify(files, opts);
     if (!opts) opts = {};
     
-    if (typeof files === 'string' || isarray(files) || isStream(files)) {
+    if (typeof files === 'string' || Array.isArray(files) || isStream(files)) {
         opts = xtend(opts, { entries: [].concat(opts.entries || [], files) });
     }
     else opts = xtend(files, opts);
@@ -100,7 +99,7 @@ function Browserify (files, opts) {
 
 Browserify.prototype.require = function (file, opts) {
     var self = this;
-    if (isarray(file)) {
+    if (Array.isArray(file)) {
         file.forEach(function (x) {
             if (typeof x === 'object') {
                 self.require(x.file, xtend(opts, x));
@@ -193,7 +192,7 @@ Browserify.prototype.require = function (file, opts) {
 Browserify.prototype.add = function (file, opts) {
     var self = this;
     if (!opts) opts = {};
-    if (isarray(file)) {
+    if (Array.isArray(file)) {
         file.forEach(function (x) { self.add(x, opts) });
         return this;
     }
@@ -202,7 +201,7 @@ Browserify.prototype.add = function (file, opts) {
 
 Browserify.prototype.external = function (file, opts) {
     var self = this;
-    if (isarray(file)) {
+    if (Array.isArray(file)) {
         file.forEach(function (f) {
             if (typeof f === 'object') {
                 self.external(f, xtend(opts, f));
@@ -285,7 +284,7 @@ Browserify.prototype.transform = function (tr, opts) {
     if (typeof opts === 'function' || typeof opts === 'string') {
         tr = [ opts, tr ];
     }
-    if (isarray(tr)) {
+    if (Array.isArray(tr)) {
         opts = tr[1];
         tr = tr[0];
     }
@@ -341,7 +340,7 @@ Browserify.prototype.transform = function (tr, opts) {
 };
 
 Browserify.prototype.plugin = function (p, opts) {
-    if (isarray(p)) {
+    if (Array.isArray(p)) {
         opts = p[1];
         p = p[0];
     }
@@ -496,7 +495,7 @@ Browserify.prototype._createDeps = function (opts) {
         mopts.modules = {};
         self._exclude.push.apply(self._exclude, Object.keys(builtins));
     }
-    else if (opts.builtins && isarray(opts.builtins)) {
+    else if (opts.builtins && Array.isArray(opts.builtins)) {
         mopts.modules = {};
         opts.builtins.forEach(function (key) {
             mopts.modules[key] = builtins[key];
