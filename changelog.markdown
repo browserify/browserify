@@ -1,3 +1,9 @@
+# 13.0.1
+
+## Internal
+
+Use native `Array.isArray` and drop `isarray` dep.
+
 # 13.0.0
 
 This release bumps the [`buffer`](https://www.npmjs.com/package/buffer) dependency
