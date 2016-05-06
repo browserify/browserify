@@ -7,7 +7,7 @@ test('array add', function (t) {
     t.plan(expected.length);
     
     var b = browserify();
-    var files = [ 
+    var files = [
         __dirname + '/array/one.js',
         __dirname + '/array/two.js',
         __dirname + '/array/three.js'
@@ -25,14 +25,14 @@ test('array require', function (t) {
     t.plan(3);
     
     var b = browserify();
-    var files = [ 'isarray', 'subarg' ];
+    var files = [ 'defined', 'subarg' ];
     b.require(files);
     b.bundle(function (err, src) {
         var c = {};
         vm.runInNewContext(src, c);
-        
-        t.equal(c.require('isarray')([]), true);
-        t.equal(c.require('isarray')({}), false);
+
+        t.equal(c.require('defined')(undefined, true), true);
+        t.equal(c.require('defined')(undefined, false), false);
         t.deepEqual(c.require('subarg')(['-x', '3']), { x: 3, _: [] });
     });
 });
@@ -42,16 +42,16 @@ test('array require opts', function (t) {
     
     var b = browserify();
     var files = [
-        { file: require.resolve('isarray'), expose: 'abc' },
+        { file: require.resolve('defined'), expose: 'abc' },
         { file: require.resolve('subarg'), expose: 'def' }
     ];
     b.require(files);
     b.bundle(function (err, src) {
         var c = {};
         vm.runInNewContext(src, c);
-        
-        t.equal(c.require('abc')([]), true);
-        t.equal(c.require('abc')({}), false);
+
+        t.equal(c.require('abc')(undefined, true), true);
+        t.equal(c.require('abc')(undefined, false), false);
         t.deepEqual(c.require('def')(['-x', '3']), { x: 3, _: [] });
     });
 });
