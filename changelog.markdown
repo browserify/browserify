@@ -2,7 +2,7 @@
 
 ## Internal
 
-Use native `Array.isArray` and drop `isarray` dep.
+[#1552](https://github.com/substack/node-browserify/pull/1552), [#1555](https://github.com/substack/node-browserify/pull/1555): Use native `Array.isArray` and drop `isarray` dep. ([@kt3k](https://github.com/kt3k))
 
 # 13.0.0
 
