@@ -47,6 +47,7 @@ module.exports = function (args, opts) {
             commondir: true,
             'bundle-external': true,
             bf: true,
+            dedupe: true,
             node: false
         }
     });
@@ -104,7 +105,8 @@ module.exports = function (args, opts) {
         bundleExternal: argv['bundle-external'],
         basedir: argv.basedir,
         browserField: argv.browserField,
-        
+        dedupe: argv['dedupe'],
+
         detectGlobals: argv.detectGlobals,
         insertGlobals: argv['insert-globals'] || argv.ig,
         insertGlobalVars: insertGlobalVars,

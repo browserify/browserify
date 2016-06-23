@@ -49,7 +49,9 @@ function Browserify (files, opts) {
     if (opts.basedir !== undefined && typeof opts.basedir !== 'string') {
         throw new Error('opts.basedir must be either undefined or a string.');
     }
-    
+
+    opts.dedupe = opts.dedupe === false ? false : true;
+
     self._external = [];
     self._exclude = [];
     self._ignore = [];
@@ -380,7 +382,7 @@ Browserify.prototype._createPipeline = function (opts) {
     
     var dopts = {
         index: !opts.fullPaths && !opts.exposeAll,
-        dedupe: true,
+        dedupe: opts.dedupe,
         expose: this._expose
     };
     this._bpack = bpack(xtend(opts, { raw: true }));
