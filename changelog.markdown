@@ -1,3 +1,8 @@
+# 13.1.0
+
+exposes `opts.dedupe` and `--no-deupe` to optionally turn off deduping behavior:
+[#1581](https://github.com/substack/node-browserify/pull/1581)
+
 # 13.0.1
 
 ## Internal
