@@ -35,7 +35,7 @@
     "domain-browser": "~1.1.0",
     "duplexer2": "~0.1.2",
     "events": "~1.1.0",
-    "glob": "^5.0.15",
+    "glob": "^7.0.5",
     "has": "^1.0.0",
     "htmlescape": "^1.1.0",
     "https-browserify": "~0.0.0",
