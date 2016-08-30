@@ -255,8 +255,10 @@ Browserify.prototype.external = function (file, opts) {
     
     if (!opts) opts = {};
     var basedir = defined(opts.basedir, process.cwd());
+    var relativePath = '/' + path.relative(basedir, file);
+    relativePath = relativePath.replace(/\\/g, '/');
     this._external.push(file);
-    this._external.push('/' + path.relative(basedir, file));
+    this._external.push('/' + relativePath);
     return this;
 };
 
