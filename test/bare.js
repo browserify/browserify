@@ -16,13 +16,17 @@ test('bare', function (t) {
     ]);
     ps.stdout.pipe(concat(function (body) {
         vm.runInNewContext(body, {
-            Buffer: function (s) { return s.toLowerCase() },
+            Buffer: {
+              from: function (s) { return s.toLowerCase() }
+            },
             console: {
                 log: function (msg) { t.equal(msg, 'abc') }
             }
         });
         vm.runInNewContext(body, {
-            Buffer: Buffer,
+            Buffer: {
+              from: Buffer.from
+            },
             console: {
                 log: function (msg) {
                     t.ok(Buffer.isBuffer(msg));
@@ -31,7 +35,7 @@ test('bare', function (t) {
             }
         });
     }));
-    ps.stdin.end('console.log(Buffer("ABC"))');
+    ps.stdin.end('console.log(Buffer.from("ABC"))');
     
     ps.on('exit', function (code) {
         t.equal(code, 0);
