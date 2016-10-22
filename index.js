@@ -29,6 +29,7 @@ inherits(Browserify, EventEmitter);
 
 var fs = require('fs');
 var path = require('path');
+var relativePath = require('cached-path-relative')
 var paths = {
     empty: path.join(__dirname, 'lib/_empty.js')
 };
@@ -116,14 +117,14 @@ Browserify.prototype.require = function (file, opts) {
     var basedir = defined(opts.basedir, self._options.basedir, process.cwd());
     var expose = opts.expose;
     if (file === expose && /^[\.]/.test(expose)) {
-        expose = '/' + path.relative(basedir, expose);
+        expose = '/' + relativePath(basedir, expose);
         expose = expose.replace(/\\/g, '/');
     }
     if (expose === undefined && this._options.exposeAll) {
         expose = true;
     }
     if (expose === true) {
-        expose = '/' + path.relative(basedir, file);
+        expose = '/' + relativePath(basedir, file);
         expose = expose.replace(/\\/g, '/');
     }
     
@@ -256,7 +257,7 @@ Browserify.prototype.external = function (file, opts) {
     if (!opts) opts = {};
     var basedir = defined(opts.basedir, process.cwd());
     this._external.push(file);
-    this._external.push('/' + path.relative(basedir, file));
+    this._external.push('/' + relativePath(basedir, file));
     return this;
 };
 
@@ -264,7 +265,7 @@ Browserify.prototype.exclude = function (file, opts) {
     if (!opts) opts = {};
     var basedir = defined(opts.basedir, process.cwd());
     this._exclude.push(file);
-    this._exclude.push('/' + path.relative(basedir, file));
+    this._exclude.push('/' + relativePath(basedir, file));
     return this;
 };
 
@@ -409,10 +410,10 @@ Browserify.prototype._createPipeline = function (opts) {
             if (self._external.indexOf(row.file) >= 0) return next();
             
             if (isAbsolutePath(row.id)) {
-                row.id = '/' + path.relative(basedir, row.file);
+                row.id = '/' + relativePath(basedir, row.file);
             }
             Object.keys(row.deps || {}).forEach(function (key) {
-                row.deps[key] = '/' + path.relative(basedir, row.deps[key]);
+                row.deps[key] = '/' + relativePath(basedir, row.deps[key]);
             });
             this.push(row);
             next();
@@ -475,7 +476,7 @@ Browserify.prototype._createDeps = function (opts) {
             }
             
             if (file) {
-                var ex = '/' + path.relative(basedir, file);
+                var ex = '/' + relativePath(basedir, file);
                 if (self._external.indexOf(ex) >= 0) {
                     return cb(null, ex);
                 }
@@ -678,7 +679,7 @@ Browserify.prototype._label = function (opts) {
         var prev = row.id;
 
         if (self._external.indexOf(row.id) >= 0) return next();
-        if (self._external.indexOf('/' + path.relative(basedir, row.id)) >= 0) {
+        if (self._external.indexOf('/' + relativePath(basedir, row.id)) >= 0) {
             return next();
         }
         if (self._external.indexOf(row.file) >= 0) return next();
@@ -695,7 +696,7 @@ Browserify.prototype._label = function (opts) {
             }
 
             var afile = path.resolve(path.dirname(row.file), key);
-            var rfile = '/' + path.relative(basedir, afile);
+            var rfile = '/' + relativePath(basedir, afile);
             if (self._external.indexOf(rfile) >= 0) {
                 row.deps[key] = rfile;
             }
@@ -738,7 +739,7 @@ Browserify.prototype._debug = function (opts) {
     return through.obj(function (row, enc, next) {
         if (opts.debug) {
             row.sourceRoot = 'file://localhost';
-            row.sourceFile = path.relative(basedir, row.file)
+            row.sourceFile = relativePath(basedir, row.file)
                 .replace(/\\/g, '/');
         }
         this.push(row);
