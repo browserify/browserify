@@ -1,3 +1,9 @@
+# 13.1.1
+
+boost performance by memoizing calls to path.relative()
+
+https://github.com/substack/node-browserify/pull/1544
+
 # 13.1.0
 
 exposes `opts.dedupe` and `--no-deupe` to optionally turn off deduping behavior:
