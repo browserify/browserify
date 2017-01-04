@@ -1,3 +1,8 @@
+# 13.2.0
+
+allow configuring transformKey from module-deps
+https://github.com/substack/node-browserify/pull/1670
+
 # 13.1.1
 
 boost performance by memoizing calls to path.relative()
