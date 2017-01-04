@@ -1,3 +1,9 @@
+# 13.3.0
+
+updates the version for the assert package
+
+https://github.com/substack/node-browserify/pull/1611
+
 # 13.2.0
 
 allow configuring transformKey from module-deps
