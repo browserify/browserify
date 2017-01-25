@@ -1,3 +1,16 @@
+# 14.0.0
+
+Updates the version of the buffer package, which drops support for IE8-10.
+
+buffer v5 removes the `Object` implementation and relies on a single,
+fast Typed Array (`Uint8Array`) implementation, greatly simplifying the
+maintanence of the buffer package.
+
+If IE8-10 support is critical to your web app, you can continue to rely on
+browserify v13, or see the PR for other workarounds.
+
+https://github.com/substack/node-browserify/pull/1678
+
 # 13.3.0
 
 updates the version for the assert package
