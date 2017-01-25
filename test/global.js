@@ -26,7 +26,7 @@ test('__filename and __dirname with insertGlobals: true', function (t) {
     });
     b.require(__dirname + '/global/filename.js', { expose: 'x' });
     b.bundle(function (err, src) {
-        var c = {};
+        var c = { Uint8Array: Uint8Array };
         c.self = c;
         vm.runInNewContext(src, c);
         var x = c.require('x');

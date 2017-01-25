@@ -9,6 +9,6 @@ test('double buffer', function (t) {
     b.require('buffer');
     b.bundle(function (err, src) {
         if (err) return t.fail(err);
-        vm.runInNewContext(src, { t: t });
+        vm.runInNewContext(src, { t: t, Uint8Array: Uint8Array });
     });
 });
