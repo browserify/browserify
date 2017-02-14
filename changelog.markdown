@@ -1,3 +1,12 @@
+# 14.1.0
+
+writes to a temp outfile until success
+
+Previously, browserify would overwrite output files when an error occurs.
+
+https://github.com/substack/node-browserify/pull/1673
+https://github.com/substack/node-browserify/issues/899
+
 # 14.0.0
 
 Updates the version of the buffer package, which drops support for IE8-10.
