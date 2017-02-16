@@ -697,11 +697,12 @@ Browserify.prototype._label = function (opts) {
 
             var afile = path.resolve(path.dirname(row.file), key);
             var rfile = '/' + relativePath(basedir, afile);
+            var exposefile = opts.fullPaths ? afile : rfile;
             if (self._external.indexOf(rfile) >= 0) {
-                row.deps[key] = rfile;
+                row.deps[key] = exposefile;
             }
             if (self._external.indexOf(afile) >= 0) {
-                row.deps[key] = rfile;
+                row.deps[key] = exposefile;
             }
             if (self._external.indexOf(key) >= 0) {
                 row.deps[key] = key;
@@ -711,7 +712,7 @@ Browserify.prototype._label = function (opts) {
             for (var i = 0; i < self._extensions.length; i++) {
                 var ex = self._extensions[i];
                 if (self._external.indexOf(rfile + ex) >= 0) {
-                    row.deps[key] = rfile + ex;
+                    row.deps[key] = exposefile + ex;
                     break;
                 }
             }
