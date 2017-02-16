@@ -56,3 +56,28 @@ test('fullPaths enabled, with custom exposed dependency name', function (t) {
         });
     });
 });
+
+test('fullPaths enabled, with external path', function (t) {
+    t.plan(3);
+
+    var b = browserify({
+        entries: [__dirname + '/external/main.js'],
+        fullPaths: true
+    });
+
+    b.external('freelist');
+    var absxpath = __dirname + '/external/x.js';
+    b.external(absxpath);
+
+    b.bundle(function (err, src) {
+        if (err) return t.fail(err);
+        vm.runInNewContext(
+            'function require (x) {'
+            + 'if (x==="freelist") return function (n) { return n + 1000 };'
+            + 'if (x==="' + absxpath + '") return function (n) { t.ok(true); return n + 1010 }'
+            + '}'
+            + src,
+            { t: t }
+        );
+    });
+});
