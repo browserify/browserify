@@ -42,3 +42,13 @@ test('evil json', function (t) {
         vm.runInNewContext(src, c);
     });
 });
+
+test('invalid json', function (t) {
+    var b = browserify();
+    t.plan(1);
+    b.add(__dirname + '/json/invalid.js');
+    b.bundle(function (err, src) {
+        //console.log(src);
+        t.ok(err);
+    });
+});
