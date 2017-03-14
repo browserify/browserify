@@ -48,7 +48,6 @@ test('invalid json', function (t) {
     t.plan(1);
     b.add(__dirname + '/json/invalid.js');
     b.bundle(function (err, src) {
-        //console.log(src);
         t.ok(err);
     });
 });
