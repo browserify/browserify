@@ -660,7 +660,7 @@ You can call `b.pipeline.get()` with a label name to get a handle on a stream pi
 that you can `push()`, `unshift()`, or `splice()` to insert your own transform
 streams.
 
-# b.reset(opts)
+## b.reset(opts)
 
 Reset the pipeline back to a normal state. This function is called automatically
 when `bundle()` is called multiple times.
