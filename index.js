@@ -803,7 +803,7 @@ function isExternalModule (file) {
         /^[\/.]/;
     return !regexp.test(file);
 }
-function relativePath () {
+function relativePath (from, to) {
     // Replace \ with / for OS-independent behavior
-    return cachedPathRelative.apply(this, arguments).replace(/\\/g, '/');
+    return cachedPathRelative(from, to).replace(/\\/g, '/');
 }
