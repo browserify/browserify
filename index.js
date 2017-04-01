@@ -29,7 +29,8 @@ inherits(Browserify, EventEmitter);
 
 var fs = require('fs');
 var path = require('path');
-var relativePath = require('cached-path-relative')
+var cachedPathRelative = require('cached-path-relative');
+
 var paths = {
     empty: path.join(__dirname, 'lib/_empty.js')
 };
@@ -118,14 +119,12 @@ Browserify.prototype.require = function (file, opts) {
     var expose = opts.expose;
     if (file === expose && /^[\.]/.test(expose)) {
         expose = '/' + relativePath(basedir, expose);
-        expose = expose.replace(/\\/g, '/');
     }
     if (expose === undefined && this._options.exposeAll) {
         expose = true;
     }
     if (expose === true) {
         expose = '/' + relativePath(basedir, file);
-        expose = expose.replace(/\\/g, '/');
     }
     
     if (isStream(file)) {
@@ -257,7 +256,7 @@ Browserify.prototype.external = function (file, opts) {
     if (!opts) opts = {};
     var basedir = defined(opts.basedir, process.cwd());
     this._external.push(file);
-    this._external.push('/' + relativePath(basedir, file).replace(/\\/g, '/'));
+    this._external.push('/' + relativePath(basedir, file));
     return this;
 };
 
@@ -739,8 +738,7 @@ Browserify.prototype._debug = function (opts) {
     return through.obj(function (row, enc, next) {
         if (opts.debug) {
             row.sourceRoot = 'file://localhost';
-            row.sourceFile = relativePath(basedir, row.file)
-                .replace(/\\/g, '/');
+            row.sourceFile = relativePath(basedir, row.file);
         }
         this.push(row);
         next();
@@ -804,4 +802,8 @@ function isExternalModule (file) {
         /^(\.|\w:)/ :
         /^[\/.]/;
     return !regexp.test(file);
+}
+function relativePath() {
+    // Replace \ with / for OS-independent behavior
+    return cachedPathRelative.apply(this, arguments).replace(/\\/g, '/');    
 }
