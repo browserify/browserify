@@ -1,3 +1,12 @@
+# 14.3.0
+
+update `https-browserify` to 1.0.0, which matches node.js behavior more closely.
+
+- throw exception if non-https URL is passed to `https.request` or `https.get`
+- support passing string URL as first argument to `https.request` and `https.get`
+
+https://github.com/substack/node-browserify/pull/1710
+
 # 14.2.0
 
 adds a --transform-key flag to the command-line tool
