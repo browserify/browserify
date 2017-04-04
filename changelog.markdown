@@ -1,3 +1,9 @@
+# 14.2.0
+
+adds a --transform-key flag to the command-line tool
+
+https://github.com/substack/node-browserify/pull/1709
+
 # 14.1.0
 
 writes to a temp outfile until success
