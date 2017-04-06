@@ -20,7 +20,7 @@ Standard Options:
  
     --command, -c  Use a transform command on top-level files.
    
-  --standalone -s  Generate a UMD bundle for the supplied export name.
+  --standalone -s  Generate an UMD bundle for the supplied export name.
                    This bundle works with other module systems and sets the name
                    given as a window global if no module system is found.
   
