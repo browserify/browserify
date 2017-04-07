@@ -41,15 +41,11 @@ test('debug standalone', function (t) {
     });
 });
 
-test('debug standalone exposed', function (t) {
+test('debug standalone entry', function (t) {
     t.plan(2);
-    
-    var stream = through();
-    stream.push('console.log(1+2)');
-    stream.push(null);
-    
+
     var b = browserify({ debug: true, standalone: 'xyz' });
-    b.require(__dirname + '/debug_standalone/x.js', { expose: 'xxx' });
+    b.add(__dirname + '/debug_standalone/x.js');
     b.bundle(function (err, buf) {
         var src = buf.toString('utf8');
         var last = src.split('\n').slice(-2)[0];
@@ -60,5 +56,25 @@ test('debug standalone exposed', function (t) {
         var c = { window: {} };
         vm.runInNewContext(src, c);
         t.equal(c.window.xyz, 555);
+    });
+});
+
+test('debug standalone exposed', function (t) {
+    t.plan(2);
+
+    var b = browserify({ debug: true, standalone: 'xyz' });
+    // No entry files so nothing to expose
+    b.require(__dirname + '/debug_standalone/x.js', { expose: 'xxx' });
+    b.bundle(function (err, buf) {
+        var src = buf.toString('utf8');
+        var last = src.split('\n').slice(-2)[0];
+        t.ok(
+            /\/\/# sourceMappingURL=data:application\/json;charset:utf-8;base64,[\w+\/=]+$/
+            .test(last)
+        );
+        var c = { window: {} };
+        t.throws(function() {
+          vm.runInNewContext(src, c);
+        });
     });
 });
