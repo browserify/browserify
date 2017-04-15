@@ -794,6 +794,9 @@ add a package.json keyword of `browserify-transform` so that
 [people can browse for all the browserify
 transforms](https://www.npmjs.com/browse/keyword/browserify-transform) on npmjs.org.
 
+* [phantomjsify](https://github.com/twolfson/phantomjsify) - shim out node.js
+  core for [PhantomJS](http://phantomjs.org/)
+
 # third-party tools
 
 There is a [wiki page that lists the known browserify
