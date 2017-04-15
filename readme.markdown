@@ -794,6 +794,12 @@ add a package.json keyword of `browserify-transform` so that
 [people can browse for all the browserify
 transforms](https://www.npmjs.com/browse/keyword/browserify-transform) on npmjs.org.
 
+* [folderify](https://github.com/parroit/folderify) - inline content of a directory imported using 
+[include-folder](https://github.com/parroit/include-folder). Files content is inlined using [brfs](https://github.com/substack/brfs)
+
+
+
+
 # third-party tools
 
 There is a [wiki page that lists the known browserify
