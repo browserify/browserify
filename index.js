@@ -157,6 +157,10 @@ Browserify.prototype.require = function (file, opts) {
         }));
         return this;
     }
+
+    if(typeof file === 'string' && file.charAt(0) === '.') {
+        file = '/' + path.relative(basedir, file);
+    }
     
     var row;
     if (typeof file === 'object') {
