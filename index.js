@@ -396,7 +396,7 @@ Browserify.prototype._createPipeline = function (opts) {
         'unshebang', [ this._unshebang() ],
         'syntax', [ this._syntax() ],
         'sort', [ depsSort(dopts) ],
-        'dedupe', [ this._dedupe() ],
+        'dedupe', [ this._dedupe(opts) ],
         'label', [ this._label(opts) ],
         'emit-deps', [ this._emitDeps() ],
         'debug', [ this._debug(opts) ],
@@ -647,20 +647,36 @@ Browserify.prototype._syntax = function () {
     });
 };
 
-Browserify.prototype._dedupe = function () {
+Browserify.prototype._dedupe = function (opts) {
     return through.obj(function (row, enc, next) {
         if (!row.dedupeIndex && row.dedupe) {
-            row.source = 'arguments[4]['
-                + JSON.stringify(row.dedupe)
-                + '][0].apply(exports,arguments)'
-            ;
+            if (opts.dedupeInstance) {
+                row.source = 'module.exports=require('
+                    + JSON.stringify(row.dedupe)
+                    + ')'
+                ;
+            }
+            else {
+                row.source = 'arguments[4]['
+                    + JSON.stringify(row.dedupe)
+                    + '][0].apply(exports,arguments)'
+                ;
+            }
             row.nomap = true;
         }
         else if (row.dedupeIndex) {
-            row.source = 'arguments[4]['
-                + JSON.stringify(row.dedupeIndex)
-                + '][0].apply(exports,arguments)'
-            ;
+            if (opts.dedupeInstance) {
+                row.source = 'module.exports=require('
+                    + JSON.stringify(row.dedupeIndex)
+                    + ')'
+                ;
+            }
+            else {
+                row.source = 'arguments[4]['
+                    + JSON.stringify(row.dedupeIndex)
+                    + '][0].apply(exports,arguments)'
+                ;
+            }
             row.nomap = true;
         }
         if (row.dedupeIndex && row.indexDeps) {
