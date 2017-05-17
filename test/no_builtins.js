@@ -1,12 +1,14 @@
 var browserify = require('../');
 var test = require('tap').test;
+var path = require('path');
 var vm = require('vm');
 
 test('builtins false', function (t) {
     t.plan(1);
-    
+
+    var file = __dirname + '/no_builtins/main.js';
     var b = browserify({
-        entries: [ __dirname + '/no_builtins/main.js' ],
+        entries: [ file ],
         commondir: false,
         builtins: false
     });
@@ -15,7 +17,8 @@ test('builtins false', function (t) {
             console: { log: function (msg) {
                 t.equal(msg, 'beep boop\n');
             } },
-            require: require
+            require: require,
+            __dirname: process.cwd()
         };
         vm.runInNewContext(src, c);
     });
