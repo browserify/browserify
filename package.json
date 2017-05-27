@@ -57,7 +57,7 @@
     "shell-quote": "^1.6.1",
     "stream-browserify": "^2.0.0",
     "stream-http": "^2.0.0",
-    "string_decoder": "~0.10.0",
+    "string_decoder": "~1.0.0",
     "subarg": "^1.0.0",
     "syntax-error": "^1.1.1",
     "through2": "^2.0.0",
