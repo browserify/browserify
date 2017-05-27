@@ -1,3 +1,9 @@
+# 14.4.0
+
+update `string_decoder` to 1.0.0, which matches the latest node.js behavior more closely.
+
+https://github.com/substack/node-browserify/pull/1714
+
 # 14.3.0
 
 update `https-browserify` to 1.0.0, which matches node.js behavior more closely.
