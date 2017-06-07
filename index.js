@@ -150,7 +150,6 @@ Browserify.prototype.require = function (file, opts) {
                 id: id
             };
             if (rec.entry) rec.order = order;
-            if (rec.transform === false) rec.transform = false;
             self.pipeline.write(rec);
             
             if (-- self._pending === 0) self.emit('_ready');
