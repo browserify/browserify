@@ -14,7 +14,7 @@ module.exports = function (args, opts) {
         'boolean': [
             'deps', 'pack', 'ig', 'dg', 'im', 'd', 'list', 'builtins',
             'commondir', 'bare', 'full-paths', 'bundle-external', 'bf',
-            'node'
+            'node', 'preserve-symlinks'
         ],
         string: [ 's', 'r', 'u', 'x', 't', 'i', 'o', 'e', 'c', 'it' ],
         alias: {
@@ -107,6 +107,7 @@ module.exports = function (args, opts) {
         browserField: argv.browserField,
         transformKey: argv['transform-key'] ? ['browserify', argv['transform-key']] : undefined,
         dedupe: argv['dedupe'],
+        preserveSymlinks: argv['preserve-symlinks'],
 
         detectGlobals: argv.detectGlobals,
         insertGlobals: argv['insert-globals'] || argv.ig,
