@@ -1,3 +1,5 @@
+var paraquire = require('paraquire')(module);
+
 var mdeps = require('module-deps');
 var depsSort = require('deps-sort');
 var bpack = require('browser-pack');
@@ -10,14 +12,14 @@ var splicer = require('labeled-stream-splicer');
 var through = require('through2');
 var concat = require('concat-stream');
 
-var inherits = require('inherits');
+var inherits = paraquire('inherits');
 var EventEmitter = require('events').EventEmitter;
-var xtend = require('xtend');
+var xtend = paraquire('xtend');
 var isArray = Array.isArray;
 var defined = require('defined');
 var has = require('has');
 var sanitize = require('htmlescape').sanitize;
-var shasum = require('shasum');
+var shasum = paraquire('shasum',{builtin:{crypto:true,buffer:true}});
 
 var bresolve = require('browser-resolve');
 var resolve = require('resolve');
