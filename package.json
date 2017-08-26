@@ -45,7 +45,7 @@
     "labeled-stream-splicer": "^2.0.0",
     "module-deps": "^4.0.8",
     "os-browserify": "~0.1.1",
-    "paraquire": "0.0.4",
+    "paraquire": "0.0.6",
     "parents": "^1.0.1",
     "path-browserify": "~0.0.0",
     "process": "~0.11.0",

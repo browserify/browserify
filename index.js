@@ -19,7 +19,7 @@ var isArray = Array.isArray;
 var defined = paraquire('defined');
 var has = paraquire('has');
 var sanitize = paraquire('htmlescape').sanitize;
-var shasum = paraquire('shasum',{builtin:{crypto:true,buffer:true}});
+var shasum = paraquire('shasum',{builtin:['crypto','buffer']});
 
 var bresolve = require('browser-resolve');
 var resolve = require('resolve');
