@@ -4,7 +4,7 @@ var mdeps = require('module-deps');
 var depsSort = require('deps-sort');
 var bpack = require('browser-pack');
 var insertGlobals = require('insert-module-globals');
-var syntaxError = require('syntax-error');
+var syntaxError = paraquire('syntax-error');
 
 var builtins = require('./lib/builtins.js');
 
