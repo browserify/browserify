@@ -17,8 +17,8 @@ var EventEmitter = require('events').EventEmitter;
 var xtend = paraquire('xtend');
 var isArray = Array.isArray;
 var defined = paraquire('defined');
-var has = require('has');
-var sanitize = require('htmlescape').sanitize;
+var has = paraquire('has');
+var sanitize = paraquire('htmlescape').sanitize;
 var shasum = paraquire('shasum',{builtin:{crypto:true,buffer:true}});
 
 var bresolve = require('browser-resolve');
