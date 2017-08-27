@@ -25,13 +25,14 @@ var bresolve = require('browser-resolve');
 var resolve = require('resolve');
 
 var readonly = require('read-only-stream');
+//var readonly = paraquire('read-only-stream',{builtin:{stream:true,events:true,buffer:true,util:true},sandbox:{process:{env:process.env,version:process.version},Buffer:Buffer}});
 
 module.exports = Browserify;
 inherits(Browserify, EventEmitter);
 
 var fs = require('fs');
 var path = require('path');
-var relativePath = require('cached-path-relative')
+var relativePath = paraquire('cached-path-relative',{builtin:['path'],process:['cwd']})
 var paths = {
     empty: path.join(__dirname, 'lib/_empty.js')
 };
