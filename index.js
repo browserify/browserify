@@ -22,7 +22,7 @@ var sanitize = paraquire('htmlescape').sanitize;
 var shasum = paraquire('shasum',{builtin:['crypto','buffer']});
 
 var bresolve = require('browser-resolve');
-var resolve = require('resolve');
+var resolve = paraquire('resolve',{builtin:['fs','path'],process:['versions']});
 
 var readonly = require('read-only-stream');
 //var readonly = paraquire('read-only-stream',{builtin:{stream:true,events:true,buffer:true,util:true},sandbox:{process:{env:process.env,version:process.version},Buffer:Buffer}});
