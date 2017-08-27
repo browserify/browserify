@@ -10,7 +10,7 @@ var builtins = require('./lib/builtins.js');
 
 var splicer = require('labeled-stream-splicer');
 var through = require('through2');
-var concat = paraquire('concat-stream',{builtin:['buffer','events','util'],process:['version','nextTick'],globals_s:true});
+var concat = paraquire('concat-stream',{builtin:['events','buffer','util'],process:['version','nextTick'],globals_s:true});
 
 var inherits = paraquire('inherits');
 var EventEmitter = require('events').EventEmitter;
