@@ -9,7 +9,7 @@ browserify will recursively analyze all the `require()` calls in your app in
 order to build a bundle you can serve up to the browser in a single `<script>`
 tag.
 
-[![build status](https://img.shields.io/travis/browserify/browserify/master.svg)](https://travis-ci.org/substack/node-browserify)
+[![build status](https://img.shields.io/travis/browserify/browserify/master.svg)](https://travis-ci.org/browserify/browserify)
 
 ![browserify!](http://browserify.org/images/browserify.png)
 
@@ -736,7 +736,7 @@ your package.json dependencies field.
 ## b.on('file', function (file, id, parent) {})
 ## b.pipeline.on('file', function (file, id, parent) {})
 
-When a file is browserifyresolved for the bundle, the bundle emits a `'file'` event with
+When a file is resolved for the bundle, the bundle emits a `'file'` event with
 the full `file` path, the `id` string passed to `require()`, and the `parent`
 object used by
 [browser-resolve](https://github.com/defunctzombie/node-browser-resolve).
