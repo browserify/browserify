@@ -1,35 +1,37 @@
+var paraquire = require('paraquire')(module);
+
 var mdeps = require('module-deps');
 var depsSort = require('deps-sort');
 var bpack = require('browser-pack');
 var insertGlobals = require('insert-module-globals');
-var syntaxError = require('syntax-error');
+var syntaxError = paraquire('syntax-error');
 
 var builtins = require('./lib/builtins.js');
 
 var splicer = require('labeled-stream-splicer');
 var through = require('through2');
-var concat = require('concat-stream');
+var concat = paraquire('concat-stream',{builtin:['events','buffer','util'],process:['version','nextTick'],globals_s:true});
 
-var inherits = require('inherits');
+var inherits = paraquire('inherits');
 var EventEmitter = require('events').EventEmitter;
-var xtend = require('xtend');
+var xtend = paraquire('xtend');
 var isArray = Array.isArray;
-var defined = require('defined');
-var has = require('has');
-var sanitize = require('htmlescape').sanitize;
-var shasum = require('shasum');
+var defined = paraquire('defined');
+var has = paraquire('has');
+var sanitize = paraquire('htmlescape').sanitize;
+var shasum = paraquire('shasum',{builtin:['crypto','buffer']});
 
 var bresolve = require('browser-resolve');
-var resolve = require('resolve');
+var resolve = paraquire('resolve',{builtin:['fs','path'],process:['versions']});
 
-var readonly = require('read-only-stream');
+var readonly = paraquire('read-only-stream',{builtin:['stream','events','buffer','util'],process:['env','version','nextTick'],globals_s:true}); //TODO:process.env
 
 module.exports = Browserify;
 inherits(Browserify, EventEmitter);
 
 var fs = require('fs');
 var path = require('path');
-var relativePath = require('cached-path-relative')
+var relativePath = paraquire('cached-path-relative',{builtin:['path'],process:['cwd']})
 var paths = {
     empty: path.join(__dirname, 'lib/_empty.js')
 };
