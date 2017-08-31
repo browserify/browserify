@@ -9,14 +9,14 @@ browserify will recursively analyze all the `require()` calls in your app in
 order to build a bundle you can serve up to the browser in a single `<script>`
 tag.
 
-[![build status](https://img.shields.io/travis/substack/node-browserify/master.svg)](https://travis-ci.org/substack/node-browserify)
+[![build status](https://img.shields.io/travis/browserify/browserify/master.svg)](https://travis-ci.org/browserify/browserify)
 
 ![browserify!](http://substack.net/images/browserify_logo.png)
 
 # getting started
 
 If you're new to browserify, check out the
-[browserify handbook](https://github.com/substack/browserify-handbook)
+[browserify handbook](https://github.com/browserify/browserify-handbook)
 and the resources on [browserify.org](http://browserify.org/).
 
 Check out [browserify search](http://browserifysearch.org/) to find
@@ -27,7 +27,7 @@ browserify-compatible packages on npm.
 Whip up a file, `main.js` with some `require()`s in it. You can use relative
 paths like `'./foo.js'` and `'../lib/bar.js'` or module paths like `'gamma'`
 that will search `node_modules/` using
-[node's module lookup algorithm](https://github.com/substack/node-resolve).
+[node's module lookup algorithm](https://github.com/browserify/resolve).
 
 ``` js
 var foo = require('./foo.js');
@@ -258,7 +258,7 @@ When you `require()` any of these modules, you will get a browser-specific shim:
 * [zlib](https://www.npmjs.com/package/browserify-zlib)
 
 Additionally, if you use any of these variables, they
-[will be defined](https://github.com/substack/insert-module-globals)
+[will be defined](https://github.com/browserify/insert-module-globals)
 in the bundled output in a browser-appropriate way:
 
 * [process](https://www.npmjs.com/package/process)
@@ -357,7 +357,7 @@ while the boop page can have:
 This approach using `-r` and `-x` works fine for a small number of split assets,
 but there are plugins for automatically factoring out components which are
 described in the
-[partitioning section of the browserify handbook](https://github.com/substack/browserify-handbook#partitioning).
+[partitioning section of the browserify handbook](https://github.com/browserify/browserify-handbook#partitioning).
 
 ## api example
 
@@ -560,7 +560,7 @@ If `tr` is a function, it will be called with `tr(file)` and it should return a
 that takes the raw file contents and produces the transformed source.
 
 If `tr` is a string, it should be a module name or file path of a
-[transform module](https://github.com/substack/module-deps#transforms)
+[transform module](https://github.com/browserify/module-deps#transforms)
 with a signature of:
 
 ``` js
@@ -717,7 +717,7 @@ transforms, it doesn't apply into `node_modules` directories.
 You can specify source transforms in the package.json in the
 `browserify.transform` field. There is more information about how source
 transforms work in package.json on the
-[module-deps readme](https://github.com/substack/module-deps#transforms).
+[module-deps readme](https://github.com/browserify/module-deps#transforms).
 
 For example, if your module requires [brfs](https://www.npmjs.com/package/brfs), you
 can add
@@ -790,7 +790,7 @@ on npm.
 # list of source transforms
 
 There is a [wiki page that lists the known browserify
-transforms](https://github.com/substack/node-browserify/wiki/list-of-transforms).
+transforms](https://github.com/browserify/browserify/wiki/list-of-transforms).
 
 If you write a transform, make sure to add your transform to that wiki page and
 add a package.json keyword of `browserify-transform` so that
@@ -800,7 +800,7 @@ transforms](https://www.npmjs.com/browse/keyword/browserify-transform) on npmjs.
 # third-party tools
 
 There is a [wiki page that lists the known browserify
-tools](https://github.com/substack/node-browserify/wiki/browserify-tools).
+tools](https://github.com/browserify/browserify/wiki/browserify-tools).
 
 If you write a tool, make sure to add it to that wiki page and
 add a package.json keyword of `browserify-tool` so that
