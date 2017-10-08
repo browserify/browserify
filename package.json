@@ -44,7 +44,7 @@
     "insert-module-globals": "^7.0.0",
     "labeled-stream-splicer": "^2.0.0",
     "module-deps": "^4.0.8",
-    "os-browserify": "~0.1.1",
+    "os-browserify": "^0.3.0",
     "parents": "^1.0.1",
     "path-browserify": "~0.0.0",
     "process": "~0.11.0",
