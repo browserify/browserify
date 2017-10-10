@@ -105,6 +105,7 @@ module.exports = function (args, opts) {
         bundleExternal: argv['bundle-external'],
         basedir: argv.basedir,
         browserField: argv.browserField,
+        transformKey: argv['transform-key'] ? ['browserify', argv['transform-key']] : undefined,
         dedupe: argv['dedupe'],
 
         detectGlobals: argv.detectGlobals,

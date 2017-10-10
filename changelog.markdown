@@ -1,3 +1,24 @@
+# 14.4.0
+
+update `string_decoder` to 1.0.0, which matches the latest node.js behavior more closely.
+
+https://github.com/substack/node-browserify/pull/1714
+
+# 14.3.0
+
+update `https-browserify` to 1.0.0, which matches node.js behavior more closely.
+
+- throw exception if non-https URL is passed to `https.request` or `https.get`
+- support passing string URL as first argument to `https.request` and `https.get`
+
+https://github.com/substack/node-browserify/pull/1710
+
+# 14.2.0
+
+adds a --transform-key flag to the command-line tool
+
+https://github.com/substack/node-browserify/pull/1709
+
 # 14.1.0
 
 writes to a temp outfile until success
@@ -704,7 +725,7 @@ adds an untracked test
 At a glance:
 
 * extensible internal labeled-stream-splicer pipeline
-* bundle() - no longer accepts `opts`, callback gets a buffer 
+* bundle() - no longer accepts `opts`, callback gets a buffer
 * b.deps(), b.pack(), opts.pack, opts.deps are gone
 * can call bundle() multiple times on the same instance
 * a better --noparse matcher
@@ -899,7 +920,7 @@ renders complete stack traces where before they were getting truncated https://g
 
 # 3.44.2
 
-slims down the dependency payload by 20M https://github.com/substack/node-browserify/pull/736 
+slims down the dependency payload by 20M https://github.com/substack/node-browserify/pull/736
 
 # 3.44.1
 
@@ -915,39 +936,39 @@ lets b.transform(opts, t) args to be swapped around since opts is more common as
 
 # 3.42.0
 
-passes through the dir parameter in opts.packageFilter from module-deps 1.10.0 https://github.com/substack/node-browserify/pull/731 
+passes through the dir parameter in opts.packageFilter from module-deps 1.10.0 https://github.com/substack/node-browserify/pull/731
 
 # 3.41.0
 
-has an option to disable external files, making it easier to run bundles in node for code coverage https://github.com/substack/node-browserify/pull/672 
+has an option to disable external files, making it easier to run bundles in node for code coverage https://github.com/substack/node-browserify/pull/672
 
 # 3.40.4
 
-makes --list work again https://github.com/substack/node-browserify/pull/727 
+makes --list work again https://github.com/substack/node-browserify/pull/727
 
 # 3.40.3
 
-merges a patch for piping via stdin and --require at the same time https://github.com/substack/node-browserify/pull/728 
+merges a patch for piping via stdin and --require at the same time https://github.com/substack/node-browserify/pull/728
 
 # 3.40.2
 
-upgrades module-deps to fix --list for $NODE_PATH https://github.com/substack/node-browserify/issues/726 
+upgrades module-deps to fix --list for $NODE_PATH https://github.com/substack/node-browserify/issues/726
 
 # 3.40.1
 
-upgrades module-deps to get this packageTransform bugfix https://github.com/substack/module-deps/pull/32 
+upgrades module-deps to get this packageTransform bugfix https://github.com/substack/module-deps/pull/32
 
 # 3.40.0
 
-modifies the behavior of opts.builtins to be more useful and intuitive https://github.com/substack/node-browserify/pull/717 
+modifies the behavior of opts.builtins to be more useful and intuitive https://github.com/substack/node-browserify/pull/717
 
 # 3.39.0
 
-adds a zlib that has parity with node https://github.com/substack/node-browserify/pull/721 
+adds a zlib that has parity with node https://github.com/substack/node-browserify/pull/721
 
 # 3.38.0
 
-upgrades derequire which uses esprima-fb https://github.com/substack/node-browserify/pull/710 
+upgrades derequire which uses esprima-fb https://github.com/substack/node-browserify/pull/710
 
 # 3.37.2
 
@@ -963,7 +984,7 @@ also reverts that require('process') thing which was mistakenly briefly put in t
 
 # 3.37.0
 
-gives streams2 semantics for bundle() https://github.com/substack/node-browserify/pull/646 
+gives streams2 semantics for bundle() https://github.com/substack/node-browserify/pull/646
 
 # 3.36.1
 
@@ -975,35 +996,35 @@ adds require('process') and removes the path resolution for process out of inser
 
 # 3.35.0
 
-adds an empty tls stub to the builtins list https://github.com/substack/node-browserify/issues/703 
+adds an empty tls stub to the builtins list https://github.com/substack/node-browserify/issues/703
 
 # 3.34.0
 
-fixes a bug with transforms not being applied in deps() https://github.com/substack/node-browserify/pull/708 
+fixes a bug with transforms not being applied in deps() https://github.com/substack/node-browserify/pull/708
 
 # 3.33.1
 
-fixes a bug with options in --global-transform on the command-line https://github.com/substack/node-browserify/pull/705 
+fixes a bug with options in --global-transform on the command-line https://github.com/substack/node-browserify/pull/705
 
 # 3.33.0
 
-fixes parsing errors while maintaining es6 support by switching to esprima-fb https://github.com/substack/node-browserify/issues/698 
+fixes parsing errors while maintaining es6 support by switching to esprima-fb https://github.com/substack/node-browserify/issues/698
 
 # 3.32.1
 
-should be easier to shinkwrap and install on windows https://github.com/substack/node-browserify/pull/684 
+should be easier to shinkwrap and install on windows https://github.com/substack/node-browserify/pull/684
 
 # 3.32.0
 
-adds --full-path and opts.fullPath to always expand ids to full paths https://github.com/substack/node-browserify/pull/668#issuecomment-36586786 
+adds --full-path and opts.fullPath to always expand ids to full paths https://github.com/substack/node-browserify/pull/668#issuecomment-36586786
 
 # 3.31.2
 
-fixes a bug in the subarg argument parsing for multiple transforms https://github.com/substack/node-browserify/issues/678 
+fixes a bug in the subarg argument parsing for multiple transforms https://github.com/substack/node-browserify/issues/678
 
 # 3.31.1
 
-uses process.cwd() as the default rebase target instead of commondir https://github.com/substack/node-browserify/pull/669#issuecomment-36078282 
+uses process.cwd() as the default rebase target instead of commondir https://github.com/substack/node-browserify/pull/669#issuecomment-36078282
 
 # 3.31.0
 
@@ -1011,23 +1032,23 @@ merges https://github.com/substack/node-browserify/pull/669  which should help w
 
 # 3.30.4
 
-fixes parsing the --insert-global-vars argument properly https://github.com/substack/node-browserify/pull/674 
+fixes parsing the --insert-global-vars argument properly https://github.com/substack/node-browserify/pull/674
 
 # 3.30.3
 
-fixes exclude globbing in the arg parser https://github.com/substack/node-browserify/pull/676 
+fixes exclude globbing in the arg parser https://github.com/substack/node-browserify/pull/676
 
 # 3.30.2
 
-included a fix for --no-builtins for non-wrapped modules https://github.com/substack/node-browserify/pull/666 
+included a fix for --no-builtins for non-wrapped modules https://github.com/substack/node-browserify/pull/666
 
 # 3.30.1
 
-upgrades buffer for a utf8 fix https://github.com/substack/node-browserify/pull/656 
+upgrades buffer for a utf8 fix https://github.com/substack/node-browserify/pull/656
 
 # 3.30.0
 
-adds globs for -u, -i, and -x https://github.com/substack/node-browserify/issues/654 
+adds globs for -u, -i, and -x https://github.com/substack/node-browserify/issues/654
 
 # 3.29.1
 
@@ -1043,11 +1064,11 @@ now always includes the full package.json content in the 'package' event
 
 # 3.28.1
 
-fixes a bug with stream entry order https://github.com/substack/node-browserify/pull/643 
+fixes a bug with stream entry order https://github.com/substack/node-browserify/pull/643
 
 # 3.28.0
 
-adds plugins for doing super fancy things like factored bundle output https://github.com/substack/node-browserify#plugins 
+adds plugins for doing super fancy things like factored bundle output https://github.com/substack/node-browserify#plugins
 
 # 3.27.1
 
@@ -1055,11 +1076,11 @@ fixes a bug resolving transform modules when browserify is under a symlink
 
 # 3.27.0
 
-adds transform configuration in the package.json browserify.transform field https://github.com/substack/module-deps#packagejson-transformkey 
+adds transform configuration in the package.json browserify.transform field https://github.com/substack/module-deps#packagejson-transformkey
 
 # 3.26.0
 
-you can pass arguments to transforms https://github.com/substack/node-browserify/blob/master/bin/advanced.txt#L67-L77 
+you can pass arguments to transforms https://github.com/substack/node-browserify/blob/master/bin/advanced.txt#L67-L77
 
 # 3.25.2
 
@@ -1071,7 +1092,7 @@ fixes the transform docs
 
 # 3.25.0
 
-adds 'bundle' and 'transform' events https://github.com/substack/node-browserify#bonbundle-function-bundle- 
+adds 'bundle' and 'transform' events https://github.com/substack/node-browserify#bonbundle-function-bundle-
 
 # 3.24.11
 
@@ -1079,15 +1100,15 @@ upgrades derequire to 0.6.0. That should be the last piece needed for full es6 s
 
 # 3.24.10
 
-expands the documentation for the package.json browser and browserify.transform fields https://github.com/substack/node-browserify#packagejson 
+expands the documentation for the package.json browser and browserify.transform fields https://github.com/substack/node-browserify#packagejson
 
 # 3.24.9
 
-fixes generator syntax and other es6-isms in browserify https://github.com/substack/node-browserify/issues/614 
+fixes generator syntax and other es6-isms in browserify https://github.com/substack/node-browserify/issues/614
 
 # 3.24.7
 
-fixes noParse, which had accidentally been disabled in the insert-module-global changes and also closes https://github.com/substack/node-browserify/issues/504 
+fixes noParse, which had accidentally been disabled in the insert-module-global changes and also closes https://github.com/substack/node-browserify/issues/504
 
 # 3.24.6
 
@@ -1095,15 +1116,15 @@ similar to 3.24.5, 3.24.6 fixes some error reporting propagation from the browse
 
 # 3.24.3
 
-fixes how require('buffer').Buffer wasn't the same as implicit Buffer https://github.com/substack/node-browserify/issues/612 
+fixes how require('buffer').Buffer wasn't the same as implicit Buffer https://github.com/substack/node-browserify/issues/612
 
 # 3.24.2
 
-fixes where the output stream didn't emit "close" in standalone mode https://github.com/substack/node-browserify/pull/608 
+fixes where the output stream didn't emit "close" in standalone mode https://github.com/substack/node-browserify/pull/608
 
 # 3.24.1
 
-fixes an issue where --standalone combined with expose caused a syntax error https://github.com/substack/node-browserify/issues/489 
+fixes an issue where --standalone combined with expose caused a syntax error https://github.com/substack/node-browserify/issues/489
 
 # 3.24.0
 
@@ -1111,7 +1132,7 @@ removes require() calls from --standalone so you can require() a standalone bund
 
 # 3.23.0
 
-merges this tiny fix returning `this` in noParse() https://github.com/substack/node-browserify/pull/592 
+merges this tiny fix returning `this` in noParse() https://github.com/substack/node-browserify/pull/592
 
 # 3.22.0
 
@@ -1127,7 +1148,7 @@ has a fix for the case where stdin is implicitly treated as the input stream ins
 
 # 3.20.0
 
-3.20.0 is out: parity with how $NODE_PATH works in node https://github.com/substack/node-browserify/issues/593 
+3.20.0 is out: parity with how $NODE_PATH works in node https://github.com/substack/node-browserify/issues/593
 
 # 3.19.1
 
@@ -1145,7 +1166,7 @@ There are 2 big changes in v3 but most code should be relatively unaffected.
 
 [feross](https://github.com/feross) forked
 the [buffer-browserify](https://npmjs.org/package/buffer-browserify) package
-to create 
+to create
 [native-buffer-browserify](https://npmjs.org/package/native-buffer-browserify),
 a `Buffer` implementation that uses `Uint8Array` to get `buf[i]` notation and
 parity with the node core `Buffer` api without the performance hit of the

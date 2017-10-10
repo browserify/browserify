@@ -83,7 +83,7 @@ test('Buffer', function (t) {
         var c = {
             t: t,
             Uint8Array: Uint8Array,
-            DataView: DataView
+            ArrayBuffer: ArrayBuffer
         };
         vm.runInNewContext(src, c);
     });

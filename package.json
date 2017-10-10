@@ -1,6 +1,6 @@
 {
   "name": "browserify",
-  "version": "14.1.0",
+  "version": "14.4.0",
   "description": "browser-side require() the node way",
   "main": "index.js",
   "bin": {
@@ -39,7 +39,7 @@
     "glob": "^7.1.0",
     "has": "^1.0.0",
     "htmlescape": "^1.1.0",
-    "https-browserify": "~0.0.0",
+    "https-browserify": "^1.0.0",
     "inherits": "~2.0.1",
     "insert-module-globals": "^7.0.0",
     "labeled-stream-splicer": "^2.0.0",
@@ -57,7 +57,7 @@
     "shell-quote": "^1.6.1",
     "stream-browserify": "^2.0.0",
     "stream-http": "^2.0.0",
-    "string_decoder": "~0.10.0",
+    "string_decoder": "~1.0.0",
     "subarg": "^1.0.0",
     "syntax-error": "^1.1.1",
     "through2": "^2.0.0",
