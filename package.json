@@ -24,7 +24,7 @@
     "assert": "^1.4.0",
     "browser-pack": "^6.0.1",
     "browser-resolve": "^1.11.0",
-    "browserify-zlib": "~0.1.2",
+    "browserify-zlib": "~0.2.0",
     "buffer": "^5.0.2",
     "cached-path-relative": "^1.0.0",
     "concat-stream": "~1.5.1",
