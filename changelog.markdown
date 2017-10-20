@@ -1,3 +1,13 @@
+# 14.5.0
+
+update `os-browserify` to 0.3.0, which adds a shim for node.js's `os.homedir` method.
+
+https://github.com/browserify/browserify/pull/1767
+
+update `browserify-zlib` to 0.2.0, which adds support for dictionaries.
+
+https://github.com/browserify/browserify/pull/1733
+
 # 14.4.0
 
 update `string_decoder` to 1.0.0, which matches the latest node.js behavior more closely.
