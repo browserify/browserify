@@ -538,11 +538,15 @@ from the current bundle as the bundle in `file` gets bundled.
 
 Prevent the module name or file at `file` from showing up in the output bundle.
 
+If `file` is an array, each item in `file` will be ignored.
+
 Instead you will get a file with `module.exports = {}`.
 
 ## b.exclude(file)
 
 Prevent the module name or file at `file` from showing up in the output bundle.
+
+If `file` is an array, each item in `file` will be excluded.
 
 If your code tries to `require()` that file it will throw unless you've provided
 another mechanism for loading it.
