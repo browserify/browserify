@@ -255,7 +255,7 @@ Browserify.prototype.external = function (file, opts) {
     }
     
     if (!opts) opts = {};
-    var basedir = defined(opts.basedir, process.cwd());
+    var basedir = defined(opts.basedir, self._options.basedir, process.cwd());
     this._external.push(file);
     this._external.push('/' + relativePath(basedir, file));
     return this;
@@ -263,7 +263,7 @@ Browserify.prototype.external = function (file, opts) {
 
 Browserify.prototype.exclude = function (file, opts) {
     if (!opts) opts = {};
-    var basedir = defined(opts.basedir, process.cwd());
+    var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
     this._exclude.push(file);
     this._exclude.push('/' + relativePath(basedir, file));
     return this;
@@ -271,7 +271,7 @@ Browserify.prototype.exclude = function (file, opts) {
 
 Browserify.prototype.ignore = function (file, opts) {
     if (!opts) opts = {};
-    var basedir = defined(opts.basedir, process.cwd());
+    var basedir = defined(opts.basedir, this._options.basedir, process.cwd());
 
     // Handle relative paths
     if (file[0] === '.') {
