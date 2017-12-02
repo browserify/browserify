@@ -14,7 +14,7 @@ module.exports = function (args, opts) {
         'boolean': [
             'deps', 'pack', 'ig', 'dg', 'im', 'd', 'list', 'builtins',
             'commondir', 'bare', 'full-paths', 'bundle-external', 'bf',
-            'node'
+            'node', 'experimental-modules'
         ],
         string: [ 's', 'r', 'u', 'x', 't', 'i', 'o', 'e', 'c', 'it' ],
         alias: {
@@ -28,6 +28,7 @@ module.exports = function (args, opts) {
             s: 'standalone',
             noParse: [ 'noparse' ],
             'full-paths': [ 'fullpaths', 'fullPaths' ],
+            'experimental-modules': [ 'experimentalModules' ],
             r: 'require',
             u: 'exclude',
             x: 'external',
@@ -113,7 +114,8 @@ module.exports = function (args, opts) {
         insertGlobalVars: insertGlobalVars,
         ignoreMissing: argv['ignore-missing'] || argv.im,
         debug: argv['debug'] || argv.d,
-        standalone: argv['standalone'] || argv.s
+        standalone: argv['standalone'] || argv.s,
+        esm: argv['experimental-modules']
     }, opts));
     function error (msg) {
         var e = new Error(msg);

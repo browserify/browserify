@@ -1,6 +1,7 @@
 var mdeps = require('module-deps');
 var depsSort = require('deps-sort');
 var bpack = require('browser-pack');
+var esm = require('browserify-esm');
 var insertGlobals = require('insert-module-globals');
 var syntaxError = require('syntax-error');
 
@@ -405,6 +406,7 @@ Browserify.prototype._createPipeline = function (opts) {
     var pipeline = splicer.obj([
         'record', [ this._recorder() ],
         'deps', [ this._mdeps ],
+        'esm', [ this._esm() ],
         'json', [ this._json() ],
         'unbom', [ this._unbom() ],
         'unshebang', [ this._unshebang() ],
@@ -617,6 +619,10 @@ Browserify.prototype._recorder = function (opts) {
     }
 };
 
+Browserify.prototype._esm = function () {
+    return esm();
+}
+
 Browserify.prototype._json = function () {
     return through.obj(function (row, enc, next) {
         if (/\.json$/.test(row.file)) {
@@ -651,7 +657,7 @@ Browserify.prototype._syntax = function () {
     var self = this;
     return through.obj(function (row, enc, next) {
         var h = shasum(row.source);
-        if (typeof self._syntaxCache[h] === 'undefined') {
+        if (typeof self._syntaxCache[h] === 'undefined' && 0) {
             var err = syntaxError(row.source, row.file || row.id);
             if (err) return this.emit('error', err);
             self._syntaxCache[h] = true;
