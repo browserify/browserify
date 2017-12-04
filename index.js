@@ -291,9 +291,9 @@ Browserify.prototype.ignore = function (file, opts) {
     if (file[0] === '.') {
         this._ignore.push(path.resolve(basedir, file));
     }
-    else {
-        this._ignore.push(file);
-    }
+
+    this._ignore.push(file);
+    this._ignore.push('/' + relativePath(basedir, file));
     return this;
 };
 
