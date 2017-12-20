@@ -11,7 +11,7 @@ tag.
 
 [![build status](https://img.shields.io/travis/browserify/browserify/master.svg)](https://travis-ci.org/browserify/browserify)
 
-![browserify!](http://substack.net/images/browserify_logo.png)
+![browserify!](./assets/logo.png)
 
 # getting started
 
@@ -818,4 +818,4 @@ Releases are documented in
 
 MIT
 
-![browserify!](http://substack.net/images/browserify/browserify.png)
+![browserify!](./assets/browserify.png)
