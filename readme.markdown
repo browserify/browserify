@@ -239,6 +239,7 @@ When you `require()` any of these modules, you will get a browser-specific shim:
 * [crypto](https://www.npmjs.com/package/crypto-browserify)
 * [domain](https://www.npmjs.com/package/domain-browser)
 * [events](https://www.npmjs.com/package/events)
+* [fs](https://www.npmjs.com/package/memfs)
 * [http](https://www.npmjs.com/package/stream-http)
 * [https](https://www.npmjs.com/package/https-browserify)
 * [os](https://www.npmjs.com/package/os-browserify)

@@ -43,6 +43,7 @@
     "inherits": "~2.0.1",
     "insert-module-globals": "^7.0.0",
     "labeled-stream-splicer": "^2.0.0",
+    "memfs": "^2.0.5",
     "module-deps": "^4.0.8",
     "os-browserify": "~0.3.0",
     "parents": "^1.0.1",
