@@ -24,7 +24,6 @@
     "assert": "^1.4.0",
     "browser-pack": "^6.0.1",
     "browser-resolve": "^1.11.0",
-    "browserify-esm": "*",
     "browserify-zlib": "~0.2.0",
     "buffer": "^5.0.2",
     "cached-path-relative": "^1.0.0",
