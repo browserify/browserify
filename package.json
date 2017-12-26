@@ -22,7 +22,7 @@
   "dependencies": {
     "JSONStream": "^1.0.3",
     "assert": "^1.4.0",
-    "browser-pack": "^6.0.1",
+    "browser-pack": "browserify/browser-pack#esm",
     "browser-resolve": "^1.11.0",
     "browserify-zlib": "~0.2.0",
     "buffer": "^5.0.2",
@@ -43,7 +43,7 @@
     "inherits": "~2.0.1",
     "insert-module-globals": "^7.0.0",
     "labeled-stream-splicer": "^2.0.0",
-    "module-deps": "^4.0.8",
+    "module-deps": "browserify/module-deps#esm",
     "os-browserify": "~0.3.0",
     "parents": "^1.0.1",
     "path-browserify": "~0.0.0",
