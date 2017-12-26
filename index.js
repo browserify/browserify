@@ -652,7 +652,9 @@ Browserify.prototype._syntax = function () {
     return through.obj(function (row, enc, next) {
         var h = shasum(row.source);
         if (typeof self._syntaxCache[h] === 'undefined') {
-            var err = syntaxError(row.source, row.file || row.id);
+            var err = syntaxError(row.source, row.file || row.id, {
+                sourceType: row.esm ? 'module' : 'script'
+            });
             if (err) return this.emit('error', err);
             self._syntaxCache[h] = true;
         }
