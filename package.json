@@ -10,6 +10,9 @@
     "type": "git",
     "url": "http://github.com/browserify/browserify.git"
   },
+  "engines": {
+    "node": ">= 4.0"
+  },
   "keywords": [
     "browser",
     "require",
