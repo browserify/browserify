@@ -5,7 +5,6 @@ var vm = require('vm');
 test('yield', function (t) {
     t.plan(6);
     var b = browserify(__dirname + '/yield/main.js');
-    b.transform('es6ify');
     
     b.bundle(function (err, src) {
         t.error(err);

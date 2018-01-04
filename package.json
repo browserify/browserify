@@ -73,7 +73,6 @@
     "browser-unpack": "^1.1.1",
     "coffee-script": "~1.10.0",
     "coffeeify": "~1.1.0",
-    "es6ify": "~0.4.8",
     "isstream": "^0.1.2",
     "seq": "0.3.5",
     "tap": "^10.7.2",
