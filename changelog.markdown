@@ -1,3 +1,22 @@
+# 15.0.0
+
+fixed repository url in package.json.
+
+https://github.com/browserify/browserify/commit/5ec19eed48a5f46cb48d44be8ffc2f6bfb73fbfb
+
+update `module-deps` to 5.0.0, which enables requiring modules in backtick-enclosed strings.
+
+https://github.com/browserify/browserify/pull/1785
+
+dropped testing in node 0.10 and 0.12, set supported node versions to `>=4`
+
+https://github.com/browserify/browserify/pull/1743
+https://github.com/browserify/browserify/pull/1793
+
+add support for passing arrays to the `exclude` and `ignore` methods.
+
+https://github.com/browserify/browserify/pull/1769
+
 # 14.5.0
 
 update `os-browserify` to 0.3.0, which adds a shim for node.js's `os.homedir` method.
