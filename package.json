@@ -77,6 +77,7 @@
     "coffee-script": "~1.10.0",
     "coffeeify": "~1.1.0",
     "isstream": "^0.1.2",
+    "make-generator-function": "^1.1.0",
     "seq": "0.3.5",
     "tap": "^10.7.2",
     "temp": "^0.8.1",
