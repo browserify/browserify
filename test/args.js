@@ -26,7 +26,7 @@ test('external flag for node modules', function(t) {
 });
 
 test('bundle from an arguments with --insert-global-vars', function (t) {
-    t.plan(3)
+    t.plan(4);
 
     var b = fromArgs([
         __dirname + '/global/filename.js',
@@ -35,12 +35,14 @@ test('bundle from an arguments with --insert-global-vars', function (t) {
     ]);
     b.require(__dirname + '/global/filename.js', { expose: 'x' });
     b.bundle(function (err, src) {
-        t.ifError(err);
-        var c = {};
+        t.ifError(err, 'b.bundle()');
+        var c = {}, x;
         vm.runInNewContext(src, c);
-        var x = c.require('x');
-        t.equal(x.filename, '/global/filename.js');
-        t.equal(x.dirname, '/global');
+        t.doesNotThrow(function() {
+            x = c.require('x');
+        }, 'x = c.require(\'x\')');
+        t.equal(x && x.filename, '/global/filename.js', 'x.filename');
+        t.equal(x && x.dirname, '/global', 'x.dirname');
     })
 });
 
@@ -49,6 +51,22 @@ test('numeric module names', function(t) {
 
     var b = fromArgs([ '-x', '1337' ]);
     b.bundle(function (err, src) {
-        t.notOk(err);
+        t.ifError(err);
     });
+});
+
+test('entry expose', function (t) {
+    t.plan(3)
+    
+    var b = fromArgs([
+        path.join(__dirname, '/entry_expose/main.js'),
+        '--require', path.join(__dirname, '/entry_expose/main.js') + ':x',
+    ]);
+    b.bundle(function (err, src) {
+        t.ifError(err);
+        var c = { console: { log: log } };
+        function log (msg) { t.equal(msg, 'wow') }
+        vm.runInNewContext(src, c);
+        t.equal(c.require('x'), 555);
+    })
 });

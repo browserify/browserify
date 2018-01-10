@@ -13,7 +13,8 @@ test('implicit process global', function (t) {
                 t.equal(two, 2);
                 t.end();
             },
-            setTimeout: setTimeout
+            setTimeout: setTimeout,
+            clearTimeout: clearTimeout
         };
         vm.runInNewContext(src, c);
     });

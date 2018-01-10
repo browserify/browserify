@@ -37,3 +37,34 @@ test('bare', function (t) {
         t.equal(code, 0);
     });
 });
+
+test('bare inserts __filename,__dirname but not process,global,Buffer', function (t) {
+    t.plan(2);
+    
+    var ps = spawn(process.execPath, [
+        path.resolve(__dirname, '../bin/cmd.js'),
+        path.resolve(__dirname, 'bare/main.js'),
+        '--bare'
+    ]);
+    
+    ps.stdout.pipe(concat(function (body) {
+        vm.runInNewContext(body, {
+            console: {
+                log: function (msg) {
+                    t.same(msg, [
+                        path.join(__dirname, 'bare'),
+                        path.join(__dirname, 'bare/main.js'),
+                        'undefined',
+                        'undefined',
+                        'undefined'
+                    ]);
+                }
+            }
+        });
+    }));
+    ps.stdin.end();
+    
+    ps.on('exit', function (code) {
+        t.equal(code, 0);
+    });
+});

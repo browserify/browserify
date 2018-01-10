@@ -26,7 +26,7 @@ test('__filename and __dirname with insertGlobals: true', function (t) {
     });
     b.require(__dirname + '/global/filename.js', { expose: 'x' });
     b.bundle(function (err, src) {
-        var c = {};
+        var c = { Uint8Array: Uint8Array };
         c.self = c;
         vm.runInNewContext(src, c);
         var x = c.require('x');
@@ -69,7 +69,7 @@ test('process.nextTick', function (t) {
     var b = browserify();
     b.add(__dirname + '/global/tick.js');
     b.bundle(function (err, src) {
-        var c = { t: t, setTimeout: setTimeout };
+        var c = { t: t, setTimeout: setTimeout, clearTimeout: clearTimeout };
         vm.runInNewContext(src, c);
     });
 });
@@ -83,7 +83,7 @@ test('Buffer', function (t) {
         var c = {
             t: t,
             Uint8Array: Uint8Array,
-            DataView: DataView
+            ArrayBuffer: ArrayBuffer
         };
         vm.runInNewContext(src, c);
     });

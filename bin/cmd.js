@@ -22,7 +22,7 @@ if (b.argv._[0] === 'help' || b.argv.h || b.argv.help
         .on('close', function () { process.exit(1) })
     ;
 }
-if (b.argv.v || b.argv.version) {
+if (b.argv.version) {
     return console.log(require('../package.json').version);
 }
 
@@ -56,25 +56,25 @@ if (b.argv.list) {
 
 var bundle = b.bundle();
 bundle.on('error', errorExit);
+bundle.on('end', successExit);
 
+var tmpfile;
 var outfile = b.argv.o || b.argv.outfile;
 if (outfile) {
     mkdirp.sync(path.dirname(outfile));
-    bundle.pipe(fs.createWriteStream(outfile));
+    
+    // we'll output to a temp file within same filesystem, then atomically overwrite outfile once successful
+    tmpfile = outfile + ".tmp-browserify-" + Math.random().toFixed(20).slice(2)
+    bundle.pipe(fs.createWriteStream(tmpfile));
 }
 else {
     bundle.pipe(process.stdout);
 }
 
-function packageFilter (info) {
-    if (info && typeof info.browserify === 'string' && !info.browser) {
-        info.browser = info.browserify;
-        delete info.browserify;
-    }
-    return info || {};
-}
-
 function errorExit(err) {
+    if (tmpfile) fs.unlink(tmpfile, function (err) {
+      if (err) /* no-op, we're already exiting unhappily… */;
+    });
     if (err.stack) {
         console.error(err.stack);
     }
@@ -82,4 +82,10 @@ function errorExit(err) {
         console.error(String(err));
     }
     process.exit(1);
+}
+
+function successExit() {
+  if (tmpfile && outfile) fs.rename(tmpfile, outfile, function (err) {
+    if (err) errorExit(err);
+  });
 }

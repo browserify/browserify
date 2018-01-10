@@ -5,9 +5,9 @@ var fs = require('fs');
 var vm = require('vm');
 var concat = require('concat-stream');
 
-var mkdirp = require('mkdirp');
-var tmpdir = '/tmp/browserify-test/' + Math.random().toString(16).slice(2);
-mkdirp.sync(tmpdir);
+var temp = require('temp');
+temp.track();
+var tmpdir = temp.mkdirSync({prefix: 'browserify-test'});
 
 fs.writeFileSync(tmpdir + '/main.js', 'beep(require("crypto"))\n');
 
@@ -15,7 +15,7 @@ test('crypto --insertGlobals', function (t) {
     t.plan(2);
     
     var bin = __dirname + '/../bin/cmd.js';
-    var ps = spawn(bin, [ 'main.js', '--ig' ], { cwd : tmpdir });
+    var ps = spawn(process.execPath, [ bin, 'main.js', '--ig' ], { cwd : tmpdir });
     
     ps.stderr.pipe(process.stderr, { end : false });
     

@@ -13,12 +13,14 @@ module.exports = function (args, opts) {
     var argv = subarg(args, {
         'boolean': [
             'deps', 'pack', 'ig', 'dg', 'im', 'd', 'list', 'builtins',
-            'commondir', 'bare', 'full-paths', 'bundle-external'
+            'commondir', 'bare', 'full-paths', 'bundle-external', 'bf',
+            'node'
         ],
         string: [ 's', 'r', 'u', 'x', 't', 'i', 'o', 'e', 'c', 'it' ],
         alias: {
             ig: [ 'insert-globals', 'fast' ],
             dg: [ 'detect-globals', 'detectGlobals', 'dg' ],
+            bf: [ 'browser-field', 'browserField' ],
             im: 'ignore-missing',
             it: 'ignore-transform',
             igv: 'insert-global-vars',
@@ -43,7 +45,10 @@ module.exports = function (args, opts) {
             d: false,
             builtins: true,
             commondir: true,
-            'bundle-external': true
+            'bundle-external': true,
+            bf: true,
+            dedupe: true,
+            node: false
         }
     });
     
@@ -57,22 +62,41 @@ module.exports = function (args, opts) {
             s.resume();
             return rs;
         }
-        return path.resolve(process.cwd(), entry);
+        return entry;
     });
     
+    if (argv.node) {
+        argv.bare = true;
+        argv.browserField = false;
+    }
     if (argv.bare) {
         argv.builtins = false;
         argv.commondir = false;
-        argv.detectGlobals = false;
         if (argv.igv === undefined) {
             argv.igv = '__filename,__dirname';
         }
     }
-
+    
+    if (argv.igv) {
+        var insertGlobalVars = {};
+        var wantedGlobalVars = argv.igv.split(',');
+        Object.keys(insertGlobals.vars).forEach(function (x) {
+            if (wantedGlobalVars.indexOf(x) === -1) {
+                insertGlobalVars[x] = undefined;
+            }
+        });
+    }
+    
     var ignoreTransform = argv['ignore-transform'] || argv.it;
     var b = browserify(xtend({
         noParse: Array.isArray(argv.noParse) ? argv.noParse : [argv.noParse],
-        extensions: [].concat(argv.extension).filter(Boolean),
+        extensions: [].concat(argv.extension).filter(Boolean).map(function (extension) {
+            if (extension.charAt(0) != '.') { 
+                return '.' + extension;
+            } else {
+                return extension
+            }
+        }),
         ignoreTransform: [].concat(ignoreTransform).filter(Boolean),
         entries: entries,
         fullPaths: argv['full-paths'],
@@ -80,7 +104,10 @@ module.exports = function (args, opts) {
         commondir: argv.commondir === false ? false : undefined,
         bundleExternal: argv['bundle-external'],
         basedir: argv.basedir,
-        
+        browserField: argv.browserField,
+        transformKey: argv['transform-key'] ? ['browserify', argv['transform-key']] : undefined,
+        dedupe: argv['dedupe'],
+
         detectGlobals: argv.detectGlobals,
         insertGlobals: argv['insert-globals'] || argv.ig,
         insertGlobalVars: insertGlobalVars,
@@ -134,7 +161,7 @@ module.exports = function (args, opts) {
 
     [].concat(argv.require).filter(Boolean)
         .forEach(function (r) {
-            var xs = r.split(':');
+            var xs = splitOnColon(r);
             b.require(xs[0], { expose: xs.length === 1 ? xs[0] : xs[1] })
         })
     ;
@@ -142,8 +169,8 @@ module.exports = function (args, opts) {
     // resolve any external files and add them to the bundle as externals
     [].concat(argv.external).filter(Boolean)
         .forEach(function (x) {
-            if (/:/.test(x)) {
-                var xs = x.split(':');
+            var xs = splitOnColon(x);
+            if (xs.length === 2) {
                 add(xs[0], { expose: xs[1] });
             }
             else if (/\*/.test(x)) {
@@ -225,20 +252,18 @@ module.exports = function (args, opts) {
         return b;
     }
     
-    var insertGlobalVars;
-    if (argv.igv) {
-        insertGlobalVars = argv.igv.split(',').reduce(function (vars, x) {
-            vars[x] = insertGlobals.vars[x];
-            return vars;
-        }, {});
-    }
-    
     return b;
 };
 
-function copy (obj) {
-    return Object.keys(obj).reduce(function (acc, key) {
-        acc[key] = obj[key];
-        return acc;
-    }, {});
+function splitOnColon (f) {
+    var pos = f.lastIndexOf(':');
+    if (pos == -1) {
+        return [f]; // No colon
+    } else {
+        if ((/[a-zA-Z]:[\\/]/.test(f)) && (pos == 1)){
+            return [f]; // Windows path and colon is part of drive name
+        } else {
+            return [f.substr(0, pos), f.substr(pos + 1)];
+        }
+    }
 }
