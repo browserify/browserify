@@ -11,7 +11,7 @@
     "url": "http://github.com/browserify/browserify.git"
   },
   "engines": {
-    "node": ">= 4.0"
+    "node": ">= 0.8"
   },
   "keywords": [
     "browser",
@@ -46,7 +46,7 @@
     "inherits": "~2.0.1",
     "insert-module-globals": "^7.0.0",
     "labeled-stream-splicer": "^2.0.0",
-    "module-deps": "^5.0.0",
+    "module-deps": "^5.0.1",
     "os-browserify": "~0.3.0",
     "parents": "^1.0.1",
     "path-browserify": "~0.0.0",
@@ -76,7 +76,9 @@
     "browser-unpack": "^1.1.1",
     "coffee-script": "~1.10.0",
     "coffeeify": "~1.1.0",
+    "has-template-literals": "^1.0.0",
     "isstream": "^0.1.2",
+    "make-generator-function": "^1.1.0",
     "seq": "0.3.5",
     "tap": "^10.7.2",
     "temp": "^0.8.1",
