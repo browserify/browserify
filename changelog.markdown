@@ -1,3 +1,7 @@
+# 15.1.0
+
+restore support for node `< 4.0` until we can decide on a support schedule
+
 # 15.0.0
 
 fixed repository url in package.json.
