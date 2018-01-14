@@ -26,18 +26,18 @@ fs.writeFileSync(
 
 test('externalize bin', function (t) {
     t.plan(5);
-    
+
     var commands = [
         [ '-r', './robot.js', '-o', path.join(pubdir, 'common.js') ],
         [ '-x', './robot.js', 'beep.js', '-o', path.join(pubdir, 'beep.js') ],
-        [ '-x', './robot.js', 'boop.js', '-o', path.join(pubdir, 'boop.js') ]
+        [ '-x', './robot.js', 'boop.js', '-o', path.join(pubdir, 'boop/bop.js') ]
     ];
     (function next () {
         if (commands.length === 0) {
             var common = fs.readFileSync(path.join(pubdir, 'common.js'));
             var beep = fs.readFileSync(path.join(pubdir, 'beep.js'));
-            var boop = fs.readFileSync(path.join(pubdir, 'boop.js'));
-            
+            var boop = fs.readFileSync(path.join(pubdir, 'boop/bop.js'));
+
             vm.runInNewContext(common + beep, {
                 console: { log: function (msg) { t.equal(msg, 'BEEP!') } }
             });
