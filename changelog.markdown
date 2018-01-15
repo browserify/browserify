@@ -1,3 +1,13 @@
+# 15.2.0
+
+create parent directories if they do not exist when `--outfile /x/y/z/bundle.js` is used
+
+https://github.com/browserify/browserify/pull/995
+
+add regression test for object rest spread syntax
+
+https://github.com/browserify/browserify/pull/1798
+
 # 15.1.0
 
 restore support for node `< 4.0` until we can decide on a support schedule
