@@ -502,10 +502,15 @@ Browserify.prototype._createDeps = function (opts) {
                 }
             }
             if (err) cb(err, file, pkg)
-            else if (file) fs.realpath(file, function (err, res) {
-                cb(err, res, pkg, file);
-            });
-            else cb(err, null, pkg)
+            else if (file) {
+                if (opts.preserveSymlinks && parent) {
+                    return cb(err, path.resolve(file), pkg, file)
+                }
+
+                fs.realpath(file, function (err, res) {
+                    cb(err, res, pkg, file);
+                });
+            } else cb(err, null, pkg)
         });
     };
     
