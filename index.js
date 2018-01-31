@@ -503,7 +503,7 @@ Browserify.prototype._createDeps = function (opts) {
             }
             if (err) cb(err, file, pkg)
             else if (file) {
-                if (opts.preserveSymlinks && parent) {
+                if (opts.preserveSymlinks && parent.id !== self._mdeps.top.id) {
                     return cb(err, path.resolve(file), pkg, file)
                 }
 
