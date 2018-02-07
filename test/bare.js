@@ -3,6 +3,10 @@ var spawn = require('child_process').spawn;
 var path = require('path');
 var concat = require('concat-stream');
 var vm = require('vm');
+var fs = require('fs');
+var temp = require('temp');
+temp.track();
+var tmpdir = temp.mkdirSync({prefix: 'browserify-test'});
 
 test('bare', function (t) {
     t.plan(4);
@@ -41,14 +45,17 @@ test('bare', function (t) {
 test('bare inserts __filename,__dirname but not process,global,Buffer', function (t) {
     t.plan(2);
     
+    var file = path.resolve(__dirname, 'bare/main.js');
     var ps = spawn(process.execPath, [
         path.resolve(__dirname, '../bin/cmd.js'),
-        path.resolve(__dirname, 'bare/main.js'),
+        file,
         '--bare'
     ]);
     
     ps.stdout.pipe(concat(function (body) {
         vm.runInNewContext(body, {
+            require: require,
+            __dirname: process.cwd(),
             console: {
                 log: function (msg) {
                     t.same(msg, [
@@ -57,6 +64,75 @@ test('bare inserts __filename,__dirname but not process,global,Buffer', function
                         'undefined',
                         'undefined',
                         'undefined'
+                    ]);
+                }
+            }
+        });
+    }));
+    ps.stdin.end();
+    
+    ps.on('exit', function (code) {
+        t.equal(code, 0);
+    });
+});
+
+test('bare inserts dynamic __filename,__dirname', function (t) {
+    t.plan(2);
+    
+    var file = path.join(tmpdir, 'dirname-filename.js');
+
+    fs.writeFileSync(
+        file,
+        fs.readFileSync(path.resolve(__dirname, 'bare/dirname-filename.js'))
+    );
+
+    var ps = spawn(process.execPath, [
+        path.resolve(__dirname, '../bin/cmd.js'),
+        file,
+        '--bare'
+    ]);
+    
+    ps.stdout.pipe(concat(function (body) {
+        vm.runInNewContext(body, {
+            require: require,
+            __dirname: path.dirname(file),
+            console: {
+                log: function (msg) {
+                    t.same(msg, [
+                        path.dirname(file),
+                        file
+                    ]);
+                }
+            }
+        });
+    }));
+    ps.stdin.end();
+    
+    ps.on('exit', function (code) {
+        t.equal(code, 0);
+    });
+});
+
+test('bare inserts dynamic __filename,__dirname with basedir', function (t) {
+    t.plan(2);
+    
+    var file = 'dirname-filename.js';
+    var ps = spawn(process.execPath, [
+        path.resolve(__dirname, '../bin/cmd.js'),
+        file,
+        '--bare',
+        '--basedir=' + path.join(__dirname, 'bare')
+    ]);
+    
+    ps.stdout.pipe(concat(function (body) {
+        vm.runInNewContext(body, {
+            require: require,
+            __dirname: process.cwd(),
+            console: {
+                log: function (msg) {
+                    t.same(msg, [
+                        __dirname,
+                        path.join(__dirname, file)
                     ]);
                 }
             }

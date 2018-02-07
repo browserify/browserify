@@ -1,3 +1,4 @@
+var path = require('path');
 var mdeps = require('module-deps');
 var depsSort = require('deps-sort');
 var bpack = require('browser-pack');
@@ -570,6 +571,19 @@ Browserify.prototype._createDeps = function (opts) {
                 return through();
             }
         }
+
+        if (opts.commondir === false && opts.builtins === false) {
+          opts.insertGlobalVars = xtend({
+            __dirname: function(file, basedir) {
+              var dir = path.dirname(path.relative(basedir, file));
+              return 'require("path").join(__dirname,' + dir.split(path.sep).map(JSON.stringify).join(',') + ')';
+            },
+            __filename: function(file, basedir) {
+              var filename = path.relative(basedir, file);
+              return 'require("path").join(__dirname,' + filename.split(path.sep).map(JSON.stringify).join(',') + ')';
+            }
+          }, opts.insertGlobalVars);
+        }
         
         var vars = xtend({
             process: function () { return "require('_process')" },
@@ -579,11 +593,11 @@ Browserify.prototype._createDeps = function (opts) {
             vars.process = undefined;
             vars.buffer = undefined;
         }
-        
+
         return insertGlobals(file, xtend(opts, {
             debug: opts.debug,
             always: opts.insertGlobals,
-            basedir: opts.commondir === false
+            basedir: opts.commondir === false && isArray(opts.builtins)
                 ? '/'
                 : opts.basedir || process.cwd()
             ,
