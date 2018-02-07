@@ -1,3 +1,22 @@
+# 16.0.0
+
+add `--preserve-symlinks` option from Node 6.3
+
+https://github.com/browserify/browserify/pull/1742
+https://github.com/browserify/browserify/pull/1801
+
+update the browser version of `events` to 2.0.0—this version adds methods like `prependListener` that were introduced in recent node versions, but it is also twice the size of events v1.x (2KB instead of 1KB).
+
+https://github.com/browserify/browserify/pull/1803
+
+Dynamically calculate `__dirname` and `__filename` when `--node` is passed
+
+https://github.com/browserify/browserify/pull/1725
+
+upgrade module-deps, see https://github.com/browserify/module-deps/releases/tag/v6.0.0
+
+https://github.com/browserify/browserify/commit/e5e1ec8799f1007a56118ae46646e0048385ed84
+
 # 15.2.0
 
 create parent directories if they do not exist when `--outfile /x/y/z/bundle.js` is used
