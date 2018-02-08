@@ -487,6 +487,12 @@ as the `opts.vars` parameter.
 `opts.externalRequireName` defaults to `'require'` in `expose` mode but you can
 use another name.
 
+`opts.bare` creates a bundle that does not include Node builtins, and does not
+replace global Node variables except for `__dirname` and `__filename`.
+
+`opts.node` creates a bundle that runs in Node and does not use the browser
+versions of dependencies. Same as passing `{ bare: true, browserField: false }`.
+
 Note that if files do not contain javascript source code then you also need to
 specify a corresponding transform for them.
 

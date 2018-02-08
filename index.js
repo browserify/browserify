@@ -44,6 +44,23 @@ function Browserify (files, opts) {
         opts = xtend(opts, { entries: [].concat(opts.entries || [], files) });
     }
     else opts = xtend(files, opts);
+
+    if (opts.node) {
+        opts.bare = true;
+        opts.browserField = false;
+    }
+    if (opts.bare) {
+        opts.builtins = false;
+        opts.commondir = false;
+        if (opts.insertGlobalVars === undefined) {
+            opts.insertGlobalVars = {}
+            Object.keys(insertGlobals.vars).forEach(function (name) {
+                if (name !== '__dirname' && name !== '__filename') {
+                    opts.insertGlobalVars[name] = undefined;
+                }
+            })
+        }
+    }
     
     self._options = opts;
     if (opts.noparse) opts.noParse = opts.noparse;

@@ -64,19 +64,7 @@ module.exports = function (args, opts) {
         }
         return entry;
     });
-    
-    if (argv.node) {
-        argv.bare = true;
-        argv.browserField = false;
-    }
-    if (argv.bare) {
-        argv.builtins = false;
-        argv.commondir = false;
-        if (argv.igv === undefined) {
-            argv.igv = '__filename,__dirname';
-        }
-    }
-    
+
     if (argv.igv) {
         var insertGlobalVars = {};
         var wantedGlobalVars = argv.igv.split(',');
@@ -89,6 +77,8 @@ module.exports = function (args, opts) {
     
     var ignoreTransform = argv['ignore-transform'] || argv.it;
     var b = browserify(xtend({
+        node: argv.node,
+        bare: argv.bare,
         noParse: Array.isArray(argv.noParse) ? argv.noParse : [argv.noParse],
         extensions: [].concat(argv.extension).filter(Boolean).map(function (extension) {
             if (extension.charAt(0) != '.') { 
