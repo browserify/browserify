@@ -816,6 +816,6 @@ Releases are documented in
 
 # license
 
-MIT
+[MIT](./LICENSE)
 
 ![browserify!](./assets/browserify.png)
