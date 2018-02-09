@@ -1,9 +1,11 @@
 var test = require('tap').test;
 var spawn = require('child_process').spawn;
+var browserify = require('../');
 var path = require('path');
 var concat = require('concat-stream');
 var vm = require('vm');
 var fs = require('fs');
+var through = require('through2');
 var temp = require('temp');
 temp.track();
 var tmpdir = temp.mkdirSync({prefix: 'browserify-test'});
@@ -40,6 +42,31 @@ test('bare', function (t) {
     ps.on('exit', function (code) {
         t.equal(code, 0);
     });
+});
+
+test('bare api', function (t) {
+    t.plan(3);
+    
+    var input = through();
+    var b = browserify(input, { bare: true });
+    b.bundle().pipe(concat(function (body) {
+        vm.runInNewContext(body, {
+            Buffer: function (s) { return s.toLowerCase() },
+            console: {
+                log: function (msg) { t.equal(msg, 'abc') }
+            }
+        });
+        vm.runInNewContext(body, {
+            Buffer: Buffer,
+            console: {
+                log: function (msg) {
+                    t.ok(Buffer.isBuffer(msg));
+                    t.equal(msg.toString('utf8'), 'ABC')
+                }
+            }
+        });
+    }));
+    input.end('console.log(Buffer("ABC"))');
 });
 
 test('bare inserts __filename,__dirname but not process,global,Buffer', function (t) {
