@@ -1,3 +1,9 @@
+# 16.1.0
+
+add `bare` and `node` options to the API, same as the `--bare` and `--node` CLI arguments.
+
+https://github.com/browserify/browserify/pull/1804
+
 # 16.0.0
 
 add `--preserve-symlinks` option from Node 6.3
