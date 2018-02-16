@@ -661,8 +661,10 @@ Browserify.prototype._json = function () {
                 // check json validity
                 JSON.parse(sanitizedString);
                 row.source = 'module.exports=' + sanitizedString;
-            } catch (e) {
-                this.emit('error', syntaxError(e.message, row.file || row.id));
+            } catch (err) {
+                err.message = 'While parsing ' + (row.file || row.id) + ': ' + err.message
+                this.emit('error', err);
+                return;
             }
         }
         this.push(row);
