@@ -2,6 +2,8 @@ var browserify = require('../');
 var test = require('tap').test;
 var vm = require('vm');
 
+if (!ArrayBuffer.isView) ArrayBuffer.isView = function () { return false; };
+
 test('double buffer', function (t) {
     t.plan(1);
     

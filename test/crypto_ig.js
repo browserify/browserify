@@ -11,6 +11,8 @@ var tmpdir = temp.mkdirSync({prefix: 'browserify-test'});
 
 fs.writeFileSync(tmpdir + '/main.js', 'beep(require("crypto"))\n');
 
+if (!ArrayBuffer.isView) ArrayBuffer.isView = function () { return false; };
+
 test('crypto --insertGlobals', function (t) {
     t.plan(2);
     
