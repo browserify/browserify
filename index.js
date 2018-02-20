@@ -1,3 +1,4 @@
+var path = require('path');
 var mdeps = require('module-deps');
 var depsSort = require('deps-sort');
 var bpack = require('browser-pack');
@@ -44,6 +45,23 @@ function Browserify (files, opts) {
         opts = xtend(opts, { entries: [].concat(opts.entries || [], files) });
     }
     else opts = xtend(files, opts);
+
+    if (opts.node) {
+        opts.bare = true;
+        opts.browserField = false;
+    }
+    if (opts.bare) {
+        opts.builtins = false;
+        opts.commondir = false;
+        if (opts.insertGlobalVars === undefined) {
+            opts.insertGlobalVars = {}
+            Object.keys(insertGlobals.vars).forEach(function (name) {
+                if (name !== '__dirname' && name !== '__filename') {
+                    opts.insertGlobalVars[name] = undefined;
+                }
+            })
+        }
+    }
     
     self._options = opts;
     if (opts.noparse) opts.noParse = opts.noparse;
@@ -262,6 +280,13 @@ Browserify.prototype.external = function (file, opts) {
 
 Browserify.prototype.exclude = function (file, opts) {
     if (!opts) opts = {};
+    if (isArray(file)) {
+        var self = this;
+        file.forEach(function(file) {
+            self.exclude(file, opts);
+        });
+        return this;
+    }
     var basedir = defined(opts.basedir, process.cwd());
     this._exclude.push(file);
     this._exclude.push('/' + relativePath(basedir, file));
@@ -270,6 +295,13 @@ Browserify.prototype.exclude = function (file, opts) {
 
 Browserify.prototype.ignore = function (file, opts) {
     if (!opts) opts = {};
+    if (isArray(file)) {
+        var self = this;
+        file.forEach(function(file) {
+            self.ignore(file, opts);
+        });
+        return this;
+    }
     var basedir = defined(opts.basedir, process.cwd());
 
     // Handle relative paths
@@ -487,10 +519,15 @@ Browserify.prototype._createDeps = function (opts) {
                 }
             }
             if (err) cb(err, file, pkg)
-            else if (file) fs.realpath(file, function (err, res) {
-                cb(err, res, pkg, file);
-            });
-            else cb(err, null, pkg)
+            else if (file) {
+                if (opts.preserveSymlinks && parent.id !== self._mdeps.top.id) {
+                    return cb(err, path.resolve(file), pkg, file)
+                }
+
+                fs.realpath(file, function (err, res) {
+                    cb(err, res, pkg, file);
+                });
+            } else cb(err, null, pkg)
         });
     };
     
@@ -550,6 +587,19 @@ Browserify.prototype._createDeps = function (opts) {
                 return through();
             }
         }
+
+        if (opts.commondir === false && opts.builtins === false) {
+          opts.insertGlobalVars = xtend({
+            __dirname: function(file, basedir) {
+              var dir = path.dirname(path.relative(basedir, file));
+              return 'require("path").join(__dirname,' + dir.split(path.sep).map(JSON.stringify).join(',') + ')';
+            },
+            __filename: function(file, basedir) {
+              var filename = path.relative(basedir, file);
+              return 'require("path").join(__dirname,' + filename.split(path.sep).map(JSON.stringify).join(',') + ')';
+            }
+          }, opts.insertGlobalVars);
+        }
         
         var vars = xtend({
             process: function () { return "require('_process')" },
@@ -559,11 +609,11 @@ Browserify.prototype._createDeps = function (opts) {
             vars.process = undefined;
             vars.buffer = undefined;
         }
-        
+
         return insertGlobals(file, xtend(opts, {
             debug: opts.debug,
             always: opts.insertGlobals,
-            basedir: opts.commondir === false
+            basedir: opts.commondir === false && isArray(opts.builtins)
                 ? '/'
                 : opts.basedir || process.cwd()
             ,

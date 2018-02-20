@@ -1,3 +1,71 @@
+# 16.1.0
+
+add `bare` and `node` options to the API, same as the `--bare` and `--node` CLI arguments.
+
+https://github.com/browserify/browserify/pull/1804
+
+# 16.0.0
+
+add `--preserve-symlinks` option from Node 6.3
+
+https://github.com/browserify/browserify/pull/1742
+https://github.com/browserify/browserify/pull/1801
+
+update the browser version of `events` to 2.0.0—this version adds methods like `prependListener` that were introduced in recent node versions, but it is also twice the size of events v1.x (2KB instead of 1KB).
+
+https://github.com/browserify/browserify/pull/1803
+
+Dynamically calculate `__dirname` and `__filename` when `--node` is passed
+
+https://github.com/browserify/browserify/pull/1725
+
+upgrade module-deps, see https://github.com/browserify/module-deps/releases/tag/v6.0.0
+
+https://github.com/browserify/browserify/commit/e5e1ec8799f1007a56118ae46646e0048385ed84
+
+# 15.2.0
+
+create parent directories if they do not exist when `--outfile /x/y/z/bundle.js` is used
+
+https://github.com/browserify/browserify/pull/995
+
+add regression test for object rest spread syntax
+
+https://github.com/browserify/browserify/pull/1798
+
+# 15.1.0
+
+restore support for node `< 4.0` until we can decide on a support schedule
+
+# 15.0.0
+
+fixed repository url in package.json.
+
+https://github.com/browserify/browserify/commit/5ec19eed48a5f46cb48d44be8ffc2f6bfb73fbfb
+
+update `module-deps` to 5.0.0, which enables requiring modules in backtick-enclosed strings.
+
+https://github.com/browserify/browserify/pull/1785
+
+dropped testing in node 0.10 and 0.12, set supported node versions to `>=4`
+
+https://github.com/browserify/browserify/pull/1743
+https://github.com/browserify/browserify/pull/1793
+
+add support for passing arrays to the `exclude` and `ignore` methods.
+
+https://github.com/browserify/browserify/pull/1769
+
+# 14.5.0
+
+update `os-browserify` to 0.3.0, which adds a shim for node.js's `os.homedir` method.
+
+https://github.com/browserify/browserify/pull/1767
+
+update `browserify-zlib` to 0.2.0, which adds support for dictionaries.
+
+https://github.com/browserify/browserify/pull/1733
+
 # 14.4.0
 
 update `string_decoder` to 1.0.0, which matches the latest node.js behavior more closely.

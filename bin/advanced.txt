@@ -100,6 +100,10 @@ Advanced Options:
 
     Register MODULE as a plugin.
 
+  --preserve-symlinks
+
+    Preserves symlinks when resolving modules.
+
 Passing arguments to transforms and plugins:
 
   For -t, -g, and -p, you may use subarg syntax to pass options to the

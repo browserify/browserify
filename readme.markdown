@@ -11,16 +11,13 @@ tag.
 
 [![build status](https://img.shields.io/travis/browserify/browserify/master.svg)](https://travis-ci.org/browserify/browserify)
 
-![browserify!](http://substack.net/images/browserify_logo.png)
+![browserify!](./assets/logo.png)
 
 # getting started
 
 If you're new to browserify, check out the
 [browserify handbook](https://github.com/browserify/browserify-handbook)
 and the resources on [browserify.org](http://browserify.org/).
-
-Check out [browserify search](http://browserifysearch.org/) to find
-browserify-compatible packages on npm.
 
 # example
 
@@ -490,6 +487,12 @@ as the `opts.vars` parameter.
 `opts.externalRequireName` defaults to `'require'` in `expose` mode but you can
 use another name.
 
+`opts.bare` creates a bundle that does not include Node builtins, and does not
+replace global Node variables except for `__dirname` and `__filename`.
+
+`opts.node` creates a bundle that runs in Node and does not use the browser
+versions of dependencies. Same as passing `{ bare: true, browserField: false }`.
+
 Note that if files do not contain javascript source code then you also need to
 specify a corresponding transform for them.
 
@@ -541,11 +544,15 @@ from the current bundle as the bundle in `file` gets bundled.
 
 Prevent the module name or file at `file` from showing up in the output bundle.
 
+If `file` is an array, each item in `file` will be ignored.
+
 Instead you will get a file with `module.exports = {}`.
 
 ## b.exclude(file)
 
 Prevent the module name or file at `file` from showing up in the output bundle.
+
+If `file` is an array, each item in `file` will be excluded.
 
 If your code tries to `require()` that file it will throw unless you've provided
 another mechanism for loading it.
@@ -815,6 +822,6 @@ Releases are documented in
 
 # license
 
-MIT
+[MIT](./LICENSE)
 
-![browserify!](http://substack.net/images/browserify/browserify.png)
+![browserify!](./assets/browserify.png)
