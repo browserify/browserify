@@ -106,7 +106,7 @@ test('bare inserts __filename,__dirname but not process,global,Buffer', function
 test('bare inserts dynamic __filename,__dirname', function (t) {
     t.plan(2);
     
-    var file = path.join(tmpdir, 'dirname-filename.js');
+    var file = 'dirname-filename.js';
 
     fs.writeFileSync(
         file,
