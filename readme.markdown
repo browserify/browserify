@@ -510,7 +510,9 @@ If `file` is an array, each item in `file` will be added as an entry file.
 
 Make `file` available from outside the bundle with `require(file)`.
 
-The `file` param is anything that can be resolved by `require.resolve()`.
+The `file` param is anything that can be resolved by `require.resolve()`,
+including files from `node_modules`. Like with `require.resolve()`, you must
+prefix `file` with `./` to require a local file (not in `node_modules`).
 
 `file` can also be a stream, but you should also use `opts.basedir` so that
 relative requires will be resolvable.
