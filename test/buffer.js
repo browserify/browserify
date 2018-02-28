@@ -2,6 +2,8 @@ var browserify = require('../');
 var test = require('tap').test;
 var vm = require('vm');
 
+if (!ArrayBuffer.isView) ArrayBuffer.isView = function () { return false; };
+
 test('utf8 buffer to base64', function (t) {
     t.plan(1);
     var b = browserify();

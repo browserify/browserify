@@ -2,6 +2,8 @@ var browserify = require('../');
 var vm = require('vm');
 var test = require('tap').test;
 
+if (!ArrayBuffer.isView) ArrayBuffer.isView = function () { return false; };
+
 test('global', function (t) {
     t.plan(2);
     
