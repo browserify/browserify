@@ -1,12 +1,13 @@
 var browserify = require('../');
 var vm = require('vm');
+var path = require('path');
 var test = require('tap').test;
 var fs = require('fs');
 
 var testFiles = [
-    __dirname + '/multi_entry/a.js',
-    __dirname + '/multi_entry/b.js',
-    __dirname + '/multi_entry/c.js'
+    path.join(__dirname, 'multi_entry/a.js'),
+    path.join(__dirname, 'multi_entry/b.js'),
+    path.join(__dirname, 'multi_entry/c.js')
 ];
 
 test('multi entry', function (t) {
@@ -105,7 +106,7 @@ test('entries as streams', function (t) {
         if (row.entry) {
             t.similar(
                 row.file,
-                RegExp(__dirname + '/multi_entry/_stream_[\\d].js'),
+                RegExp(path.join(__dirname, 'multi_entry/_stream_').replace(/\\/g, '\\\\') + '[\\d].js'),
                 'should be full entry path'
             );
         }

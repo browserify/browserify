@@ -1,6 +1,5 @@
 var test = require('tap').test;
 var browserify = require('../');
-var path = require('path');
 var vm = require('vm');
 
 test('entry expose', function (t) {

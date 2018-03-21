@@ -1,5 +1,6 @@
 var browserify = require('../');
 var vm = require('vm');
+var path = require('path');
 var test = require('tap').test;
 
 test('global noparse module', function (t) {
@@ -84,7 +85,7 @@ test('global noparse function', function (t) {
 
     var b = browserify({
         noParse: function(file) {
-            return file === __dirname + '/global/filename.js';
+            return file === path.join(__dirname, 'global/filename.js');
         }
     });
     b.require(__dirname + '/global/filename.js', { expose: 'x' });
