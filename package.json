@@ -61,7 +61,7 @@
     "shell-quote": "^1.6.1",
     "stream-browserify": "^2.0.0",
     "stream-http": "^2.0.0",
-    "string_decoder": "~1.0.0",
+    "string_decoder": "^1.1.1",
     "subarg": "^1.0.0",
     "syntax-error": "^1.1.1",
     "through2": "^2.0.0",
@@ -69,7 +69,7 @@
     "tty-browserify": "0.0.1",
     "url": "~0.11.0",
     "util": "~0.10.1",
-    "vm-browserify": "~0.0.1",
+    "vm-browserify": "^1.0.0",
     "xtend": "^4.0.0"
   },
   "devDependencies": {
