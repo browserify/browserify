@@ -11,7 +11,7 @@ test('compiling coffee with -c', function (t) {
     
     var ps = spawn(process.execPath, [
         path.resolve(__dirname, '../bin/cmd.js'),
-        '-c', '"' + process.execPath + '" "' + __dirname + '/../node_modules/coffee-script/bin/coffee" -sc',
+        '-c', '"' + process.execPath + '" "' + __dirname + '/../node_modules/coffeescript/bin/coffee" -sc',
         'coffee_bin/main.coffee'
     ]);
     var src = '';
