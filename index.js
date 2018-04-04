@@ -85,6 +85,10 @@ function Browserify (files, opts) {
     self._bresolve = opts.browserField === false
         ? function (id, opts, cb) {
             if (!opts.basedir) opts.basedir = path.dirname(opts.filename)
+            // Resolve builtin modules.
+            if (self._mdeps.options.modules[id]) return process.nextTick(function () {
+                cb(null, self._mdeps.options.modules[id]);
+            });
             resolve(id, opts, cb)
         }
         : bresolve
