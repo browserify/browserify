@@ -1,3 +1,18 @@
+# 16.2.0
+
+update the browser versions of `vm-browserify` and `string_decoder`.
+
+`string_decoder` updates to the Node 8+ API.
+`vm-browserify` replaces an unlicensed dependency by an MIT one.
+
+https://github.com/browserify/browserify/pull/1829
+
+# 16.1.1
+
+add empty stub for the `perf_hooks` builtin module.
+
+https://github.com/browserify/browserify/pull/1815
+
 # 16.1.0
 
 add `bare` and `node` options to the API, same as the `--bare` and `--node` CLI arguments.
