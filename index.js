@@ -30,7 +30,8 @@ inherits(Browserify, EventEmitter);
 
 var fs = require('fs');
 var path = require('path');
-var relativePath = require('cached-path-relative')
+var cachedPathRelative = require('cached-path-relative');
+
 var paths = {
     empty: path.join(__dirname, 'lib/_empty.js')
 };
@@ -136,14 +137,12 @@ Browserify.prototype.require = function (file, opts) {
     var expose = opts.expose;
     if (file === expose && /^[\.]/.test(expose)) {
         expose = '/' + relativePath(basedir, expose);
-        expose = expose.replace(/\\/g, '/');
     }
     if (expose === undefined && this._options.exposeAll) {
         expose = true;
     }
     if (expose === true) {
         expose = '/' + relativePath(basedir, file);
-        expose = expose.replace(/\\/g, '/');
     }
     
     if (isStream(file)) {
@@ -498,7 +497,7 @@ Browserify.prototype._createDeps = function (opts) {
                 return cb(null, paths.empty, {});
             }
             if (file && self._ignore.length) {
-                var nm = file.split('/node_modules/')[1];
+                var nm = file.replace(/\\/g, '/').split('/node_modules/')[1];
                 if (nm) {
                     nm = nm.split('/')[0];
                     if (self._ignore.indexOf(nm) >= 0) {
@@ -576,7 +575,7 @@ Browserify.prototype._createDeps = function (opts) {
         if (no.indexOf(file) >= 0) return through();
         if (absno.indexOf(file) >= 0) return through();
         
-        var parts = file.split('/node_modules/');
+        var parts = file.replace(/\\/g, '/').split('/node_modules/');
         for (var i = 0; i < no.length; i++) {
             if (typeof no[i] === 'function' && no[i](file)) {
                 return through();
@@ -789,8 +788,7 @@ Browserify.prototype._debug = function (opts) {
     return through.obj(function (row, enc, next) {
         if (opts.debug) {
             row.sourceRoot = 'file://localhost';
-            row.sourceFile = relativePath(basedir, row.file)
-                .replace(/\\/g, '/');
+            row.sourceFile = relativePath(basedir, row.file);
         }
         this.push(row);
         next();
@@ -854,4 +852,8 @@ function isExternalModule (file) {
         /^(\.|\w:)/ :
         /^[\/.]/;
     return !regexp.test(file);
+}
+function relativePath (from, to) {
+    // Replace \ with / for OS-independent behavior
+    return cachedPathRelative(from, to).replace(/\\/g, '/');
 }

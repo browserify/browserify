@@ -1,13 +1,14 @@
 var browserify = require('../');
 var test = require('tap').test;
 var vm = require('vm');
+var path = require('path');
 
 test('ignore', function (t) {
     t.plan(1);
 
     var b = browserify();
     b.add(__dirname + '/ignore/main.js');
-    b.ignore( __dirname + '/ignore/skip.js');
+    b.ignore(path.join(__dirname, 'ignore/skip.js'));
 
     b.bundle(function (err, src) {
         if (err) t.fail(err);
@@ -21,8 +22,8 @@ test('ignore array', function(t) {
 	var b = browserify();
 	b.add(__dirname + '/ignore/array.js');
 	b.ignore([
-		__dirname + '/ignore/skip.js',
-		__dirname + '/ignore/skip2.js'
+		path.join(__dirname, 'ignore/skip.js'),
+		path.join(__dirname, 'ignore/skip2.js')
 	]);
 
 	b.bundle(function (err, src) {
