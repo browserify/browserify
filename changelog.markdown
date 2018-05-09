@@ -1,3 +1,7 @@
+# 16.2.2
+
+Remove some extraneous files from the published package.
+
 # 16.2.1
 
 Fix relative `--external` paths on Windows.
