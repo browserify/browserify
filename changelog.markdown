@@ -1,3 +1,13 @@
+# 16.2.1
+
+Fix relative `--external` paths on Windows.
+
+https://github.com/browserify/browserify/pull/1704
+
+Fix tests to work on Windows, and add Appveyor CI for Windows testing.
+
+https://github.com/browserify/browserify/pull/1819
+
 # 16.2.0
 
 update the browser versions of `vm-browserify` and `string_decoder`.
