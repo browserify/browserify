@@ -439,7 +439,11 @@ when calling `browserify` command.
 [commondir](https://www.npmjs.com/package/commondir) module.
 
 `opts.fullPaths` disables converting module ids into numerical indexes. This is
-useful for preserving the original paths that a bundle was generated with.
+useful for preserving the original paths that a bundle was generated with. Note
+that even when `fullPaths` is `false`, the bundle will contain
+`require('module-id')` calls which are mapped to numerical indexes at runtime.
+To remove module ids from the bundle entirely, use something like
+[bundle-collapser](https://github.com/substack/bundle-collapser).
 
 `opts.builtins` sets the list of built-ins to use, which by default is set in
 `lib/builtins.js` in this distribution.
