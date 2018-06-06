@@ -50,7 +50,7 @@
     "module-deps": "^6.0.0",
     "os-browserify": "~0.3.0",
     "parents": "^1.0.1",
-    "path-browserify": "~0.0.0",
+    "path-browserify": "^1.0.0",
     "process": "~0.11.0",
     "punycode": "^1.3.2",
     "querystring-es3": "~0.2.0",
