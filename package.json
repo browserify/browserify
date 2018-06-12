@@ -68,7 +68,7 @@
     "timers-browserify": "^1.0.1",
     "tty-browserify": "0.0.1",
     "url": "~0.11.0",
-    "util": "~0.10.1",
+    "util": "~0.11.0",
     "vm-browserify": "^1.0.0",
     "xtend": "^4.0.0"
   },
