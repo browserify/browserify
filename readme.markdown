@@ -698,7 +698,7 @@ sophisticated things you can do in the package.json:
 
 ## browser field
 
-There is a special "[browser](https://gist.github.com/4339901)" field you can
+There is a special "[browser](https://github.com/defunctzombie/package-browser-field-spec)" field you can
 set in your package.json on a per-module basis to override file resolution for
 browser-specific versions of files.
 
