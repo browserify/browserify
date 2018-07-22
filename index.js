@@ -29,7 +29,6 @@ module.exports = Browserify;
 inherits(Browserify, EventEmitter);
 
 var fs = require('fs');
-var path = require('path');
 var cachedPathRelative = require('cached-path-relative');
 
 var paths = {
