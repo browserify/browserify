@@ -1,3 +1,13 @@
+# 16.2.3
+
+add empty stub for the `inspector` builtin module.
+
+https://github.com/browserify/browserify/pull/1854
+
+change the "browser" field link to the browser-field-spec repo instead of the old gist.
+
+https://github.com/browserify/browserify/pull/1845
+
 # 16.2.2
 
 Remove some extraneous files from the published package.
