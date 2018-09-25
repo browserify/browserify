@@ -10,6 +10,7 @@ order to build a bundle you can serve up to the browser in a single `<script>`
 tag.
 
 [![build status](https://img.shields.io/travis/browserify/browserify/master.svg)](https://travis-ci.org/browserify/browserify)
+[![Mentioned in Awesome JavaScript](https://awesome.re/mentioned-badge.svg)](https://github.com/sorrycc/awesome-javascript)
 
 ![browserify!](./assets/logo.png)
 
