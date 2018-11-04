@@ -19,10 +19,10 @@ test('bin --list', function (t) {
     ps.stderr.on('data', function (buf) { err += buf });
 
     var expected = [
-      path.resolve(__dirname, 'list/node_modules/qq/node_modules/z/index.js'),
-      path.resolve(__dirname, 'list/node_modules/qq/node_modules/a/index.js'),
+      path.resolve(__dirname, 'list/main.js'),
       path.resolve(__dirname, 'list/node_modules/qq/b.js'),
-      path.resolve(__dirname, 'list/main.js')
+      path.resolve(__dirname, 'list/node_modules/qq/node_modules/a/index.js'),
+      path.resolve(__dirname, 'list/node_modules/qq/node_modules/z/index.js')
     ].join('\n') + '\n';
 
     ps.on('exit', function (code) {
@@ -48,9 +48,9 @@ test('bin --require --list', function (t) {
     ps.stderr.on('data', function (buf) { err += buf });
 
     var expected = [
-      path.resolve(__dirname, 'list/node_modules/qq/node_modules/z/index.js'),
+      path.resolve(__dirname, 'list/node_modules/qq/b.js'),
       path.resolve(__dirname, 'list/node_modules/qq/node_modules/a/index.js'),
-      path.resolve(__dirname, 'list/node_modules/qq/b.js')
+      path.resolve(__dirname, 'list/node_modules/qq/node_modules/z/index.js')
     ].join('\n') + '\n';
 
     ps.on('exit', function (code) {
