@@ -4,7 +4,7 @@ var path = require('path');
 var vm = require('vm');
 
 test('bin --list', function (t) {
-    t.plan(4);
+    t.plan(3);
 
     var cwd = process.cwd();
     process.chdir(path.resolve(__dirname, 'list'));
@@ -13,9 +13,9 @@ test('bin --list', function (t) {
         path.resolve(__dirname, '../bin/cmd.js'),
         '--list', 'main.js'
     ]);
-    var src = '';
+    var out = '';
     var err = '';
-    ps.stdout.on('data', function (buf) { src += buf });
+    ps.stdout.on('data', function (buf) { out += buf });
     ps.stderr.on('data', function (buf) { err += buf });
 
     var expected = [
@@ -26,15 +26,9 @@ test('bin --list', function (t) {
     ].join('\n') + '\n';
 
     ps.on('exit', function (code) {
-        t.equal(code, 0);
-        t.equal(err, '');
-        t.equal(src, expected);
-
-        var allDone = false;
-        var c = { done : function () { allDone = true } };
-
-        vm.runInNewContext(src, c);
-        t.ok(allDone);
+        t.equal(code, 0, 'command exited cleanly');
+        t.equal(err, '', 'nothing reported to stderr');
+        t.equal(out, expected, 'expected file list');
     });
 });
 
