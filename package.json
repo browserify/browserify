@@ -29,7 +29,7 @@
     "browser-resolve": "^1.11.0",
     "browserify-zlib": "~0.2.0",
     "buffer": "^5.0.2",
-    "cached-path-relative": "^1.0.0",
+    "cached-path-relative": "^1.0.2",
     "concat-stream": "^1.6.0",
     "console-browserify": "^1.1.0",
     "constants-browserify": "~1.0.0",
