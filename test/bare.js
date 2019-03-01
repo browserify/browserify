@@ -28,7 +28,7 @@ test('bare', function (t) {
             }
         });
         vm.runInNewContext(body, {
-            Buffer: Buffer,
+            Buffer: function (s) { return Buffer.from(s) },
             console: {
                 log: function (msg) {
                     t.ok(Buffer.isBuffer(msg));
@@ -57,7 +57,7 @@ test('bare api', function (t) {
             }
         });
         vm.runInNewContext(body, {
-            Buffer: Buffer,
+            Buffer: function (s) { return Buffer.from(s) }, 
             console: {
                 log: function (msg) {
                     t.ok(Buffer.isBuffer(msg));

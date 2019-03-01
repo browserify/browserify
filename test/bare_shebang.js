@@ -20,7 +20,7 @@ test('bare shebang', function (t) {
             }
         });
         vm.runInNewContext(body, {
-            Buffer: Buffer,
+            Buffer: function (s) { return Buffer.from(s) },
             console: {
                 log: function (msg) {
                     t.ok(Buffer.isBuffer(msg));
