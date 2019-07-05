@@ -1,3 +1,17 @@
+# 16.3.0
+
+add empty stub for the `http2` builtin module.
+
+https://github.com/browserify/browserify/pull/1913
+
+update license text to remove references to code that is no longer included.
+
+https://github.com/browserify/browserify/pull/1906
+
+add more tests for folder resolution.
+
+https://github.com/browserify/browserify/pull/1139
+
 # 16.2.3
 
 add empty stub for the `inspector` builtin module.
