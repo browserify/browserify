@@ -1,3 +1,9 @@
+# 16.4.0
+
+Upgrade stream-http to v3. This version drops support for IE10 and below.
+
+https://github.com/browserify/browserify/pull/1916
+
 # 16.3.0
 
 add empty stub for the `http2` builtin module.
