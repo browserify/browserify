@@ -1,3 +1,9 @@
+# 16.5.0
+
+Support custom name for `"browser"` field resolution in `package.json` using the `browserField` option.
+
+https://github.com/browserify/browserify/pull/1918
+
 # 16.4.0
 
 Upgrade stream-http to v3. This version drops support for IE10 and below.
