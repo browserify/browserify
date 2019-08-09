@@ -447,7 +447,9 @@ useful for preserving the original paths that a bundle was generated with.
 `opts.bundleExternal` boolean option to set if external modules should be
 bundled. Defaults to true.
 
-When `opts.browserField` is false, the package.json browser field will be ignored.
+When `opts.browserField` is false, the package.json browser field will be
+ignored. When `opts.browserField` is set to a `string`, then a custom field name
+can be used instead of the default `"browser"` field.
 
 When `opts.insertGlobals` is true, always insert `process`, `global`,
 `__filename`, and `__dirname` without analyzing the AST for faster builds but

@@ -83,12 +83,19 @@ function Browserify (files, opts) {
     self._transforms = [];
     self._entryOrder = 0;
     self._ticked = false;
-    self._bresolve = opts.browserField === false
+
+    var browserField = opts.browserField
+    self._bresolve = browserField === false
         ? function (id, opts, cb) {
             if (!opts.basedir) opts.basedir = path.dirname(opts.filename)
             resolve(id, opts, cb)
         }
-        : bresolve
+        : typeof browserField === 'string'
+            ? function (id, opts, cb) {
+                opts.browser = browserField
+                bresolve(id, opts, cb)
+            }
+            : bresolve
     ;
     self._syntaxCache = {};
 
