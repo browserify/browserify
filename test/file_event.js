@@ -8,7 +8,7 @@ test('file event', function (t) {
     
     var b = browserify(__dirname + '/entry/main.js');
     var files = {
-        'main.js': __dirname + '/entry/main.js',
+        'main.js': path.join(__dirname, 'entry/main.js'),
         'one.js': './one',
         'two.js': './two'
     };

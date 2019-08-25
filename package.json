@@ -1,6 +1,6 @@
 {
   "name": "browserify",
-  "version": "16.2.0",
+  "version": "16.5.0",
   "description": "browser-side require() the node way",
   "main": "index.js",
   "bin": {
@@ -60,7 +60,7 @@
     "shasum": "^1.0.0",
     "shell-quote": "^1.6.1",
     "stream-browserify": "^2.0.0",
-    "stream-http": "^2.0.0",
+    "stream-http": "^3.0.0",
     "string_decoder": "^1.1.1",
     "subarg": "^1.0.0",
     "syntax-error": "^1.1.1",
@@ -81,6 +81,7 @@
     "has-template-literals": "^1.0.0",
     "isstream": "^0.1.2",
     "make-generator-function": "^1.1.0",
+    "semver": "^5.5.0",
     "seq": "0.3.5",
     "tap": "^10.7.2",
     "temp": "^0.8.1",

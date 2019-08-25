@@ -6,7 +6,7 @@ var vm = require('vm');
 var test = require('tap').test;
 var through = require('through2');
 
-test('transform symlink', function (t) {
+test('transform symlink', { skip: process.platform === 'win32' }, function (t) {
     t.plan(4);
     var expected = [ 9, 555, 777 ];
     var b = browserify(__dirname + '/tr_symlink/app/main.js', {

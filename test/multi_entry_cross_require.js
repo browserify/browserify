@@ -1,11 +1,12 @@
 var browserify = require('../');
 var vm = require('vm');
+var path = require('path');
 var test = require('tap').test;
 
 var testFiles = [
-    __dirname + '/multi_entry_cross_require/a.js',
-    __dirname + '/multi_entry_cross_require/lib/b.js',
-    __dirname + '/multi_entry_cross_require/c.js'
+    path.join(__dirname, 'multi_entry_cross_require/a.js'),
+    path.join(__dirname, 'multi_entry_cross_require/lib/b.js'),
+    path.join(__dirname, 'multi_entry_cross_require/c.js')
 ];
 
 test('multi entry cross require', function (t) {
