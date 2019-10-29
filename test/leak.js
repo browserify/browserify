@@ -15,6 +15,20 @@ var dirstring = dir.split(path.sep).slice(-2).join(path.sep);
 
 if (!ArrayBuffer.isView) ArrayBuffer.isView = function () { return false; };
 
+function context (t) {
+    return {
+        t: t,
+        setTimeout: setTimeout,
+        clearTimeout: clearTimeout,
+        Uint8Array: Uint8Array,
+        ArrayBuffer: ArrayBuffer,
+        Object: {
+            defineProperty: Object.defineProperty,
+            setPrototypeOf: Object.setPrototypeOf || require('setprototypeof')
+        }
+    };
+}
+
 test('leaking information about system paths (process)', function (t) {
     t.plan(4);
     
@@ -32,11 +46,7 @@ test('leaking information about system paths (process)', function (t) {
         t.equal(src.indexOf(dirstring), -1, 'temp directory visible');
         t.equal(src.indexOf(process.cwd()), -1, 'cwd directory visible');
         t.equal(src.indexOf('/home'), -1, 'home directory visible');
-        vm.runInNewContext(src, {
-            t: t,
-            setTimeout: setTimeout,
-            clearTimeout: clearTimeout
-        });
+        vm.runInNewContext(src, context(t));
     });
 });
 
@@ -54,6 +64,6 @@ test('leaking information about system paths (Buffer)', function (t) {
         t.equal(src.indexOf(dirstring), -1, 'temp directory visible');
         t.equal(src.indexOf(process.cwd()), -1, 'cwd directory visible');
         t.equal(src.indexOf('/home'), -1, 'home directory visible');
-        vm.runInNewContext(src, { t: t, setTimeout: setTimeout, Uint8Array: Uint8Array, ArrayBuffer: ArrayBuffer });
+        vm.runInNewContext(src, context(t));
     });
 });

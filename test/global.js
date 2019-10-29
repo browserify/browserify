@@ -4,6 +4,20 @@ var test = require('tap').test;
 
 if (!ArrayBuffer.isView) ArrayBuffer.isView = function () { return false; };
 
+function context (t) {
+    return {
+        t: t,
+        setTimeout: setTimeout,
+        clearTimeout: clearTimeout,
+        Uint8Array: Uint8Array,
+        ArrayBuffer: ArrayBuffer,
+        Object: {
+            defineProperty: Object.defineProperty,
+            setPrototypeOf: Object.setPrototypeOf || require('setprototypeof')
+        }
+    };
+}
+
 test('global', function (t) {
     t.plan(2);
     
@@ -28,7 +42,7 @@ test('__filename and __dirname with insertGlobals: true', function (t) {
     });
     b.require(__dirname + '/global/filename.js', { expose: 'x' });
     b.bundle(function (err, src) {
-        var c = { Uint8Array: Uint8Array };
+        var c = context(t);
         c.self = c;
         vm.runInNewContext(src, c);
         var x = c.require('x');
@@ -71,7 +85,7 @@ test('process.nextTick', function (t) {
     var b = browserify();
     b.add(__dirname + '/global/tick.js');
     b.bundle(function (err, src) {
-        var c = { t: t, setTimeout: setTimeout, clearTimeout: clearTimeout };
+        var c = context(t);
         vm.runInNewContext(src, c);
     });
 });
@@ -82,11 +96,7 @@ test('Buffer', function (t) {
     var b = browserify();
     b.add(__dirname + '/global/buffer.js');
     b.bundle(function (err, src) {
-        var c = {
-            t: t,
-            Uint8Array: Uint8Array,
-            ArrayBuffer: ArrayBuffer
-        };
+        var c = context(t);
         vm.runInNewContext(src, c);
     });
 });

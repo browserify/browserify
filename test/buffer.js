@@ -139,6 +139,10 @@ function context () {
     return {
         ArrayBuffer: ArrayBuffer,
         Uint8Array: Uint8Array,
-        DataView: DataView
+        DataView: DataView,
+        Object: {
+            defineProperty: Object.defineProperty,
+            setPrototypeOf: Object.setPrototypeOf || require('setprototypeof')
+        }
     };
 }
