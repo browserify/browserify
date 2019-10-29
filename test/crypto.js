@@ -23,6 +23,8 @@ function context (props) {
         ArrayBuffer: ArrayBuffer,
         DataView: DataView,
         Object: {
+            create: Object.create,
+            keys: Object.keys,
             defineProperty: Object.defineProperty,
             setPrototypeOf: Object.setPrototypeOf || require('setprototypeof')
         }
