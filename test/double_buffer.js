@@ -3,6 +3,7 @@ var test = require('tap').test;
 var vm = require('vm');
 
 if (!ArrayBuffer.isView) ArrayBuffer.isView = function () { return false; };
+if (!Object.setPrototypeOf) Object.setPrototypeOf = require('setprototypeof');
 
 function context (t) {
     return {
@@ -10,11 +11,7 @@ function context (t) {
         setTimeout: setTimeout,
         clearTimeout: clearTimeout,
         Uint8Array: Uint8Array,
-        ArrayBuffer: ArrayBuffer,
-        Object: {
-            defineProperty: Object.defineProperty,
-            setPrototypeOf: Object.setPrototypeOf || require('setprototypeof')
-        }
+        ArrayBuffer: ArrayBuffer
     };
 }
 

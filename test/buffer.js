@@ -3,6 +3,7 @@ var test = require('tap').test;
 var vm = require('vm');
 
 if (!ArrayBuffer.isView) ArrayBuffer.isView = function () { return false; };
+if (!Object.setPrototypeOf) Object.setPrototypeOf = require('setprototypeof');
 
 test('utf8 buffer to base64', function (t) {
     t.plan(1);
@@ -139,10 +140,6 @@ function context () {
     return {
         ArrayBuffer: ArrayBuffer,
         Uint8Array: Uint8Array,
-        DataView: DataView,
-        Object: {
-            defineProperty: Object.defineProperty,
-            setPrototypeOf: Object.setPrototypeOf || require('setprototypeof')
-        }
+        DataView: DataView
     };
 }

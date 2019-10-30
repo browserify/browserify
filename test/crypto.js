@@ -13,6 +13,7 @@ var tmpdir = temp.mkdirSync({prefix: 'browserify-test'});
 fs.writeFileSync(tmpdir + '/main.js', 'beep(require("crypto"))\n');
 
 if (!ArrayBuffer.isView) ArrayBuffer.isView = function () { return false; };
+if (!Object.setPrototypeOf) Object.setPrototypeOf = require('setprototypeof');
 
 function context (props) {
     return xtend({
@@ -21,13 +22,7 @@ function context (props) {
         Uint8Array: Uint8Array,
         Int32Array: Int32Array,
         ArrayBuffer: ArrayBuffer,
-        DataView: DataView,
-        Object: {
-            create: Object.create,
-            keys: Object.keys,
-            defineProperty: Object.defineProperty,
-            setPrototypeOf: Object.setPrototypeOf || require('setprototypeof')
-        }
+        DataView: DataView
     }, props);
 }
 
