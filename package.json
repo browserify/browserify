@@ -85,7 +85,7 @@
     "seq": "0.3.5",
     "setprototypeof": "^1.2.0",
     "tap": "^10.7.2",
-    "temp": "^0.8.1",
+    "temp": "0.8.3",
     "through": "^2.3.4"
   },
   "author": {
