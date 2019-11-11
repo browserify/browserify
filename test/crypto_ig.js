@@ -22,7 +22,8 @@ function context (props) {
         Uint8Array: Uint8Array,
         Int32Array: Int32Array,
         ArrayBuffer: ArrayBuffer,
-        DataView: DataView
+        DataView: DataView,
+        Object: Object
     }, props);
 }
 

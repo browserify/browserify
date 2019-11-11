@@ -22,7 +22,8 @@ function context (t) {
         setTimeout: setTimeout,
         clearTimeout: clearTimeout,
         Uint8Array: Uint8Array,
-        ArrayBuffer: ArrayBuffer
+        ArrayBuffer: ArrayBuffer,
+        Object: Object
     };
 }
 
