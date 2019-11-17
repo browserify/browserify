@@ -18,8 +18,8 @@ test('noParse array', function (t) {
     var b = browserify({
         entries: [ __dirname + '/noparse/a.js' ],
         noParse: [
-            __dirname + '/noparse/dir1/1.js',
-            __dirname + '/noparse/node_modules/robot/main.js'
+            path.join(__dirname, 'noparse/dir1/1.js'),
+            path.join(__dirname, 'noparse/node_modules/robot/main.js')
         ]
     });
     b.on('dep', function(dep) { actual.push(dep.file); });

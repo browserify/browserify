@@ -1,3 +1,68 @@
+# 16.5.0
+
+Support custom name for `"browser"` field resolution in `package.json` using the `browserField` option.
+
+https://github.com/browserify/browserify/pull/1918
+
+# 16.4.0
+
+Upgrade stream-http to v3. This version drops support for IE10 and below.
+
+https://github.com/browserify/browserify/pull/1916
+
+# 16.3.0
+
+add empty stub for the `http2` builtin module.
+
+https://github.com/browserify/browserify/pull/1913
+
+update license text to remove references to code that is no longer included.
+
+https://github.com/browserify/browserify/pull/1906
+
+add more tests for folder resolution.
+
+https://github.com/browserify/browserify/pull/1139
+
+# 16.2.3
+
+add empty stub for the `inspector` builtin module.
+
+https://github.com/browserify/browserify/pull/1854
+
+change the "browser" field link to the browser-field-spec repo instead of the old gist.
+
+https://github.com/browserify/browserify/pull/1845
+
+# 16.2.2
+
+Remove some extraneous files from the published package.
+
+# 16.2.1
+
+Fix relative `--external` paths on Windows.
+
+https://github.com/browserify/browserify/pull/1704
+
+Fix tests to work on Windows, and add Appveyor CI for Windows testing.
+
+https://github.com/browserify/browserify/pull/1819
+
+# 16.2.0
+
+update the browser versions of `vm-browserify` and `string_decoder`.
+
+`string_decoder` updates to the Node 8+ API.
+`vm-browserify` replaces an unlicensed dependency by an MIT one.
+
+https://github.com/browserify/browserify/pull/1829
+
+# 16.1.1
+
+add empty stub for the `perf_hooks` builtin module.
+
+https://github.com/browserify/browserify/pull/1815
+
 # 16.1.0
 
 add `bare` and `node` options to the API, same as the `--bare` and `--node` CLI arguments.

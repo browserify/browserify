@@ -122,7 +122,7 @@ test('bare inserts dynamic __filename,__dirname', function (t) {
     ps.stdout.pipe(concat(function (body) {
         vm.runInNewContext(body, {
             require: require,
-            __dirname: path.dirname(file),
+            __dirname: process.cwd(),
             console: {
                 log: function (msg) {
                     t.same(msg, [

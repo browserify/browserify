@@ -3,6 +3,7 @@ var vm = require('vm');
 var test = require('tap').test;
 
 test('requiring a shimmed module name from an external bundle', function (t) {
+    t.plan(1);
     var b1 = browserify();
     var b2 = browserify();
 
@@ -12,7 +13,6 @@ test('requiring a shimmed module name from an external bundle', function (t) {
 
     b1.bundle(function (err, src1) {
         b2.bundle(function (err, src2) {
-            t.plan(1);
 
             var c = {
                 console: console,

@@ -2,7 +2,7 @@ var browserify = require('../');
 var vm = require('vm');
 var test = require('tap').test;
 
-test('hash instances with hashed contexts', function (t) {
+test('hash instances with hashed contexts', { skip: process.platform === 'win32' }, function (t) {
     t.plan(5);
 
     var b = browserify(__dirname + '/symlink_dedupe/main.js');

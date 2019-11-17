@@ -13,6 +13,8 @@ var dir = path.join(
 );
 var dirstring = dir.split(path.sep).slice(-2).join(path.sep);
 
+if (!ArrayBuffer.isView) ArrayBuffer.isView = function () { return false; };
+
 test('leaking information about system paths (process)', function (t) {
     t.plan(4);
     

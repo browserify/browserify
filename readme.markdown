@@ -447,7 +447,9 @@ useful for preserving the original paths that a bundle was generated with.
 `opts.bundleExternal` boolean option to set if external modules should be
 bundled. Defaults to true.
 
-When `opts.browserField` is false, the package.json browser field will be ignored.
+When `opts.browserField` is false, the package.json browser field will be
+ignored. When `opts.browserField` is set to a `string`, then a custom field name
+can be used instead of the default `"browser"` field.
 
 When `opts.insertGlobals` is true, always insert `process`, `global`,
 `__filename`, and `__dirname` without analyzing the AST for faster builds but
@@ -510,7 +512,9 @@ If `file` is an array, each item in `file` will be added as an entry file.
 
 Make `file` available from outside the bundle with `require(file)`.
 
-The `file` param is anything that can be resolved by `require.resolve()`.
+The `file` param is anything that can be resolved by `require.resolve()`,
+including files from `node_modules`. Like with `require.resolve()`, you must
+prefix `file` with `./` to require a local file (not in `node_modules`).
 
 `file` can also be a stream, but you should also use `opts.basedir` so that
 relative requires will be resolvable.
@@ -696,7 +700,7 @@ sophisticated things you can do in the package.json:
 
 ## browser field
 
-There is a special "[browser](https://gist.github.com/4339901)" field you can
+There is a special "[browser](https://github.com/defunctzombie/package-browser-field-spec)" field you can
 set in your package.json on a per-module basis to override file resolution for
 browser-specific versions of files.
 
