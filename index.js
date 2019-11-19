@@ -662,7 +662,16 @@ Browserify.prototype._recorder = function (opts) {
 Browserify.prototype._json = function () {
     return through.obj(function (row, enc, next) {
         if (/\.json$/.test(row.file)) {
-            row.source = 'module.exports=' + sanitize(row.source);
+            var sanitizedString = sanitize(row.source);
+            try {
+                // check json validity
+                JSON.parse(sanitizedString);
+                row.source = 'module.exports=' + sanitizedString;
+            } catch (err) {
+                err.message = 'While parsing ' + (row.file || row.id) + ': ' + err.message
+                this.emit('error', err);
+                return;
+            }
         }
         this.push(row);
         next();
