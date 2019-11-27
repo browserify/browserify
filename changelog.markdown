@@ -356,7 +356,7 @@ https://github.com/substack/node-browserify/pull/1244
 
 fixes for the "noParse" path matcher.
 
-https://github.com/substack/node-browserify/pull/1259
+https://github.com/substack/node-browserify/pull/1257
 
 add syntax check cache. this speeds up rebuilds (like when using watchify).
 
@@ -364,7 +364,7 @@ https://github.com/substack/node-browserify/pull/1253
 
 update to browser-pack@^5.0.0 - includes several fixes related to source maps.
 
-https://github.com/substack/node-browserify/pull/1257
+https://github.com/substack/node-browserify/pull/1259
 
 # 10.1.3
 
