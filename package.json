@@ -83,7 +83,7 @@
     "make-generator-function": "^1.1.0",
     "semver": "^5.5.0",
     "seq": "0.3.5",
-    "tap": "^10.7.2",
+    "tap": "~12.4.0",
     "temp": "^0.8.1",
     "through": "^2.3.4"
   },
