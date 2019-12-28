@@ -28,7 +28,7 @@
     "browser-pack": "^6.0.1",
     "browser-resolve": "^1.11.0",
     "browserify-zlib": "~0.2.0",
-    "buffer": "^5.0.2",
+    "buffer": "5.2.1",
     "cached-path-relative": "^1.0.0",
     "concat-stream": "^1.6.0",
     "console-browserify": "^1.1.0",
@@ -84,7 +84,7 @@
     "semver": "^5.5.0",
     "seq": "0.3.5",
     "tap": "^10.7.2",
-    "temp": "^0.8.1",
+    "temp": "0.8.3",
     "through": "^2.3.4"
   },
   "author": {
