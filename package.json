@@ -46,7 +46,7 @@
     "inherits": "~2.0.1",
     "insert-module-globals": "^7.0.0",
     "labeled-stream-splicer": "^2.0.0",
-    "mkdirp": "^0.5.0",
+    "mkdirp-classic": "^0.5.2",
     "module-deps": "^6.0.0",
     "os-browserify": "~0.3.0",
     "parents": "^1.0.1",

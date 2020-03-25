@@ -2,7 +2,7 @@
 var fs = require('fs');
 var JSONStream = require('JSONStream');
 var through = require('through2');
-var mkdirp = require('mkdirp');
+var mkdirp = require('mkdirp-classic');
 var path = require('path');
 
 var b = require('./args')(process.argv.slice(2));
