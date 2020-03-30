@@ -1,3 +1,13 @@
+# 16.5.1
+
+Remove deprecated `mkdirp` version in favour of `mkdirp-classic`.
+
+https://github.com/browserify/browserify/commit/00c913fa345dbb7f612bdad6b4acc91c706e98b2
+
+Pin dependencies for Node.js 0.8 support.
+
+https://github.com/browserify/browserify/pull/1939
+
 # 16.5.0
 
 Support custom name for `"browser"` field resolution in `package.json` using the `browserField` option.
