@@ -18,7 +18,7 @@ var isArray = Array.isArray;
 var defined = require('defined');
 var has = require('has');
 var sanitize = require('htmlescape').sanitize;
-var shasum = require('shasum');
+var shasum = require('shasum-object');
 
 var bresolve = require('browser-resolve');
 var resolve = require('resolve');
