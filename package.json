@@ -1,6 +1,6 @@
 {
   "name": "browserify",
-  "version": "16.5.1",
+  "version": "16.5.2",
   "description": "browser-side require() the node way",
   "main": "index.js",
   "bin": {
@@ -26,7 +26,7 @@
     "JSONStream": "^1.0.3",
     "assert": "^1.4.0",
     "browser-pack": "^6.0.1",
-    "browser-resolve": "^1.11.0",
+    "browser-resolve": "^2.0.0",
     "browserify-zlib": "~0.2.0",
     "buffer": "~5.2.1",
     "cached-path-relative": "^1.0.0",
@@ -47,7 +47,7 @@
     "insert-module-globals": "^7.0.0",
     "labeled-stream-splicer": "^2.0.0",
     "mkdirp-classic": "^0.5.2",
-    "module-deps": "^6.0.0",
+    "module-deps": "^6.2.3",
     "os-browserify": "~0.3.0",
     "parents": "^1.0.1",
     "path-browserify": "^1.0.0",
