@@ -9,8 +9,9 @@ test('shared symlink', { skip: process.platform === 'win32' }, function (t) {
     var b = browserify(__dirname + '/shared_symlink/main.js');
     b.bundle(function (err, src) {
         // does the same thing as node: crashes
-        t.equal(err.message, "Cannot find module 'foo' from '"
-            + __dirname + "/shared_symlink/shared'"
+        t.equal(err.message, "Can't walk dependency graph: Cannot find module 'foo' "
+            + "from '" + __dirname + "/shared_symlink/shared/index.js'\n"
+            + "    required by " + __dirname + "/shared_symlink/shared/index.js"
         );
     });
 });
