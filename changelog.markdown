@@ -1,3 +1,9 @@
+# 16.5.2
+
+Upgrade browser-resolve to v2.
+
+https://github.com/browserify/browserify/pull/1973
+
 # 16.5.1
 
 Remove deprecated `mkdirp` version in favour of `mkdirp-classic`.
