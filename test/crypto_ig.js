@@ -4,6 +4,7 @@ var path = require('path');
 var fs = require('fs');
 var vm = require('vm');
 var concat = require('concat-stream');
+var semver = require('semver');
 
 var temp = require('temp');
 temp.track();
@@ -13,7 +14,8 @@ fs.writeFileSync(tmpdir + '/main.js', 'beep(require("crypto"))\n');
 
 if (!ArrayBuffer.isView) ArrayBuffer.isView = function () { return false; };
 
-test('crypto --insertGlobals', function (t) {
+// `crypto-browserify` no longer works in node.js <4
+test('crypto --insertGlobals', { skip: semver.lt(process.version, 'v4.0.0') }, function (t) {
     t.plan(2);
     
     var bin = __dirname + '/../bin/cmd.js';

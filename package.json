@@ -44,7 +44,7 @@
     "htmlescape": "^1.1.0",
     "https-browserify": "^1.0.0",
     "inherits": "~2.0.1",
-    "insert-module-globals": "^7.0.0",
+    "insert-module-globals": "^7.2.1",
     "labeled-stream-splicer": "^2.0.0",
     "mkdirp-classic": "^0.5.2",
     "module-deps": "^6.2.3",
