@@ -59,7 +59,7 @@
     "resolve": "^1.1.4",
     "shasum-object": "^1.0.0",
     "shell-quote": "^1.6.1",
-    "stream-browserify": "^2.0.0",
+    "stream-browserify": "^3.0.0",
     "stream-http": "^3.0.0",
     "string_decoder": "^1.1.1",
     "subarg": "^1.0.0",
