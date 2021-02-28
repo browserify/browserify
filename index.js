@@ -609,7 +609,7 @@ Browserify.prototype._createDeps = function (opts) {
         }
         
         var vars = xtend({
-            process: function () { return "require('_process')" },
+            process: function () { return "require('process')" },
         }, opts.insertGlobalVars);
         
         if (opts.bundleExternal === false) {

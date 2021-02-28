@@ -2,10 +2,10 @@ var browserify = require('../');
 var vm = require('vm');
 var test = require('tap').test;
 
-test('implicit process global', function (t) {
+test('explicit process require', function (t) {
     t.plan(3);
     
-    var b = browserify(__dirname + '/process/main.js');
+    var b = browserify(__dirname + '/process_require/main.js');
     b.bundle(function (err, src) {
         t.ifError(err);
         var c = {
