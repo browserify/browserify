@@ -60,7 +60,7 @@ html!
 With [npm](https://www.npmjs.com/) do:
 
 ```
-npm install -g browserify
+npm install browserify
 ```
 
 # usage
@@ -478,7 +478,7 @@ You can remove these calls with
 [derequire](https://www.npmjs.com/package/derequire):
 
 ```
-$ npm install -g derequire
+$ npm install derequire
 $ browserify main.js --standalone Foo | derequire > bundle.js
 ```
 
