@@ -16,7 +16,7 @@ var EventEmitter = require('events').EventEmitter;
 var xtend = require('xtend');
 var isArray = Array.isArray;
 var defined = require('defined');
-var has = require('has');
+var hasOwn = require('hasown');
 var sanitize = require('htmlescape').sanitize;
 var shasum = require('shasum-object');
 
@@ -554,7 +554,7 @@ Browserify.prototype._createDeps = function (opts) {
     else mopts.modules = xtend(builtins);
     
     Object.keys(builtins).forEach(function (key) {
-        if (!has(mopts.modules, key)) self._exclude.push(key);
+        if (!hasOwn(mopts.modules, key)) self._exclude.push(key);
     });
     
     mopts.globalTransform = [];
