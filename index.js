@@ -16,9 +16,9 @@ var EventEmitter = require('events').EventEmitter;
 var xtend = require('xtend');
 var isArray = Array.isArray;
 var defined = require('defined');
-var has = require('has');
+var hasOwn = require('hasown');
 var sanitize = require('htmlescape').sanitize;
-var shasum = require('shasum');
+var shasum = require('shasum-object');
 
 var bresolve = require('browser-resolve');
 var resolve = require('resolve');
@@ -83,12 +83,19 @@ function Browserify (files, opts) {
     self._transforms = [];
     self._entryOrder = 0;
     self._ticked = false;
-    self._bresolve = opts.browserField === false
+
+    var browserField = opts.browserField
+    self._bresolve = browserField === false
         ? function (id, opts, cb) {
             if (!opts.basedir) opts.basedir = path.dirname(opts.filename)
             resolve(id, opts, cb)
         }
-        : bresolve
+        : typeof browserField === 'string'
+            ? function (id, opts, cb) {
+                opts.browser = browserField
+                bresolve(id, opts, cb)
+            }
+            : bresolve
     ;
     self._syntaxCache = {};
 
@@ -547,7 +554,7 @@ Browserify.prototype._createDeps = function (opts) {
     else mopts.modules = xtend(builtins);
     
     Object.keys(builtins).forEach(function (key) {
-        if (!has(mopts.modules, key)) self._exclude.push(key);
+        if (!hasOwn(mopts.modules, key)) self._exclude.push(key);
     });
     
     mopts.globalTransform = [];
@@ -655,7 +662,16 @@ Browserify.prototype._recorder = function (opts) {
 Browserify.prototype._json = function () {
     return through.obj(function (row, enc, next) {
         if (/\.json$/.test(row.file)) {
-            row.source = 'module.exports=' + sanitize(row.source);
+            var sanitizedString = sanitize(row.source);
+            try {
+                // check json validity
+                JSON.parse(sanitizedString);
+                row.source = 'module.exports=' + sanitizedString;
+            } catch (err) {
+                err.message = 'While parsing ' + (row.file || row.id) + ': ' + err.message
+                this.emit('error', err);
+                return;
+            }
         }
         this.push(row);
         next();

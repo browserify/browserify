@@ -1,3 +1,52 @@
+# 17.0.0
+* Upgrade events to v3.x. EventEmitter instances now have an `off()` method. `require('events').once` can be used to react to an event being emitted with `async`/`await` syntax. ([#1839](https://github.com/browserify/browserify/pull/1839))
+* Upgrade path-browserify to v1.x. ([#1838](https://github.com/browserify/browserify/pull/1838))
+* Upgrade stream-browserify to v3.x. `require('stream')` now matches the Node.js 10+ API. ([#1970](https://github.com/browserify/browserify/pull/1970))
+* Upgrade util to v0.12. Most notably, `util.promisify` and `util.callbackify` are finally available by default in browserify. ([#1844](https://gihub.com/browserify/browserify/pull/1844))
+* Add JSON syntax checking. Syntax errors in `.json` files will now fail to bundle. ([#1700](https://github.com/browserify/browserify/pull/1700))
+
+# 16.5.2
+
+Upgrade browser-resolve to v2.
+
+https://github.com/browserify/browserify/pull/1973
+
+# 16.5.1
+
+Remove deprecated `mkdirp` version in favour of `mkdirp-classic`.
+
+https://github.com/browserify/browserify/commit/00c913fa345dbb7f612bdad6b4acc91c706e98b2
+
+Pin dependencies for Node.js 0.8 support.
+
+https://github.com/browserify/browserify/pull/1939
+
+# 16.5.0
+
+Support custom name for `"browser"` field resolution in `package.json` using the `browserField` option.
+
+https://github.com/browserify/browserify/pull/1918
+
+# 16.4.0
+
+Upgrade stream-http to v3. This version drops support for IE10 and below.
+
+https://github.com/browserify/browserify/pull/1916
+
+# 16.3.0
+
+add empty stub for the `http2` builtin module.
+
+https://github.com/browserify/browserify/pull/1913
+
+update license text to remove references to code that is no longer included.
+
+https://github.com/browserify/browserify/pull/1906
+
+add more tests for folder resolution.
+
+https://github.com/browserify/browserify/pull/1139
+
 # 16.2.3
 
 add empty stub for the `inspector` builtin module.
@@ -330,7 +379,7 @@ https://github.com/substack/node-browserify/pull/1244
 
 fixes for the "noParse" path matcher.
 
-https://github.com/substack/node-browserify/pull/1259
+https://github.com/substack/node-browserify/pull/1257
 
 add syntax check cache. this speeds up rebuilds (like when using watchify).
 
@@ -338,7 +387,7 @@ https://github.com/substack/node-browserify/pull/1253
 
 update to browser-pack@^5.0.0 - includes several fixes related to source maps.
 
-https://github.com/substack/node-browserify/pull/1257
+https://github.com/substack/node-browserify/pull/1259
 
 # 10.1.3
 

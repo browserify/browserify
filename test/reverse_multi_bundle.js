@@ -12,7 +12,7 @@ var test = require('tap').test;
 test('reverse multi bundle', function (t) {
     t.plan(5);
 
-    // Main app bundle has the main app code and the shared libarary code
+    // Main app bundle has the main app code and the shared library code
     var app = browserify([__dirname + '/reverse_multi_bundle/app.js'])
         .external(__dirname + '/reverse_multi_bundle/lazy.js')
         .require(__dirname + '/reverse_multi_bundle/shared.js', { expose: true })

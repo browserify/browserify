@@ -1,6 +1,7 @@
 var browserify = require('../');
 var test = require('tap').test;
 var util = require('util');
+var xtend = require('xtend');
 var vm = require('vm');
 
 test('util.inspect', function (t) {
@@ -46,7 +47,8 @@ test('util.inherits without Object.create', function (t) {
     b.require('events');
     
     b.bundle(function (err, src) {
-        var c = { Object : { prototype: Object.prototype } };
+        var c = xtend({}, Object);
+        delete c.create;
         vm.runInNewContext(src, c);
         var EE = c.require('events').EventEmitter;
         

@@ -254,7 +254,7 @@ function splitOnColon (f) {
         if ((/[a-zA-Z]:[\\/]/.test(f)) && (pos == 1)){
             return [f]; // Windows path and colon is part of drive name
         } else {
-            return [f.substr(0, pos), f.substr(pos + 1)];
+            return [f.slice(0, pos), f.slice(pos + 1)];
         }
     }
 }
