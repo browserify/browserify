@@ -50,7 +50,7 @@ test('noParse array with relative paths', function (t) {
             path.join('noparse/node_modules/robot/main.js')
         ]
     });
-    b.on('dep', function(dep) { actual.push(dep.file); });
+    b.on('dep', function (dep) { actual.push(dep.file); });
     b.bundle(function (err, src) {
         actual.sort();
         t.ifError(err);
