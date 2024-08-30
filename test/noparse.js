@@ -44,7 +44,7 @@ test('noParse array with relative paths', function (t) {
     ].map(function (x) { return path.resolve(x); }).sort();
     
     var b = browserify({
-        entries: [ __dirname + '/noparse/a.js' ],
+        entries: [__dirname + '/noparse/a.js'],
         noParse: [
             path.join('noparse/dir1/1.js'),
             path.join('noparse/node_modules/robot/main.js')
