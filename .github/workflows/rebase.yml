@@ -1,0 +1,13 @@
+name: Automatic Rebase
+
+on: [pull_request_target]
+
+permissions:
+  contents: write  # for ljharb/rebase to push code to rebase
+  pull-requests: read  # for ljharb/rebase to get info about PR
+
+jobs:
+  _:
+    uses: ljharb/actions/.github/workflows/rebase.yml@main
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
