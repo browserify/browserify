@@ -1,3 +1,8 @@
+# 17.0.1
+* Use `hasown` instead of `has`. ([4b1a5dc](https://github.com/browserify/browserify/commit/4b1a5dc0db56263b38dc98e155fb1908e810c1a9))
+* Use `String.prototype.slice` instead of `String.prototype.substr`. ([#2036](https://github.com/browserify/browserify/pull/2036))
+* Support relative paths in the `noParse` option. ([#2080](https://github.com/browserify/browserify/pull/2080))
+
 # 17.0.0
 * Upgrade events to v3.x. EventEmitter instances now have an `off()` method. `require('events').once` can be used to react to an event being emitted with `async`/`await` syntax. ([#1839](https://github.com/browserify/browserify/pull/1839))
 * Upgrade path-browserify to v1.x. ([#1838](https://github.com/browserify/browserify/pull/1838))
