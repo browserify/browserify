@@ -67,7 +67,7 @@
     "syntax-error": "^1.1.1",
     "through2": "^2.0.0",
     "timers-browserify": "^1.0.1",
-    "trivial-deferred": "1.0.1",
+    "trivial-deferred": "=1.0.1",
     "tty-browserify": "0.0.1",
     "url": "~0.11.0",
     "util": "~0.12.0",
