@@ -8,8 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/browserify/browserify.git"
+    "url": "git+https://github.com/browserify/browserify.git"
   },
+  "bugs": {
+    "url": "https://github.com/browserify/browserify/issues"
+  },
+  "homepage": "https://browserify.org/",
   "engines": {
     "node": ">= 0.8"
   },
