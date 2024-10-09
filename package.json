@@ -26,6 +26,11 @@
     "npm",
     "javascript"
   ],
+  "//dependencies": {
+    "//": "Comments about why some dependencies are at specific versions that may issue warnings.",
+    "glob": "Intentionally pinned to v7 to support node >= 0.8.",
+    "readable-stream": "See https://github.com/browserify/browserify/issues/1880."
+  },
   "dependencies": {
     "assert": "^1.4.0",
     "browser-pack": "^6.0.1",
@@ -75,6 +80,13 @@
     "util": "~0.12.0",
     "vm-browserify": "^1.0.0",
     "xtend": "^4.0.0"
+  },
+  "//devDependencies": {
+    "//": "Comments about why some devDependencies are at specific versions that may issue warnings.",
+    "coffee-script": "Intentionally pinned to coffee-script v1.10 to support node >= 0.8.",
+    "coffeeify": "Intentionally pinned to v1.1 to support node >= 0.8.",
+    "tap": "Intentionally pinned to v10 to support node >= 0.8.",
+    "temp": "Intentionally pinned to v0.8 to support node >= 0.8."
   },
   "devDependencies": {
     "backbone": "~0.9.2",
