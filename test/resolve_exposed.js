@@ -10,7 +10,7 @@ test('resolve exposed files', function (t) {
     });
     b.require('./x.js', { expose: 'xyz' });
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         var c = { console: { log: log } };
         vm.runInNewContext(src, c);
         function log (x) {
@@ -27,7 +27,7 @@ test('resolve exposed files without extension', function (t) {
   });
   b.require('./x', {expose: 'xyz'});
   b.bundle(function (err, src) {
-    t.ifError(err);
+    t.error(err);
     var c = {console: {log: log}};
     vm.runInNewContext(src, c);
     function log(x) {
@@ -44,7 +44,7 @@ test('resolve exposed directories', function (t) {
   });
   b.require('./y', {expose: 'xyz'});
   b.bundle(function (err, src) {
-    t.ifError(err);
+    t.error(err);
     var c = {console: {log: log}};
     vm.runInNewContext(src, c);
     function log(x) {
@@ -61,7 +61,7 @@ test('resolve exposed index from directories', function (t) {
   });
   b.require('./y/index', {expose: 'xyz'});
   b.bundle(function (err, src) {
-    t.ifError(err);
+    t.error(err);
     var c = {console: {log: log}};
     vm.runInNewContext(src, c);
     function log(x) {
@@ -78,7 +78,7 @@ test('resolve exposed index.js from directories', function (t) {
   });
   b.require('./y/index.js', {expose: 'xyz'});
   b.bundle(function (err, src) {
-    t.ifError(err);
+    t.error(err);
     var c = {console: {log: log}};
     vm.runInNewContext(src, c);
     function log(x) {

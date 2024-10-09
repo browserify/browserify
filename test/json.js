@@ -12,7 +12,7 @@ test('json', function (t) {
         if (err) t.fail(err);
         var c = {
             ex : function (obj) {
-                t.same(obj, { beep : 'boop', x : 555 });
+                t.deepEqual(obj, { beep : 'boop', x : 555 });
             }
         };
         vm.runInNewContext(src, c);
@@ -40,7 +40,7 @@ test('evil json', function (t) {
         if (err) t.fail(err);
         var c = {
             ex : function (obj) {
-                t.same(obj, { evil : '\u2028\u2029' });
+                t.deepEqual(obj, { evil : '\u2028\u2029' });
             }
         };
         vm.runInNewContext(src, c);

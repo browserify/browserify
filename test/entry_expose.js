@@ -9,7 +9,7 @@ test('entry expose', function (t) {
     b.add(__dirname + '/entry_expose/main.js');
     b.require(__dirname + '/entry_expose/main.js', { expose: 'x' });
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         var c = { console: { log: log } };
         function log (msg) { t.equal(msg, 'wow') }
         vm.runInNewContext(src, c);

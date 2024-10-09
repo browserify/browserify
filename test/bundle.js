@@ -8,7 +8,7 @@ test('bundle', function (t) {
     b.bundle(function (err, src) {
         t.plan(3);
         
-        t.ifError(err);
+        t.error(err);
         t.ok(src.length > 0);
         
         var c = {

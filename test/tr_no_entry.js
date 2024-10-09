@@ -12,7 +12,7 @@ test('transform with no entry files', function (t) {
         expose: 'yoyo'
     });
     b.bundle(function (err, body) {
-        t.ifError(err);
+        t.error(err);
         var src = body.toString('utf8') + 'require("yoyo")';
         var con = { log: function (msg) { t.equal(msg, 'ZZZ') } };
         Function('console', src)(con);

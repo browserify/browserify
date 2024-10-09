@@ -8,7 +8,7 @@ test('require expose external module', function (t) {
     var b = browserify({ basedir: __dirname });
     b.require('beep', { expose: 'bip' });
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         var c = { };
         vm.runInNewContext(src, c);
         t.equal(c.require('bip'), 'boop');
@@ -21,7 +21,7 @@ test('renaming builtin', function (t) {
     var b = browserify({ basedir: __dirname });
     b.require('os', { expose: 'bone' });
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         var c = { };
         vm.runInNewContext(src, c);
         t.equal(c.require('bone').platform(), 'browser');

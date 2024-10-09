@@ -85,7 +85,7 @@ test('bare inserts __filename,__dirname but not process,global,Buffer', function
             __dirname: process.cwd(),
             console: {
                 log: function (msg) {
-                    t.same(msg, [
+                    t.deepEqual(msg, [
                         path.join(__dirname, 'bare'),
                         path.join(__dirname, 'bare/main.js'),
                         'undefined',
@@ -125,7 +125,7 @@ test('bare inserts dynamic __filename,__dirname', function (t) {
             __dirname: process.cwd(),
             console: {
                 log: function (msg) {
-                    t.same(msg, [
+                    t.deepEqual(msg, [
                         path.dirname(file),
                         file
                     ]);
@@ -157,7 +157,7 @@ test('bare inserts dynamic __filename,__dirname with basedir', function (t) {
             __dirname: process.cwd(),
             console: {
                 log: function (msg) {
-                    t.same(msg, [
+                    t.deepEqual(msg, [
                         __dirname,
                         path.join(__dirname, file)
                     ]);

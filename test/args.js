@@ -8,7 +8,7 @@ test('bundle from an arguments array', function (t) {
     
     var b = fromArgs([ __dirname + '/entry/two.js', '-s', 'XYZ' ]);
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         var c = { window: {} };
         vm.runInNewContext(src, c);
         t.equal(c.window.XYZ, 2);
@@ -20,7 +20,7 @@ test('external flag for node modules', function(t) {
     
     var b = fromArgs([ __dirname + '/external_args/main.js', '-x', 'backbone' ]);
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         vm.runInNewContext(src, {t: t});
     });
 });
@@ -35,7 +35,7 @@ test('bundle from an arguments with --insert-global-vars', function (t) {
     ]);
     b.require(__dirname + '/global/filename.js', { expose: 'x' });
     b.bundle(function (err, src) {
-        t.ifError(err, 'b.bundle()');
+        t.error(err, 'b.bundle()');
         var c = {}, x;
         vm.runInNewContext(src, c);
         t.doesNotThrow(function() {
@@ -51,7 +51,7 @@ test('numeric module names', function(t) {
 
     var b = fromArgs([ '-x', '1337' ]);
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
     });
 });
 
@@ -63,7 +63,7 @@ test('entry expose', function (t) {
         '--require', path.join(__dirname, '/entry_expose/main.js') + ':x',
     ]);
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         var c = { console: { log: log } };
         function log (msg) { t.equal(msg, 'wow') }
         vm.runInNewContext(src, c);

@@ -18,7 +18,7 @@ test('delay for pipelines', function (t) {
     }));
     
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         vm.runInNewContext(src, { console: { log: log } });
         function log (msg) { t.equal(msg, 900) }
     });

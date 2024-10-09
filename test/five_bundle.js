@@ -9,7 +9,7 @@ test('five bundle', function (t) {
     var source;
     
     b.bundle(function (err, src0) {
-        t.ifError(err);
+        t.error(err);
         var c = {
             done : function (one, two) {
                 t.equal(one, 1);
@@ -21,7 +21,7 @@ test('five bundle', function (t) {
         (function next (count) {
             if (count === 5) return;
             b.bundle(function (err, src1) {
-                t.ifError(err);
+                t.error(err);
                 t.equal(src1.toString('utf8'), src0.toString('utf8'));
                 next(count+1);
             });

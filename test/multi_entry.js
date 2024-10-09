@@ -104,7 +104,7 @@ test('entries as streams', function (t) {
     
     b.on('dep', function(row) {
         if (row.entry) {
-            t.similar(
+            t.match(
                 row.file,
                 RegExp(path.join(__dirname, 'multi_entry/_stream_').replace(/\\/g, '\\\\') + '[\\d].js'),
                 'should be full entry path'

@@ -6,7 +6,7 @@ test('cycle', function (t) {
     t.plan(2);
     var b = browserify(__dirname + '/cycle/entry.js');
     b.bundle(function (err, body) {
-        t.ifError(err);
+        t.error(err);
         vm.runInNewContext(body);
         t.ok(true);
     });

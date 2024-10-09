@@ -11,7 +11,7 @@ test('plugin fn', function (t) {
     });
     
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
     });
 });
 
@@ -22,7 +22,7 @@ test('plugin module', function (t) {
     b.plugin('plugin-foo', { msg: 'beep boop' });
     
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         t.equal(src.toString('utf8'), 'beep boop');
     });
 });

@@ -37,10 +37,10 @@ test('syntax cache - skip invalid', function (t) {
         .seq(function() { b.bundle(this); })
         .catch(function(lastErr) {
             t.deepEqual(b._syntaxCache, {});
-            t.similar(String(lastErr), /ParseError/);
+            t.match(String(lastErr), /ParseError/);
             b.bundle(function(err, src) {
                 t.deepEqual(b._syntaxCache, {});
-                t.similar(String(err), /ParseError/);
+                t.match(String(err), /ParseError/);
                 t.notEqual(lastErr, err, 'errors should be unique');
             });
         });

@@ -9,10 +9,10 @@ test('bundle is readable stream', function (t) {
     var b = browserify(__dirname + '/entry/main.js');
     b.on('bundle', function(bundle) {
         t.ok(isReadable(bundle));
-        t.notok(isWritable(bundle));
+        t.notOk(isWritable(bundle));
     });
 
     var stream = b.bundle();
     t.ok(isReadable(stream));
-    t.notok(isWritable(stream));
+    t.notOk(isWritable(stream));
 });

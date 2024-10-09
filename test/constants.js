@@ -11,7 +11,7 @@ test('constants', function (t) {
     var b = browserify(stream);
     
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         vm.runInNewContext(src, { console: { log: log } });
         function log (msg) { t.equal(msg, 2) }
     });

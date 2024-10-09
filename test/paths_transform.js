@@ -20,7 +20,7 @@ test('absolute paths with transform property', function (t) {
     entries: __dirname + '/paths/main.js'
   });
   b.bundle(function (err, src) {
-    t.ifError(err);
+    t.error(err);
     ensureTransform(t,src);
     vm.runInNewContext(src, { t: t });
   });
@@ -36,7 +36,7 @@ test('relative paths with transform property', function (t) {
     entries: __dirname + '/paths/main.js'
   });
   b.bundle(function (err, src) {
-    t.ifError(err);
+    t.error(err);
     ensureTransform(t,src);
     vm.runInNewContext(src, { t: t });
   });
@@ -53,7 +53,7 @@ test('absolute paths with transform method', function (t) {
   });
   b.transform('tr');
   b.bundle(function (err, src) {
-    t.ifError(err);
+    t.error(err);
     ensureTransform(t,src);
     vm.runInNewContext(src, { t: t });
   });
@@ -69,7 +69,7 @@ test('relative paths with transform method', function (t) {
   });
   b.transform('tr');
   b.bundle(function (err, src) {
-    t.ifError(err);
+    t.error(err);
     ensureTransform(t,src);
     vm.runInNewContext(src, { t: t });
   });

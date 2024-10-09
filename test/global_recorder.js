@@ -10,11 +10,11 @@ test('recorded global tr', function (t) {
         console: { log: function (msg) { t.equal(msg, 'wow') } }
     };
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         vm.runInNewContext(src, context);
         t.equal(b._recorded.length, 2);
         b.bundle(function (err, src) {
-            t.ifError(err);
+            t.error(err);
             vm.runInNewContext(src, context);
             t.equal(b._recorded.length, 2);
         });

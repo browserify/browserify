@@ -14,7 +14,7 @@ test('double bundle parallel', function (t) {
     
     function check (index) {
         return function (err, src) {
-            t.ifError(err);
+            t.error(err);
             var c = {
                 done : function (one, two) {
                     t.equal(one, 1);

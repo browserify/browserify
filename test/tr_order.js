@@ -17,7 +17,7 @@ test('function transform', function (t) {
     b.transform(__dirname + '/tr_order/replace_aaa');
     b.transform(__dirname + '/tr_order/replace_bbb.js');
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         vm.runInNewContext(src, { t: t });
     });
 });

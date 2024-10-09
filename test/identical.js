@@ -8,7 +8,7 @@ test('identical', function (t) {
     
     var b = browserify(__dirname + '/identical/main.js');
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         vm.runInNewContext(src.toString('utf8'), {
             console: { log: log }
         });

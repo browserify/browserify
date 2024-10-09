@@ -11,7 +11,7 @@ test('require same file locally and globally', function (t) {
     b.require('./multi_require/a.js', {expose: 'a'});
 
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         var c = {t: t};
         vm.runInNewContext(src, c);
     });

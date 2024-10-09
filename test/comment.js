@@ -8,7 +8,7 @@ test('trailing comment', function (t) {
     b.bundle(function (err, src) {
         var c = {
             ex : function (obj) {
-                t.same(obj, 1234);
+                t.deepEqual(obj, 1234);
             }
         };
         vm.runInNewContext(src, c);

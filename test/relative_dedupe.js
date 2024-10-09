@@ -8,7 +8,7 @@ test('relative dedupe', function (t) {
     
     var b = browserify(__dirname + '/relative_dedupe/main.js');
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         var c = { console: { log: log } };
         vm.runInNewContext(src, c);
     });

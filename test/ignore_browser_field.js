@@ -10,7 +10,7 @@ test('ignore browser field', function (t) {
     var expected = [ 'A:NODE', 'B:X.JS' ];
     
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         var c = { console: { log: log } };
         vm.runInNewContext(src, c);
         

@@ -15,7 +15,7 @@ test('reset', function (t) {
     });
     
     function check (err, src) {
-        t.ifError(err);
+        t.error(err);
         var c = {
             setTimeout : setTimeout,
             clearTimeout : clearTimeout,

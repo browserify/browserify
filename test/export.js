@@ -8,7 +8,7 @@ test('no exports when no files are loaded', function (t) {
     b.bundle(function (err, src) {
         var c = {};
         vm.runInNewContext(src, c);
-        t.same(Object.keys(c), []);
+        t.deepEqual(Object.keys(c), []);
     });
 });
 
@@ -19,7 +19,7 @@ test('no exports when entries are defined', function (t) {
     b.bundle(function (err, src) {
         var c = {};
         vm.runInNewContext(src, c);
-        t.same(c, {});
+        t.deepEqual(c, {});
     });
 });
 
@@ -30,6 +30,6 @@ test('require export when files are required', function (t) {
     b.bundle(function (err, src) {
         var c = {};
         vm.runInNewContext(src, c);
-        t.same(Object.keys(c), [ 'require' ]);
+        t.deepEqual(Object.keys(c), [ 'require' ]);
     });
 });

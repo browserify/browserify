@@ -15,6 +15,6 @@ test('package', function (t) {
     });
     
     b.bundle(function (err) {
-        t.ifError(err);
+        t.error(err);
     });
 });

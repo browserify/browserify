@@ -25,12 +25,12 @@ test('double bundle json', function (t) {
         next();
     }));
     b.bundle(function (err, src0) {
-        t.ifError(err);
+        t.error(err);
         vm.runInNewContext(src0, { console: { log: log0 } });
         delete cache[__dirname + '/double_bundle_json/index.js'];
         
         b.bundle(function (err, src1) {
-            t.ifError(err);
+            t.error(err);
             vm.runInNewContext(src1, { console: { log: log1 } });
         });
     });

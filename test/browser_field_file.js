@@ -6,7 +6,7 @@ test('browser field file no ext', function (t) {
     t.plan(2);
     var b = browserify(__dirname + '/browser_field_file/xyz');
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         vm.runInNewContext(src, { console: { log: log } });
         function log (msg) { t.equal(msg, 'cool beans') }
     });

@@ -19,7 +19,7 @@ test('transform symlink', { skip: process.platform === 'win32' }, function (t) {
         })
     });
     b.bundle(function (err, src) {
-        t.ifError(err);
+        t.error(err);
         var c = { console: { log: log } };
         vm.runInNewContext(src, c);
         function log (msg) { t.equal(msg, expected.shift()) }

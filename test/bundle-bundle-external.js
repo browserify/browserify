@@ -26,6 +26,6 @@ test('bundle bundle external', function (t) {
     //bundle2.external(bundle1);
 
     bundle2.bundle(function(err, src) {
-        t.ifError(err);
+        t.error(err);
     });
 });
