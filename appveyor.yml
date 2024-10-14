@@ -1,5 +1,17 @@
 environment:
   matrix:
+    - nodejs_version: "22"
+    - nodejs_version: "21"
+    - nodejs_version: "20"
+    - nodejs_version: "19"
+    - nodejs_version: "18"
+    - nodejs_version: "17"
+    - nodejs_version: "16"
+    - nodejs_version: "15"
+    - nodejs_version: "14"
+    - nodejs_version: "13"
+    - nodejs_version: "12"
+    - nodejs_version: "11"
     - nodejs_version: "10"
     - nodejs_version: "9"
     - nodejs_version: "8"
@@ -7,6 +19,11 @@ environment:
     - nodejs_version: "4"
     - nodejs_version: "0.12"
     - nodejs_version: "0.10"
+    - nodejs_version: "0.8"
+
+matrix:
+  allow_failures:
+    - nodejs_version: "0.8"
 
 # Install scripts. (runs after repo cloning)
 install:
