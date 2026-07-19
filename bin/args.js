@@ -5,7 +5,7 @@ var parseShell = require('shell-quote').parse;
 var insertGlobals = require('insert-module-globals');
 var duplexer = require('duplexer2');
 var subarg = require('subarg');
-var glob = require('glob');
+var glob = require('globv7');
 var Readable = require('readable-stream').Readable;
 var xtend = require('xtend');
 
