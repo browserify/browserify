@@ -1,0 +1,52 @@
+name: install and test
+description: >-
+  Install dependencies with a current npm, then run the suite on the node
+  version under test.
+
+inputs:
+  node-version:
+    description: node version to run the test suite on
+    required: true
+
+runs:
+  using: composite
+  steps:
+    # The npm shipped with the older node versions can no longer reach the
+    # registry (TLS), which is what travis worked around with
+    # `nvm install-latest-npm`. Install with a current npm instead, then
+    # switch to the version under test to actually run the suite.
+    - name: install dependencies (current node)
+      uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+
+    # `.npmrc` disables the lockfile, so there is nothing for setup-node's
+    # own cache to key off; cache the npm download dir on package.json instead.
+    - name: locate npm cache
+      id: npm-cache
+      shell: bash
+      run: echo "dir=$(npm config get cache)" >> "$GITHUB_OUTPUT"
+    - uses: actions/cache@v4
+      with:
+        path: ${{ steps.npm-cache.outputs.dir }}
+        key: ${{ runner.os }}-npm-${{ hashFiles('package.json') }}
+        restore-keys: ${{ runner.os }}-npm-
+
+    - name: npm install
+      shell: bash
+      run: npm install
+
+    - name: use node ${{ inputs.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: versions
+      shell: bash
+      run: |
+        node --version
+        npm --version
+
+    - name: test
+      shell: bash
+      run: npm test

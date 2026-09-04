@@ -1,0 +1,73 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# a new push to a PR makes the in-flight matrix irrelevant
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  # node lines still maintained upstream, on the current runner images
+  test:
+    name: node ${{ matrix.node }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      # travis used `fast_finish: true`; here we let every version report
+      # instead of cancelling siblings on the first red job
+      fail-fast: false
+      matrix:
+        node: ['24', '22']
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/test
+        with:
+          node-version: ${{ matrix.node }}
+
+  # EOL node that `engines` still claims (">= 0.8"), pinned to the last runner
+  # images those binaries are known to work on. The ancient two are advisory:
+  # `experimental` is the old travis `allow_failures` list.
+  test-legacy:
+    name: node ${{ matrix.node }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    continue-on-error: ${{ matrix.experimental || false }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20', '18', '16', '14', '12', '10', '9', '8', '6', '4', '0.12', '0.10']
+        os: [ubuntu-22.04, windows-2022]
+        include:
+          - node: '0.12'
+            experimental: true
+          - node: '0.10'
+            experimental: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/test
+        with:
+          node-version: ${{ matrix.node }}
+
+  # single stable check to point branch protection at, so the required check
+  # does not have to be re-pinned every time a node version enters or leaves
+  ci:
+    name: ci
+    if: always()
+    needs: [test, test-legacy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: check matrix results
+        run: |
+          echo "test:        ${{ needs.test.result }}"
+          echo "test-legacy: ${{ needs.test-legacy.result }}"
+          [ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" = "false" ]

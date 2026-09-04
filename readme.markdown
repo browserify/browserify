@@ -9,7 +9,7 @@ browserify will recursively analyze all the `require()` calls in your app in
 order to build a bundle you can serve up to the browser in a single `<script>`
 tag.
 
-[![build status](https://img.shields.io/travis/browserify/browserify/master.svg)](https://travis-ci.org/browserify/browserify)
+[![build status](https://github.com/browserify/browserify/actions/workflows/ci.yml/badge.svg)](https://github.com/browserify/browserify/actions/workflows/ci.yml)
 
 ![browserify!](./assets/logo.png)
 
