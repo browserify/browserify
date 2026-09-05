@@ -92,6 +92,20 @@ Advanced Options:
     Consider files with specified EXTENSION as modules, this option can used
     multiple times.
 
+  --no-typescript
+
+    Turn off compiling .ts and .tsx files with the typescript compiler, and
+    stop considering those extensions during module lookup.
+
+  --typescript=TSCONFIG, --typescript [ COMPILER OPTIONS ]
+
+    Compile .ts and .tsx files using TSCONFIG, or using the given compiler
+    options, as they are named in tsconfig.json. For example:
+
+      browserify --typescript [ --target es2017 ] main.ts
+
+    Use --typescript [ --no-tsconfig ] to ignore tsconfig.json files.
+
   --global-transform=MODULE, -g MODULE
 
     Use a transform module on all files after any ordinary transforms have run.
