@@ -593,10 +593,10 @@ Browserify is compatible with the newer, more verbose
 [Transform streams](http://nodejs.org/api/stream.html#stream_class_stream_transform_1)
 built into Node v0.10.
 
-Here's how you might compile coffee script on the fly using `.transform()`:
+Here's how you might replace a token in your source on the fly using
+`.transform()`:
 
 ``` js
-var coffee = require('coffee-script');
 var through = require('through');
 
 b.transform(function (file) {
@@ -605,24 +605,26 @@ b.transform(function (file) {
 
     function write (buf) { data += buf }
     function end () {
-        this.queue(coffee.compile(data));
+        this.queue(data.replace(/__VERSION__/g, '1.0.0'));
         this.queue(null);
     }
 });
 ```
 
-Note that on the command-line with the `-c` flag you can just do:
+Note that on the command-line with the `-c` flag you can pipe your files through
+an external command:
 
 ```
-$ browserify -c 'coffee -sc' main.coffee > bundle.js
+$ browserify -c 'sed s/__VERSION__/1.0.0/g' main.js > bundle.js
 ```
 
-Or better still, use the [coffeeify](https://github.com/jnordberg/coffeeify)
-module:
+Or better still, use a published transform module such as
+[babelify](https://github.com/babel/babelify) to compile newer JavaScript
+syntax:
 
 ```
-$ npm install coffeeify
-$ browserify -t coffeeify main.coffee > bundle.js
+$ npm install babelify @babel/core @babel/preset-env
+$ browserify -t [ babelify --presets [ @babel/preset-env ] ] main.js > bundle.js
 ```
 
 If `opts.global` is `true`, the transform will operate on ALL files, despite
