@@ -8,3 +8,5 @@ permissions:
 jobs:
   tests:
     uses: ljharb/actions/.github/workflows/pretest.yml@main
+    with:
+      skip-engines: true # TODO: downgrade readable-stream, and either require 0.10 or make deps support 0.8
