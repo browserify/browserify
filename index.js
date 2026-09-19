@@ -6,6 +6,7 @@ var insertGlobals = require('insert-module-globals');
 var syntaxError = require('syntax-error');
 
 var builtins = require('./lib/builtins.js');
+var typescript = require('./lib/typescript.js');
 
 var splicer = require('labeled-stream-splicer');
 var through = require('through2');
@@ -469,9 +470,24 @@ Browserify.prototype._createDeps = function (opts) {
     // anyway.
     mopts.expose = this._expose;
     mopts.extensions = [ '.js', '.json' ].concat(mopts.extensions || []);
+
+    var tsopts = opts.typescript;
+    self._typescript = tsopts !== false;
+    var tsTransform;
+    if (self._typescript) {
+        typescript.extensions.forEach(function (ex) {
+            if (mopts.extensions.indexOf(ex) < 0) mopts.extensions.push(ex);
+        });
+        tsTransform = typescript.createTransform(xtend(
+            typeof tsopts === 'object' && tsopts !== null ? tsopts : {},
+            { basedir: basedir, debug: opts.debug }
+        ));
+    }
     self._extensions = mopts.extensions;
 
-    mopts.transform = [];
+    // typescript compiles ahead of every other transform so that the rest of
+    // the pipeline, user transforms included, only ever sees javascript
+    mopts.transform = tsTransform ? [ tsTransform ] : [];
     mopts.transformKey = defined(opts.transformKey, [ 'browserify', 'transform' ]);
     mopts.postFilter = function (id, file, pkg) {
         if (opts.postFilter && !opts.postFilter(id, file, pkg)) return false;
@@ -557,7 +573,9 @@ Browserify.prototype._createDeps = function (opts) {
         if (!hasOwn(mopts.modules, key)) self._exclude.push(key);
     });
     
-    mopts.globalTransform = [];
+    // mdeps only applies mopts.transform to top-level files, so .ts files
+    // inside node_modules need the global list to get compiled too
+    mopts.globalTransform = tsTransform ? [ nodeModulesOnly(tsTransform) ] : [];
     if (!this._bundled) {
         this.once('bundle', function () {
             self.pipeline.write({
@@ -856,6 +874,16 @@ Browserify.prototype.bundle = function (cb) {
     this._bundled = true;
     return output;
 };
+
+function nodeModulesOnly (tr) {
+    return function (file, opts) {
+        if (typeof file === 'string'
+        && file.replace(/\\/g, '/').indexOf('/node_modules/') >= 0) {
+            return tr(file, opts);
+        }
+        return through();
+    };
+}
 
 function isStream (s) { return s && typeof s.pipe === 'function' }
 function isAbsolutePath (file) {

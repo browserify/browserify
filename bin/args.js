@@ -104,7 +104,8 @@ module.exports = function (args, opts) {
         insertGlobalVars: insertGlobalVars,
         ignoreMissing: argv['ignore-missing'] || argv.im,
         debug: argv['debug'] || argv.d,
-        standalone: argv['standalone'] || argv.s
+        standalone: argv['standalone'] || argv.s,
+        typescript: typescriptOptions(argv.typescript)
     }, opts));
     function error (msg) {
         var e = new Error(msg);
@@ -245,6 +246,21 @@ module.exports = function (args, opts) {
     
     return b;
 };
+
+function typescriptOptions (arg) {
+    if (arg === undefined || arg === true) return undefined;
+    if (arg === false) return false;
+    if (typeof arg === 'string') return { tsconfig: arg };
+    if (typeof arg !== 'object') return undefined;
+
+    var compilerOptions = xtend(arg);
+    delete compilerOptions._;
+    delete compilerOptions.tsconfig;
+    delete compilerOptions.project;
+    var tsconfig = arg.tsconfig !== undefined ? arg.tsconfig : arg.project;
+    if (tsconfig === 'false') tsconfig = false;
+    return { tsconfig: tsconfig, compilerOptions: compilerOptions };
+}
 
 function splitOnColon (f) {
     var pos = f.lastIndexOf(':');

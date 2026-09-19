@@ -197,6 +197,20 @@ Advanced Options:
     Consider files with specified EXTENSION as modules, this option can used
     multiple times.
 
+  --no-typescript
+
+    Turn off compiling .ts and .tsx files with the typescript compiler, and
+    stop considering those extensions during module lookup.
+
+  --typescript=TSCONFIG, --typescript [ COMPILER OPTIONS ]
+
+    Compile .ts and .tsx files using TSCONFIG, or using the given compiler
+    options, as they are named in tsconfig.json. For example:
+
+      browserify --typescript [ --target es2017 ] main.ts
+
+    Use --typescript [ --no-tsconfig ] to ignore tsconfig.json files.
+
   --global-transform=MODULE, -g MODULE
 
     Use a transform module on all files after any ordinary transforms have run.
@@ -221,6 +235,73 @@ Passing arguments to transforms and plugins:
     foo(file, { x: 3, beep: true })
 
 ```
+
+# typescript
+
+`.ts` and `.tsx` files are compiled with the
+[typescript](https://www.npmjs.com/package/typescript) compiler on the way into
+the bundle, so a typescript entry point just works:
+
+``` js
+import { beep } from './beep';
+
+const answer: number = beep(42);
+console.log(answer);
+```
+
+``` sh
+$ npm install typescript
+$ browserify main.ts > bundle.js
+```
+
+typescript is not a dependency of browserify, because most bundles don't need
+it. Install it in your project (or globally, alongside a global browserify) and
+browserify will pick it up. Without it, bundling a `.ts` file fails with a
+message telling you to install it.
+
+`.ts` and `.tsx` are also added to the extensions used for module lookup, after
+`.js` and `.json`, so `require('./beep')` finds `beep.ts`.
+
+Files are transpiled one at a time and are **not** type checked: a bundle
+compiles even when the types don't line up. Type checking is a separate step,
+best done with `tsc --noEmit` in your test or lint task.
+
+The nearest `tsconfig.json` above each file is used for its `compilerOptions`,
+with the options that describe whole-program output overridden, since browserify
+is the thing producing the output:
+
+* `module` is always `commonjs`, so that `require()` calls can be walked
+* `target` defaults to `es5`
+* `jsx` defaults to `react` for `.tsx` files
+* source maps follow `--debug` rather than `sourceMap` / `inlineSourceMap`
+* `declaration`, `noEmit`, `outDir`, `outFile` and friends are ignored
+
+Compiler options can be set on the command line, which overrides
+`tsconfig.json`:
+
+``` sh
+$ browserify --typescript [ --target es2017 --jsx preserve ] main.ts > bundle.js
+```
+
+`--typescript=path/to/tsconfig.json` uses a specific config file,
+`--typescript [ --no-tsconfig ]` ignores config files altogether, and
+`--no-typescript` turns off typescript support entirely, extension lookup
+included.
+
+From the API these are `opts.typescript`:
+
+``` js
+browserify('main.ts', {
+    typescript: {
+        tsconfig: 'path/to/tsconfig.json', // or false to ignore config files
+        compilerOptions: { target: 'es2017' }
+    }
+});
+```
+
+Transforms run on the compiled javascript, so a transform like
+[brfs](https://www.npmjs.com/package/brfs) works on typescript sources without
+knowing anything about typescript.
 
 # compatibility
 
@@ -425,6 +506,12 @@ plugins section below for details.
 `opts.extensions` is an array of optional extra extensions for the module lookup
 machinery to use when the extension has not been specified.
 By default browserify considers only `.js` and `.json` files in such cases.
+
+`opts.typescript` configures how `.ts` and `.tsx` files are compiled. Use
+`false` to turn typescript support off, or an object with `tsconfig` (a path to
+a config file, or `false` to ignore config files), `compilerOptions` (options as
+they appear in `tsconfig.json`) and `compiler` (a typescript module to use
+instead of the one resolved from `basedir`). See the typescript section above.
 
 `opts.basedir` is the directory that browserify starts bundling from for
 filenames that start with `.`.
