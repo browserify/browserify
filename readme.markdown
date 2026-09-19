@@ -625,6 +625,31 @@ $ npm install coffeeify
 $ browserify -t coffeeify main.coffee > bundle.js
 ```
 
+To compile TypeScript, add `.ts` to the browserify `extensions` option and use
+[babelify](https://github.com/browserify/babelify) with
+[`@babel/preset-typescript`](https://babeljs.io/docs/babel-preset-typescript):
+
+``` js
+var browserify = require('browserify');
+var babelify = require('babelify');
+
+browserify({
+    entries: './src/main.ts',
+    extensions: ['.js', '.ts']
+})
+    .transform(babelify.configure({
+        presets: ['@babel/preset-env', '@babel/preset-typescript']
+    }), { extensions: ['.js', '.ts'] })
+    .bundle()
+    .pipe(process.stdout);
+```
+
+Install the packages first:
+
+```
+$ npm install babelify @babel/core @babel/preset-env @babel/preset-typescript
+```
+
 If `opts.global` is `true`, the transform will operate on ALL files, despite
 whether they exist up a level in a `node_modules/` directory. Use global
 transforms cautiously and sparingly, since most of the time an ordinary
