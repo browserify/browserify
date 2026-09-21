@@ -9,9 +9,41 @@ browserify will recursively analyze all the `require()` calls in your app in
 order to build a bundle you can serve up to the browser in a single `<script>`
 tag.
 
-[![build status](https://img.shields.io/travis/browserify/browserify/master.svg)](https://travis-ci.org/browserify/browserify)
+[![npm version](https://img.shields.io/npm/v/browserify.svg)](https://www.npmjs.com/package/browserify)
+[![downloads](https://img.shields.io/npm/dm/browserify.svg)](https://www.npmjs.com/package/browserify)
+[![license](https://img.shields.io/npm/l/browserify.svg)](./LICENSE)
 
 ![browserify!](./assets/logo.png)
+
+# table of contents
+
+- [getting started](#getting-started)
+- [example](#example)
+- [install](#install)
+- [usage](#usage)
+- [compatibility](#compatibility)
+- [more examples](#more-examples)
+- [methods](#methods)
+  - [`browserify([files] [, opts])`](#browserifyfiles--opts)
+  - [b.add(file, opts)](#baddfile-opts)
+  - [b.require(file, opts)](#brequirefile-opts)
+  - [b.bundle(cb)](#bbundlecb)
+  - [b.external(file)](#bexternalfile)
+  - [b.ignore(file)](#bignorefile)
+  - [b.exclude(file)](#bexcludefile)
+  - [b.transform(tr, opts={})](#btransformtr-opts)
+  - [b.plugin(plugin, opts)](#bpluginplugin-opts)
+  - [b.pipeline](#bpipeline)
+  - [b.reset(opts)](#bresetopts)
+- [package.json](#packagejson)
+- [events](#events)
+- [plugins](#plugins)
+- [list of source transforms](#list-of-source-transforms)
+- [third-party tools](#third-party-tools)
+- [contributing](#contributing)
+- [security](#security)
+- [changelog](#changelog)
+- [license](#license)
 
 # getting started
 
@@ -50,7 +82,7 @@ $ browserify main.js > bundle.js
 
 All of the modules that `main.js` needs are included in the `bundle.js` from a
 recursive walk of the `require()` graph using
-[required](https://github.com/defunctzombie/node-required).
+[module-deps](https://www.npmjs.com/package/module-deps).
 
 To use this bundle, just toss a `<script src="bundle.js"></script>` into your
 html!
@@ -60,10 +92,20 @@ html!
 With [npm](https://www.npmjs.com/) do:
 
 ```
-npm install browserify
+npm install --save-dev browserify
+```
+
+That gives you the `browserify` command in `node_modules/.bin`, so you can run
+it from an npm script or with `npx browserify`. To put the command on your
+`PATH` everywhere instead, install it globally:
+
+```
+npm install -g browserify
 ```
 
 # usage
+
+This is the output of `browserify --help`:
 
 ```
 Usage: browserify [entry files] {OPTIONS}
@@ -97,10 +139,14 @@ Standard Options:
 
        --help, -h  Show this message
 
+       --version  Show the browserify version number
+
 For advanced options, type `browserify --help advanced`.
 
 Specify a parameter.
 ```
+
+and of `browserify --help advanced`:
 
 ```
 Advanced Options:
@@ -203,11 +249,21 @@ Advanced Options:
 
   --ignore-transform=MODULE, -it MODULE
 
-    Do not run certain transformations, even if specified elsewhere.
+    Do not run the MODULE transform, even when it is configured elsewhere, for
+    example in a package.json "browserify.transform" field.
 
   --plugin=MODULE, -p MODULE
 
     Register MODULE as a plugin.
+
+  --preserve-symlinks
+
+    Preserves symlinks when resolving modules.
+
+  --basedir=DIR
+
+    Resolve relative entry files and requires against DIR instead of the
+    current working directory.
 
 Passing arguments to transforms and plugins:
 
@@ -219,7 +275,6 @@ Passing arguments to transforms and plugins:
   will call the `foo` transform for each applicable file by calling:
 
     foo(file, { x: 3, beep: true })
-
 ```
 
 # compatibility
@@ -266,6 +321,9 @@ in the bundled output in a browser-appropriate way:
 
 # more examples
 
+Runnable versions of several of these live in the
+[example/](example) directory of this repository.
+
 ## external requires
 
 You can just as easily create a bundle that will export a `require()` function so
@@ -299,6 +357,9 @@ $ browserify main.js --debug | exorcist bundle.js.map > bundle.js
 ```
 
 Learn about additional options [here](https://github.com/thlorenz/exorcist#usage).
+
+For a worked example of bundling with `--debug` and opening the result in a
+browser, see [example/source_maps](example/source_maps).
 
 ## multiple bundles
 
@@ -351,6 +412,9 @@ while the boop page can have:
 <script src="boop.js"></script>
 ```
 
+A runnable version of this example is in
+[example/multiple_bundles](example/multiple_bundles).
+
 This approach using `-r` and `-x` works fine for a small number of split assets,
 but there are plugins for automatically factoring out components which are
 described in the
@@ -366,6 +430,9 @@ var b = browserify();
 b.add('./browser/main.js');
 b.bundle().pipe(process.stdout);
 ```
+
+This example is in [example/api](example/api). Everything the command line can
+do is available on the instance `b`; see [methods](#methods) below.
 
 # methods
 
@@ -446,6 +513,30 @@ useful for preserving the original paths that a bundle was generated with.
 
 `opts.bundleExternal` boolean option to set if external modules should be
 bundled. Defaults to true.
+
+`opts.dedupe` removes duplicate module sources from the bundle, replacing each
+repeat with a reference to the first copy. Defaults to true; set it to `false`
+to keep every copy.
+
+`opts.preserveSymlinks` resolves modules to the symlink path rather than to the
+real path it points at. This matters for `npm link`ed packages, where the same
+module reached through a link and through `node_modules` would otherwise be
+deduped into one instance. Defaults to false.
+
+`opts.transformKey` is the path of the package.json field that lists the
+transforms to apply to a package, given as an array of keys. It defaults to
+`['browserify', 'transform']`, which reads `package.json#browserify#transform`.
+Pass `['browserify', 'production']` to read a `browserify.production` field
+instead. This is the API form of the `--transform-key` flag.
+
+`opts.globalTransform` is an array of transforms to apply to every file,
+including files inside `node_modules/`, after the ordinary transforms have run.
+It is the API form of the `-g` flag; see
+[b.transform](#btransformtr-opts) for why global transforms deserve caution.
+
+`opts.exposeAll` labels every module in the bundle with its path relative to
+`opts.basedir` instead of a numeric index, and exposes it under that name. This
+is mostly useful to tools that need to address individual modules in the output.
 
 When `opts.browserField` is false, the package.json browser field will be
 ignored. When `opts.browserField` is set to a `string`, then a custom field name
@@ -769,6 +860,14 @@ when files change.
 When a package file is read, this event fires with the contents. The package
 directory is available at `pkg.__dirname`.
 
+## b.on('dep', function (row) {})
+
+After a module has been resolved, transformed, and labeled, this event fires
+with the [module-deps](https://www.npmjs.com/package/module-deps) row for it.
+The row has `id`, `file`, `source`, and `deps` properties. This fires from the
+`'emit-deps'` stage of the pipeline, so the ids have already been converted to
+their final form.
+
 ## b.on('bundle', function (bundle) {})
 
 When `.bundle()` is called, this event fires with the `bundle` output stream.
@@ -825,6 +924,39 @@ If you write a tool, make sure to add it to that wiki page and
 add a package.json keyword of `browserify-tool` so that
 [people can browse for all the browserify
 tools](https://www.npmjs.com/browse/keyword/browserify-tool) on npmjs.org.
+
+# contributing
+
+Bug reports and pull requests are welcome on the
+[issue tracker](https://github.com/browserify/browserify/issues).
+
+To work on browserify itself:
+
+```
+git clone https://github.com/browserify/browserify.git
+cd browserify
+npm install
+npm test
+```
+
+The test suite runs with [tap](https://www.npmjs.com/package/tap). To run a
+single test file while you iterate:
+
+```
+node_modules/.bin/tap test/bundle.js
+```
+
+Tests live in `test/`, one `.js` file per feature, usually alongside a directory
+of the same name holding the fixture files that test bundles. When you add a
+feature, add a test file next to the existing ones.
+
+Everyone participating in the project is expected to follow the
+[code of conduct](code-of-conduct.md).
+
+# security
+
+Please report security vulnerabilities as described in the
+[security policy](security.md) rather than in a public issue.
 
 # changelog
 
