@@ -11,6 +11,8 @@ tag.
 
 [![build status](https://img.shields.io/travis/browserify/browserify/master.svg)](https://travis-ci.org/browserify/browserify)
 
+[![discord](https://img.shields.io/discord/1551988795392655442?label=discord&logo=discord&logoColor=white&style=flat)](https://discord.gg/V5atDTQSc7)
+
 ![browserify!](./assets/logo.png)
 
 # getting started
