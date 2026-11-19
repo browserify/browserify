@@ -2,7 +2,7 @@
 
 `require('modules')` in the browser
 
-Use a [node](http://nodejs.org)-style `require()` to organize your browser code
+Use a [node](https://nodejs.org)-style `require()` to organize your browser code
 and load modules installed by [npm](https://www.npmjs.com).
 
 browserify will recursively analyze all the `require()` calls in your app in
@@ -19,7 +19,7 @@ tag.
 
 If you're new to browserify, check out the
 [browserify handbook](https://github.com/browserify/browserify-handbook)
-and the resources on [browserify.org](http://browserify.org/).
+and the resources on [browserify.org](https://browserify.org/).
 
 # example
 
@@ -577,7 +577,7 @@ Transform source code before parsing it for `require()` calls with the transform
 function or module name `tr`.
 
 If `tr` is a function, it will be called with `tr(file)` and it should return a
-[through-stream](https://github.com/substack/stream-handbook#through)
+[through-stream](https://github.com/dominictarr/through)
 that takes the raw file contents and produces the transformed source.
 
 If `tr` is a string, it should be a module name or file path of a
@@ -592,7 +592,7 @@ module.exports = function (file) { return through() };
 You don't need to necessarily use the
 [through](https://www.npmjs.com/package/through) module.
 Browserify is compatible with the newer, more verbose
-[Transform streams](http://nodejs.org/api/stream.html#stream_class_stream_transform_1)
+[Transform streams](https://nodejs.org/api/stream.html#class-streamtransform)
 built into Node v0.10.
 
 Here's how you might compile coffee script on the fly using `.transform()`:
